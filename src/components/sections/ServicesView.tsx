@@ -21,39 +21,39 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
     return (
       <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-16 space-y-16">
         {/* Service Hero */}
-        <div className="border-b border-slate-200 pb-10">
+        <div className="border-b border-[var(--farcon-border)] pb-10">
           <div className="flex items-center gap-2 text-xs text-slate-500 mb-3">
-            <button onClick={() => navigate('/services')} className="hover:text-slate-900">
+            <button onClick={() => navigate('/services')} className="hover:text-[var(--farcon-text)]">
               Services
             </button>
             <span>/</span>
-            <span className="text-slate-900 font-medium">{service.title}</span>
+            <span className="text-[var(--farcon-text)] font-medium">{service.title}</span>
           </div>
 
-          <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+          <span className="text-xs font-semibold tracking-wider uppercase text-[var(--farcon-primary)]">
             Farcon Service Architecture
           </span>
-          <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
+          <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl font-poppins font-medium text-[var(--farcon-text)] tracking-tight">
             {service.title}
           </h1>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed">
+          <p className="mt-4 text-base sm:text-lg text-[var(--farcon-text-muted)] max-w-2xl leading-relaxed">
             {service.tagline}
           </p>
 
-          <p className="mt-4 text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
+          <p className="mt-4 text-xs sm:text-sm text-[var(--farcon-text-muted)] max-w-3xl leading-relaxed">
             {service.summary}
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
             <button
               onClick={() => onOpenConsultation(service.title)}
-              className="px-6 py-3 text-xs font-semibold text-white bg-[#0B131E] hover:bg-slate-800 rounded-md transition-colors shadow-xs"
+              className="px-6 py-3 text-xs font-semibold text-white bg-[var(--farcon-navy)] hover:bg-slate-800 rounded-md transition-colors shadow-xs"
             >
               Book a Free Consultation
             </button>
             <button
               onClick={() => navigate(`/calculators/${service.calculatorType}` as RoutePath)}
-              className="px-5 py-3 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors"
+              className="px-5 py-3 text-xs font-semibold text-[var(--farcon-text)] bg-[#EAF0F6] hover:bg-slate-200 rounded-md transition-colors"
             >
               Use {service.calculatorType.toUpperCase()} Calculator
             </button>
@@ -62,28 +62,28 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
 
         {/* What it is & Who it is for */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-xs">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 mb-4">
+          <div className="farcon-card p-6 sm:p-8">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-[var(--farcon-text)] mb-4">
               What It Encompasses
             </h2>
-            <ul className="space-y-3 text-xs text-slate-600">
+            <ul className="space-y-3 text-xs text-[var(--farcon-text-muted)]">
               {service.whatItIs.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#7BA238] shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-[var(--farcon-primary)] shrink-0 mt-0.5" />
                   <span className="leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-xs">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 mb-4">
+          <div className="farcon-card p-6 sm:p-8">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-[var(--farcon-text)] mb-4">
               Who It Is Designed For
             </h2>
-            <ul className="space-y-3 text-xs text-slate-600">
+            <ul className="space-y-3 text-xs text-[var(--farcon-text-muted)]">
               {service.whoItIsFor.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#5B92D1] shrink-0 mt-1.5" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--farcon-secondary)] shrink-0 mt-1.5" />
                   <span className="leading-relaxed">{item}</span>
                 </li>
               ))}
@@ -94,13 +94,13 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
         {/* How Farcon Approaches It: 4-Step Editorial Timeline */}
         <div>
           <div className="max-w-2xl mb-8">
-            <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+            <span className="text-xs font-semibold tracking-wider uppercase text-[var(--farcon-primary)]">
               Methodology
             </span>
-            <h2 className="text-2xl font-poppins font-medium text-slate-900 mt-1">
+            <h2 className="text-2xl font-poppins font-medium text-[var(--farcon-text)] mt-1">
               How Farcon Executes This Service
             </h2>
-            <p className="text-xs text-slate-600 mt-1">
+            <p className="text-xs text-[var(--farcon-text-muted)] mt-1">
               A structured roadmap from goal quantification to continuous review.
             </p>
           </div>
@@ -109,16 +109,16 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
             {service.howFarconApproaches.map((step) => (
               <div
                 key={step.step}
-                className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between"
+                className="bg-white p-6 farcon-card flex flex-col justify-between"
               >
                 <div>
-                  <span className="text-2xl font-bold font-mono text-[#7BA238] block mb-3">
+                  <span className="text-2xl font-bold font-mono text-[var(--farcon-primary)] block mb-3">
                     {step.step}
                   </span>
-                  <h3 className="text-sm font-semibold text-slate-900 mb-2 leading-snug">
+                  <h3 className="text-sm font-semibold text-[var(--farcon-text)] mb-2 leading-snug">
                     {step.title}
                   </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
+                  <p className="text-xs text-[var(--farcon-text-muted)] leading-relaxed">
                     {step.description}
                   </p>
                 </div>
@@ -129,15 +129,15 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
 
         {/* Service FAQs */}
         {service.faqs.length > 0 && (
-          <div className="bg-slate-50 p-6 sm:p-8 rounded-xl border border-slate-200">
-            <h3 className="text-base font-poppins font-medium text-slate-900 mb-4">
+          <div className="bg-[var(--farcon-surface-soft)] p-6 sm:p-8 rounded-xl border border-[var(--farcon-border)]">
+            <h3 className="text-base font-poppins font-medium text-[var(--farcon-text)] mb-4">
               Frequently Clarified Questions
             </h3>
             <div className="space-y-4">
               {service.faqs.map((faq, idx) => (
-                <div key={idx} className="bg-white p-4 rounded-lg border border-slate-200/80">
-                  <h4 className="text-xs font-semibold text-slate-900 mb-1">{faq.question}</h4>
-                  <p className="text-xs text-slate-600 leading-relaxed">{faq.answer}</p>
+                <div key={idx} className="bg-white p-4 rounded-lg border border-[var(--farcon-border)]/80">
+                  <h4 className="text-xs font-semibold text-[var(--farcon-text)] mb-1">{faq.question}</h4>
+                  <p className="text-xs text-[var(--farcon-text-muted)] leading-relaxed">{faq.answer}</p>
                 </div>
               ))}
             </div>
@@ -145,7 +145,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
         )}
 
         {/* Bottom CTA Block */}
-        <div className="bg-[#0B131E] text-white p-8 sm:p-10 rounded-xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="bg-[var(--farcon-navy)] text-white p-8 sm:p-10 rounded-xl border border-[var(--farcon-border-dark)] flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="text-xl font-poppins font-medium">
               Ready to Structure Your {service.title}?
@@ -156,7 +156,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
           </div>
           <button
             onClick={() => onOpenConsultation(service.title)}
-            className="px-6 py-3 text-xs font-semibold text-[#0B131E] bg-[#7BA238] hover:bg-[#8EB942] rounded-md transition-colors shrink-0"
+            className="px-6 py-3 text-xs font-semibold text-[var(--farcon-navy)] bg-[var(--farcon-primary)] hover:bg-[var(--farcon-primary-light)] rounded-md transition-colors shrink-0"
           >
             Book Free Consultation
           </button>
@@ -169,31 +169,31 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
   return (
     <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-16">
       <div className="text-center max-w-3xl mx-auto mb-12">
-        <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+        <span className="text-xs font-semibold tracking-wider uppercase text-[var(--farcon-primary)]">
           Published Capabilities
         </span>
-        <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
+        <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl font-poppins font-medium text-[var(--farcon-text)] tracking-tight">
           Goal-Based Mutual Fund Guidance
         </h1>
-        <p className="mt-4 text-sm text-slate-600 leading-relaxed">
+        <p className="mt-4 text-sm text-[var(--farcon-text-muted)] leading-relaxed">
           Farcon Wealth is an AMFI-registered Mutual Fund Distributor (ARN: 329006). We focus strictly on transparent, long-term mutual fund architectures—with zero unnecessary products or hidden agendas.
         </p>
       </div>
 
       {/* Premium Editorial Service List (NO 2x3 card grid) */}
-      <div className="border-t border-slate-200 divide-y divide-slate-200">
+      <div className="border-t border-[var(--farcon-border)] divide-y divide-[var(--farcon-border)]">
         {FARCON_SERVICES.map((service, idx) => (
           <div
             key={service.id}
             onClick={() => navigate(`/services/${service.slug}` as RoutePath)}
-            className="py-8 sm:py-10 transition-all duration-300 cursor-pointer group flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-slate-50/80 px-4 sm:px-6 -mx-4 sm:-mx-6 rounded-2xl"
+            className="py-8 sm:py-10 transition-all duration-300 cursor-pointer group flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-[#F7F9FC]/80 px-4 sm:px-6 -mx-4 sm:-mx-6 rounded-2xl"
           >
             <div className="flex items-start sm:items-center gap-6 sm:gap-8 md:w-5/12">
-              <span className="text-xl sm:text-2xl font-mono text-slate-400 group-hover:text-[#7BA238] transition-colors">
+              <span className="text-xl sm:text-2xl font-mono text-slate-400 group-hover:text-[var(--farcon-primary)] transition-colors">
                 0{idx + 1}
               </span>
               <div>
-                <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors leading-snug">
+                <h2 className="text-xl sm:text-2xl font-poppins font-medium text-[var(--farcon-text)] group-hover:text-[var(--farcon-primary)] transition-colors leading-snug">
                   {service.title}
                 </h2>
                 <span className="text-xs text-slate-500 block mt-1">
@@ -202,11 +202,11 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
               </div>
             </div>
 
-            <div className="md:w-5/12 text-xs sm:text-sm text-slate-600 leading-relaxed">
+            <div className="md:w-5/12 text-xs sm:text-sm text-[var(--farcon-text-muted)] leading-relaxed">
               <p>{service.summary}</p>
             </div>
 
-            <div className="md:w-2/12 flex items-center md:justify-end gap-3 text-xs font-semibold text-slate-900 group-hover:text-[#7BA238] transition-colors">
+            <div className="md:w-2/12 flex items-center md:justify-end gap-3 text-xs font-semibold text-[var(--farcon-text)] group-hover:text-[var(--farcon-primary)] transition-colors">
               <span className="hidden sm:inline">Details</span>
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5" />
             </div>
