@@ -1,25 +1,34 @@
 @import "tailwindcss";
 
+/* FARCON WEALTH: shared design tokens, intentional surface hierarchy. */
 :root {
-  --farcon-primary: #7BA238;
-  --farcon-primary-dark: #66882C;
-  --farcon-primary-light: #8EB942;
-  --farcon-secondary: #5B92D1;
-  --farcon-secondary-dark: #4679B5;
-  --farcon-secondary-light: #7CAAE0;
-  --farcon-navy: #0B131E;
-  --farcon-navy-card: #131F31;
-  --farcon-navy-light: #1A283D;
-  --farcon-background: #F8FAFC;
+  color-scheme: light;
+  --farcon-primary: #648D2D;
+  --farcon-primary-dark: #496D20;
+  --farcon-primary-light: #83A94B;
+  --farcon-secondary: #315FCE;
+  --farcon-secondary-dark: #254BA6;
+  --farcon-secondary-light: #EDF3FF;
+  --farcon-navy: #101A2C;
+  --farcon-navy-card: #15243B;
+  --farcon-navy-light: #20314F;
+  --farcon-background: #FAFBFC;
   --farcon-surface: #FFFFFF;
-  --farcon-surface-soft: #F1F5F9;
-  --farcon-border: #E2E8F0;
-  --farcon-border-dark: #1E2E45;
-  --farcon-text: #0B131E;
-  --farcon-text-muted: #64748B;
-  --farcon-accent: #7BA238;
+  --farcon-surface-soft: #F2F6FB;
+  --farcon-border: #DCE4EE;
+  --farcon-border-dark: #2A3A52;
+  --farcon-text: #17243A;
+  --farcon-text-muted: #52647D;
+  --farcon-accent: #648D2D;
+  --farcon-positive: #247344;
+  --farcon-positive-soft: #E8F5E9;
+  --farcon-negative: #B42318;
+  --farcon-negative-soft: #FEECEB;
+  --farcon-radius-card: 14px;
+  --farcon-radius-control: 8px;
+  --farcon-shadow-card: 0 6px 20px rgba(16, 26, 44, 0.045);
+  --farcon-shadow-hover: 0 12px 28px rgba(16, 26, 44, 0.08);
 }
-
 @theme {
   --font-display: "Poppins", system-ui, -apple-system, sans-serif;
   --font-heading: "Poppins", system-ui, -apple-system, sans-serif;
@@ -27,99 +36,36 @@
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
+.font-poppins { font-family: "Poppins", system-ui, -apple-system, sans-serif; }
+.font-inter { font-family: "Inter", system-ui, -apple-system, sans-serif; }
+.type-hero { font-family: "Poppins", system-ui, -apple-system, sans-serif; font-size: clamp(2.5rem, 5.5vw, 5.25rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 500; }
+.type-section-title { font-family: "Poppins", system-ui, -apple-system, sans-serif; font-size: clamp(2rem, 3.8vw, 3.5rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 500; }
+.type-secondary-title { font-family: "Poppins", system-ui, -apple-system, sans-serif; font-size: clamp(1.25rem, 2.2vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; font-weight: 500; }
+.type-financial-number { font-family: "Poppins", system-ui, -apple-system, sans-serif; font-size: clamp(2.25rem, 4vw, 4.25rem); line-height: 1.05; letter-spacing: -0.02em; font-weight: 500; font-variant-numeric: tabular-nums; }
+.type-body { font-family: "Inter", system-ui, -apple-system, sans-serif; font-size: clamp(0.9375rem, 1vw, 1.125rem); line-height: 1.6; font-weight: 400; }
+.type-metadata { font-family: "Inter", system-ui, -apple-system, sans-serif; font-size: clamp(0.6875rem, 0.8vw, 0.75rem); line-height: 1.4; letter-spacing: 0.04em; }
 
-.font-poppins {
-  font-family: "Poppins", system-ui, -apple-system, sans-serif;
-}
+/* Reusable treatments for existing components. Editorial rows deliberately stay unboxed. */
+.farcon-card { background: var(--farcon-surface); color: var(--farcon-text); border: 1px solid var(--farcon-border); border-radius: var(--farcon-radius-card); box-shadow: none; transition: border-color 220ms ease, background-color 220ms ease, box-shadow 220ms ease, transform 220ms ease; }
+.farcon-card:hover, .farcon-card:focus-within { border-color: #BCCBDD; box-shadow: var(--farcon-shadow-card); }
+.farcon-card--interactive:hover { transform: translateY(-2px); box-shadow: var(--farcon-shadow-hover); }
+.farcon-card--soft { background: var(--farcon-surface-soft); border-color: transparent; }
+.farcon-card--featured { background: var(--farcon-navy); color: #F8FAFC; border-color: var(--farcon-border-dark); }
+.farcon-card--featured .farcon-muted { color: #C0CAD8; }
+.farcon-card--selected { background: var(--farcon-positive-soft); border-color: #C9E5C9; color: #205B35; }
+.farcon-control { border: 1px solid var(--farcon-border); border-radius: var(--farcon-radius-control); background: #FFFFFF; color: var(--farcon-text); transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease; }
+.farcon-control:focus-visible, button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--farcon-secondary); outline-offset: 3px; }
+.farcon-button-primary { background: var(--farcon-navy); color: #FFFFFF; border: 1px solid var(--farcon-navy); border-radius: var(--farcon-radius-control); transition: background-color 180ms ease, transform 180ms ease; }
+.farcon-button-primary:hover { background: #20314F; }
+.farcon-market-positive { color: var(--farcon-positive); }
+.farcon-market-negative { color: var(--farcon-negative); }
+.farcon-market-unavailable { color: var(--farcon-text-muted); }
 
-.font-inter {
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
-}
-
-/* Centralized Responsive Typographic Hierarchy Tokens */
-.type-hero {
-  font-family: "Poppins", system-ui, -apple-system, sans-serif;
-  font-size: clamp(2.5rem, 5.5vw, 5.25rem);
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-  font-weight: 500;
-}
-
-.type-section-title {
-  font-family: "Poppins", system-ui, -apple-system, sans-serif;
-  font-size: clamp(2rem, 3.8vw, 3.5rem);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  font-weight: 500;
-}
-
-.type-secondary-title {
-  font-family: "Poppins", system-ui, -apple-system, sans-serif;
-  font-size: clamp(1.25rem, 2.2vw, 2.25rem);
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  font-weight: 500;
-}
-
-.type-financial-number {
-  font-family: "Poppins", system-ui, -apple-system, sans-serif;
-  font-size: clamp(2.25rem, 4vw, 4.25rem);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-}
-
-.type-body {
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
-  font-size: clamp(0.9375rem, 1vw, 1.125rem);
-  line-height: 1.6;
-  font-weight: 400;
-}
-
-.type-metadata {
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
-  font-size: clamp(0.6875rem, 0.8vw, 0.75rem);
-  line-height: 1.4;
-  letter-spacing: 0.05em;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: var(--font-sans);
-  background-color: var(--farcon-background);
-  color: var(--farcon-text);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Custom scrollbar for calm luxury feel */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #F1F5F9;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-sans); background-color: var(--farcon-background); color: var(--farcon-text); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #F2F6FB; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+@media (max-width: 640px) { .farcon-card--interactive:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { *, ::before, ::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }

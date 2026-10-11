@@ -185,12 +185,12 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
         /* EDITORIAL SPLIT LAYOUT (LEFT: Context Journey Rail, RIGHT: Question Interface) */
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
           {/* LEFT CONTEXT JOURNEY RAIL (Sticky on Desktop) */}
-          <div className="lg:col-span-5 bg-[#0B131E] text-white p-7 sm:p-10 lg:p-12 rounded-3xl border border-slate-800 shadow-2xl space-y-7 lg:sticky lg:top-24">
+          <div className="lg:col-span-5 bg-[var(--farcon-navy)] text-white p-7 sm:p-10 lg:p-12 rounded-2xl border border-[var(--farcon-border-dark)] shadow-2xl space-y-7 lg:sticky lg:top-24">
             {/* Header & Assessment Context */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#7BA238]" />
-                <span className="text-xs font-mono font-semibold tracking-[0.2em] uppercase text-[#7BA238]">
+                <span className="w-2 h-2 rounded-full bg-[var(--farcon-primary)]" />
+                <span className="text-xs font-mono font-semibold tracking-[0.2em] uppercase text-[var(--farcon-primary)]">
                   DIAGNOSTIC ARCHITECTURE
                 </span>
               </div>
@@ -203,13 +203,13 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
             </div>
 
             {/* Diagnostic Metrics: Estimated Time & Overall Progress */}
-            <div className="p-4 bg-[#131F31] rounded-2xl border border-slate-800/90 space-y-3">
+            <div className="p-4 bg-[var(--farcon-navy-card)] rounded-2xl border border-[var(--farcon-border-dark)]/90 space-y-3">
               <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2 text-slate-300 font-mono">
-                  <Clock className="w-3.5 h-3.5 text-[#5B92D1]" />
+                  <Clock className="w-3.5 h-3.5 text-[var(--farcon-secondary)]" />
                   <span>Estimated Time: ~3 Minutes</span>
                 </div>
-                <span className="font-mono text-[#7BA238] font-semibold">
+                <span className="font-mono text-[var(--farcon-primary)] font-semibold">
                   0{currentStep + 1} / 0{totalQuestions}
                 </span>
               </div>
@@ -217,7 +217,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
               {/* Smooth Progress Bar */}
               <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
                 <div
-                  className="bg-[#7BA238] h-full transition-all duration-300 ease-out"
+                  className="bg-[var(--farcon-primary)] h-full transition-all duration-300 ease-out"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -248,9 +248,9 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                       key={dim.id}
                       className={`p-3 rounded-xl border transition-all ${
                         isCurrentDimension
-                          ? 'bg-[#131F31] border-[#7BA238]/60 text-white shadow-xs'
+                          ? 'bg-[var(--farcon-navy-card)] border-[var(--farcon-primary)]/60 text-white shadow-xs'
                           : isCompletedDimension
-                          ? 'bg-[#0E1724] border-slate-800/60 text-slate-300'
+                          ? 'bg-[#0E1724] border-[var(--farcon-border-dark)]/60 text-slate-300'
                           : 'bg-transparent border-transparent text-slate-500'
                       }`}
                     >
@@ -259,10 +259,10 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                           <span
                             className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-mono font-bold ${
                               isCurrentDimension
-                                ? 'bg-[#7BA238] text-[#0B131E]'
+                                ? 'bg-[var(--farcon-primary)] text-[var(--farcon-navy)]'
                                 : isCompletedDimension
-                                ? 'bg-slate-800 text-[#7BA238]'
-                                : 'bg-slate-800/60 text-slate-600'
+                                ? 'bg-slate-800 text-[var(--farcon-primary)]'
+                                : 'bg-slate-800/60 text-[var(--farcon-text-muted)]'
                             }`}
                           >
                             0{idx + 1}
@@ -277,9 +277,9 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                         </div>
 
                         {isCompletedDimension ? (
-                          <Check className="w-3.5 h-3.5 text-[#7BA238]" />
+                          <Check className="w-3.5 h-3.5 text-[var(--farcon-primary)]" />
                         ) : isCurrentDimension ? (
-                          <span className="text-[10px] font-mono text-[#7BA238] uppercase">
+                          <span className="text-[10px] font-mono text-[var(--farcon-primary)] uppercase">
                             Active
                           </span>
                         ) : null}
@@ -297,10 +297,10 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
             </div>
 
             {/* SEPARATE LEGAL & REGULATORY DISCLOSURES (AMFI REGISTRATION VS EDUCATIONAL NOTICE) */}
-            <div className="pt-4 border-t border-slate-800 space-y-2.5 text-[11px] leading-relaxed">
+            <div className="pt-4 border-t border-[var(--farcon-border-dark)] space-y-2.5 text-[11px] leading-relaxed">
               {/* Disclosure 1: AMFI Registration Disclosure */}
-              <div className="p-3 bg-[#0E1724] rounded-xl border border-slate-800 text-slate-300 flex items-start gap-2.5">
-                <ShieldCheck className="w-4 h-4 text-[#7BA238] shrink-0 mt-0.5" />
+              <div className="p-3 bg-[#0E1724] rounded-xl border border-[var(--farcon-border-dark)] text-slate-300 flex items-start gap-2.5">
+                <ShieldCheck className="w-4 h-4 text-[var(--farcon-primary)] shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-white block font-semibold mb-0.5">
                     {COMPLIANCE_REGISTRY.quiz.distributorSeparateDisclosure}
@@ -312,7 +312,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
               </div>
 
               {/* Disclosure 2: Educational Starting Point Notice (Distinct & Separated) */}
-              <div className="p-3 bg-[#0E1724] rounded-xl border border-slate-800 text-slate-400 flex items-start gap-2.5">
+              <div className="p-3 bg-[#0E1724] rounded-xl border border-[var(--farcon-border-dark)] text-slate-400 flex items-start gap-2.5">
                 <AlertCircle className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
                 <span>
                   {COMPLIANCE_REGISTRY.quiz.disclaimer}
@@ -322,17 +322,17 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
           </div>
 
           {/* RIGHT CURRENT QUESTION INTERFACE */}
-          <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200/90 shadow-xl p-7 sm:p-12 lg:p-14 space-y-8 min-h-[660px] flex flex-col justify-between">
+          <div className="lg:col-span-7 bg-white rounded-2xl border border-[var(--farcon-border)]/90 shadow-[0_8px_28px_rgba(16,26,44,0.06)] p-7 sm:p-12 lg:p-14 space-y-8 min-h-[660px] flex flex-col justify-between">
             <div>
               {/* Question Header & Micro Stepper */}
-              <div className="space-y-4 pb-6 border-b border-slate-100">
+              <div className="space-y-4 pb-6 border-b border-[var(--farcon-border)]/70">
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold tracking-wider text-[#5B92D1] uppercase text-xs">
+                    <span className="font-mono font-bold tracking-wider text-[var(--farcon-secondary)] uppercase text-xs">
                       QUESTION 0{currentStep + 1} / 0{totalQuestions}
                     </span>
                     <span className="text-slate-300">·</span>
-                    <span className="font-mono font-semibold text-[#7BA238] uppercase text-[11px]">
+                    <span className="font-mono font-semibold text-[var(--farcon-primary)] uppercase text-[11px]">
                       DIMENSION: {activeDimension.label.toUpperCase()}
                     </span>
                   </div>
@@ -352,9 +352,9 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                         <div
                           className={`w-3 h-3 rounded-full flex items-center justify-center shrink-0 transition-all ${
                             isDone
-                              ? 'bg-[#7BA238] text-white'
+                              ? 'bg-[var(--farcon-primary)] text-white'
                               : isCurrent
-                              ? 'bg-[#0B131E] ring-4 ring-slate-100'
+                              ? 'bg-[var(--farcon-navy)] ring-4 ring-slate-100'
                               : 'bg-slate-200'
                           }`}
                         >
@@ -363,7 +363,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                         {idx < totalQuestions - 1 && (
                           <div
                             className={`flex-1 h-0.5 transition-colors ${
-                              isDone ? 'bg-[#7BA238]' : 'bg-slate-200'
+                              isDone ? 'bg-[var(--farcon-primary)]' : 'bg-slate-200'
                             }`}
                           />
                         )}
@@ -384,10 +384,10 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                 }`}
               >
                 <div>
-                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-slate-900 leading-snug">
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-[var(--farcon-text)] leading-snug">
                     {currentQ.question}
                   </h2>
-                  <p className="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-[var(--farcon-text-muted)] mt-3 leading-relaxed">
                     {currentQ.context}
                   </p>
                 </div>
@@ -402,25 +402,25 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                         onClick={() => handleSelectOption(opt.score)}
                         className={`w-full text-left p-5 sm:p-6 rounded-2xl border transition-all text-xs flex items-center justify-between gap-4 group cursor-pointer ${
                           isSelected
-                            ? 'border-[#0B131E] bg-slate-50 shadow-md ring-1 ring-[#0B131E]'
-                            : 'border-slate-200/90 hover:border-slate-400 hover:bg-slate-50/70 hover:shadow-2xs hover:-translate-y-0.5'
+                            ? 'border-[var(--farcon-navy)] bg-[var(--farcon-surface-soft)] shadow-md ring-1 ring-[#0B131E]'
+                            : 'border-[var(--farcon-border)]/90 hover:border-slate-400 hover:bg-[#F7F9FC]/70 hover:shadow-2xs hover:-translate-y-0.5'
                         }`}
                       >
                         <div className="flex items-start gap-4">
                           <span
                             className={`text-xs font-mono font-bold px-2 py-1 rounded ${
                               isSelected
-                                ? 'bg-[#7BA238] text-[#0B131E]'
-                                : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'
+                                ? 'bg-[var(--farcon-primary)] text-[var(--farcon-navy)]'
+                                : 'bg-[#EAF0F6] text-slate-500 group-hover:bg-slate-200'
                             }`}
                           >
                             0{idx + 1}
                           </span>
                           <div className="space-y-1">
-                            <span className="font-semibold text-slate-900 text-sm block group-hover:text-slate-950">
+                            <span className="font-semibold text-[var(--farcon-text)] text-sm block group-hover:text-[var(--farcon-navy)]">
                               {opt.label}
                             </span>
-                            <span className="text-slate-600 leading-relaxed text-xs block">
+                            <span className="text-[var(--farcon-text-muted)] leading-relaxed text-xs block">
                               {opt.description}
                             </span>
                           </div>
@@ -430,8 +430,8 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                         <div
                           className={`w-6 h-6 rounded-full border flex items-center justify-center shrink-0 transition-colors ${
                             isSelected
-                              ? 'border-[#0B131E] bg-[#0B131E] text-white'
-                              : 'border-slate-300 group-hover:border-slate-400'
+                              ? 'border-[var(--farcon-navy)] bg-[var(--farcon-navy)] text-white'
+                              : 'border-[var(--farcon-border)] group-hover:border-slate-400'
                           }`}
                         >
                           {isSelected ? (
@@ -448,11 +448,11 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
             </div>
 
             {/* Bottom Controls */}
-            <div className="pt-6 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div className="pt-6 border-t border-[var(--farcon-border)]/70 flex items-center justify-between text-xs">
               <button
                 onClick={handlePrev}
                 disabled={currentStep === 0}
-                className="inline-flex items-center gap-1.5 font-semibold text-slate-600 hover:text-slate-950 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                className="inline-flex items-center gap-1.5 font-semibold text-[var(--farcon-text-muted)] hover:text-[var(--farcon-navy)] disabled:opacity-30 disabled:pointer-events-none transition-colors"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>Previous Question</span>
@@ -469,10 +469,10 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
       ) : (
         /* PREMIUM FINAL RESULT PAGE */
         <div className="max-w-4xl mx-auto space-y-10 animate-in fade-in duration-300">
-          <div className="bg-[#0B131E] text-white rounded-3xl border border-slate-800 shadow-2xl p-8 sm:p-14 lg:p-16 space-y-8">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-slate-800">
+          <div className="bg-[var(--farcon-navy)] text-white rounded-2xl border border-[var(--farcon-border-dark)] shadow-2xl p-8 sm:p-14 lg:p-16 space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-[var(--farcon-border-dark)]">
               <div>
-                <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238] font-mono">
+                <span className="text-xs font-semibold tracking-wider uppercase text-[var(--farcon-primary)] font-mono">
                   INVESTOR FIT DIAGNOSTIC · RESULT PROFILE
                 </span>
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium mt-2 tracking-tight">
@@ -485,7 +485,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
 
               <button
                 onClick={handleReset}
-                className="inline-flex items-center gap-2 text-xs text-slate-300 hover:text-white transition-colors w-fit px-4 py-2.5 rounded-xl bg-[#131F31] border border-slate-700/80 shadow-xs"
+                className="inline-flex items-center gap-2 text-xs text-slate-300 hover:text-white transition-colors w-fit px-4 py-2.5 rounded-xl bg-[var(--farcon-navy-card)] border border-slate-700/80 shadow-xs"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Retake Diagnostic</span>
@@ -504,8 +504,8 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div className="p-5 rounded-2xl bg-[#131F31] border border-slate-800">
-                  <span className="text-[11px] font-semibold text-[#5B92D1] block mb-1">
+                <div className="p-5 rounded-2xl bg-[var(--farcon-navy-card)] border border-[var(--farcon-border-dark)]">
+                  <span className="text-[11px] font-semibold text-[var(--farcon-secondary)] block mb-1">
                     Recommended Horizon Runway
                   </span>
                   <span className="text-lg font-semibold font-mono text-white block mb-1">
@@ -516,8 +516,8 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                   </p>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-[#131F31] border border-slate-800">
-                  <span className="text-[11px] font-semibold text-[#7BA238] block mb-1">
+                <div className="p-5 rounded-2xl bg-[var(--farcon-navy-card)] border border-[var(--farcon-border-dark)]">
+                  <span className="text-[11px] font-semibold text-[var(--farcon-primary)] block mb-1">
                     Asset Allocation Philosophy
                   </span>
                   <p className="text-xs text-slate-300 leading-relaxed">
@@ -533,7 +533,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                 <ul className="space-y-2.5 text-xs text-slate-300">
                   {result.profile.keyCharacteristics.map((char, i) => (
                     <li key={i} className="flex items-start gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-[#7BA238] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-[var(--farcon-primary)] shrink-0 mt-0.5" />
                       <span className="leading-relaxed">{char}</span>
                     </li>
                   ))}
@@ -542,7 +542,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
             </div>
 
             {/* YOUR NEXT STEP (3 Explicit CTAs with Personalized Journey CTA) */}
-            <div className="pt-8 border-t border-slate-800 space-y-4">
+            <div className="pt-8 border-t border-[var(--farcon-border-dark)] space-y-4">
               <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-400 block">
                 YOUR NEXT STEP
               </span>
@@ -550,7 +550,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                 {/* Personalized Journey CTA */}
                 <button
                   onClick={() => navigate(personalizedCTA.route)}
-                  className="px-6 py-3.5 text-xs font-semibold text-[#0B131E] bg-[#7BA238] hover:bg-[#8EB942] rounded-md transition-colors shadow-xs inline-flex items-center gap-2"
+                  className="px-6 py-3.5 text-xs font-semibold text-[var(--farcon-navy)] bg-[var(--farcon-primary)] hover:bg-[var(--farcon-primary-light)] rounded-md transition-colors shadow-xs inline-flex items-center gap-2"
                 >
                   <span>{personalizedCTA.label}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -577,11 +577,11 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
 
           {/* Quick Consultation Request Form */}
           {!leadCaptured ? (
-            <div className="bg-white rounded-3xl border border-slate-200/90 shadow-lg p-8 sm:p-10">
-              <h3 className="text-lg font-semibold text-slate-900 mb-1">
+            <div className="bg-white rounded-2xl border border-[var(--farcon-border)]/90 shadow-lg p-8 sm:p-10">
+              <h3 className="text-lg font-semibold text-[var(--farcon-text)] mb-1">
                 Save Your Profile & Request a 15-Minute Strategy Call
               </h3>
-              <p className="text-xs text-slate-600 mb-6">
+              <p className="text-xs text-[var(--farcon-text-muted)] mb-6">
                 Receive an institutional review from Farcon Wealth with zero sales push.
               </p>
 
@@ -591,7 +591,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                   placeholder="Your Name"
                   value={leadName}
                   onChange={(e) => setLeadName(e.target.value)}
-                  className="px-4 py-2.5 text-xs rounded-md border border-slate-300 focus:border-slate-900 focus:outline-hidden"
+                  className="px-4 py-2.5 text-xs rounded-md border border-[var(--farcon-border)] focus:border-slate-900 focus:outline-hidden"
                   required
                 />
                 <input
@@ -599,13 +599,13 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                   placeholder="10-Digit Mobile"
                   value={leadPhone}
                   onChange={(e) => setLeadPhone(e.target.value)}
-                  className="px-4 py-2.5 text-xs rounded-md border border-slate-300 focus:border-slate-900 focus:outline-hidden"
+                  className="px-4 py-2.5 text-xs rounded-md border border-[var(--farcon-border)] focus:border-slate-900 focus:outline-hidden"
                   required
                 />
                 <button
                   type="submit"
                   disabled={savingLead}
-                  className="py-2.5 px-5 text-xs font-semibold text-white bg-[#0B131E] hover:bg-slate-800 rounded-md transition-colors disabled:opacity-50"
+                  className="py-2.5 px-5 text-xs font-semibold text-white bg-[var(--farcon-navy)] hover:bg-slate-800 rounded-md transition-colors disabled:opacity-50"
                 >
                   {savingLead ? 'Saving...' : 'Connect With Advisor'}
                 </button>
@@ -623,18 +623,18 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
           {/* TWO EXPLICITLY SEPARATED REGULATORY NOTICES */}
           <div className="space-y-3">
             {/* Box 1: AMFI Distributor Identity */}
-            <div className="p-4 bg-slate-100 rounded-2xl border border-slate-200 flex items-start gap-3 text-xs text-slate-700 leading-relaxed">
-              <ShieldCheck className="w-4 h-4 text-[#7BA238] mt-0.5 shrink-0" />
+            <div className="p-4 bg-[#EAF0F6] rounded-2xl border border-[var(--farcon-border)] flex items-start gap-3 text-xs text-[var(--farcon-text)] leading-relaxed">
+              <ShieldCheck className="w-4 h-4 text-[var(--farcon-primary)] mt-0.5 shrink-0" />
               <div>
                 <strong>{COMPLIANCE_REGISTRY.quiz.distributorSeparateDisclosure}</strong>
-                <span className="text-slate-600 block mt-0.5">
+                <span className="text-[var(--farcon-text-muted)] block mt-0.5">
                   Operating strictly under AMFI regulatory guidelines. Mutual Fund investments are subject to market risks; read all scheme related documents carefully.
                 </span>
               </div>
             </div>
 
             {/* Box 2: Educational Starting Point (Distinct & Separate) */}
-            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex items-start gap-3 text-xs text-slate-500 leading-relaxed">
+            <div className="p-4 bg-[var(--farcon-surface-soft)] rounded-2xl border border-[var(--farcon-border)] flex items-start gap-3 text-xs text-slate-500 leading-relaxed">
               <AlertCircle className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
               <div>
                 {COMPLIANCE_REGISTRY.quiz.disclaimer}

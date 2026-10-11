@@ -104,19 +104,19 @@ export const HomeView: React.FC<HomeViewProps> = ({
             {/* LEFT COLUMN: ~45% Editorial Authority */}
             <div className="lg:col-span-5 xl:col-span-5 space-y-6 sm:space-y-7">
               {/* Eyebrow: Clean unboxed typography */}
-              <div className="text-[11px] sm:text-xs font-mono font-medium uppercase tracking-[0.2em] text-[#7BA238]">
+              <div className="text-[11px] sm:text-xs font-mono font-medium uppercase tracking-[0.2em] text-[var(--farcon-primary)]">
                 GOAL-BASED WEALTH GUIDANCE
               </div>
 
               {/* Master Headline: Centralized type-hero token (Poppins 500, clamp 40px-84px) */}
-              <h1 className="type-hero text-slate-900">
+              <h1 className="type-hero text-[var(--farcon-text)]">
                 Investing,
                 <br />
                 without the noise.
               </h1>
 
               {/* Calm, concise supporting copy */}
-              <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-lg font-normal">
+              <p className="text-base sm:text-lg text-[var(--farcon-text-muted)] leading-relaxed max-w-lg font-normal">
                 Your goals are personal. Your investment journey should be too. Farcon helps you approach mutual fund investing with clarity, discipline and purpose.
               </p>
 
@@ -128,15 +128,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
                     else navigate('/goals');
                   }}
-                  className="px-6 sm:px-7 py-3.5 text-xs font-medium text-white bg-[#0B131E] hover:bg-[#1E293B] rounded-md transition-colors shadow-xs inline-flex items-center gap-2 group cursor-pointer active:scale-[0.98]"
+                  className="px-6 sm:px-7 py-3.5 text-xs font-medium text-white bg-[var(--farcon-navy)] hover:bg-[#1E293B] rounded-md transition-colors shadow-xs inline-flex items-center gap-2 group cursor-pointer active:scale-[0.98]"
                 >
                   <span>Start with a Goal</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#7BA238] transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[var(--farcon-primary)] transition-transform group-hover:translate-x-1" />
                 </button>
 
                 <button
                   onClick={() => onOpenConsultation('Hero Section Consultation')}
-                  className="px-6 py-3.5 text-xs font-medium text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 rounded-md transition-colors shadow-2xs cursor-pointer active:scale-[0.98]"
+                  className="px-6 py-3.5 text-xs font-medium text-[var(--farcon-text)] bg-white hover:bg-slate-50 border border-[var(--farcon-border)] rounded-md transition-colors shadow-2xs cursor-pointer active:scale-[0.98]"
                 >
                   Book a Free 15-Minute Call
                 </button>
@@ -144,11 +144,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
               {/* Clean Supporting Trust Line: Goal-based · Transparent · In your name */}
               <div className="pt-2 flex items-center gap-2.5 text-xs text-slate-500 font-medium">
-                <span className="text-slate-800 font-medium">Goal-based</span>
+                <span className="text-[var(--farcon-text)] font-medium">Goal-based</span>
                 <span aria-hidden="true" className="text-slate-300">·</span>
-                <span className="text-slate-800 font-medium">Transparent</span>
+                <span className="text-[var(--farcon-text)] font-medium">Transparent</span>
                 <span aria-hidden="true" className="text-slate-300">·</span>
-                <span className="text-slate-800 font-medium">In your name</span>
+                <span className="text-[var(--farcon-text)] font-medium">In your name</span>
               </div>
             </div>
 
@@ -166,25 +166,25 @@ export const HomeView: React.FC<HomeViewProps> = ({
       {/* =========================================================================
           SECTION 2 — INSTITUTIONAL TRUST STRIP (NO CARDS, HAIRLINE SEPARATORS)
           ========================================================================= */}
-      <section className="border-y border-slate-200/90 bg-[#F8FAFC] py-8 sm:py-10">
+      <section className="border-y border-[var(--farcon-border)]/90 bg-[var(--farcon-background)] py-8 sm:py-10">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           <Reveal>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
               <div className="pt-3 lg:pt-0 lg:pr-6 space-y-1">
-                <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[#7BA238] block">
+                <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[var(--farcon-primary)] block">
                   REGULATORY REGISTRATION
                 </span>
-                <span className="text-sm sm:text-base font-poppins font-medium text-slate-900 block">
+                <span className="text-sm sm:text-base font-poppins font-medium text-[var(--farcon-text)] block">
                   AMFI Registered Distributor
                 </span>
                 <span className="text-xs text-slate-500 font-mono block">ARN: 329006</span>
               </div>
 
               <div className="pt-3 lg:pt-0 lg:px-6 space-y-1">
-                <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[#5B92D1] block">
+                <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[var(--farcon-secondary)] block">
                   PLANNING FOCUS
                 </span>
-                <span className="text-sm sm:text-base font-poppins font-medium text-slate-900 block">
+                <span className="text-sm sm:text-base font-poppins font-medium text-[var(--farcon-text)] block">
                   Goal-Based Approach
                 </span>
                 <span className="text-xs text-slate-500 block">Life milestones guide fund selection</span>
@@ -194,7 +194,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-slate-500 block">
                   TRANSPARENCY
                 </span>
-                <span className="text-sm sm:text-base font-poppins font-medium text-slate-900 block">
+                <span className="text-sm sm:text-base font-poppins font-medium text-[var(--farcon-text)] block">
                   Transparent Process
                 </span>
                 <span className="text-xs text-slate-500 block">Zero hidden fees or exit surprises</span>
@@ -204,7 +204,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-slate-500 block">
                   SECURITY & TITLE
                 </span>
-                <span className="text-sm sm:text-base font-poppins font-medium text-slate-900 block">
+                <span className="text-sm sm:text-base font-poppins font-medium text-[var(--farcon-text)] block">
                   In Your Name
                 </span>
                 <span className="text-xs text-slate-500 block">Farcon does not hold investor funds</span>
@@ -221,21 +221,21 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           {/* Major Editorial Brand Statement (Visually Large, NOT in a card) */}
           <Reveal className="max-w-3xl mb-12 sm:mb-16">
-            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block mb-2">
+            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[var(--farcon-primary)] block mb-2">
               PURPOSE-DRIVEN WEALTH
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-[var(--farcon-text)] tracking-[-0.03em] leading-[1.12]">
               Your money has a purpose.
               <br />
               Your investment plan should too.
             </h2>
-            <p className="mt-3.5 text-base text-slate-600 leading-relaxed font-normal">
+            <p className="mt-3.5 text-base text-[var(--farcon-text-muted)] leading-relaxed font-normal">
               Investing without a milestone is merely reacting to daily headlines. We ground your capital around tangible destinations.
             </p>
           </Reveal>
 
           {/* Editorial Goal List (Hairline dividers, NO CARD BORDER, NO SHADOW) */}
-          <div className="border-t border-slate-200 divide-y divide-slate-200">
+          <div className="border-t border-[var(--farcon-border)] divide-y divide-slate-200">
             {FARCON_GOALS.map((goal, idx) => {
               const isHovered = hoveredGoalIndex === idx;
               return (
@@ -250,11 +250,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 >
                   {/* Left: Number + Goal Title */}
                   <div className="flex items-start sm:items-center gap-6 sm:gap-10 md:w-5/12">
-                    <span className="text-xl sm:text-2xl font-mono font-medium text-slate-400 group-hover:text-[#7BA238] transition-colors">
+                    <span className="text-xl sm:text-2xl font-mono font-medium text-slate-400 group-hover:text-[var(--farcon-primary)] transition-colors">
                       0{idx + 1}
                     </span>
                     <div>
-                      <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors tracking-tight">
+                      <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-[var(--farcon-text)] group-hover:text-[var(--farcon-primary)] transition-colors tracking-tight">
                         {goal.title}
                       </h3>
                       <span className="text-xs font-mono text-slate-400 block mt-1">
@@ -264,12 +264,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   </div>
 
                   {/* Center: Curated Description */}
-                  <div className="md:w-5/12 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  <div className="md:w-5/12 text-xs sm:text-sm text-[var(--farcon-text-muted)] leading-relaxed">
                     <p>{goal.description}</p>
                   </div>
 
                   {/* Right: Subdued Arrow Affordance */}
-                  <div className="md:w-2/12 flex items-center md:justify-end gap-2 text-xs font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors">
+                  <div className="md:w-2/12 flex items-center md:justify-end gap-2 text-xs font-medium text-[var(--farcon-text)] group-hover:text-[var(--farcon-primary)] transition-colors">
                     <span className="hidden sm:inline">Explore Journey</span>
                     <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
                   </div>
@@ -283,22 +283,22 @@ export const HomeView: React.FC<HomeViewProps> = ({
       {/* =========================================================================
           SECTION 4 — HOW FARCON WORKS (VERTICAL EDITORIAL TIMELINE, NO BOXES)
           ========================================================================= */}
-      <section className="bg-[#FAF9F5] py-20 sm:py-28 border-y border-slate-200/90">
+      <section className="bg-[var(--farcon-surface-soft)] py-20 sm:py-28 border-y border-[var(--farcon-border)]/90">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           <Reveal className="max-w-2xl mb-16 sm:mb-20">
-            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block mb-2">
+            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[var(--farcon-primary)] block mb-2">
               DISCIPLINED PROCESS
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-[var(--farcon-text)] tracking-[-0.03em] leading-[1.12]">
               How Farcon Works
             </h2>
-            <p className="mt-3.5 text-base text-slate-600 leading-relaxed">
+            <p className="mt-3.5 text-base text-[var(--farcon-text-muted)] leading-relaxed">
               A clear, repeatable three-step advisory discipline to replace speculative confusion with quiet compounding.
             </p>
           </Reveal>
 
           {/* Vertical Editorial Timeline (No rounded boxes around steps) */}
-          <div className="relative pl-8 sm:pl-16 border-l-2 border-slate-200 space-y-16 sm:space-y-24">
+          <div className="relative pl-8 sm:pl-16 border-l-2 border-[var(--farcon-border)] space-y-16 sm:space-y-24">
             {/* Step 01 */}
             <Reveal delayMs={0}>
               <div className="relative group">
@@ -306,15 +306,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-baseline">
                   <div className="lg:col-span-4">
-                    <span className="text-4xl sm:text-5xl lg:text-6xl font-mono font-medium text-slate-300 block mb-2 group-hover:text-[#5B92D1] transition-colors">
+                    <span className="text-4xl sm:text-5xl lg:text-6xl font-mono font-medium text-slate-300 block mb-2 group-hover:text-[var(--farcon-secondary)] transition-colors">
                       01
                     </span>
-                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-slate-900 tracking-tight">
+                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-[var(--farcon-text)] tracking-tight">
                       Understand your goals
                     </h3>
                   </div>
                   <div className="lg:col-span-8 space-y-2.5">
-                    <p className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
+                    <p className="text-base sm:text-lg text-[var(--farcon-text)] leading-relaxed font-normal">
                       Before recommending any mutual fund scheme or asset category, we quantify your target milestones, time horizons, cash flow surplus, and psychological comfort with market drawdowns.
                     </p>
                     <span className="text-xs font-mono text-slate-500 block">
@@ -332,15 +332,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-baseline">
                   <div className="lg:col-span-4">
-                    <span className="text-4xl sm:text-5xl lg:text-6xl font-mono font-medium text-slate-300 block mb-2 group-hover:text-[#7BA238] transition-colors">
+                    <span className="text-4xl sm:text-5xl lg:text-6xl font-mono font-medium text-slate-300 block mb-2 group-hover:text-[var(--farcon-primary)] transition-colors">
                       02
                     </span>
-                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-slate-900 tracking-tight">
+                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-[var(--farcon-text)] tracking-tight">
                       Build a clear plan
                     </h3>
                   </div>
                   <div className="lg:col-span-8 space-y-2.5">
-                    <p className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
+                    <p className="text-base sm:text-lg text-[var(--farcon-text)] leading-relaxed font-normal">
                       We design an asset allocation blueprint across suitable mutual fund categories and activate automated SIP mandates routed directly in your own name through official channels.
                     </p>
                     <span className="text-xs font-mono text-slate-500 block">
@@ -358,15 +358,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-baseline">
                   <div className="lg:col-span-4">
-                    <span className="text-4xl sm:text-5xl lg:text-6xl font-mono font-medium text-slate-300 block mb-2 group-hover:text-slate-900 transition-colors">
+                    <span className="text-4xl sm:text-5xl lg:text-6xl font-mono font-medium text-slate-300 block mb-2 group-hover:text-[var(--farcon-text)] transition-colors">
                       03
                     </span>
-                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-slate-900 tracking-tight">
+                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-[var(--farcon-text)] tracking-tight">
                       Review and stay on track
                     </h3>
                   </div>
                   <div className="lg:col-span-8 space-y-2.5">
-                    <p className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
+                    <p className="text-base sm:text-lg text-[var(--farcon-text)] leading-relaxed font-normal">
                       We review your portfolio trajectory periodically, rebalancing asset allocations calmly so you remain focused on your destination without succumbing to daily market noise.
                     </p>
                     <span className="text-xs font-mono text-slate-500 block">
@@ -388,20 +388,20 @@ export const HomeView: React.FC<HomeViewProps> = ({
           {/* Header */}
           <Reveal className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6">
             <div>
-              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block mb-2">
+              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[var(--farcon-primary)] block mb-2">
                 PUBLISHED SERVICES
               </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-[var(--farcon-text)] tracking-[-0.03em] leading-[1.12]">
                 Our Core Services
               </h2>
-              <p className="mt-3 text-base text-slate-600 max-w-xl">
+              <p className="mt-3 text-base text-[var(--farcon-text-muted)] max-w-xl">
                 Ground-level mutual fund distributor services executed with institutional clarity and transparency.
               </p>
             </div>
 
             <button
               onClick={() => navigate('/services')}
-              className="text-xs font-medium text-slate-900 hover:text-[#7BA238] inline-flex items-center gap-2 self-start md:self-end group cursor-pointer"
+              className="text-xs font-medium text-[var(--farcon-text)] hover:text-[var(--farcon-primary)] inline-flex items-center gap-2 self-start md:self-end group cursor-pointer"
             >
               <span>View All 6 Services</span>
               <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
@@ -409,7 +409,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </Reveal>
 
           {/* Horizontal Editorial Rows */}
-          <div className="border-t border-slate-200 divide-y divide-slate-200">
+          <div className="border-t border-[var(--farcon-border)] divide-y divide-slate-200">
             {FARCON_SERVICES.slice(0, 6).map((service, idx) => {
               const isHovered = hoveredServiceIndex === idx;
               return (
@@ -423,11 +423,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   }`}
                 >
                   <div className="flex items-start sm:items-center gap-6 md:w-5/12">
-                    <span className="text-lg sm:text-xl font-mono font-medium text-slate-400 group-hover:text-[#7BA238] transition-colors">
+                    <span className="text-lg sm:text-xl font-mono font-medium text-slate-400 group-hover:text-[var(--farcon-primary)] transition-colors">
                       0{idx + 1}
                     </span>
                     <div>
-                      <h3 className="text-lg sm:text-xl font-poppins font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors">
+                      <h3 className="text-lg sm:text-xl font-poppins font-medium text-[var(--farcon-text)] group-hover:text-[var(--farcon-primary)] transition-colors">
                         {service.title}
                       </h3>
                       <span className="text-xs text-slate-500 block mt-0.5">
@@ -436,11 +436,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     </div>
                   </div>
 
-                  <div className="md:w-5/12 text-xs text-slate-600 leading-relaxed">
+                  <div className="md:w-5/12 text-xs text-[var(--farcon-text-muted)] leading-relaxed">
                     <p className="line-clamp-2">{service.summary}</p>
                   </div>
 
-                  <div className="md:w-2/12 flex items-center md:justify-end gap-2 text-xs font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors">
+                  <div className="md:w-2/12 flex items-center md:justify-end gap-2 text-xs font-medium text-[var(--farcon-text)] group-hover:text-[var(--farcon-primary)] transition-colors">
                     <span className="hidden sm:inline">Details</span>
                     <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                   </div>
@@ -454,11 +454,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
       {/* =========================================================================
           SECTION 6 — FINANCIAL STUDIO (ONE COMPACT WORKSPACE, NO 4 CARDS)
           ========================================================================= */}
-      <section className="bg-[#0B131E] text-white py-20 sm:py-28 border-y border-slate-800">
+      <section className="bg-[var(--farcon-navy)] text-white py-20 sm:py-28 border-y border-[var(--farcon-border-dark)]">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           {/* Header */}
           <Reveal className="max-w-2xl mb-12 sm:mb-16">
-            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block mb-2">
+            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[var(--farcon-primary)] block mb-2">
               FINANCIAL STUDIO
             </span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-white tracking-[-0.03em] leading-[1.12]">
@@ -484,12 +484,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   onClick={() => setStudioTab(tab.id as any)}
                   className={`w-full text-left p-4 sm:p-4.5 rounded-xl transition-colors cursor-pointer border ${
                     studioTab === tab.id
-                      ? 'bg-[#131F31] border-slate-700 ring-1 ring-[#7BA238]/30'
-                      : 'border-slate-800/80 hover:bg-[#131F31]/50 text-slate-400 hover:text-white'
+                      ? 'bg-[var(--farcon-navy-card)] border-slate-700 ring-1 ring-[#7BA238]/30'
+                      : 'border-[var(--farcon-border-dark)]/80 hover:bg-[var(--farcon-navy-card)]/50 text-slate-400 hover:text-white'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-mono font-medium text-[#7BA238]">{tab.num}</span>
+                    <span className="text-xs font-mono font-medium text-[var(--farcon-primary)]">{tab.num}</span>
                     <span className="text-[10px] font-mono text-slate-400 uppercase">Deterministic</span>
                   </div>
                   <h3 className="text-base font-poppins font-medium text-white mb-0.5">
@@ -503,7 +503,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </div>
 
             {/* Right Column: Single Active Workspace */}
-            <div className="lg:col-span-8 bg-[#131F31] p-6 sm:p-9 rounded-2xl border border-slate-800 space-y-7">
+            <div className="lg:col-span-8 bg-[var(--farcon-navy-card)] p-6 sm:p-9 rounded-2xl border border-[var(--farcon-border-dark)] space-y-7">
               {/* Sliders Area */}
               <div className="space-y-6">
                 {/* Input 1: Amount */}
@@ -538,7 +538,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <div className="space-y-2">
                     <div className="flex justify-between items-center text-xs">
                       <label className="text-slate-300 font-medium">Illustrative Annual Return</label>
-                      <span className="text-base font-mono font-medium text-[#7BA238]">
+                      <span className="text-base font-mono font-medium text-[var(--farcon-primary)]">
                         {studioRate}% p.a.
                       </span>
                     </div>
@@ -574,7 +574,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               </div>
 
               {/* Minimal SVG Growth Curve */}
-              <div className="h-16 w-full bg-[#0B131E] rounded-xl p-2.5 border border-slate-800">
+              <div className="h-16 w-full bg-[var(--farcon-navy)] rounded-xl p-2.5 border border-[var(--farcon-border-dark)]">
                 <svg viewBox="0 0 400 50" fill="none" className="w-full h-full">
                   <path
                     d="M 10 44 C 120 42, 240 30, 390 8"
@@ -598,12 +598,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
               </div>
 
               {/* Large Numbers Typography */}
-              <div className="pt-4 border-t border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div className="pt-4 border-t border-[var(--farcon-border-dark)] grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div>
                   <span className="text-xs font-mono text-slate-400 block mb-1">
                     {activeStudioResult.headlineLabel}
                   </span>
-                  <div className="text-3xl sm:text-4xl font-poppins font-medium text-[#7BA238] tracking-tight">
+                  <div className="text-3xl sm:text-4xl font-poppins font-medium text-[var(--farcon-primary)] tracking-tight">
                     <AnimatedNumber value={activeStudioResult.headlineValue} />
                   </div>
                 </div>
@@ -621,14 +621,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <span className="text-xs font-mono text-slate-400 block mb-1">
                     {activeStudioResult.gainLabel}
                   </span>
-                  <div className="text-xl sm:text-2xl font-poppins font-medium text-[#5B92D1]">
+                  <div className="text-xl sm:text-2xl font-poppins font-medium text-[var(--farcon-secondary)]">
                     {activeStudioResult.isRate ? `${activeStudioResult.gainValue}%` : `+${formatINR(activeStudioResult.gainValue, { compact: true })}`}
                   </div>
                 </div>
               </div>
 
               {/* Calculation Assumptions Drawer */}
-              <div className="pt-2 border-t border-slate-800">
+              <div className="pt-2 border-t border-[var(--farcon-border-dark)]">
                 <button
                   onClick={() => setShowStudioAssumptions(!showStudioAssumptions)}
                   className="w-full flex items-center justify-between text-xs font-mono text-slate-400 hover:text-white transition-colors cursor-pointer py-1.5"
@@ -638,7 +638,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </button>
 
                 {showStudioAssumptions && (
-                  <div className="mt-3 p-4 bg-[#0B131E] rounded-xl border border-slate-800 space-y-2 text-xs font-mono text-slate-400">
+                  <div className="mt-3 p-4 bg-[var(--farcon-navy)] rounded-xl border border-[var(--farcon-border-dark)] space-y-2 text-xs font-mono text-slate-400">
                     <div className="flex justify-between">
                       <span>Compounding Frequency:</span>
                       <span className="text-white">Monthly</span>
@@ -651,7 +651,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       <span>Inflation Assumption:</span>
                       <span className="text-white">6.0% p.a. (where applicable)</span>
                     </div>
-                    <p className="pt-2 text-[11px] text-slate-400 leading-relaxed border-t border-slate-800/80">
+                    <p className="pt-2 text-[11px] text-slate-400 leading-relaxed border-t border-[var(--farcon-border-dark)]/80">
                       Illustrative calculation only. Actual investment outcomes may differ across market cycles and scheme categories.
                     </p>
                   </div>
@@ -662,7 +662,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <div className="flex flex-wrap items-center gap-4 pt-1">
                 <button
                   onClick={() => onOpenConsultation(`${studioTab.toUpperCase()} Planning Discussion`)}
-                  className="px-6 py-3 text-xs font-medium text-[#0B131E] bg-[#7BA238] hover:bg-[#8EB942] rounded-md transition-colors inline-flex items-center gap-2 cursor-pointer shadow-xs active:scale-[0.98]"
+                  className="px-6 py-3 text-xs font-medium text-[var(--farcon-navy)] bg-[var(--farcon-primary)] hover:bg-[var(--farcon-primary-light)] rounded-md transition-colors inline-flex items-center gap-2 cursor-pointer shadow-xs active:scale-[0.98]"
                 >
                   <span>Structure This Plan With Farcon</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -684,16 +684,16 @@ export const HomeView: React.FC<HomeViewProps> = ({
           ========================================================================= */}
       <section className="relative">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="border border-slate-200 rounded-2xl p-8 sm:p-12 lg:p-14 bg-[#FAF9F5] grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          <div className="border border-[var(--farcon-border)] rounded-2xl p-8 sm:p-12 lg:p-14 bg-[var(--farcon-surface-soft)] grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {/* Left: Editorial Proposition */}
             <div className="lg:col-span-7 space-y-6">
-              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block">
+              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[var(--farcon-primary)] block">
                 DIAGNOSTIC ASSESSMENT
               </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-[var(--farcon-text)] tracking-[-0.03em] leading-[1.12]">
                 Know where you stand before deciding where to invest.
               </h2>
-              <p className="text-base text-slate-600 leading-relaxed max-w-xl">
+              <p className="text-base text-[var(--farcon-text-muted)] leading-relaxed max-w-xl">
                 The Investor Fit assessment evaluates your personal risk comfort, time horizon, and behavioral reaction to market dips—grounding your plan in emotional suitability before any scheme is discussed.
               </p>
 
@@ -702,7 +702,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-3">
                   5 Diagnostic Dimensions
                 </span>
-                <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs font-medium text-slate-700">
+                <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs font-medium text-[var(--farcon-text)]">
                   <span>01. Experience</span>
                   <span aria-hidden="true" className="text-slate-300">·</span>
                   <span>02. Time Horizon</span>
@@ -719,14 +719,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 <button
                   onClick={() => navigate('/investor-quiz')}
-                  className="px-7 py-3.5 text-xs font-medium text-white bg-[#0B131E] hover:bg-[#1E293B] rounded-md transition-colors inline-flex items-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
+                  className="px-7 py-3.5 text-xs font-medium text-white bg-[var(--farcon-navy)] hover:bg-[#1E293B] rounded-md transition-colors inline-flex items-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
                 >
                   <span>Take the Investor Fit</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#7BA238]" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[var(--farcon-primary)]" />
                 </button>
                 <button
                   onClick={() => navigate('/investor-quiz')}
-                  className="px-4 py-3.5 text-xs font-medium text-slate-700 hover:text-slate-950 transition-colors cursor-pointer"
+                  className="px-4 py-3.5 text-xs font-medium text-[var(--farcon-text)] hover:text-slate-950 transition-colors cursor-pointer"
                 >
                   See how it works
                 </button>
@@ -734,24 +734,24 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </div>
 
             {/* Right: Question 01 / 08 Interactive Sample */}
-            <div className="lg:col-span-5 bg-white p-6 sm:p-7 rounded-xl border border-slate-200 space-y-4">
+            <div className="lg:col-span-5 farcon-card p-6 sm:p-7 space-y-4">
               <div className="flex items-center justify-between text-xs font-mono pb-2.5 border-b border-slate-100 text-slate-500">
-                <span className="text-[#7BA238] font-medium">01 / 08</span>
+                <span className="text-[var(--farcon-primary)] font-medium">01 / 08</span>
                 <span>Experience Dimension</span>
               </div>
-              <h3 className="text-base sm:text-lg font-poppins font-medium text-slate-900 leading-snug">
+              <h3 className="text-base sm:text-lg font-poppins font-medium text-[var(--farcon-text)] leading-snug">
                 How would you describe your familiarity with equity mutual funds?
               </h3>
               <div className="space-y-2 text-xs">
-                <div className="p-3 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 font-normal flex items-center justify-between">
+                <div className="p-3 rounded-lg border border-[var(--farcon-border)] bg-slate-50 text-[var(--farcon-text)] font-normal flex items-center justify-between">
                   <span>A. First-time investor exploring options</span>
                   <div className="w-2 h-2 rounded-full bg-slate-300" />
                 </div>
-                <div className="p-3 rounded-lg border border-slate-900 bg-slate-50 text-slate-900 font-medium flex items-center justify-between">
+                <div className="p-3 rounded-lg border border-slate-900 bg-slate-50 text-[var(--farcon-text)] font-medium flex items-center justify-between">
                   <span>B. Running 1–3 SIPs currently</span>
-                  <div className="w-2 h-2 rounded-full bg-[#7BA238]" />
+                  <div className="w-2 h-2 rounded-full bg-[var(--farcon-primary)]" />
                 </div>
-                <div className="p-3 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 font-normal flex items-center justify-between">
+                <div className="p-3 rounded-lg border border-[var(--farcon-border)] bg-slate-50 text-[var(--farcon-text)] font-normal flex items-center justify-between">
                   <span>C. Experienced across market cycles</span>
                   <div className="w-2 h-2 rounded-full bg-slate-300" />
                 </div>
@@ -772,36 +772,36 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {/* Left: Atmospheric Architectural Quote */}
-            <div className="lg:col-span-5 bg-[#0B131E] text-white p-8 sm:p-12 rounded-2xl border border-slate-800 space-y-6">
-              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block">
+            <div className="lg:col-span-5 bg-[var(--farcon-navy)] text-white p-8 sm:p-12 rounded-2xl border border-[var(--farcon-border-dark)] space-y-6">
+              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[var(--farcon-primary)] block">
                 PORTFOLIO CONSOLIDATION
               </span>
               <blockquote className="text-xl sm:text-2xl font-poppins font-medium text-slate-200 leading-relaxed italic">
                 “True portfolio resilience comes not from collecting twenty different funds, but from eliminating redundancy, expense drag, and emotional churn.”
               </blockquote>
-              <div className="pt-4 border-t border-slate-800 text-xs font-mono text-slate-400">
+              <div className="pt-4 border-t border-[var(--farcon-border-dark)] text-xs font-mono text-slate-400">
                 Farcon Wealth Portfolio Governance Principle
               </div>
             </div>
 
             {/* Right: Concrete Proposition */}
             <div className="lg:col-span-7 space-y-6">
-              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#5B92D1] block">
+              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[var(--farcon-secondary)] block">
                 ALREADY INVESTING?
               </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-[var(--farcon-text)] tracking-[-0.03em] leading-[1.12]">
                 Make sure your portfolio still fits your goals.
               </h2>
-              <p className="text-base text-slate-600 leading-relaxed font-normal">
+              <p className="text-base text-[var(--farcon-text-muted)] leading-relaxed font-normal">
                 If you have accumulated mutual funds across multiple apps over the years, we perform a confidential overlap review to identify duplicate stock holdings, category imbalances, and expense drag.
               </p>
               <div className="pt-2">
                 <button
                   onClick={() => navigate('/portfolio-review')}
-                  className="px-7 py-3.5 text-xs font-medium text-white bg-[#0B131E] hover:bg-[#1E293B] rounded-md transition-colors inline-flex items-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
+                  className="px-7 py-3.5 text-xs font-medium text-white bg-[var(--farcon-navy)] hover:bg-[#1E293B] rounded-md transition-colors inline-flex items-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
                 >
                   <span>Request a Portfolio Review</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#7BA238]" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[var(--farcon-primary)]" />
                 </button>
               </div>
             </div>
@@ -813,25 +813,25 @@ export const HomeView: React.FC<HomeViewProps> = ({
           SECTION 9 — FARCON AI ASSISTANT (QUIET, UNOBTRUSIVE)
           ========================================================================= */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="bg-[#FAF9F5] rounded-2xl border border-slate-200 p-8 sm:p-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
+        <div className="bg-[var(--farcon-surface-soft)] rounded-2xl border border-[var(--farcon-border)] p-8 sm:p-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div className="max-w-xl space-y-2.5">
             <div className="flex items-center gap-2">
-              <Bot className="w-4 h-4 text-[#7BA238]" />
+              <Bot className="w-4 h-4 text-[var(--farcon-primary)]" />
               <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-slate-500">
                 FARCON AI GUIDANCE
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-poppins font-medium text-slate-900 leading-snug">
+            <h2 className="text-2xl sm:text-3xl font-poppins font-medium text-[var(--farcon-text)] leading-snug">
               Ask. Understand. Plan.
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+            <p className="text-xs sm:text-sm text-[var(--farcon-text-muted)] leading-relaxed font-normal">
               Have questions about SIP rupee-cost averaging, ELSS tax savings, or SWP monthly cash flows? Our knowledge assistant explains financial concepts without sales pressure.
             </p>
           </div>
 
           <button
             onClick={onOpenAI}
-            className="px-6 py-3.5 text-xs font-medium text-white bg-[#0B131E] hover:bg-slate-800 rounded-md transition-colors shrink-0 flex items-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
+            className="px-6 py-3.5 text-xs font-medium text-white bg-[var(--farcon-navy)] hover:bg-slate-800 rounded-md transition-colors shrink-0 flex items-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
           >
             <span>✦ Ask Farcon AI</span>
           </button>
@@ -846,20 +846,20 @@ export const HomeView: React.FC<HomeViewProps> = ({
           {/* Header */}
           <Reveal className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6">
             <div>
-              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block mb-2">
+              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[var(--farcon-primary)] block mb-2">
                 EDITORIAL ESSAYS
               </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-[var(--farcon-text)] tracking-[-0.03em] leading-[1.12]">
                 Investor Education
               </h2>
-              <p className="mt-3 text-base text-slate-600 max-w-xl">
+              <p className="mt-3 text-base text-[var(--farcon-text-muted)] max-w-xl">
                 First-principles thinking on market cycles, compounding, and behavioral sanity.
               </p>
             </div>
 
             <button
               onClick={() => navigate('/education')}
-              className="text-xs font-medium text-slate-900 hover:text-[#7BA238] inline-flex items-center gap-2 self-start md:self-end group cursor-pointer"
+              className="text-xs font-medium text-[var(--farcon-text)] hover:text-[var(--farcon-primary)] inline-flex items-center gap-2 self-start md:self-end group cursor-pointer"
             >
               <span>View All Essays</span>
               <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
@@ -872,29 +872,29 @@ export const HomeView: React.FC<HomeViewProps> = ({
             {BLOG_POSTS[0] && (
               <article
                 onClick={() => navigate('/education')}
-                className="lg:col-span-7 bg-[#FAF9F5] p-8 sm:p-11 rounded-2xl border border-slate-200 flex flex-col justify-between cursor-pointer group hover:border-slate-300 transition-colors"
+                className="lg:col-span-7 bg-[var(--farcon-surface-soft)] p-8 sm:p-11 rounded-2xl border border-[var(--farcon-border)] flex flex-col justify-between cursor-pointer group hover:border-[var(--farcon-border)] transition-colors"
               >
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
-                    <span className="text-[#7BA238] font-medium uppercase">{BLOG_POSTS[0].category}</span>
+                    <span className="text-[var(--farcon-primary)] font-medium uppercase">{BLOG_POSTS[0].category}</span>
                     <span>·</span>
                     <span>{BLOG_POSTS[0].readTime}</span>
                     <span>·</span>
                     <span>{BLOG_POSTS[0].publishedDate}</span>
                   </div>
 
-                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-poppins font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors leading-[1.15]">
+                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-poppins font-medium text-[var(--farcon-text)] group-hover:text-[var(--farcon-primary)] transition-colors leading-[1.15]">
                     {BLOG_POSTS[0].title}
                   </h3>
 
-                  <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
+                  <p className="text-sm sm:text-base text-[var(--farcon-text-muted)] leading-relaxed font-normal">
                     {BLOG_POSTS[0].excerpt}
                   </p>
                 </div>
 
-                <div className="pt-8 mt-8 border-t border-slate-200 flex items-center justify-between text-xs">
+                <div className="pt-8 mt-8 border-t border-[var(--farcon-border)] flex items-center justify-between text-xs">
                   <span className="text-slate-500 font-mono">By {BLOG_POSTS[0].author}</span>
-                  <span className="font-medium text-slate-900 group-hover:text-[#7BA238] inline-flex items-center gap-1.5">
+                  <span className="font-medium text-[var(--farcon-text)] group-hover:text-[var(--farcon-primary)] inline-flex items-center gap-1.5">
                     Read Complete Essay <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
@@ -907,27 +907,27 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <article
                   key={post.id}
                   onClick={() => navigate('/education')}
-                  className="bg-white p-6 sm:p-7 rounded-xl border border-slate-200 flex flex-col justify-between cursor-pointer group hover:border-slate-300 transition-colors"
+                  className="bg-white p-6 sm:p-7 rounded-xl border border-[var(--farcon-border)] flex flex-col justify-between cursor-pointer group hover:border-[var(--farcon-border)] transition-colors"
                 >
                   <div className="space-y-2.5">
                     <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
-                      <span className="text-[#5B92D1] font-medium">{post.category}</span>
+                      <span className="text-[var(--farcon-secondary)] font-medium">{post.category}</span>
                       <span>·</span>
                       <span>{post.readTime}</span>
                     </div>
 
-                    <h3 className="text-lg sm:text-xl font-poppins font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors leading-snug">
+                    <h3 className="text-lg sm:text-xl font-poppins font-medium text-[var(--farcon-text)] group-hover:text-[var(--farcon-primary)] transition-colors leading-snug">
                       {post.title}
                     </h3>
 
-                    <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
+                    <p className="text-xs text-[var(--farcon-text-muted)] leading-relaxed line-clamp-2">
                       {post.excerpt}
                     </p>
                   </div>
 
                   <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs">
                     <span className="text-slate-400 font-mono text-[11px]">{post.publishedDate}</span>
-                    <span className="font-medium text-slate-900 group-hover:text-[#7BA238] inline-flex items-center gap-1">
+                    <span className="font-medium text-[var(--farcon-text)] group-hover:text-[var(--farcon-primary)] inline-flex items-center gap-1">
                       Read <ArrowRight className="w-3 h-3" />
                     </span>
                   </div>
@@ -943,8 +943,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
           ========================================================================= */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
         <Reveal>
-          <div className="bg-[#0B131E] text-white rounded-2xl p-10 sm:p-16 lg:p-20 border border-slate-800 text-center space-y-7">
-            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block">
+          <div className="bg-[var(--farcon-navy)] text-white rounded-2xl p-10 sm:p-16 lg:p-20 border border-[var(--farcon-border-dark)] text-center space-y-7">
+            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[var(--farcon-primary)] block">
               BEGIN YOUR QUIET COMPOUNDING JOURNEY
             </span>
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-poppins font-medium max-w-3xl mx-auto tracking-[-0.03em] leading-[1.08]">
@@ -956,7 +956,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
               <button
                 onClick={() => onOpenConsultation('Homepage Final CTA')}
-                className="px-7 py-3.5 text-xs font-medium text-[#0B131E] bg-[#7BA238] hover:bg-[#8EB942] rounded-md transition-colors shadow-xs cursor-pointer active:scale-[0.98]"
+                className="px-7 py-3.5 text-xs font-medium text-[var(--farcon-navy)] bg-[var(--farcon-primary)] hover:bg-[var(--farcon-primary-light)] rounded-md transition-colors shadow-xs cursor-pointer active:scale-[0.98]"
               >
                 Book a Free 15-Minute Call
               </button>

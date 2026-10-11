@@ -40,13 +40,13 @@ export const MutualFundExplorerView: React.FC<MutualFundExplorerViewProps> = ({
     <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-16">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-12">
-        <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+        <span className="text-xs font-semibold tracking-wider uppercase text-[var(--farcon-primary)]">
           Discovery & Suitability Exploration
         </span>
-        <h1 className="mt-2.5 text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
+        <h1 className="mt-2.5 text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-[var(--farcon-text)] tracking-tight">
           Mutual Fund Category Explorer
         </h1>
-        <p className="mt-3.5 text-sm sm:text-base text-slate-600 leading-relaxed">
+        <p className="mt-3.5 text-sm sm:text-base text-[var(--farcon-text-muted)] leading-relaxed">
           Understand before you invest. Explore indicative fund categories, riskometer grades, benchmark indices, and suitability horizons.
         </p>
 
@@ -65,7 +65,7 @@ export const MutualFundExplorerView: React.FC<MutualFundExplorerViewProps> = ({
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs mb-10 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="bg-white p-5 rounded-2xl border border-[var(--farcon-border)]/90 shadow-xs mb-10 flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Search Input */}
         <div className="relative flex-1 w-full max-w-md">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -74,7 +74,7 @@ export const MutualFundExplorerView: React.FC<MutualFundExplorerViewProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by category or scheme type..."
-            className="w-full pl-10 pr-4 py-2.5 text-xs border border-slate-200 rounded-lg focus:border-slate-900 focus:outline-hidden"
+            className="w-full pl-10 pr-4 py-2.5 text-xs border border-[var(--farcon-border)] rounded-lg focus:border-slate-900 focus:outline-hidden"
           />
         </div>
 
@@ -86,8 +86,8 @@ export const MutualFundExplorerView: React.FC<MutualFundExplorerViewProps> = ({
               onClick={() => setAssetClassFilter(ac)}
               className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all ${
                 assetClassFilter === ac
-                  ? 'bg-[#0B131E] text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-[var(--farcon-navy)] text-white shadow-xs'
+                  : 'bg-[#EAF0F6] text-[var(--farcon-text-muted)] hover:bg-slate-200'
               }`}
             >
               {ac}
@@ -101,56 +101,56 @@ export const MutualFundExplorerView: React.FC<MutualFundExplorerViewProps> = ({
         {filteredFunds.map((fund) => (
           <div
             key={fund.id}
-            className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-7 sm:p-8 flex flex-col justify-between hover:border-slate-300 hover:shadow-lg transition-all duration-300 group"
+            className="bg-white rounded-2xl border border-[var(--farcon-border)]/90 shadow-xs p-7 sm:p-8 flex flex-col justify-between hover:border-[var(--farcon-border)] hover:shadow-lg transition-all duration-300 group"
           >
             <div>
               {/* Category & Riskometer Unboxed Metadata */}
               <div className="flex items-center justify-between text-xs text-slate-500 mb-3">
-                <span className="font-semibold text-[#5B92D1] font-mono">{fund.category}</span>
+                <span className="font-semibold text-[var(--farcon-secondary)] font-mono">{fund.category}</span>
                 <span className="text-slate-500 text-[11px] font-mono">SEBI Riskometer: {fund.riskometer}</span>
               </div>
 
-              <h3 className="text-lg font-semibold text-slate-900 mb-2 leading-snug group-hover:text-[#7BA238] transition-colors">
+              <h3 className="text-lg font-semibold text-[var(--farcon-text)] mb-2 leading-snug group-hover:text-[var(--farcon-primary)] transition-colors">
                 {fund.name}
               </h3>
 
-              <p className="text-xs text-slate-600 leading-relaxed mb-6">
+              <p className="text-xs text-[var(--farcon-text-muted)] leading-relaxed mb-6">
                 {fund.description}
               </p>
 
               {/* Data Table */}
-              <div className="grid grid-cols-2 gap-y-3 gap-x-4 py-4 border-y border-slate-100 text-xs">
+              <div className="grid grid-cols-2 gap-y-3 gap-x-4 py-4 border-y border-[var(--farcon-border)]/70 text-xs">
                 <div>
                   <span className="text-[11px] text-slate-400 block mb-0.5">Indicative NAV</span>
-                  <span className="font-mono font-semibold text-slate-900">₹{fund.nav.toFixed(2)}</span>
+                  <span className="font-mono font-semibold text-[var(--farcon-text)]">₹{fund.nav.toFixed(2)}</span>
                 </div>
                 <div>
                   <span className="text-[11px] text-slate-400 block mb-0.5">3Y CAGR (Demo)</span>
-                  <span className="font-mono font-semibold text-[#7BA238]">+{fund.cagr3Y}%</span>
+                  <span className="font-mono font-semibold text-[var(--farcon-primary)]">+{fund.cagr3Y}%</span>
                 </div>
                 <div>
                   <span className="text-[11px] text-slate-400 block mb-0.5">Expense Ratio</span>
-                  <span className="font-mono text-slate-700">{fund.expenseRatio}%</span>
+                  <span className="font-mono text-[var(--farcon-text)]">{fund.expenseRatio}%</span>
                 </div>
                 <div>
                   <span className="text-[11px] text-slate-400 block mb-0.5">Min. Monthly SIP</span>
-                  <span className="font-mono text-slate-700">{formatINR(fund.minSIP)}/mo</span>
+                  <span className="font-mono text-[var(--farcon-text)]">{formatINR(fund.minSIP)}/mo</span>
                 </div>
               </div>
 
               <div className="mt-3.5 text-[11px] text-slate-500 flex items-center justify-between">
-                <span>Benchmark: <strong className="text-slate-700">{fund.benchmark}</strong></span>
+                <span>Benchmark: <strong className="text-[var(--farcon-text)]">{fund.benchmark}</strong></span>
               </div>
             </div>
 
             {/* Card Action */}
-            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+            <div className="mt-6 pt-4 border-t border-[var(--farcon-border)]/70 flex items-center justify-between">
               <span className="text-[11px] text-slate-400">
-                Horizon: <strong className="text-slate-800">{fund.suitableHorizon}</strong>
+                Horizon: <strong className="text-[var(--farcon-text)]">{fund.suitableHorizon}</strong>
               </span>
               <button
                 onClick={() => onOpenConsultation(`Discuss suitability for ${fund.name}`)}
-                className="text-xs font-semibold text-[#0B131E] group-hover:text-[#7BA238] inline-flex items-center gap-1.5 transition-colors"
+                className="text-xs font-semibold text-[var(--farcon-navy)] group-hover:text-[var(--farcon-primary)] inline-flex items-center gap-1.5 transition-colors"
               >
                 <span>Check Suitability</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -161,15 +161,15 @@ export const MutualFundExplorerView: React.FC<MutualFundExplorerViewProps> = ({
       </div>
 
       {filteredFunds.length === 0 && (
-        <div className="text-center py-16 bg-white rounded-2xl border border-slate-200">
-          <p className="text-sm text-slate-600">No demonstration funds found matching your criteria.</p>
+        <div className="text-center py-16 bg-white rounded-2xl border border-[var(--farcon-border)]">
+          <p className="text-sm text-[var(--farcon-text-muted)]">No demonstration funds found matching your criteria.</p>
           <button
             onClick={() => {
               setCategoryFilter('All');
               setAssetClassFilter('All');
               setSearchQuery('');
             }}
-            className="mt-3 text-xs font-semibold text-[#7BA238] hover:underline"
+            className="mt-3 text-xs font-semibold text-[var(--farcon-primary)] hover:underline"
           >
             Clear All Filters
           </button>
@@ -177,9 +177,9 @@ export const MutualFundExplorerView: React.FC<MutualFundExplorerViewProps> = ({
       )}
 
       {/* Disclaimers */}
-      <div className="mt-12 p-6 bg-slate-50 rounded-2xl border border-slate-200/90 text-xs text-slate-600 leading-relaxed space-y-2">
-        <div className="flex items-center gap-2 font-semibold text-slate-800">
-          <ShieldCheck className="w-4 h-4 text-[#7BA238]" />
+      <div className="mt-12 p-6 bg-[var(--farcon-surface-soft)] rounded-2xl border border-[var(--farcon-border)]/90 text-xs text-[var(--farcon-text-muted)] leading-relaxed space-y-2">
+        <div className="flex items-center gap-2 font-semibold text-[var(--farcon-text)]">
+          <ShieldCheck className="w-4 h-4 text-[var(--farcon-primary)]" />
           <span>{COMPLIANCE_REGISTRY.distributor.amfiRegistration}</span>
         </div>
         <p className="text-slate-500 pl-6">
