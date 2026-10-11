@@ -1,0 +1,6 @@
+{
+  "name": "Farcon Wealth | Investing, Without The Noise",
+  "description": "AMFI-registered mutual fund distributor providing goal-based SIP planning, portfolio review, retirement, and tax-saving guidance with clarity and transparency.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

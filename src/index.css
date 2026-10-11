@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+:root {
+  --farcon-primary: #7BA238;
+  --farcon-primary-dark: #66882C;
+  --farcon-primary-light: #8EB942;
+  --farcon-secondary: #5B92D1;
+  --farcon-secondary-dark: #4679B5;
+  --farcon-secondary-light: #7CAAE0;
+  --farcon-navy: #0B131E;
+  --farcon-navy-card: #131F31;
+  --farcon-navy-light: #1A283D;
+  --farcon-background: #F8FAFC;
+  --farcon-surface: #FFFFFF;
+  --farcon-surface-soft: #F1F5F9;
+  --farcon-border: #E2E8F0;
+  --farcon-border-dark: #1E2E45;
+  --farcon-text: #0B131E;
+  --farcon-text-muted: #64748B;
+  --farcon-accent: #7BA238;
+}
+
+@theme {
+  --font-display: "Poppins", system-ui, -apple-system, sans-serif;
+  --font-heading: "Poppins", system-ui, -apple-system, sans-serif;
+  --font-serif: "Poppins", system-ui, -apple-system, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.font-poppins {
+  font-family: "Poppins", system-ui, -apple-system, sans-serif;
+}
+
+.font-inter {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+/* Centralized Responsive Typographic Hierarchy Tokens */
+.type-hero {
+  font-family: "Poppins", system-ui, -apple-system, sans-serif;
+  font-size: clamp(2.5rem, 5.5vw, 5.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+}
+
+.type-section-title {
+  font-family: "Poppins", system-ui, -apple-system, sans-serif;
+  font-size: clamp(2rem, 3.8vw, 3.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+}
+
+.type-secondary-title {
+  font-family: "Poppins", system-ui, -apple-system, sans-serif;
+  font-size: clamp(1.25rem, 2.2vw, 2.25rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+}
+
+.type-financial-number {
+  font-family: "Poppins", system-ui, -apple-system, sans-serif;
+  font-size: clamp(2.25rem, 4vw, 4.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.type-body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-size: clamp(0.9375rem, 1vw, 1.125rem);
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.type-metadata {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-size: clamp(0.6875rem, 0.8vw, 0.75rem);
+  line-height: 1.4;
+  letter-spacing: 0.05em;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--farcon-background);
+  color: var(--farcon-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar for calm luxury feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
