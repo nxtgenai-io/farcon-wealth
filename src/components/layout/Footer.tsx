@@ -10,9 +10,9 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ navigate }) => {
   return (
-    <footer className="bg-[#0B131E] text-slate-300 border-t border-[#1E2E45] pt-16 pb-12">
+    <footer className="bg-[var(--farcon-navy)] text-slate-300 border-t border-[#1E2E45] pt-16 pb-12">
       <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 pb-12 border-b border-slate-800">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 pb-12 border-b border-[var(--farcon-border-dark)]">
           {/* Brand & Regulatory Column */}
           <div className="lg:col-span-2 space-y-4">
             <div
@@ -30,17 +30,17 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
 
             <div className="space-y-2 text-xs text-slate-400 pt-2">
               <div className="flex items-start gap-2">
-                <MapPin className="w-3.5 h-3.5 mt-0.5 text-[#7BA238] shrink-0" />
+                <MapPin className="w-3.5 h-3.5 mt-0.5 text-[var(--farcon-primary)] shrink-0" />
                 <span>{FARCON_CONFIG.registeredAddress}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="w-3.5 h-3.5 text-[#5B92D1] shrink-0" />
+                <Mail className="w-3.5 h-3.5 text-[var(--farcon-secondary)] shrink-0" />
                 <a href={`mailto:${FARCON_CONFIG.email}`} className="hover:text-white transition-colors">
                   {FARCON_CONFIG.email}
                 </a>
               </div>
               <div className="flex items-center gap-2 text-slate-400">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#7BA238] shrink-0" />
+                <ShieldCheck className="w-3.5 h-3.5 text-[var(--farcon-primary)] shrink-0" />
                 <span>AMFI Registration ARN: <strong className="text-white">329006</strong></span>
               </div>
             </div>

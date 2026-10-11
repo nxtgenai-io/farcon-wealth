@@ -180,23 +180,23 @@ export function App() {
       return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center max-w-xl mx-auto mb-10">
-            <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+            <span className="text-xs font-semibold tracking-wider uppercase text-[var(--farcon-primary)]">
               Direct Advisory Desk
             </span>
-            <h1 className="mt-2 text-3xl font-poppins font-medium text-slate-900">
+            <h1 className="mt-2 text-3xl font-poppins font-medium text-[var(--farcon-text)]">
               Connect With Farcon Wealth
             </h1>
-            <p className="mt-2 text-xs sm:text-sm text-slate-600">
+            <p className="mt-2 text-xs sm:text-sm text-[var(--farcon-text-muted)]">
               Schedule a quiet, confidential conversation with our AMFI-registered team.
             </p>
           </div>
-          <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-xs max-w-xl mx-auto text-center space-y-6">
-            <p className="text-xs text-slate-600 leading-relaxed">
+          <div className="farcon-card p-6 sm:p-8 max-w-xl mx-auto text-center space-y-6">
+            <p className="text-xs text-[var(--farcon-text-muted)] leading-relaxed">
               We respond to all investor inquiries promptly with zero sales push.
             </p>
             <button
               onClick={() => handleOpenConsultation('Contact Page Request')}
-              className="px-6 py-3 text-xs font-semibold text-white bg-[#0B131E] rounded-md hover:bg-slate-800 transition-colors shadow-xs"
+              className="px-6 py-3 text-xs font-semibold text-white bg-[var(--farcon-navy)] rounded-md hover:bg-slate-800 transition-colors shadow-xs"
             >
               Open Consultation Form
             </button>
@@ -230,7 +230,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC] text-[#0B131E] antialiased selection:bg-[#7BA238]/20 selection:text-[#0B131E]">
+    <div className="min-h-screen flex flex-col bg-[var(--farcon-background)] text-[var(--farcon-navy)] antialiased selection:bg-[var(--farcon-primary)]/20 selection:text-[var(--farcon-navy)]">
       {/* Top Navigation */}
       <Navbar
         currentPath={currentPath}
