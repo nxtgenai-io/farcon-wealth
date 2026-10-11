@@ -226,6 +226,26 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
         </div>
       </div>
 
+      {/* Market snapshot: live values deliberately withheld until a licensed feed is configured. */}
+      <div className="border-t border-[var(--farcon-border)] bg-[var(--farcon-surface-soft)]">
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--farcon-text-muted)]">Market snapshot</span>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <div className="flex items-baseline gap-2" aria-label="Nifty 50 quote unavailable">
+              <span className="text-[11px] font-semibold text-[var(--farcon-text)]">NIFTY 50</span>
+              <span className="text-sm font-medium tabular-nums farcon-market-unavailable">—</span>
+              <span className="text-[10px] farcon-market-unavailable">Live feed not connected</span>
+            </div>
+            <div className="flex items-baseline gap-2" aria-label="Sensex quote unavailable">
+              <span className="text-[11px] font-semibold text-[var(--farcon-text)]">SENSEX</span>
+              <span className="text-sm font-medium tabular-nums farcon-market-unavailable">—</span>
+              <span className="text-[10px] farcon-market-unavailable">Live feed not connected</span>
+            </div>
+          </div>
+          <span className="text-[10px] farcon-market-unavailable">Quotes require an authorised data provider.</span>
+        </div>
+      </div>
+
       {/* Mobile Menu Panel */}
       {mobileMenuOpen && (
         <div className="xl:hidden bg-white border-b border-slate-200 px-6 pt-4 pb-6 space-y-4 shadow-xl animate-in slide-in-from-top-2 duration-150">
