@@ -153,18 +153,18 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
     <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-10 lg:py-16">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
-        <span className="text-xs font-mono font-semibold tracking-[0.2em] uppercase text-[#7BA238]">
+        <span className="text-xs font-mono font-semibold tracking-[0.2em] uppercase text-[var(--farcon-primary)]">
           Deterministic Mathematical Modeling
         </span>
-        <h1 className="mt-2.5 text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-tight leading-tight">
+        <h1 className="mt-2.5 text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-[var(--farcon-text)] tracking-tight leading-tight">
           Financial Planning Calculators
         </h1>
-        <p className="mt-3.5 text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
+        <p className="mt-3.5 text-sm sm:text-base text-[var(--farcon-text-muted)] leading-relaxed font-normal">
           Mathematical projections to ground your financial aspirations in clarity, realistic compounding, and disciplined milestones.
         </p>
 
         {/* Tab Switcher */}
-        <div className="mt-8 inline-flex p-1.5 bg-slate-100 rounded-2xl border border-slate-200/90 shadow-2xs">
+        <div className="mt-8 inline-flex p-1.5 bg-[#EAF0F6] rounded-2xl border border-[var(--farcon-border)]/90 shadow-2xs">
           {[
             { id: 'sip', label: 'SIP Compounding' },
             { id: 'lumpsum', label: 'Lumpsum Growth' },
@@ -176,8 +176,8 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
               onClick={() => handleTabChange(tab.id as any)}
               className={`px-4 sm:px-6 py-2.5 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
                 activeTab === tab.id
-                  ? 'bg-white text-[#0B131E] shadow-xs border border-slate-200/80'
-                  : 'text-slate-600 hover:text-slate-950 hover:bg-slate-200/50'
+                  ? 'bg-white text-[var(--farcon-navy)] shadow-xs border border-[var(--farcon-border)]/80'
+                  : 'text-[var(--farcon-text-muted)] hover:text-[var(--farcon-navy)] hover:bg-slate-200/50'
               }`}
             >
               {tab.label}
@@ -189,15 +189,15 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
       {/* Main Interactive Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-start">
         {/* Controls Column (Dual Inputs: Slider + Editable Field + Presets) */}
-        <div className="lg:col-span-7 bg-white p-6 sm:p-10 rounded-3xl border border-slate-200/90 shadow-xl space-y-7">
+        <div className="lg:col-span-7 bg-white p-6 sm:p-10 rounded-2xl border border-[var(--farcon-border)]/90 shadow-[0_8px_28px_rgba(16,26,44,0.06)] space-y-7">
           {/* TAB 1: SIP CALCULATOR */}
           {activeTab === 'sip' && (
             <div className="space-y-7">
               {/* Field 1: Monthly Investment */}
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-medium text-slate-700">Monthly Investment (SIP)</label>
-                  <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
+                  <label className="text-xs font-medium text-[var(--farcon-text)]">Monthly Investment (SIP)</label>
+                  <div className="flex items-center gap-1.5 bg-[var(--farcon-surface-soft)] px-3 py-1.5 rounded-lg border border-[var(--farcon-border)]">
                     <span className="text-xs text-slate-400 font-mono">₹</span>
                     <input
                       type="number"
@@ -206,7 +206,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                       step={500}
                       value={sipMonthly}
                       onChange={(e) => setSipMonthly(Number(e.target.value))}
-                      className="w-24 text-right font-mono font-bold text-sm text-slate-900 bg-transparent focus:outline-hidden"
+                      className="w-24 text-right font-mono font-bold text-sm text-[var(--farcon-text)] bg-transparent focus:outline-hidden"
                     />
                   </div>
                 </div>
@@ -229,8 +229,8 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                       onClick={() => setSipMonthly(amt)}
                       className={`px-2.5 py-1 text-[11px] font-mono rounded-md border transition-all ${
                         sipMonthly === amt
-                          ? 'bg-[#0B131E] text-white border-[#0B131E]'
-                          : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                          ? 'bg-[var(--farcon-navy)] text-white border-[var(--farcon-navy)]'
+                          : 'bg-[var(--farcon-surface-soft)] text-[var(--farcon-text-muted)] border-[var(--farcon-border)] hover:bg-[#EAF0F6]'
                       }`}
                     >
                       {formatINR(amt, { compact: true })}
@@ -243,10 +243,10 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <div>
-                    <label className="text-xs font-medium text-slate-700 block">Expected Annual Return (CAGR)</label>
+                    <label className="text-xs font-medium text-[var(--farcon-text)] block">Expected Annual Return (CAGR)</label>
                     <span className="text-[10px] text-slate-400 font-mono">{COMPLIANCE_REGISTRY.calculator.note}</span>
                   </div>
-                  <div className="flex items-center gap-1 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
+                  <div className="flex items-center gap-1 bg-[var(--farcon-surface-soft)] px-3 py-1.5 rounded-lg border border-[var(--farcon-border)]">
                     <input
                       type="number"
                       min={6}
@@ -254,7 +254,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                       step={0.5}
                       value={sipRate}
                       onChange={(e) => setSipRate(Number(e.target.value))}
-                      className="w-14 text-right font-mono font-bold text-sm text-slate-900 bg-transparent focus:outline-hidden"
+                      className="w-14 text-right font-mono font-bold text-sm text-[var(--farcon-text)] bg-transparent focus:outline-hidden"
                     />
                     <span className="text-xs text-slate-400 font-mono">%</span>
                   </div>
@@ -283,8 +283,8 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                       onClick={() => setSipRate(item.rate)}
                       className={`px-2.5 py-1 text-[11px] font-mono rounded-md border transition-all ${
                         sipRate === item.rate
-                          ? 'bg-[#0B131E] text-white border-[#0B131E]'
-                          : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                          ? 'bg-[var(--farcon-navy)] text-white border-[var(--farcon-navy)]'
+                          : 'bg-[var(--farcon-surface-soft)] text-[var(--farcon-text-muted)] border-[var(--farcon-border)] hover:bg-[#EAF0F6]'
                       }`}
                     >
                       {item.label}
@@ -296,8 +296,8 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
               {/* Field 3: Investment Tenure */}
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-medium text-slate-700">Investment Tenure</label>
-                  <div className="flex items-center gap-1 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
+                  <label className="text-xs font-medium text-[var(--farcon-text)]">Investment Tenure</label>
+                  <div className="flex items-center gap-1 bg-[var(--farcon-surface-soft)] px-3 py-1.5 rounded-lg border border-[var(--farcon-border)]">
                     <input
                       type="number"
                       min={1}
@@ -305,7 +305,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                       step={1}
                       value={sipYears}
                       onChange={(e) => setSipYears(Number(e.target.value))}
-                      className="w-12 text-right font-mono font-bold text-sm text-slate-900 bg-transparent focus:outline-hidden"
+                      className="w-12 text-right font-mono font-bold text-sm text-[var(--farcon-text)] bg-transparent focus:outline-hidden"
                     />
                     <span className="text-xs text-slate-400 font-mono">Yrs</span>
                   </div>
@@ -329,8 +329,8 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                       onClick={() => setSipYears(yr)}
                       className={`px-2.5 py-1 text-[11px] font-mono rounded-md border transition-all ${
                         sipYears === yr
-                          ? 'bg-[#0B131E] text-white border-[#0B131E]'
-                          : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                          ? 'bg-[var(--farcon-navy)] text-white border-[var(--farcon-navy)]'
+                          : 'bg-[var(--farcon-surface-soft)] text-[var(--farcon-text-muted)] border-[var(--farcon-border)] hover:bg-[#EAF0F6]'
                       }`}
                     >
                       {yr} Years
@@ -340,10 +340,10 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
               </div>
 
               {/* Step-Up SIP Option (Beloved by Indian Investors) */}
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/90 space-y-2">
+              <div className="p-4 bg-[var(--farcon-surface-soft)] rounded-2xl border border-[var(--farcon-border)]/90 space-y-2">
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-semibold text-slate-900 block">
+                    <span className="text-xs font-semibold text-[var(--farcon-text)] block">
                       Annual Step-Up (Top-Up SIP)
                     </span>
                     <span className="text-[11px] text-slate-500">
@@ -361,8 +361,8 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                         onClick={() => setSipStepUp(opt.val)}
                         className={`px-2.5 py-1 text-xs font-mono rounded-lg transition-all ${
                           sipStepUp === opt.val
-                            ? 'bg-[#7BA238] text-[#0B131E] font-bold shadow-2xs'
-                            : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                            ? 'bg-[var(--farcon-primary)] text-[var(--farcon-navy)] font-bold shadow-2xs'
+                            : 'bg-white text-[var(--farcon-text-muted)] border border-[var(--farcon-border)] hover:bg-[#EAF0F6]'
                         }`}
                       >
                         {opt.label}
@@ -379,8 +379,8 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
             <div className="space-y-7">
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-medium text-slate-700">Total Lumpsum Investment</label>
-                  <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
+                  <label className="text-xs font-medium text-[var(--farcon-text)]">Total Lumpsum Investment</label>
+                  <div className="flex items-center gap-1.5 bg-[var(--farcon-surface-soft)] px-3 py-1.5 rounded-lg border border-[var(--farcon-border)]">
                     <span className="text-xs text-slate-400 font-mono">₹</span>
                     <input
                       type="number"
@@ -389,7 +389,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                       step={10000}
                       value={lumpAmount}
                       onChange={(e) => setLumpAmount(Number(e.target.value))}
-                      className="w-28 text-right font-mono font-bold text-sm text-slate-900 bg-transparent focus:outline-hidden"
+                      className="w-28 text-right font-mono font-bold text-sm text-[var(--farcon-text)] bg-transparent focus:outline-hidden"
                     />
                   </div>
                 </div>
@@ -411,8 +411,8 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                       onClick={() => setLumpAmount(amt)}
                       className={`px-2.5 py-1 text-[11px] font-mono rounded-md border transition-all ${
                         lumpAmount === amt
-                          ? 'bg-[#0B131E] text-white border-[#0B131E]'
-                          : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                          ? 'bg-[var(--farcon-navy)] text-white border-[var(--farcon-navy)]'
+                          : 'bg-[var(--farcon-surface-soft)] text-[var(--farcon-text-muted)] border-[var(--farcon-border)] hover:bg-[#EAF0F6]'
                       }`}
                     >
                       {formatINR(amt, { compact: true })}
@@ -424,10 +424,10 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <div>
-                    <label className="text-xs font-medium text-slate-700 block">Expected Annual Return</label>
+                    <label className="text-xs font-medium text-[var(--farcon-text)] block">Expected Annual Return</label>
                     <span className="text-[10px] text-slate-400 font-mono">{COMPLIANCE_REGISTRY.calculator.note}</span>
                   </div>
-                  <span className="text-sm font-semibold font-mono text-slate-900">{lumpRate}%</span>
+                  <span className="text-sm font-semibold font-mono text-[var(--farcon-text)]">{lumpRate}%</span>
                 </div>
                 <input
                   type="range"
@@ -442,8 +442,8 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-medium text-slate-700">Investment Tenure</label>
-                  <span className="text-sm font-semibold font-mono text-slate-900">{lumpYears} Years</span>
+                  <label className="text-xs font-medium text-[var(--farcon-text)]">Investment Tenure</label>
+                  <span className="text-sm font-semibold font-mono text-[var(--farcon-text)]">{lumpYears} Years</span>
                 </div>
                 <input
                   type="range"
@@ -463,8 +463,8 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
             <div className="space-y-7">
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-medium text-slate-700">Target Goal in Today’s Value</label>
-                  <span className="text-sm font-semibold font-mono text-slate-900">{formatINR(goalTarget)}</span>
+                  <label className="text-xs font-medium text-[var(--farcon-text)]">Target Goal in Today’s Value</label>
+                  <span className="text-sm font-semibold font-mono text-[var(--farcon-text)]">{formatINR(goalTarget)}</span>
                 </div>
                 <input
                   type="range"
@@ -480,7 +480,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <div className="flex justify-between items-center mb-2">
-                    <label className="text-xs font-medium text-slate-700">Years to Achieve Goal</label>
+                    <label className="text-xs font-medium text-[var(--farcon-text)]">Years to Achieve Goal</label>
                     <span className="text-xs font-semibold font-mono">{goalYears} Yrs</span>
                   </div>
                   <input
@@ -496,7 +496,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <div>
-                      <label className="text-xs font-medium text-slate-700 block">Assumed Inflation Rate</label>
+                      <label className="text-xs font-medium text-[var(--farcon-text)] block">Assumed Inflation Rate</label>
                       <span className="text-[10px] text-slate-400 font-mono">{COMPLIANCE_REGISTRY.calculator.note}</span>
                     </div>
                     <span className="text-xs font-semibold font-mono">{goalInflation}%</span>
@@ -516,10 +516,10 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <div>
-                    <label className="text-xs font-medium text-slate-700 block">Expected Growth Rate (CAGR)</label>
+                    <label className="text-xs font-medium text-[var(--farcon-text)] block">Expected Growth Rate (CAGR)</label>
                     <span className="text-[10px] text-slate-400 font-mono">{COMPLIANCE_REGISTRY.calculator.note}</span>
                   </div>
-                  <span className="text-sm font-semibold font-mono text-slate-900">{goalRate}%</span>
+                  <span className="text-sm font-semibold font-mono text-[var(--farcon-text)]">{goalRate}%</span>
                 </div>
                 <input
                   type="range"
@@ -534,8 +534,8 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-medium text-slate-700">Existing Savings Earmarked for Goal</label>
-                  <span className="text-sm font-semibold font-mono text-slate-900">{formatINR(goalExisting)}</span>
+                  <label className="text-xs font-medium text-[var(--farcon-text)]">Existing Savings Earmarked for Goal</label>
+                  <span className="text-sm font-semibold font-mono text-[var(--farcon-text)]">{formatINR(goalExisting)}</span>
                 </div>
                 <input
                   type="range"
@@ -556,7 +556,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <div className="flex justify-between items-center mb-2">
-                    <label className="text-xs font-medium text-slate-700">Current Age</label>
+                    <label className="text-xs font-medium text-[var(--farcon-text)]">Current Age</label>
                     <span className="text-xs font-semibold font-mono">{retCurrentAge}</span>
                   </div>
                   <input
@@ -571,7 +571,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
 
                 <div>
                   <div className="flex justify-between items-center mb-2">
-                    <label className="text-xs font-medium text-slate-700">Retirement Age</label>
+                    <label className="text-xs font-medium text-[var(--farcon-text)]">Retirement Age</label>
                     <span className="text-xs font-semibold font-mono">{retAge}</span>
                   </div>
                   <input
@@ -587,7 +587,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <div>
-                      <label className="text-xs font-medium text-slate-700 block">Life Expectancy</label>
+                      <label className="text-xs font-medium text-[var(--farcon-text)] block">Life Expectancy</label>
                       <span className="text-[10px] text-slate-400 font-mono">Assumption</span>
                     </div>
                     <span className="text-xs font-semibold font-mono">{retLifeExpectancy}</span>
@@ -605,8 +605,8 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-medium text-slate-700">Current Monthly Household Expenses</label>
-                  <span className="text-sm font-semibold font-mono text-slate-900">{formatINR(retExpense)}</span>
+                  <label className="text-xs font-medium text-[var(--farcon-text)]">Current Monthly Household Expenses</label>
+                  <span className="text-sm font-semibold font-mono text-[var(--farcon-text)]">{formatINR(retExpense)}</span>
                 </div>
                 <input
                   type="range"
@@ -620,11 +620,11 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
               </div>
 
               {/* Assumptions Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-200/90">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-[var(--farcon-surface-soft)] rounded-2xl border border-[var(--farcon-border)]/90">
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
                     <div>
-                      <label className="text-[11px] font-medium text-slate-700 block">Inflation Rate</label>
+                      <label className="text-[11px] font-medium text-[var(--farcon-text)] block">Inflation Rate</label>
                       <span className="text-[9px] text-slate-400 font-mono">{COMPLIANCE_REGISTRY.calculator.note}</span>
                     </div>
                     <span className="text-xs font-semibold font-mono">{retInflation}%</span>
@@ -643,7 +643,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
                     <div>
-                      <label className="text-[11px] font-medium text-slate-700 block">Pre-Ret. Return</label>
+                      <label className="text-[11px] font-medium text-[var(--farcon-text)] block">Pre-Ret. Return</label>
                       <span className="text-[9px] text-slate-400 font-mono">{COMPLIANCE_REGISTRY.calculator.note}</span>
                     </div>
                     <span className="text-xs font-semibold font-mono">{retPreReturn}%</span>
@@ -662,7 +662,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
                     <div>
-                      <label className="text-[11px] font-medium text-slate-700 block">Post-Ret. Return</label>
+                      <label className="text-[11px] font-medium text-[var(--farcon-text)] block">Post-Ret. Return</label>
                       <span className="text-[9px] text-slate-400 font-mono">{COMPLIANCE_REGISTRY.calculator.note}</span>
                     </div>
                     <span className="text-xs font-semibold font-mono">{retPostReturn}%</span>
@@ -681,8 +681,8 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-medium text-slate-700">Existing Retirement Savings Earmarked</label>
-                  <span className="text-sm font-semibold font-mono text-slate-900">{formatINR(retExistingCorpus)}</span>
+                  <label className="text-xs font-medium text-[var(--farcon-text)]">Existing Retirement Savings Earmarked</label>
+                  <span className="text-sm font-semibold font-mono text-[var(--farcon-text)]">{formatINR(retExistingCorpus)}</span>
                 </div>
                 <input
                   type="range"
@@ -698,12 +698,12 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
           )}
 
           {/* Toggle Milestone Table View with Accessible Table Semantics */}
-          <div className="pt-2 flex items-center justify-between border-t border-slate-100 text-xs">
+          <div className="pt-2 flex items-center justify-between border-t border-[var(--farcon-border)]/70 text-xs">
             <button
               onClick={() => setShowMilestones(!showMilestones)}
-              className="font-medium text-slate-600 hover:text-slate-900 inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="font-medium text-[var(--farcon-text-muted)] hover:text-[var(--farcon-text)] inline-flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              <Layers className="w-3.5 h-3.5 text-[#7BA238]" />
+              <Layers className="w-3.5 h-3.5 text-[var(--farcon-primary)]" />
               <span>{showMilestones ? 'Hide Milestone Table' : 'Show Year-by-Year Milestones'}</span>
             </button>
             <span className="text-slate-400 font-mono text-[11px]">
@@ -713,14 +713,14 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
 
           {/* Milestone Table Accordion with Accessible Table Semantics */}
           {showMilestones && (
-            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/90 space-y-3 animate-in fade-in duration-200">
+            <div className="p-4 bg-[var(--farcon-surface-soft)] rounded-2xl border border-[var(--farcon-border)]/90 space-y-3 animate-in fade-in duration-200">
               <span className="text-[11px] font-mono font-semibold uppercase text-slate-500 block">
                 Yearly Compounding Milestones
               </span>
               <div className="max-h-60 overflow-y-auto pr-1">
                 <table className="w-full text-xs font-mono border-collapse" role="table" aria-label="Compounding Milestones Table">
                   <thead>
-                    <tr className="border-b border-slate-200 text-slate-500 text-left text-[11px]">
+                    <tr className="border-b border-[var(--farcon-border)] text-slate-500 text-left text-[11px]">
                       <th className="py-2 px-2 font-semibold">Year</th>
                       <th className="py-2 px-2 font-semibold text-right">Invested Capital</th>
                       <th className="py-2 px-2 font-semibold text-right">Future Value</th>
@@ -730,10 +730,10 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                   <tbody className="divide-y divide-slate-100">
                     {(activeTab === 'sip' ? sipResult.breakdown : lumpResult.breakdown).map((row) => (
                       <tr key={row.year} className="hover:bg-white/80 transition-colors">
-                        <td className="py-1.5 px-2 text-slate-700">Year {row.year < 10 ? `0${row.year}` : row.year}</td>
+                        <td className="py-1.5 px-2 text-[var(--farcon-text)]">Year {row.year < 10 ? `0${row.year}` : row.year}</td>
                         <td className="py-1.5 px-2 text-right text-slate-500">{formatINR(row.invested, { compact: true })}</td>
-                        <td className="py-1.5 px-2 text-right font-bold text-[#0B131E]">{formatINR(row.value, { compact: true })}</td>
-                        <td className="py-1.5 px-2 text-right text-[#7BA238]">+{formatINR(Math.max(0, row.value - row.invested), { compact: true })}</td>
+                        <td className="py-1.5 px-2 text-right font-bold text-[var(--farcon-navy)]">{formatINR(row.value, { compact: true })}</td>
+                        <td className="py-1.5 px-2 text-right text-[var(--farcon-primary)]">+{formatINR(Math.max(0, row.value - row.invested), { compact: true })}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -744,10 +744,10 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
         </div>
 
         {/* Results Column (Elevated Editorial Dark Card) */}
-        <div className="lg:col-span-5 bg-[#0B131E] text-white p-7 sm:p-10 rounded-3xl border border-slate-800 shadow-2xl flex flex-col justify-between space-y-7">
+        <div className="lg:col-span-5 bg-[var(--farcon-navy)] text-white p-7 sm:p-10 rounded-2xl border border-[var(--farcon-border-dark)] shadow-2xl flex flex-col justify-between space-y-7">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <span className="text-[11px] font-mono font-semibold tracking-wider text-[#5B92D1] uppercase">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--farcon-border-dark)]">
+              <span className="text-[11px] font-mono font-semibold tracking-wider text-[var(--farcon-secondary)] uppercase">
                 {activeTab === 'sip' && (sipStepUp > 0 ? `STEP-UP SIP (+${sipStepUp}%/YR)` : 'SIP PROJECTION')}
                 {activeTab === 'lumpsum' && 'LUMPSUM PROJECTION'}
                 {activeTab === 'goal' && 'GOAL MILESTONE'}
@@ -767,7 +767,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                   ? 'Your Target Corpus (Illustrative)'
                   : 'Projected Compounded Value'}
               </span>
-              <div className="text-3xl sm:text-4xl xl:text-5xl font-extrabold font-mono text-[#7BA238] tracking-tight">
+              <div className="text-3xl sm:text-4xl xl:text-5xl font-extrabold font-mono text-[var(--farcon-primary)] tracking-tight">
                 {activeTab === 'sip' && <AnimatedNumber value={sipResult.projectedValue} />}
                 {activeTab === 'lumpsum' && <AnimatedNumber value={lumpResult.projectedValue} />}
                 {activeTab === 'goal' && <AnimatedNumber value={goalResult.requiredMonthlySIP} />}
@@ -783,8 +783,8 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                     <span className="w-2 h-2 rounded-full bg-slate-600" />
                     Capital: {activeTab === 'sip' ? sipInvestedPct : lumpInvestedPct}%
                   </span>
-                  <span className="flex items-center gap-1.5 text-[#7BA238]">
-                    <span className="w-2 h-2 rounded-full bg-[#7BA238]" />
+                  <span className="flex items-center gap-1.5 text-[var(--farcon-primary)]">
+                    <span className="w-2 h-2 rounded-full bg-[var(--farcon-primary)]" />
                     Compounding Gain: {activeTab === 'sip' ? sipGainPct : lumpGainPct}%
                   </span>
                 </div>
@@ -794,7 +794,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                     style={{ width: `${activeTab === 'sip' ? sipInvestedPct : lumpInvestedPct}%` }}
                   />
                   <div
-                    className="bg-[#7BA238] h-full transition-all duration-500"
+                    className="bg-[var(--farcon-primary)] h-full transition-all duration-500"
                     style={{ width: `${activeTab === 'sip' ? sipGainPct : lumpGainPct}%` }}
                   />
                 </div>
@@ -802,7 +802,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
             )}
 
             {/* Thin Architectural Trajectory SVG Visual */}
-            <div className="mt-5 h-14 w-full bg-[#131F31]/80 rounded-xl p-2 border border-slate-800">
+            <div className="mt-5 h-14 w-full bg-[var(--farcon-navy-card)]/80 rounded-xl p-2 border border-[var(--farcon-border-dark)]">
               <svg viewBox="0 0 320 50" fill="none" className="w-full h-full">
                 <path
                   d="M 10 44 C 100 42, 190 32, 310 8"
@@ -826,7 +826,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
             </div>
 
             {/* Breakdown Stats */}
-            <div className="mt-5 pt-5 border-t border-slate-800 space-y-3.5 text-xs font-mono">
+            <div className="mt-5 pt-5 border-t border-[var(--farcon-border-dark)] space-y-3.5 text-xs font-mono">
               {activeTab === 'sip' && (
                 <>
                   <div className="flex justify-between text-slate-400">
@@ -835,7 +835,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                   </div>
                   <div className="flex justify-between text-slate-400">
                     <span>Compounding Gain</span>
-                    <span className="text-[#7BA238]">+{formatINR(sipResult.estimatedGain)}</span>
+                    <span className="text-[var(--farcon-primary)]">+{formatINR(sipResult.estimatedGain)}</span>
                   </div>
                   <div className="flex justify-between text-slate-400">
                     <span>Wealth Multiple</span>
@@ -854,7 +854,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                   </div>
                   <div className="flex justify-between text-slate-400">
                     <span>Estimated Capital Gain</span>
-                    <span className="text-[#7BA238]">+{formatINR(lumpResult.estimatedGain)}</span>
+                    <span className="text-[var(--farcon-primary)]">+{formatINR(lumpResult.estimatedGain)}</span>
                   </div>
                   <div className="flex justify-between text-slate-400">
                     <span>Wealth Multiple</span>
@@ -877,7 +877,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                   </div>
                   <div className="flex justify-between text-slate-400">
                     <span>Assumed Growth Rate</span>
-                    <span className="text-[#7BA238]">{goalRate}% CAGR</span>
+                    <span className="text-[var(--farcon-primary)]">{goalRate}% CAGR</span>
                   </div>
                 </>
               )}
@@ -894,7 +894,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                   </div>
                   <div className="flex justify-between text-slate-400">
                     <span>Suggested Monthly SIP</span>
-                    <span className="text-[#7BA238]">{formatINR(retResult.requiredMonthlySIP)}/mo</span>
+                    <span className="text-[var(--farcon-primary)]">{formatINR(retResult.requiredMonthlySIP)}/mo</span>
                   </div>
                 </>
               )}
@@ -902,10 +902,10 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
           </div>
 
           {/* Action CTAs */}
-          <div className="pt-4 border-t border-slate-800 space-y-3">
+          <div className="pt-4 border-t border-[var(--farcon-border-dark)] space-y-3">
             <button
               onClick={() => onOpenConsultation(`${activeTab.toUpperCase()} Planning Discussion`)}
-              className="w-full py-3.5 px-4 text-xs font-semibold text-[#0B131E] bg-[#7BA238] hover:bg-[#8EB942] rounded-md transition-colors flex items-center justify-center gap-2 shadow-xs active:scale-[0.98] cursor-pointer"
+              className="w-full py-3.5 px-4 text-xs font-semibold text-[var(--farcon-navy)] bg-[var(--farcon-primary)] hover:bg-[var(--farcon-primary-light)] rounded-md transition-colors flex items-center justify-center gap-2 shadow-xs active:scale-[0.98] cursor-pointer"
             >
               <span>Structure This Plan With Farcon</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -921,9 +921,9 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
       </div>
 
       {/* Mandatory Regulatory Disclaimers (Cleanly Structured via COMPLIANCE_REGISTRY) */}
-      <div className="mt-12 p-6 bg-slate-50 rounded-2xl border border-slate-200/90 space-y-2 text-xs text-slate-600 leading-relaxed">
-        <div className="flex items-center gap-2 font-semibold text-slate-800">
-          <Shield className="w-4 h-4 text-[#7BA238]" />
+      <div className="mt-12 p-6 bg-[var(--farcon-surface-soft)] rounded-2xl border border-[var(--farcon-border)]/90 space-y-2 text-xs text-[var(--farcon-text-muted)] leading-relaxed">
+        <div className="flex items-center gap-2 font-semibold text-[var(--farcon-text)]">
+          <Shield className="w-4 h-4 text-[var(--farcon-primary)]" />
           <span>{COMPLIANCE_REGISTRY.distributor.amfiRegistration}</span>
         </div>
         <p className="text-slate-500 pl-6">
