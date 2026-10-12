@@ -1,4 +1,5 @@
 export type RoutePath =
+  | '/design-system'
   | '/'
   | '/about'
   | '/services'

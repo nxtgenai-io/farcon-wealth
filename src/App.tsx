@@ -17,6 +17,7 @@ import { PortfolioReviewView } from '@/features/portfolio-review/PortfolioReview
 import { InvestorLoginView } from '@/features/investor-login/InvestorLoginView';
 import { EducationView } from '@/components/sections/EducationView';
 import { LegalViews } from '@/components/sections/LegalViews';
+import { DesignSystemShowcase } from '@/features/design-system/DesignSystemShowcase';
 
 export function App() {
   const [currentPath, setCurrentPath] = useState<RoutePath>(() => {
@@ -57,6 +58,9 @@ export function App() {
 
   // Router dispatcher
   const renderView = () => {
+    // Isolated, unlinked UI exploration route; never part of primary navigation.
+    if (currentPath === '/design-system') return <DesignSystemShowcase />;
+
     // 1. Home
     if (currentPath === '/') {
       return (
