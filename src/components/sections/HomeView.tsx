@@ -93,9 +93,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
         {/* Full-width subtle horizon curves background (3–5% opacity) */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.035] overflow-hidden" aria-hidden="true">
           <svg className="w-full h-full" viewBox="0 0 1600 900" fill="none">
-            <path d="M-100 800 C 400 750, 900 500, 1700 200" stroke="#0B131E" strokeWidth="2" />
-            <path d="M-100 850 C 450 800, 950 550, 1700 280" stroke="#7BA238" strokeWidth="1.5" />
-            <path d="M-100 720 C 350 670, 850 420, 1700 130" stroke="#5B92D1" strokeWidth="1" strokeDasharray="5 5" />
+            <path d="M-100 800 C 400 750, 900 500, 1700 200" stroke="#101A2C" strokeWidth="2" />
+            <path d="M-100 850 C 450 800, 950 550, 1700 280" stroke="#78A832" strokeWidth="1.5" />
+            <path d="M-100 720 C 350 670, 850 420, 1700 130" stroke="#315FCE" strokeWidth="1" strokeDasharray="5 5" />
           </svg>
         </div>
 
@@ -104,7 +104,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             {/* LEFT COLUMN: ~45% Editorial Authority */}
             <div className="lg:col-span-5 xl:col-span-5 space-y-6 sm:space-y-7">
               {/* Eyebrow: Clean unboxed typography */}
-              <div className="text-[11px] sm:text-xs font-mono font-medium uppercase tracking-[0.2em] text-[#7BA238]">
+              <div className="text-[11px] sm:text-xs font-mono font-medium uppercase tracking-[0.2em] text-[#78A832]">
                 GOAL-BASED WEALTH GUIDANCE
               </div>
 
@@ -128,10 +128,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
                     else navigate('/goals');
                   }}
-                  className="px-6 sm:px-7 py-3.5 text-xs font-medium text-white bg-[#0B131E] hover:bg-[#1E293B] rounded-md transition-colors shadow-xs inline-flex items-center gap-2 group cursor-pointer active:scale-[0.98]"
+                  className="px-6 sm:px-7 py-3.5 text-xs font-medium text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors shadow-xs inline-flex items-center gap-2 group cursor-pointer active:scale-[0.98]"
                 >
                   <span>Start with a Goal</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#7BA238] transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[#78A832] transition-transform group-hover:translate-x-1" />
                 </button>
 
                 <button
@@ -171,7 +171,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <Reveal>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
               <div className="pt-3 lg:pt-0 lg:pr-6 space-y-1">
-                <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[#7BA238] block">
+                <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[#78A832] block">
                   REGULATORY REGISTRATION
                 </span>
                 <span className="text-sm sm:text-base font-poppins font-medium text-slate-900 block">
@@ -181,7 +181,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               </div>
 
               <div className="pt-3 lg:pt-0 lg:px-6 space-y-1">
-                <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[#5B92D1] block">
+                <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[#315FCE] block">
                   PLANNING FOCUS
                 </span>
                 <span className="text-sm sm:text-base font-poppins font-medium text-slate-900 block">
@@ -221,7 +221,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           {/* Major Editorial Brand Statement (Visually Large, NOT in a card) */}
           <Reveal className="max-w-3xl mb-12 sm:mb-16">
-            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block mb-2">
+            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#78A832] block mb-2">
               PURPOSE-DRIVEN WEALTH
             </span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
@@ -250,11 +250,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 >
                   {/* Left: Number + Goal Title */}
                   <div className="flex items-start sm:items-center gap-6 sm:gap-10 md:w-5/12">
-                    <span className="text-xl sm:text-2xl font-mono font-medium text-slate-400 group-hover:text-[#7BA238] transition-colors">
+                    <span className="text-xl sm:text-2xl font-mono font-medium text-slate-400 group-hover:text-[#78A832] transition-colors">
                       0{idx + 1}
                     </span>
                     <div>
-                      <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors tracking-tight">
+                      <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-slate-900 group-hover:text-[#78A832] transition-colors tracking-tight">
                         {goal.title}
                       </h3>
                       <span className="text-xs font-mono text-slate-400 block mt-1">
@@ -269,7 +269,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   </div>
 
                   {/* Right: Subdued Arrow Affordance */}
-                  <div className="md:w-2/12 flex items-center md:justify-end gap-2 text-xs font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors">
+                  <div className="md:w-2/12 flex items-center md:justify-end gap-2 text-xs font-medium text-slate-900 group-hover:text-[#78A832] transition-colors">
                     <span className="hidden sm:inline">Explore Journey</span>
                     <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
                   </div>
@@ -283,10 +283,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
       {/* =========================================================================
           SECTION 4 — HOW FARCON WORKS (VERTICAL EDITORIAL TIMELINE, NO BOXES)
           ========================================================================= */}
-      <section className="bg-[#FAF9F5] py-20 sm:py-28 border-y border-slate-200/90">
+      <section className="bg-[#F2F6FB] py-20 sm:py-28 border-y border-[#DCE4EE]">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           <Reveal className="max-w-2xl mb-16 sm:mb-20">
-            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block mb-2">
+            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#78A832] block mb-2">
               DISCIPLINED PROCESS
             </span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
@@ -302,11 +302,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
             {/* Step 01 */}
             <Reveal delayMs={0}>
               <div className="relative group">
-                <div className="absolute -left-[41px] sm:-left-[73px] top-1.5 w-5 h-5 rounded-full bg-white border-4 border-[#7BA238]" />
+                <div className="absolute -left-[41px] sm:-left-[73px] top-1.5 w-5 h-5 rounded-full bg-white border-4 border-[#78A832]" />
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-baseline">
                   <div className="lg:col-span-4">
-                    <span className="text-4xl sm:text-5xl lg:text-6xl font-mono font-medium text-slate-300 block mb-2 group-hover:text-[#5B92D1] transition-colors">
+                    <span className="text-4xl sm:text-5xl lg:text-6xl font-mono font-medium text-slate-300 block mb-2 group-hover:text-[#315FCE] transition-colors">
                       01
                     </span>
                     <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-slate-900 tracking-tight">
@@ -328,11 +328,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
             {/* Step 02 */}
             <Reveal delayMs={100}>
               <div className="relative group">
-                <div className="absolute -left-[41px] sm:-left-[73px] top-1.5 w-5 h-5 rounded-full bg-white border-4 border-[#5B92D1]" />
+                <div className="absolute -left-[41px] sm:-left-[73px] top-1.5 w-5 h-5 rounded-full bg-white border-4 border-[#315FCE]" />
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-baseline">
                   <div className="lg:col-span-4">
-                    <span className="text-4xl sm:text-5xl lg:text-6xl font-mono font-medium text-slate-300 block mb-2 group-hover:text-[#7BA238] transition-colors">
+                    <span className="text-4xl sm:text-5xl lg:text-6xl font-mono font-medium text-slate-300 block mb-2 group-hover:text-[#78A832] transition-colors">
                       02
                     </span>
                     <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-slate-900 tracking-tight">
@@ -388,7 +388,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           {/* Header */}
           <Reveal className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6">
             <div>
-              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block mb-2">
+              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#78A832] block mb-2">
                 PUBLISHED SERVICES
               </span>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
@@ -401,7 +401,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
             <button
               onClick={() => navigate('/services')}
-              className="text-xs font-medium text-slate-900 hover:text-[#7BA238] inline-flex items-center gap-2 self-start md:self-end group cursor-pointer"
+              className="text-xs font-medium text-slate-900 hover:text-[#78A832] inline-flex items-center gap-2 self-start md:self-end group cursor-pointer"
             >
               <span>View All 6 Services</span>
               <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
@@ -423,11 +423,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   }`}
                 >
                   <div className="flex items-start sm:items-center gap-6 md:w-5/12">
-                    <span className="text-lg sm:text-xl font-mono font-medium text-slate-400 group-hover:text-[#7BA238] transition-colors">
+                    <span className="text-lg sm:text-xl font-mono font-medium text-slate-400 group-hover:text-[#78A832] transition-colors">
                       0{idx + 1}
                     </span>
                     <div>
-                      <h3 className="text-lg sm:text-xl font-poppins font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors">
+                      <h3 className="text-lg sm:text-xl font-poppins font-medium text-slate-900 group-hover:text-[#78A832] transition-colors">
                         {service.title}
                       </h3>
                       <span className="text-xs text-slate-500 block mt-0.5">
@@ -440,7 +440,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     <p className="line-clamp-2">{service.summary}</p>
                   </div>
 
-                  <div className="md:w-2/12 flex items-center md:justify-end gap-2 text-xs font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors">
+                  <div className="md:w-2/12 flex items-center md:justify-end gap-2 text-xs font-medium text-slate-900 group-hover:text-[#78A832] transition-colors">
                     <span className="hidden sm:inline">Details</span>
                     <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                   </div>
@@ -452,26 +452,26 @@ export const HomeView: React.FC<HomeViewProps> = ({
       </section>
 
       {/* =========================================================================
-          SECTION 6 — FINANCIAL STUDIO (ONE COMPACT WORKSPACE, NO 4 CARDS)
+          SECTION 6 — FINANCIAL STUDIO (LIGHT-FIRST COMPACT WORKSPACE)
           ========================================================================= */}
-      <section className="bg-[#0B131E] text-white py-20 sm:py-28 border-y border-slate-800">
+      <section className="bg-[#F2F6FB] text-[#17243A] py-20 sm:py-28 border-y border-[#DCE4EE]">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           {/* Header */}
           <Reveal className="max-w-2xl mb-12 sm:mb-16">
-            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block mb-2">
+            <span className="text-[11px] font-mono font-semibold tracking-[0.2em] uppercase text-[#78A832] block mb-2">
               FINANCIAL STUDIO
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-white tracking-[-0.03em] leading-[1.12]">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
               Explore the numbers.
             </h2>
-            <p className="mt-3 text-sm sm:text-base text-slate-400 leading-relaxed font-normal">
+            <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
               Compounding projections to ground your financial aspirations in clarity and disciplined milestones.
             </p>
           </Reveal>
 
           {/* Single Surface Financial Studio: Left Selector + Right Interactive Workspace */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
-            {/* Left Column: 4 Calculator Types */}
+            {/* Left Column: 4 Calculator Selector Cards */}
             <div className="lg:col-span-4 space-y-2.5">
               {[
                 { id: 'sip', num: '01', title: 'SIP Compounding', desc: 'Monthly investment compounding over time' },
@@ -482,34 +482,34 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <button
                   key={tab.id}
                   onClick={() => setStudioTab(tab.id as any)}
-                  className={`w-full text-left p-4 sm:p-4.5 rounded-xl transition-colors cursor-pointer border ${
+                  className={`w-full text-left p-4 sm:p-4.5 rounded-xl transition-all cursor-pointer border ${
                     studioTab === tab.id
-                      ? 'bg-[#131F31] border-slate-700 ring-1 ring-[#7BA238]/30'
-                      : 'border-slate-800/80 hover:bg-[#131F31]/50 text-slate-400 hover:text-white'
+                      ? 'bg-white border-[#78A832] shadow-sm ring-1 ring-[#78A832]/30 text-slate-900'
+                      : 'bg-white/80 border-[#DCE4EE] hover:bg-white hover:border-slate-300 text-slate-600 hover:text-slate-900 shadow-2xs'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-mono font-medium text-[#7BA238]">{tab.num}</span>
+                    <span className="text-xs font-mono font-bold text-[#78A832]">{tab.num}</span>
                     <span className="text-[10px] font-mono text-slate-400 uppercase">Deterministic</span>
                   </div>
-                  <h3 className="text-base font-poppins font-medium text-white mb-0.5">
+                  <h3 className="text-base font-poppins font-medium text-slate-900 mb-0.5">
                     {tab.title}
                   </h3>
-                  <p className="text-xs text-slate-400 leading-relaxed">
+                  <p className="text-xs text-slate-500 leading-relaxed">
                     {tab.desc}
                   </p>
                 </button>
               ))}
             </div>
 
-            {/* Right Column: Single Active Workspace */}
-            <div className="lg:col-span-8 bg-[#131F31] p-6 sm:p-9 rounded-2xl border border-slate-800 space-y-7">
+            {/* Right Column: White Interactive Workspace */}
+            <div className="lg:col-span-8 bg-white p-6 sm:p-9 rounded-2xl border border-[#DCE4EE] shadow-xs space-y-7">
               {/* Sliders Area */}
               <div className="space-y-6">
                 {/* Input 1: Amount */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-center text-xs">
-                    <label className="text-slate-300 font-medium">
+                    <label className="text-slate-700 font-medium">
                       {studioTab === 'sip'
                         ? 'Monthly Investment (SIP)'
                         : studioTab === 'lumpsum'
@@ -518,7 +518,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                         ? 'Target Goal Amount'
                         : 'Current Monthly Living Expense'}
                     </label>
-                    <span className="text-base font-mono font-medium text-white">
+                    <span className="text-base font-mono font-semibold text-slate-900">
                       {formatINR(studioAmount)}
                     </span>
                   </div>
@@ -529,7 +529,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     step={2500}
                     value={studioAmount}
                     onChange={(e) => setStudioAmount(Number(e.target.value))}
-                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#7BA238]"
+                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
                   />
                 </div>
 
@@ -537,8 +537,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <div className="flex justify-between items-center text-xs">
-                      <label className="text-slate-300 font-medium">Illustrative Annual Return</label>
-                      <span className="text-base font-mono font-medium text-[#7BA238]">
+                      <label className="text-slate-700 font-medium">Illustrative Annual Return</label>
+                      <span className="text-base font-mono font-semibold text-[#78A832]">
                         {studioRate}% p.a.
                       </span>
                     </div>
@@ -549,14 +549,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       step={0.5}
                       value={studioRate}
                       onChange={(e) => setStudioRate(Number(e.target.value))}
-                      className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#7BA238]"
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
                     />
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex justify-between items-center text-xs">
-                      <label className="text-slate-300 font-medium">Tenure Horizon</label>
-                      <span className="text-base font-mono font-medium text-white">
+                      <label className="text-slate-700 font-medium">Tenure Horizon</label>
+                      <span className="text-base font-mono font-semibold text-slate-900">
                         {studioTenure} Years
                       </span>
                     </div>
@@ -567,91 +567,91 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       step={1}
                       value={studioTenure}
                       onChange={(e) => setStudioTenure(Number(e.target.value))}
-                      className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#7BA238]"
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Minimal SVG Growth Curve */}
-              <div className="h-16 w-full bg-[#0B131E] rounded-xl p-2.5 border border-slate-800">
+              {/* Minimal SVG Growth Curve on Pale Surface */}
+              <div className="h-16 w-full bg-[#F8FAFC] rounded-xl p-2.5 border border-[#E2E8F0]">
                 <svg viewBox="0 0 400 50" fill="none" className="w-full h-full">
                   <path
                     d="M 10 44 C 120 42, 240 30, 390 8"
-                    stroke="#7BA238"
-                    strokeWidth="2"
+                    stroke="#78A832"
+                    strokeWidth="2.5"
                     strokeLinecap="round"
                   />
-                  <circle cx="390" cy="8" r="4" fill="#7BA238" />
+                  <circle cx="390" cy="8" r="4.5" fill="#78A832" />
                   <path
                     d="M 10 44 L 390 8 L 390 50 L 10 50 Z"
                     fill="url(#studio-curve-fill)"
-                    opacity="0.1"
+                    opacity="0.15"
                   />
                   <defs>
                     <linearGradient id="studio-curve-fill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#7BA238" />
-                      <stop offset="100%" stopColor="#7BA238" stopOpacity="0" />
+                      <stop offset="0%" stopColor="#78A832" />
+                      <stop offset="100%" stopColor="#78A832" stopOpacity="0" />
                     </linearGradient>
                   </defs>
                 </svg>
               </div>
 
-              {/* Large Numbers Typography */}
-              <div className="pt-4 border-t border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {/* Large Numbers Typography on Light Card */}
+              <div className="pt-4 border-t border-[#DCE4EE] grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div>
-                  <span className="text-xs font-mono text-slate-400 block mb-1">
+                  <span className="text-xs text-slate-500 font-medium block mb-1">
                     {activeStudioResult.headlineLabel}
                   </span>
-                  <div className="text-3xl sm:text-4xl font-poppins font-medium text-[#7BA238] tracking-tight">
+                  <div className="text-3xl sm:text-4xl font-poppins font-semibold text-[#78A832] tracking-tight">
                     <AnimatedNumber value={activeStudioResult.headlineValue} />
                   </div>
                 </div>
 
                 <div>
-                  <span className="text-xs font-mono text-slate-400 block mb-1">
+                  <span className="text-xs text-slate-500 font-medium block mb-1">
                     {activeStudioResult.investedLabel}
                   </span>
-                  <div className="text-xl sm:text-2xl font-poppins font-medium text-white">
+                  <div className="text-xl sm:text-2xl font-poppins font-semibold text-slate-900 font-mono">
                     {formatINR(activeStudioResult.investedValue, { compact: true })}
                   </div>
                 </div>
 
                 <div>
-                  <span className="text-xs font-mono text-slate-400 block mb-1">
+                  <span className="text-xs text-slate-500 font-medium block mb-1">
                     {activeStudioResult.gainLabel}
                   </span>
-                  <div className="text-xl sm:text-2xl font-poppins font-medium text-[#5B92D1]">
+                  <div className="text-xl sm:text-2xl font-poppins font-semibold text-[#315FCE] font-mono">
                     {activeStudioResult.isRate ? `${activeStudioResult.gainValue}%` : `+${formatINR(activeStudioResult.gainValue, { compact: true })}`}
                   </div>
                 </div>
               </div>
 
               {/* Calculation Assumptions Drawer */}
-              <div className="pt-2 border-t border-slate-800">
+              <div className="pt-2 border-t border-[#DCE4EE]">
                 <button
                   onClick={() => setShowStudioAssumptions(!showStudioAssumptions)}
-                  className="w-full flex items-center justify-between text-xs font-mono text-slate-400 hover:text-white transition-colors cursor-pointer py-1.5"
+                  className="w-full flex items-center justify-between text-xs text-slate-600 hover:text-slate-900 transition-colors cursor-pointer py-1.5 font-medium"
                 >
                   <span>View Calculation Assumptions</span>
-                  {showStudioAssumptions ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  {showStudioAssumptions ? <ChevronUp className="w-4 h-4 text-slate-700" /> : <ChevronDown className="w-4 h-4 text-slate-700" />}
                 </button>
 
                 {showStudioAssumptions && (
-                  <div className="mt-3 p-4 bg-[#0B131E] rounded-xl border border-slate-800 space-y-2 text-xs font-mono text-slate-400">
+                  <div className="mt-3 p-4 bg-[#F8FAFC] rounded-xl border border-[#DCE4EE] space-y-2 text-xs font-mono text-slate-600">
                     <div className="flex justify-between">
-                      <span>Compounding Frequency:</span>
-                      <span className="text-white">Monthly</span>
+                      <span className="text-slate-500">Compounding Frequency:</span>
+                      <span className="text-slate-900 font-medium">Monthly</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Contribution Timing:</span>
-                      <span className="text-white">Beginning of Month</span>
+                      <span className="text-slate-500">Contribution Timing:</span>
+                      <span className="text-slate-900 font-medium">Beginning of Month</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Inflation Assumption:</span>
-                      <span className="text-white">6.0% p.a. (where applicable)</span>
+                      <span className="text-slate-500">Inflation Assumption:</span>
+                      <span className="text-slate-900 font-medium">6.0% p.a. (where applicable)</span>
                     </div>
-                    <p className="pt-2 text-[11px] text-slate-400 leading-relaxed border-t border-slate-800/80">
+                    <p className="pt-2 text-[11px] text-slate-500 leading-relaxed border-t border-slate-200">
                       Illustrative calculation only. Actual investment outcomes may differ across market cycles and scheme categories.
                     </p>
                   </div>
@@ -662,14 +662,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <div className="flex flex-wrap items-center gap-4 pt-1">
                 <button
                   onClick={() => onOpenConsultation(`${studioTab.toUpperCase()} Planning Discussion`)}
-                  className="px-6 py-3 text-xs font-medium text-[#0B131E] bg-[#7BA238] hover:bg-[#8EB942] rounded-md transition-colors inline-flex items-center gap-2 cursor-pointer shadow-xs active:scale-[0.98]"
+                  className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors inline-flex items-center gap-2 cursor-pointer shadow-xs active:scale-[0.98]"
                 >
                   <span>Structure This Plan With Farcon</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[#78A832]" />
                 </button>
                 <button
                   onClick={() => navigate(`/calculators/${studioTab}` as RoutePath)}
-                  className="px-4 py-3 text-xs font-medium text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  className="px-4 py-3 text-xs font-medium text-slate-600 hover:text-slate-950 transition-colors cursor-pointer"
                 >
                   Open Full Dedicated Calculator
                 </button>
@@ -684,10 +684,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
           ========================================================================= */}
       <section className="relative">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="border border-slate-200 rounded-2xl p-8 sm:p-12 lg:p-14 bg-[#FAF9F5] grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          <div className="border border-[#DCE4EE] rounded-2xl p-8 sm:p-12 lg:p-14 bg-[#F2F6FB] grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {/* Left: Editorial Proposition */}
             <div className="lg:col-span-7 space-y-6">
-              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block">
+              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#78A832] block">
                 DIAGNOSTIC ASSESSMENT
               </span>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
@@ -719,10 +719,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 <button
                   onClick={() => navigate('/investor-quiz')}
-                  className="px-7 py-3.5 text-xs font-medium text-white bg-[#0B131E] hover:bg-[#1E293B] rounded-md transition-colors inline-flex items-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
+                  className="px-7 py-3.5 text-xs font-medium text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors inline-flex items-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
                 >
                   <span>Take the Investor Fit</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#7BA238]" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[#78A832]" />
                 </button>
                 <button
                   onClick={() => navigate('/investor-quiz')}
@@ -734,9 +734,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </div>
 
             {/* Right: Question 01 / 08 Interactive Sample */}
-            <div className="lg:col-span-5 bg-white p-6 sm:p-7 rounded-xl border border-slate-200 space-y-4">
+            <div className="lg:col-span-5 bg-white p-6 sm:p-7 rounded-xl border border-[#DCE4EE] space-y-4 shadow-xs">
               <div className="flex items-center justify-between text-xs font-mono pb-2.5 border-b border-slate-100 text-slate-500">
-                <span className="text-[#7BA238] font-medium">01 / 08</span>
+                <span className="text-[#78A832] font-medium">01 / 08</span>
                 <span>Experience Dimension</span>
               </div>
               <h3 className="text-base sm:text-lg font-poppins font-medium text-slate-900 leading-snug">
@@ -749,7 +749,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </div>
                 <div className="p-3 rounded-lg border border-slate-900 bg-slate-50 text-slate-900 font-medium flex items-center justify-between">
                   <span>B. Running 1–3 SIPs currently</span>
-                  <div className="w-2 h-2 rounded-full bg-[#7BA238]" />
+                  <div className="w-2 h-2 rounded-full bg-[#78A832]" />
                 </div>
                 <div className="p-3 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 font-normal flex items-center justify-between">
                   <span>C. Experienced across market cycles</span>
@@ -772,21 +772,21 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {/* Left: Atmospheric Architectural Quote */}
-            <div className="lg:col-span-5 bg-[#0B131E] text-white p-8 sm:p-12 rounded-2xl border border-slate-800 space-y-6">
-              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block">
+            <div className="lg:col-span-5 bg-[#F2F6FB] text-[#17243A] p-8 sm:p-12 rounded-2xl border border-[#DCE4EE] space-y-6 shadow-2xs">
+              <span className="text-[11px] font-mono font-semibold tracking-[0.2em] uppercase text-[#78A832] block">
                 PORTFOLIO CONSOLIDATION
               </span>
-              <blockquote className="text-xl sm:text-2xl font-poppins font-medium text-slate-200 leading-relaxed italic">
+              <blockquote className="text-xl sm:text-2xl font-poppins font-medium text-slate-800 leading-relaxed italic">
                 “True portfolio resilience comes not from collecting twenty different funds, but from eliminating redundancy, expense drag, and emotional churn.”
               </blockquote>
-              <div className="pt-4 border-t border-slate-800 text-xs font-mono text-slate-400">
+              <div className="pt-4 border-t border-[#DCE4EE] text-xs font-mono text-slate-500">
                 Farcon Wealth Portfolio Governance Principle
               </div>
             </div>
 
             {/* Right: Concrete Proposition */}
             <div className="lg:col-span-7 space-y-6">
-              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#5B92D1] block">
+              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#315FCE] block">
                 ALREADY INVESTING?
               </span>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
@@ -798,10 +798,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <div className="pt-2">
                 <button
                   onClick={() => navigate('/portfolio-review')}
-                  className="px-7 py-3.5 text-xs font-medium text-white bg-[#0B131E] hover:bg-[#1E293B] rounded-md transition-colors inline-flex items-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
+                  className="px-7 py-3.5 text-xs font-medium text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors inline-flex items-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
                 >
                   <span>Request a Portfolio Review</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#7BA238]" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[#78A832]" />
                 </button>
               </div>
             </div>
@@ -813,10 +813,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
           SECTION 9 — FARCON AI ASSISTANT (QUIET, UNOBTRUSIVE)
           ========================================================================= */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="bg-[#FAF9F5] rounded-2xl border border-slate-200 p-8 sm:p-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
+        <div className="bg-[#F2F6FB] rounded-2xl border border-[#DCE4EE] p-8 sm:p-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div className="max-w-xl space-y-2.5">
             <div className="flex items-center gap-2">
-              <Bot className="w-4 h-4 text-[#7BA238]" />
+              <Bot className="w-4 h-4 text-[#78A832]" />
               <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-slate-500">
                 FARCON AI GUIDANCE
               </span>
@@ -831,7 +831,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
           <button
             onClick={onOpenAI}
-            className="px-6 py-3.5 text-xs font-medium text-white bg-[#0B131E] hover:bg-slate-800 rounded-md transition-colors shrink-0 flex items-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
+            className="px-6 py-3.5 text-xs font-medium text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors shrink-0 flex items-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
           >
             <span>✦ Ask Farcon AI</span>
           </button>
@@ -846,7 +846,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           {/* Header */}
           <Reveal className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6">
             <div>
-              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block mb-2">
+              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#78A832] block mb-2">
                 EDITORIAL ESSAYS
               </span>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
@@ -859,7 +859,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
             <button
               onClick={() => navigate('/education')}
-              className="text-xs font-medium text-slate-900 hover:text-[#7BA238] inline-flex items-center gap-2 self-start md:self-end group cursor-pointer"
+              className="text-xs font-medium text-slate-900 hover:text-[#78A832] inline-flex items-center gap-2 self-start md:self-end group cursor-pointer"
             >
               <span>View All Essays</span>
               <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
@@ -872,18 +872,18 @@ export const HomeView: React.FC<HomeViewProps> = ({
             {BLOG_POSTS[0] && (
               <article
                 onClick={() => navigate('/education')}
-                className="lg:col-span-7 bg-[#FAF9F5] p-8 sm:p-11 rounded-2xl border border-slate-200 flex flex-col justify-between cursor-pointer group hover:border-slate-300 transition-colors"
+                className="lg:col-span-7 bg-[#F2F6FB] p-8 sm:p-11 rounded-2xl border border-[#DCE4EE] flex flex-col justify-between cursor-pointer group hover:border-slate-300 transition-colors"
               >
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
-                    <span className="text-[#7BA238] font-medium uppercase">{BLOG_POSTS[0].category}</span>
+                    <span className="text-[#78A832] font-medium uppercase">{BLOG_POSTS[0].category}</span>
                     <span>·</span>
                     <span>{BLOG_POSTS[0].readTime}</span>
                     <span>·</span>
                     <span>{BLOG_POSTS[0].publishedDate}</span>
                   </div>
 
-                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-poppins font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors leading-[1.15]">
+                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-poppins font-medium text-slate-900 group-hover:text-[#78A832] transition-colors leading-[1.15]">
                     {BLOG_POSTS[0].title}
                   </h3>
 
@@ -894,7 +894,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
                 <div className="pt-8 mt-8 border-t border-slate-200 flex items-center justify-between text-xs">
                   <span className="text-slate-500 font-mono">By {BLOG_POSTS[0].author}</span>
-                  <span className="font-medium text-slate-900 group-hover:text-[#7BA238] inline-flex items-center gap-1.5">
+                  <span className="font-medium text-slate-900 group-hover:text-[#78A832] inline-flex items-center gap-1.5">
                     Read Complete Essay <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
@@ -907,16 +907,16 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <article
                   key={post.id}
                   onClick={() => navigate('/education')}
-                  className="bg-white p-6 sm:p-7 rounded-xl border border-slate-200 flex flex-col justify-between cursor-pointer group hover:border-slate-300 transition-colors"
+                  className="bg-white p-6 sm:p-7 rounded-xl border border-[#DCE4EE] flex flex-col justify-between cursor-pointer group hover:border-slate-300 transition-colors"
                 >
                   <div className="space-y-2.5">
                     <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
-                      <span className="text-[#5B92D1] font-medium">{post.category}</span>
+                      <span className="text-[#315FCE] font-medium">{post.category}</span>
                       <span>·</span>
                       <span>{post.readTime}</span>
                     </div>
 
-                    <h3 className="text-lg sm:text-xl font-poppins font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors leading-snug">
+                    <h3 className="text-lg sm:text-xl font-poppins font-medium text-slate-900 group-hover:text-[#78A832] transition-colors leading-snug">
                       {post.title}
                     </h3>
 
@@ -927,7 +927,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
                   <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs">
                     <span className="text-slate-400 font-mono text-[11px]">{post.publishedDate}</span>
-                    <span className="font-medium text-slate-900 group-hover:text-[#7BA238] inline-flex items-center gap-1">
+                    <span className="font-medium text-slate-900 group-hover:text-[#78A832] inline-flex items-center gap-1">
                       Read <ArrowRight className="w-3 h-3" />
                     </span>
                   </div>
@@ -943,8 +943,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
           ========================================================================= */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
         <Reveal>
-          <div className="bg-[#0B131E] text-white rounded-2xl p-10 sm:p-16 lg:p-20 border border-slate-800 text-center space-y-7">
-            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238] block">
+          <div className="bg-[#101A2C] text-white rounded-2xl p-10 sm:p-16 lg:p-20 border border-[#20314F] text-center space-y-7">
+            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#78A832] block">
               BEGIN YOUR QUIET COMPOUNDING JOURNEY
             </span>
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-poppins font-medium max-w-3xl mx-auto tracking-[-0.03em] leading-[1.08]">
@@ -956,7 +956,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
               <button
                 onClick={() => onOpenConsultation('Homepage Final CTA')}
-                className="px-7 py-3.5 text-xs font-medium text-[#0B131E] bg-[#7BA238] hover:bg-[#8EB942] rounded-md transition-colors shadow-xs cursor-pointer active:scale-[0.98]"
+                className="px-7 py-3.5 text-xs font-medium text-[#101A2C] bg-[#78A832] hover:bg-[#8EB942] rounded-md transition-colors shadow-xs cursor-pointer active:scale-[0.98]"
               >
                 Book a Free 15-Minute Call
               </button>

@@ -117,22 +117,22 @@ export const AIChatDrawer: React.FC<AIChatDrawerProps> = ({
       aria-label="Farcon AI Guidance Drawer"
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 bg-[#0B131E] text-white">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-[#DCE4EE] bg-[#F2F6FB] text-[#17243A]">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#7BA238]/20 flex items-center justify-center text-[#7BA238] font-bold">
+          <div className="w-8 h-8 rounded-lg bg-[#E8F5E9] border border-[#78A832]/30 flex items-center justify-center text-[#78A832] font-bold">
             ✦
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold tracking-wider uppercase">Farcon AI</span>
-              <span className="text-[10px] text-slate-400 font-mono">ARN: 329006</span>
+              <span className="text-xs font-bold tracking-wider uppercase text-[#17243A]">Farcon AI</span>
+              <span className="text-[10px] text-[#52647D] font-mono">ARN: 329006</span>
             </div>
-            <p className="text-[10px] text-slate-400">Educational · Unbiased · Zero Noise</p>
+            <p className="text-[10px] text-[#52647D]">Educational · Unbiased · Zero Noise</p>
           </div>
         </div>
         <button
           onClick={onClose}
-          className="p-1.5 text-slate-400 hover:text-white rounded-md transition-colors"
+          className="p-1.5 text-[#52647D] hover:text-[#17243A] hover:bg-[#DCE4EE]/40 rounded-md transition-colors"
           aria-label="Close Farcon AI"
         >
           <X className="w-4 h-4" />
@@ -149,7 +149,7 @@ export const AIChatDrawer: React.FC<AIChatDrawerProps> = ({
             <div
               className={`max-w-[90%] rounded-2xl px-4 py-3 text-xs leading-relaxed ${
                 m.role === 'user'
-                  ? 'bg-[#0B131E] text-white'
+                  ? 'bg-[#101A2C] text-white'
                   : 'bg-white text-slate-800 border border-slate-200/90 shadow-2xs'
               }`}
             >
@@ -163,7 +163,7 @@ export const AIChatDrawer: React.FC<AIChatDrawerProps> = ({
                       onClose();
                       onOpenConsultation();
                     }}
-                    className="text-left text-[11px] font-semibold text-[#7BA238] hover:underline flex items-center gap-1"
+                    className="text-left text-[11px] font-semibold text-[#78A832] hover:underline flex items-center gap-1"
                   >
                     <span>Book a Free Consultation with Farcon</span>
                     <ArrowUpRight className="w-3 h-3" />
@@ -187,7 +187,7 @@ export const AIChatDrawer: React.FC<AIChatDrawerProps> = ({
 
         {loading && (
           <div className="flex items-center gap-2 text-xs text-slate-500 bg-white p-3 rounded-xl border border-slate-200 w-fit">
-            <Sparkles className="w-3.5 h-3.5 animate-spin text-[#7BA238]" />
+            <Sparkles className="w-3.5 h-3.5 animate-spin text-[#78A832]" />
             <span>Consulting Farcon financial knowledge...</span>
           </div>
         )}
@@ -240,7 +240,7 @@ export const AIChatDrawer: React.FC<AIChatDrawerProps> = ({
           <button
             type="submit"
             disabled={!input.trim() || loading}
-            className="p-2.5 bg-[#0B131E] hover:bg-[#131F31] text-white rounded-lg transition-colors disabled:opacity-40"
+            className="p-2.5 bg-[#101A2C] hover:bg-[#15243B] text-white rounded-lg transition-colors disabled:opacity-40"
             aria-label="Send question"
           >
             <Send className="w-3.5 h-3.5" />

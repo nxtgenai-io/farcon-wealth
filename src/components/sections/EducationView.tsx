@@ -42,7 +42,7 @@ export const EducationView: React.FC<EducationViewProps> = ({
 
           {/* Zero-Pill Discipline Metadata */}
           <div className="flex items-center gap-2 text-xs text-slate-500 mb-3">
-            <span className="font-semibold text-[#5B92D1]">{selectedPost.category}</span>
+            <span className="font-semibold text-[#315FCE]">{selectedPost.category}</span>
             <span aria-hidden="true">·</span>
             <span>{selectedPost.publishedDate}</span>
             <span aria-hidden="true">·</span>
@@ -73,7 +73,7 @@ export const EducationView: React.FC<EducationViewProps> = ({
           </div>
           <button
             onClick={onOpenConsultation}
-            className="px-5 py-2.5 text-xs font-semibold text-white bg-[#0B131E] rounded-md hover:bg-slate-800 transition-colors shrink-0"
+            className="px-5 py-2.5 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors shrink-0 shadow-xs"
           >
             Ask Farcon
           </button>
@@ -86,7 +86,7 @@ export const EducationView: React.FC<EducationViewProps> = ({
   return (
     <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-16 space-y-16">
       <div className="text-center max-w-3xl mx-auto">
-        <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+        <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
           Investor Knowledge
         </span>
         <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
@@ -104,7 +104,7 @@ export const EducationView: React.FC<EducationViewProps> = ({
               onClick={() => setActiveCategory(cat)}
               className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
                 activeCategory === cat
-                  ? 'bg-[#0B131E] text-white'
+                  ? 'bg-[#101A2C] text-white'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
@@ -121,18 +121,18 @@ export const EducationView: React.FC<EducationViewProps> = ({
           {filteredPosts[0] && (
             <article
               onClick={() => setSelectedSlug(filteredPosts[0].slug)}
-              className="bg-[#FAF9F5] p-8 sm:p-12 lg:p-14 rounded-3xl border border-slate-200 cursor-pointer group hover:border-slate-300 transition-all flex flex-col justify-between"
+              className="bg-[#F2F6FB] p-8 sm:p-12 lg:p-14 rounded-2xl border border-[#DCE4EE] cursor-pointer group hover:border-slate-300 transition-all flex flex-col justify-between shadow-xs"
             >
               <div className="space-y-4 max-w-4xl">
                 <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
-                  <span className="text-[#7BA238] font-bold uppercase">{filteredPosts[0].category}</span>
+                  <span className="text-[#78A832] font-semibold uppercase">{filteredPosts[0].category}</span>
                   <span>·</span>
                   <span>{filteredPosts[0].readTime}</span>
                   <span>·</span>
                   <span>{filteredPosts[0].publishedDate}</span>
                 </div>
 
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-poppins font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors leading-[1.15]">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-poppins font-medium text-slate-900 group-hover:text-[#78A832] transition-colors leading-[1.15]">
                   {filteredPosts[0].title}
                 </h2>
 
@@ -141,9 +141,9 @@ export const EducationView: React.FC<EducationViewProps> = ({
                 </p>
               </div>
 
-              <div className="pt-8 mt-8 border-t border-slate-200/80 flex items-center justify-between text-xs">
+              <div className="pt-8 mt-8 border-t border-[#DCE4EE] flex items-center justify-between text-xs">
                 <span className="text-slate-500 font-mono">By {filteredPosts[0].author}</span>
-                <span className="font-semibold text-slate-900 group-hover:text-[#7BA238] inline-flex items-center gap-1.5">
+                <span className="font-semibold text-slate-900 group-hover:text-[#78A832] inline-flex items-center gap-1.5">
                   Read Essay <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>
@@ -157,16 +157,16 @@ export const EducationView: React.FC<EducationViewProps> = ({
                 <article
                   key={post.id}
                   onClick={() => setSelectedSlug(post.slug)}
-                  className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 flex flex-col justify-between cursor-pointer group hover:border-slate-300 transition-all"
+                  className="bg-white p-6 sm:p-8 rounded-xl border border-[#DCE4EE] flex flex-col justify-between cursor-pointer group hover:border-slate-300 transition-all shadow-xs"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
-                      <span className="text-[#5B92D1] font-semibold">{post.category}</span>
+                      <span className="text-[#315FCE] font-semibold">{post.category}</span>
                       <span>·</span>
                       <span>{post.readTime}</span>
                     </div>
 
-                    <h3 className="text-lg sm:text-xl font-poppins font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors leading-snug">
+                    <h3 className="text-lg sm:text-xl font-poppins font-medium text-slate-900 group-hover:text-[#78A832] transition-colors leading-snug">
                       {post.title}
                     </h3>
 
@@ -177,7 +177,7 @@ export const EducationView: React.FC<EducationViewProps> = ({
 
                   <div className="pt-4 mt-6 border-t border-slate-100 flex items-center justify-between text-xs">
                     <span className="text-slate-400 font-mono text-[11px]">{post.publishedDate}</span>
-                    <span className="font-semibold text-slate-900 group-hover:text-[#7BA238] inline-flex items-center gap-1">
+                    <span className="font-semibold text-slate-900 group-hover:text-[#78A832] inline-flex items-center gap-1">
                       Read Essay <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </div>
@@ -189,9 +189,9 @@ export const EducationView: React.FC<EducationViewProps> = ({
       )}
 
       {/* Embedded FAQ Accordion Section */}
-      <div className="bg-slate-50 rounded-2xl p-6 sm:p-12 border border-slate-200">
+      <div className="bg-[#F2F6FB] rounded-2xl p-6 sm:p-12 border border-[#DCE4EE]">
         <div className="max-w-2xl mb-8">
-          <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+          <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
             Frequently Asked Questions
           </span>
           <h2 className="text-2xl sm:text-3xl font-poppins font-medium text-slate-900 mt-1">
@@ -208,7 +208,7 @@ export const EducationView: React.FC<EducationViewProps> = ({
             return (
               <div
                 key={faq.id}
-                className="bg-white rounded-lg border border-slate-200/80 overflow-hidden"
+                className="bg-white rounded-lg border border-[#DCE4EE] overflow-hidden"
               >
                 <button
                   onClick={() => setOpenFaqId(isOpen ? null : faq.id)}

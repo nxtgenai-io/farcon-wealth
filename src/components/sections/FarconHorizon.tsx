@@ -272,37 +272,28 @@ export const FarconHorizon: React.FC<FarconHorizonProps> = ({
 
   return (
     <div
-      className="bg-[#0B131E] text-white rounded-2xl border border-slate-800/90 shadow-xl overflow-hidden relative font-inter max-w-2xl mx-auto lg:max-w-none transition-all duration-300"
+      className="bg-white text-[#17243A] rounded-2xl border border-[#DCE4EE] shadow-xs overflow-hidden relative font-inter max-w-2xl mx-auto lg:max-w-none transition-all duration-300"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       role="region"
       aria-label="Farcon Investment Horizon visual instrument"
     >
-      {/* Background Architectural Datum Grid lines (3% opacity) */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.035] overflow-hidden" aria-hidden="true">
-        <svg className="w-full h-full" viewBox="0 0 640 400" fill="none">
-          <line x1="0" y1="80" x2="640" y2="80" stroke="#FFFFFF" strokeWidth="0.5" strokeDasharray="3 3" />
-          <line x1="0" y1="160" x2="640" y2="160" stroke="#FFFFFF" strokeWidth="0.5" strokeDasharray="3 3" />
-          <line x1="0" y1="240" x2="640" y2="240" stroke="#FFFFFF" strokeWidth="0.5" strokeDasharray="3 3" />
-          <path d="M 0 320 C 200 290, 420 180, 640 100" stroke="#7BA238" strokeWidth="1" />
-        </svg>
-      </div>
-
       {/* TOP HEADER: Clean institutional label & Archetype Tabs */}
-      <div className="px-5 py-4 sm:px-6 sm:py-4.5 border-b border-slate-800/80 relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="px-5 py-2.5 sm:px-6 border-b border-[#DCE4EE] relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-[#FAFBFC]">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono font-medium tracking-[0.2em] uppercase text-[#7BA238]">
-            PLANNING INSTRUMENT
-          </span>
-          <span className="text-slate-600 text-xs">·</span>
-          <span className="text-xs font-poppins font-medium text-white tracking-tight">
+          <span className="w-2 h-2 rounded-full bg-[#78A832]" />
+          <span className="text-xs font-semibold text-slate-900 tracking-tight">
             Farcon Horizon
+          </span>
+          <span className="text-slate-300 text-xs">·</span>
+          <span className="text-[11px] text-slate-500 font-normal">
+            Milestone Trajectory
           </span>
         </div>
 
-        {/* Goal Archetype Selector */}
+        {/* Goal Archetype Selector (Groww-inspired pill tabs) */}
         <div
-          className="inline-flex items-center gap-1 p-0.5 bg-[#131F31] rounded-lg border border-slate-800 overflow-x-auto max-w-full"
+          className="inline-flex items-center gap-1 p-0.5 bg-[#F2F6FB] rounded-lg border border-[#DCE4EE] overflow-x-auto max-w-full"
           role="tablist"
           aria-label="Select Goal Archetype"
         >
@@ -317,10 +308,10 @@ export const FarconHorizon: React.FC<FarconHorizonProps> = ({
                   setActiveGoalIndex(idx);
                   setActiveNodeIndex(1); // Keep runway view
                 }}
-                className={`px-2.5 py-1 text-[11px] font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
+                className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
                   isSelected
-                    ? 'bg-[#7BA238] text-[#0B131E] font-medium'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                    ? 'bg-white text-slate-900 font-semibold shadow-2xs border border-[#DCE4EE]'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
                 }`}
               >
                 {goal.shortLabel}
@@ -330,9 +321,9 @@ export const FarconHorizon: React.FC<FarconHorizonProps> = ({
         </div>
       </div>
 
-      {/* HORIZON TRAJECTORY SVG (LOW PROFILE: H-28 to H-32) */}
-      <div className="px-5 pt-4 pb-2 sm:px-6 relative z-10">
-        <div className="relative w-full h-28 sm:h-32">
+      {/* HORIZON TRAJECTORY SVG (PALE CHART SURFACE, RESTRAINED GRIDLINES) */}
+      <div className="px-5 pt-3 pb-2 sm:px-6 relative z-10 bg-white">
+        <div className="relative w-full h-28 sm:h-32 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0] p-2">
           <svg
             viewBox="0 0 640 140"
             fill="none"
@@ -341,19 +332,19 @@ export const FarconHorizon: React.FC<FarconHorizonProps> = ({
           >
             <defs>
               <linearGradient id="horizon-line-grad" x1="0" y1="0" x2="640" y2="0" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#334155" />
-                <stop offset="45%" stopColor="#5B92D1" />
-                <stop offset="100%" stopColor="#7BA238" />
+                <stop offset="0%" stopColor="#94A3B8" />
+                <stop offset="45%" stopColor="#315FCE" />
+                <stop offset="100%" stopColor="#78A832" />
               </linearGradient>
               <linearGradient id="horizon-soft-glow" x1="0" y1="0" x2="0" y2="140" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#7BA238" stopOpacity="0.08" />
-                <stop offset="100%" stopColor="#7BA238" stopOpacity="0" />
+                <stop offset="0%" stopColor="#78A832" stopOpacity="0.12" />
+                <stop offset="100%" stopColor="#78A832" stopOpacity="0.01" />
               </linearGradient>
             </defs>
 
-            {/* Datum reference lines */}
-            <line x1="30" y1="120" x2="610" y2="120" stroke="#1E293B" strokeWidth="0.75" strokeDasharray="2 4" />
-            <line x1="30" y1="70" x2="610" y2="70" stroke="#1E293B" strokeWidth="0.75" strokeDasharray="2 4" />
+            {/* Restrained datum reference lines */}
+            <line x1="30" y1="120" x2="610" y2="120" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="3 4" />
+            <line x1="30" y1="70" x2="610" y2="70" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="3 4" />
 
             {/* Shaded Area */}
             <path
@@ -365,7 +356,7 @@ export const FarconHorizon: React.FC<FarconHorizonProps> = ({
             <path
               d="M 30 120 C 180 115, 380 65, 610 24"
               stroke="url(#horizon-line-grad)"
-              strokeWidth="2"
+              strokeWidth="2.5"
               strokeLinecap="round"
             />
 
@@ -380,13 +371,13 @@ export const FarconHorizon: React.FC<FarconHorizonProps> = ({
                   className="cursor-pointer transition-transform duration-200"
                   onClick={() => setActiveNodeIndex(idx)}
                 >
-                  {/* Subtle active target ring (no garish pulse) */}
+                  {/* Subtle active target ring */}
                   {isActive && (
                     <circle
                       cx={coord.x}
                       cy={coord.y}
-                      r="13"
-                      fill="#7BA238"
+                      r="14"
+                      fill="#78A832"
                       fillOpacity="0.18"
                     />
                   )}
@@ -395,16 +386,16 @@ export const FarconHorizon: React.FC<FarconHorizonProps> = ({
                     cx={coord.x}
                     cy={coord.y}
                     r={isActive ? '7' : '5'}
-                    fill="#0B131E"
-                    stroke={isActive ? '#7BA238' : isPast ? '#5B92D1' : '#334155'}
-                    strokeWidth={isActive ? '2.5' : '1.5'}
+                    fill="#FFFFFF"
+                    stroke={isActive ? '#78A832' : isPast ? '#315FCE' : '#CBD5E1'}
+                    strokeWidth={isActive ? '2.5' : '2'}
                   />
 
                   <circle
                     cx={coord.x}
                     cy={coord.y}
-                    r={isActive ? '3' : '2'}
-                    fill={isActive ? '#7BA238' : isPast ? '#5B92D1' : '#64748B'}
+                    r={isActive ? '3.5' : '2'}
+                    fill={isActive ? '#78A832' : isPast ? '#315FCE' : '#94A3B8'}
                   />
                 </g>
               );
@@ -413,7 +404,7 @@ export const FarconHorizon: React.FC<FarconHorizonProps> = ({
         </div>
 
         {/* 4 Quiet Milestone Tabs Directly Below Curve */}
-        <div className="grid grid-cols-4 gap-1.5 border-t border-slate-800/80 pt-2.5">
+        <div className="grid grid-cols-4 gap-1.5 border-t border-[#DCE4EE] pt-2 mt-2">
           {activeGoal.nodes.map((node, idx) => {
             const isActive = activeNodeIndex === idx;
             return (
@@ -422,21 +413,21 @@ export const FarconHorizon: React.FC<FarconHorizonProps> = ({
                 onClick={() => setActiveNodeIndex(idx)}
                 className={`text-left p-1.5 sm:p-2 rounded-lg transition-colors cursor-pointer ${
                   isActive
-                    ? 'bg-[#131F31] border border-slate-700/70 text-white'
-                    : 'hover:bg-slate-900/60 text-slate-500'
+                    ? 'bg-[#F2F6FB] border border-[#DCE4EE] text-slate-900 shadow-2xs'
+                    : 'hover:bg-slate-50 text-slate-500'
                 }`}
               >
                 <div className="flex items-center gap-1.5">
                   <span
-                    className={`text-[10px] font-mono font-medium ${
-                      isActive ? 'text-[#7BA238]' : 'text-slate-500'
+                    className={`text-[10px] font-mono font-semibold ${
+                      isActive ? 'text-[#78A832]' : 'text-slate-400'
                     }`}
                   >
                     {node.stageNumber}
                   </span>
                   <span
                     className={`text-[11px] truncate ${
-                      isActive ? 'text-white font-medium' : 'text-slate-400'
+                      isActive ? 'text-slate-900 font-semibold' : 'text-slate-600'
                     }`}
                   >
                     {node.stageLabel}
@@ -444,7 +435,7 @@ export const FarconHorizon: React.FC<FarconHorizonProps> = ({
                 </div>
                 <div
                   className={`h-0.5 rounded-full mt-1.5 transition-all ${
-                    isActive ? 'bg-[#7BA238] w-full' : 'bg-slate-800 w-1/4'
+                    isActive ? 'bg-[#78A832] w-full' : 'bg-slate-200 w-1/4'
                   }`}
                 />
               </button>
@@ -453,31 +444,31 @@ export const FarconHorizon: React.FC<FarconHorizonProps> = ({
         </div>
       </div>
 
-      {/* ACTIVE STAGE FOCUS: Clear Editorial Hierarchy (Only 1 stage visually dominant) */}
-      <div className="px-5 py-4 sm:px-6 sm:py-5 bg-[#0E1724] border-t border-slate-800/80 relative z-10">
+      {/* ACTIVE STAGE FOCUS: Clear Editorial Hierarchy on Pale Surface */}
+      <div className="px-5 py-3.5 sm:px-6 sm:py-4 bg-[#F2F6FB] border-t border-[#DCE4EE] relative z-10">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           {/* Left Context: Stage & Explanation */}
           <div className="space-y-1 sm:max-w-[62%]">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono font-medium text-[#7BA238] uppercase">
-                {activeNode.stageNumber} · {activeNode.stageLabel}
+              <span className="text-[11px] font-semibold text-[#78A832]">
+                Stage {activeNode.stageNumber} · {activeNode.stageLabel}
               </span>
-              <span className="text-slate-600 text-xs">/</span>
-              <span className="text-xs font-poppins font-medium text-slate-200">
+              <span className="text-slate-300 text-xs">/</span>
+              <span className="text-xs font-medium text-slate-900">
                 {activeNode.title}
               </span>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed font-normal">
+            <p className="text-xs text-slate-600 leading-relaxed font-normal">
               {activeNode.explanation}
             </p>
           </div>
 
           {/* Right Highlight: Single Clear Metric */}
-          <div className="p-3 sm:p-3.5 rounded-xl bg-[#131F31] border border-slate-800 text-left sm:text-right shrink-0 min-w-[170px]">
-            <span className="text-[10px] font-mono text-slate-400 block">
+          <div className="p-3.5 rounded-xl bg-white border border-[#DCE4EE] text-left sm:text-right shrink-0 min-w-[160px] shadow-2xs">
+            <span className="text-[11px] text-slate-500 block font-medium">
               {activeNode.metricLabel}
             </span>
-            <div className="text-xl sm:text-2xl font-poppins font-medium text-[#7BA238] tracking-tight mt-0.5">
+            <div className="text-xl sm:text-2xl font-semibold text-[#78A832] tracking-tight mt-0.5 font-poppins">
               {activeNode.metricValue}
             </div>
             <span className="text-[10px] text-slate-400 block mt-0.5">
@@ -487,9 +478,9 @@ export const FarconHorizon: React.FC<FarconHorizonProps> = ({
         </div>
 
         {/* Footer line: Subtle statutory caption & Manual Stage Control */}
-        <div className="pt-3.5 mt-3.5 border-t border-slate-800/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-          <p className="text-[11px] text-slate-400 leading-normal">
-            <span className="text-slate-300 font-medium">Notice:</span> Conceptual planning journey — not investment performance.
+        <div className="pt-3 mt-3 border-t border-[#DCE4EE] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <p className="text-[11px] text-slate-500 leading-normal">
+            <span className="text-slate-700 font-medium">Notice:</span> Conceptual planning journey — not investment performance.
           </p>
 
           <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
@@ -497,23 +488,23 @@ export const FarconHorizon: React.FC<FarconHorizonProps> = ({
             <button
               onClick={() => setActiveNodeIndex((prev) => (prev === 0 ? 3 : prev - 1))}
               aria-label="Previous milestone"
-              className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+              className="p-1 rounded text-slate-500 hover:text-slate-900 hover:bg-white transition-colors cursor-pointer"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setActiveNodeIndex((prev) => (prev === 3 ? 0 : prev + 1))}
               aria-label="Next milestone"
-              className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+              className="p-1 rounded text-slate-500 hover:text-slate-900 hover:bg-white transition-colors cursor-pointer"
             >
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => onOpenConsultation(`${activeGoal.label} Plan Discussion`)}
-              className="ml-2 px-3 py-1.5 text-[11px] font-medium text-[#0B131E] bg-[#7BA238] hover:bg-[#8EB942] rounded-md transition-colors inline-flex items-center gap-1 cursor-pointer active:scale-[0.98]"
+              className="ml-2 px-3 py-1.5 text-[11px] font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors inline-flex items-center gap-1 cursor-pointer active:scale-[0.98]"
             >
               <span>Explore Goal</span>
-              <ArrowRight className="w-3 h-3" />
+              <ArrowRight className="w-3 h-3 text-[#78A832]" />
             </button>
           </div>
         </div>

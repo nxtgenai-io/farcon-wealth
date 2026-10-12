@@ -15,7 +15,7 @@ export const LegalViews: React.FC<LegalViewProps> = ({ type, navigate }) => {
         {type === 'disclosures' && (
           <>
             <div>
-              <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+              <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
                 Regulatory Disclosures
               </span>
               <h1 className="mt-2 text-2xl sm:text-3xl font-poppins font-medium text-slate-900">
@@ -58,7 +58,7 @@ export const LegalViews: React.FC<LegalViewProps> = ({ type, navigate }) => {
         {type === 'grievance' && (
           <>
             <div>
-              <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+              <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
                 Investor Protection
               </span>
               <h1 className="mt-2 text-2xl sm:text-3xl font-poppins font-medium text-slate-900">
@@ -101,7 +101,7 @@ export const LegalViews: React.FC<LegalViewProps> = ({ type, navigate }) => {
         {type === 'privacy' && (
           <>
             <div>
-              <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+              <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
                 Confidentiality
               </span>
               <h1 className="mt-2 text-2xl sm:text-3xl font-poppins font-medium text-slate-900">
@@ -131,7 +131,7 @@ export const LegalViews: React.FC<LegalViewProps> = ({ type, navigate }) => {
         {type === 'terms' && (
           <>
             <div>
-              <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+              <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
                 Terms & Conditions
               </span>
               <h1 className="mt-2 text-2xl sm:text-3xl font-poppins font-medium text-slate-900">

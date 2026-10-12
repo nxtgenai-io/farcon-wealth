@@ -30,7 +30,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
             <span className="text-slate-900 font-medium">{service.title}</span>
           </div>
 
-          <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+          <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
             Farcon Service Architecture
           </span>
           <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
@@ -47,7 +47,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
           <div className="mt-8 flex flex-wrap gap-4">
             <button
               onClick={() => onOpenConsultation(service.title)}
-              className="px-6 py-3 text-xs font-semibold text-white bg-[#0B131E] hover:bg-slate-800 rounded-md transition-colors shadow-xs"
+              className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors shadow-xs"
             >
               Book a Free Consultation
             </button>
@@ -62,28 +62,28 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
 
         {/* What it is & Who it is for */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-xs">
+          <div className="bg-white p-6 sm:p-8 rounded-xl border border-[#DCE4EE] shadow-xs">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 mb-4">
               What It Encompasses
             </h2>
             <ul className="space-y-3 text-xs text-slate-600">
               {service.whatItIs.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#7BA238] shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-[#78A832] shrink-0 mt-0.5" />
                   <span className="leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-xs">
+          <div className="bg-white p-6 sm:p-8 rounded-xl border border-[#DCE4EE] shadow-xs">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 mb-4">
               Who It Is Designed For
             </h2>
             <ul className="space-y-3 text-xs text-slate-600">
               {service.whoItIsFor.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#5B92D1] shrink-0 mt-1.5" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#315FCE] shrink-0 mt-1.5" />
                   <span className="leading-relaxed">{item}</span>
                 </li>
               ))}
@@ -94,7 +94,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
         {/* How Farcon Approaches It: 4-Step Editorial Timeline */}
         <div>
           <div className="max-w-2xl mb-8">
-            <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+            <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
               Methodology
             </span>
             <h2 className="text-2xl font-poppins font-medium text-slate-900 mt-1">
@@ -109,10 +109,10 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
             {service.howFarconApproaches.map((step) => (
               <div
                 key={step.step}
-                className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between"
+                className="bg-white p-6 rounded-xl border border-[#DCE4EE] shadow-xs flex flex-col justify-between"
               >
                 <div>
-                  <span className="text-2xl font-bold font-mono text-[#7BA238] block mb-3">
+                  <span className="text-2xl font-bold font-mono text-[#78A832] block mb-3">
                     {step.step}
                   </span>
                   <h3 className="text-sm font-semibold text-slate-900 mb-2 leading-snug">
@@ -145,18 +145,18 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
         )}
 
         {/* Bottom CTA Block */}
-        <div className="bg-[#0B131E] text-white p-8 sm:p-10 rounded-xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="bg-[#F2F6FB] text-[#17243A] p-8 sm:p-10 rounded-2xl border border-[#DCE4EE] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
           <div>
-            <h3 className="text-xl font-poppins font-medium">
+            <h3 className="text-xl font-poppins font-medium text-[#17243A]">
               Ready to Structure Your {service.title}?
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-[#52647D] mt-1">
               Connect with an AMFI-registered advisor with zero sales push.
             </p>
           </div>
           <button
             onClick={() => onOpenConsultation(service.title)}
-            className="px-6 py-3 text-xs font-semibold text-[#0B131E] bg-[#7BA238] hover:bg-[#8EB942] rounded-md transition-colors shrink-0"
+            className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors shrink-0 shadow-xs"
           >
             Book Free Consultation
           </button>
@@ -169,7 +169,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
   return (
     <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-16">
       <div className="text-center max-w-3xl mx-auto mb-12">
-        <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+        <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
           Published Capabilities
         </span>
         <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
@@ -189,11 +189,11 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
             className="py-8 sm:py-10 transition-all duration-300 cursor-pointer group flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-slate-50/80 px-4 sm:px-6 -mx-4 sm:-mx-6 rounded-2xl"
           >
             <div className="flex items-start sm:items-center gap-6 sm:gap-8 md:w-5/12">
-              <span className="text-xl sm:text-2xl font-mono text-slate-400 group-hover:text-[#7BA238] transition-colors">
+              <span className="text-xl sm:text-2xl font-mono text-slate-400 group-hover:text-[#78A832] transition-colors">
                 0{idx + 1}
               </span>
               <div>
-                <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors leading-snug">
+                <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900 group-hover:text-[#78A832] transition-colors leading-snug">
                   {service.title}
                 </h2>
                 <span className="text-xs text-slate-500 block mt-1">
@@ -206,7 +206,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
               <p>{service.summary}</p>
             </div>
 
-            <div className="md:w-2/12 flex items-center md:justify-end gap-3 text-xs font-semibold text-slate-900 group-hover:text-[#7BA238] transition-colors">
+            <div className="md:w-2/12 flex items-center md:justify-end gap-3 text-xs font-semibold text-slate-900 group-hover:text-[#78A832] transition-colors">
               <span className="hidden sm:inline">Details</span>
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5" />
             </div>

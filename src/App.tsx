@@ -180,7 +180,7 @@ export function App() {
       return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center max-w-xl mx-auto mb-10">
-            <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+            <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
               Direct Advisory Desk
             </span>
             <h1 className="mt-2 text-3xl font-poppins font-medium text-slate-900">
@@ -190,13 +190,13 @@ export function App() {
               Schedule a quiet, confidential conversation with our AMFI-registered team.
             </p>
           </div>
-          <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-xs max-w-xl mx-auto text-center space-y-6">
+          <div className="bg-white rounded-xl border border-[#DCE4EE] p-8 shadow-xs max-w-xl mx-auto text-center space-y-6">
             <p className="text-xs text-slate-600 leading-relaxed">
               We respond to all investor inquiries promptly with zero sales push.
             </p>
             <button
               onClick={() => handleOpenConsultation('Contact Page Request')}
-              className="px-6 py-3 text-xs font-semibold text-white bg-[#0B131E] rounded-md hover:bg-slate-800 transition-colors shadow-xs"
+              className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] rounded-md hover:bg-[#15243B] transition-colors shadow-xs"
             >
               Open Consultation Form
             </button>
@@ -230,7 +230,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC] text-[#0B131E] antialiased selection:bg-[#7BA238]/20 selection:text-[#0B131E]">
+    <div className="min-h-screen flex flex-col bg-[#FAFBFC] text-[#17243A] antialiased selection:bg-[#78A832]/20 selection:text-[#101A2C]">
       {/* Top Navigation */}
       <Navbar
         currentPath={currentPath}

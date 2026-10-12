@@ -1,31 +1,100 @@
 @import "tailwindcss";
 
 :root {
-  --farcon-primary: #7BA238;
-  --farcon-primary-dark: #66882C;
-  --farcon-primary-light: #8EB942;
-  --farcon-secondary: #5B92D1;
-  --farcon-secondary-dark: #4679B5;
-  --farcon-secondary-light: #7CAAE0;
-  --farcon-navy: #0B131E;
-  --farcon-navy-card: #131F31;
-  --farcon-navy-light: #1A283D;
-  --farcon-background: #F8FAFC;
+  --farcon-bg: #FAFBFC;
+  --farcon-bg-section: #F2F6FB;
   --farcon-surface: #FFFFFF;
-  --farcon-surface-soft: #F1F5F9;
-  --farcon-border: #E2E8F0;
-  --farcon-border-dark: #1E2E45;
-  --farcon-text: #0B131E;
-  --farcon-text-muted: #64748B;
-  --farcon-accent: #7BA238;
+  --farcon-text: #17243A;
+  --farcon-text-secondary: #52647D;
+  --farcon-border: #DCE4EE;
+  --farcon-navy: #101A2C;
+  --farcon-navy-secondary: #15243B;
+  --farcon-green: #78A832;
+  --farcon-blue: #315FCE;
+  --farcon-blue-pale: #EDF3FF;
+  --farcon-green-soft: #E8F5E9;
+  --farcon-error: #B42318;
 }
 
 @theme {
   --font-display: "Poppins", system-ui, -apple-system, sans-serif;
   --font-heading: "Poppins", system-ui, -apple-system, sans-serif;
-  --font-serif: "Poppins", system-ui, -apple-system, sans-serif;
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --color-farcon-bg: #FAFBFC;
+  --color-farcon-bg-section: #F2F6FB;
+  --color-farcon-surface: #FFFFFF;
+  --color-farcon-text: #17243A;
+  --color-farcon-text-secondary: #52647D;
+  --color-farcon-border: #DCE4EE;
+  --color-farcon-navy: #101A2C;
+  --color-farcon-navy-secondary: #15243B;
+  --color-farcon-green: #78A832;
+  --color-farcon-blue: #315FCE;
+  --color-farcon-blue-pale: #EDF3FF;
+  --color-farcon-green-soft: #E8F5E9;
+  --color-farcon-error: #B42318;
+}
+
+/* Reusable Standardized Card Variants (Consistent 14-18px corner radii, 1px #DCE4EE border) */
+.farcon-card {
+  background-color: #FFFFFF;
+  border: 1px solid #DCE4EE;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px 0 rgba(16, 26, 44, 0.04);
+}
+
+.farcon-card-muted {
+  background-color: #F2F6FB;
+  border: 1px solid #DCE4EE;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px 0 rgba(16, 26, 44, 0.03);
+}
+
+.farcon-card-featured {
+  background-color: #FFFFFF;
+  border: 1px solid #DCE4EE;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px 0 rgba(16, 26, 44, 0.04);
+}
+
+.farcon-card-interactive {
+  background-color: #FFFFFF;
+  border: 1px solid #DCE4EE;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px 0 rgba(16, 26, 44, 0.03);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.farcon-card-interactive:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 14px -2px rgba(16, 26, 44, 0.06);
+}
+
+.farcon-card-selected {
+  background-color: #F6FAF0;
+  border: 1px solid #78A832;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px 0 rgba(120, 168, 50, 0.12);
+}
+
+.farcon-card-result {
+  background-color: #FFFFFF;
+  border: 1px solid #DCE4EE;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px 0 rgba(16, 26, 44, 0.04);
+}
+
+.farcon-card-metric {
+  background-color: #F2F6FB;
+  border: 1px solid #DCE4EE;
+  border-radius: 14px;
+}
+
+.farcon-card-disclosure {
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
 }
 
 .font-poppins {
@@ -90,7 +159,7 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--farcon-background);
+  background-color: var(--farcon-bg);
   color: var(--farcon-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

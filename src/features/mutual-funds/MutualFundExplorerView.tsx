@@ -40,7 +40,7 @@ export const MutualFundExplorerView: React.FC<MutualFundExplorerViewProps> = ({
     <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-16">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-12">
-        <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+        <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
           Discovery & Suitability Exploration
         </span>
         <h1 className="mt-2.5 text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
@@ -86,7 +86,7 @@ export const MutualFundExplorerView: React.FC<MutualFundExplorerViewProps> = ({
               onClick={() => setAssetClassFilter(ac)}
               className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all ${
                 assetClassFilter === ac
-                  ? 'bg-[#0B131E] text-white shadow-xs'
+                  ? 'bg-[#101A2C] text-white shadow-xs'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
@@ -101,44 +101,44 @@ export const MutualFundExplorerView: React.FC<MutualFundExplorerViewProps> = ({
         {filteredFunds.map((fund) => (
           <div
             key={fund.id}
-            className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-7 sm:p-8 flex flex-col justify-between hover:border-slate-300 hover:shadow-lg transition-all duration-300 group"
+            className="bg-white rounded-2xl border border-[#DCE4EE] shadow-xs p-6 sm:p-7 flex flex-col justify-between hover:border-slate-300 transition-all group"
           >
             <div>
               {/* Category & Riskometer Unboxed Metadata */}
               <div className="flex items-center justify-between text-xs text-slate-500 mb-3">
-                <span className="font-semibold text-[#5B92D1] font-mono">{fund.category}</span>
-                <span className="text-slate-500 text-[11px] font-mono">SEBI Riskometer: {fund.riskometer}</span>
+                <span className="font-semibold text-[#315FCE]">{fund.category}</span>
+                <span className="text-slate-500 text-[11px]">SEBI Riskometer: {fund.riskometer}</span>
               </div>
 
-              <h3 className="text-lg font-semibold text-slate-900 mb-2 leading-snug group-hover:text-[#7BA238] transition-colors">
+              <h3 className="text-base sm:text-lg font-semibold text-slate-900 mb-2 leading-snug group-hover:text-[#78A832] transition-colors">
                 {fund.name}
               </h3>
 
-              <p className="text-xs text-slate-600 leading-relaxed mb-6">
+              <p className="text-xs text-slate-600 leading-relaxed mb-5">
                 {fund.description}
               </p>
 
               {/* Data Table */}
-              <div className="grid grid-cols-2 gap-y-3 gap-x-4 py-4 border-y border-slate-100 text-xs">
+              <div className="grid grid-cols-2 gap-y-3 gap-x-4 py-3.5 border-y border-[#DCE4EE] text-xs">
                 <div>
-                  <span className="text-[11px] text-slate-400 block mb-0.5">Indicative NAV</span>
+                  <span className="text-[11px] text-slate-500 block mb-0.5">Indicative NAV</span>
                   <span className="font-mono font-semibold text-slate-900">₹{fund.nav.toFixed(2)}</span>
                 </div>
                 <div>
-                  <span className="text-[11px] text-slate-400 block mb-0.5">3Y CAGR (Demo)</span>
-                  <span className="font-mono font-semibold text-[#7BA238]">+{fund.cagr3Y}%</span>
+                  <span className="text-[11px] text-slate-500 block mb-0.5">3Y CAGR (Demo)</span>
+                  <span className="font-mono font-semibold text-[#78A832]">+{fund.cagr3Y}%</span>
                 </div>
                 <div>
-                  <span className="text-[11px] text-slate-400 block mb-0.5">Expense Ratio</span>
+                  <span className="text-[11px] text-slate-500 block mb-0.5">Expense Ratio</span>
                   <span className="font-mono text-slate-700">{fund.expenseRatio}%</span>
                 </div>
                 <div>
-                  <span className="text-[11px] text-slate-400 block mb-0.5">Min. Monthly SIP</span>
+                  <span className="text-[11px] text-slate-500 block mb-0.5">Min. Monthly SIP</span>
                   <span className="font-mono text-slate-700">{formatINR(fund.minSIP)}/mo</span>
                 </div>
               </div>
 
-              <div className="mt-3.5 text-[11px] text-slate-500 flex items-center justify-between">
+              <div className="mt-3 text-[11px] text-slate-500 flex items-center justify-between">
                 <span>Benchmark: <strong className="text-slate-700">{fund.benchmark}</strong></span>
               </div>
             </div>
@@ -150,7 +150,7 @@ export const MutualFundExplorerView: React.FC<MutualFundExplorerViewProps> = ({
               </span>
               <button
                 onClick={() => onOpenConsultation(`Discuss suitability for ${fund.name}`)}
-                className="text-xs font-semibold text-[#0B131E] group-hover:text-[#7BA238] inline-flex items-center gap-1.5 transition-colors"
+                className="text-xs font-semibold text-[#101A2C] group-hover:text-[#78A832] inline-flex items-center gap-1.5 transition-colors"
               >
                 <span>Check Suitability</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -169,7 +169,7 @@ export const MutualFundExplorerView: React.FC<MutualFundExplorerViewProps> = ({
               setAssetClassFilter('All');
               setSearchQuery('');
             }}
-            className="mt-3 text-xs font-semibold text-[#7BA238] hover:underline"
+            className="mt-3 text-xs font-semibold text-[#78A832] hover:underline"
           >
             Clear All Filters
           </button>
@@ -179,7 +179,7 @@ export const MutualFundExplorerView: React.FC<MutualFundExplorerViewProps> = ({
       {/* Disclaimers */}
       <div className="mt-12 p-6 bg-slate-50 rounded-2xl border border-slate-200/90 text-xs text-slate-600 leading-relaxed space-y-2">
         <div className="flex items-center gap-2 font-semibold text-slate-800">
-          <ShieldCheck className="w-4 h-4 text-[#7BA238]" />
+          <ShieldCheck className="w-4 h-4 text-[#78A832]" />
           <span>{COMPLIANCE_REGISTRY.distributor.amfiRegistration}</span>
         </div>
         <p className="text-slate-500 pl-6">

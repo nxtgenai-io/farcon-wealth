@@ -436,27 +436,23 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative bg-[#0B131E] text-white rounded-3xl border border-slate-800 shadow-2xl overflow-hidden transition-all duration-300 hover:border-slate-700/80 group"
+      className="relative bg-white text-[#17243A] rounded-2xl border border-[#DCE4EE] shadow-xs overflow-hidden transition-all duration-300 group"
     >
-      {/* Subtle Radial Ambient Glow */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#7BA238]/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#5B92D1]/5 rounded-full blur-3xl pointer-events-none" />
-
       {/* Top Header: Instrument Mode & Archetype Switcher */}
-      <div className="relative px-6 sm:px-8 pt-6 pb-4 border-b border-slate-800/80 bg-gradient-to-b from-[#101B2B] to-[#0B131E]">
+      <div className="relative px-6 sm:px-8 pt-6 pb-4 border-b border-[#DCE4EE] bg-[#F2F6FB]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-2.5">
-            <span className="w-2 h-2 rounded-full bg-[#7BA238] animate-pulse" />
-            <span className="text-xs font-mono font-semibold uppercase tracking-[0.18em] text-slate-300">
-              Goal Journey Instrument
+            <span className="w-2 h-2 rounded-full bg-[#78A832]" />
+            <span className="text-xs font-mono font-semibold uppercase tracking-[0.18em] text-[#17243A]">
+              Goal Journey Framework
             </span>
           </div>
 
           {/* Autoplay Status & Scrubber Pause Status */}
-          <div className="flex items-center gap-2 text-[11px] font-mono text-slate-400">
+          <div className="flex items-center gap-2 text-[11px] font-mono text-[#52647D]">
             <span
               className={`w-1.5 h-1.5 rounded-full ${
-                prefersReducedMotion ? 'bg-slate-400' : isHovered ? 'bg-amber-400' : 'bg-[#7BA238]'
+                prefersReducedMotion ? 'bg-slate-400' : isHovered ? 'bg-amber-500' : 'bg-[#78A832]'
               }`}
             />
             <span>
@@ -470,7 +466,7 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
         </div>
 
         {/* 4 Archetype Selectors (Retirement, Child Education, Wealth Creation, Tax Saving) */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-1 bg-[#131F31]/80 rounded-xl border border-slate-800">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-1.5 bg-white rounded-xl border border-[#DCE4EE] shadow-2xs">
           {JOURNEYS.map((item, idx) => {
             const isSelected = activeArchetypeIndex === idx;
             return (
@@ -479,8 +475,8 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
                 onClick={() => handleArchetypeSelect(idx)}
                 className={`py-2 px-2 text-center rounded-lg transition-all text-xs font-medium truncate ${
                   isSelected
-                    ? 'bg-[#0B131E] text-white font-semibold shadow-xs border border-slate-700/80'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                    ? 'bg-[#101A2C] text-white font-semibold shadow-xs'
+                    : 'text-[#52647D] hover:text-[#17243A] hover:bg-slate-100/70'
                 }`}
                 title={item.name}
               >
@@ -492,8 +488,8 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
       </div>
 
       {/* 4 Interactive Sequential Stages Rail (01 Goal → 02 Horizon → 03 Investor Profile → 04 Planning Direction) */}
-      <div className="relative border-b border-slate-800 bg-[#0E1724]">
-        <div className="grid grid-cols-4 divide-x divide-slate-800/80">
+      <div className="relative border-b border-[#DCE4EE] bg-[#FAFBFC]">
+        <div className="grid grid-cols-4 divide-x divide-[#DCE4EE]">
           {archetype.stages.map((st, idx) => {
             const isActive = activeStageIndex === idx;
             const isCompleted = idx < activeStageIndex;
@@ -504,24 +500,24 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
                 onClick={() => handleStageSelect(idx)}
                 className={`p-3.5 sm:p-4 text-left transition-all relative flex flex-col justify-between group/tab cursor-pointer ${
                   isActive
-                    ? 'bg-[#131F31] text-white'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#111A29]'
+                    ? 'bg-white text-[#17243A]'
+                    : 'text-[#52647D] hover:text-[#17243A] hover:bg-[#F2F6FB]/70'
                 }`}
               >
                 <div className="flex items-center justify-between w-full mb-1">
                   <span
                     className={`text-[10px] sm:text-xs font-mono font-bold px-1.5 py-0.5 rounded ${
                       isActive
-                        ? 'bg-[#7BA238] text-[#0B131E]'
+                        ? 'bg-[#78A832] text-[#101A2C]'
                         : isCompleted
-                        ? 'bg-slate-800 text-[#7BA238]'
-                        : 'bg-slate-800/80 text-slate-500'
+                        ? 'bg-[#E8F5E9] text-[#78A832]'
+                        : 'bg-slate-100 text-slate-500'
                     }`}
                   >
                     {st.stageNumber}
                   </span>
                   {isCompleted && (
-                    <CheckCircle2 className="w-3 h-3 text-[#7BA238] hidden sm:block" />
+                    <CheckCircle2 className="w-3 h-3 text-[#78A832] hidden sm:block" />
                   )}
                 </div>
 
@@ -533,9 +529,9 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
 
                 {/* Active Underline Progress Bar for Current Stage */}
                 {isActive && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-800 overflow-hidden">
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#DCE4EE] overflow-hidden">
                     <div
-                      className="h-full bg-[#7BA238] transition-all duration-75 ease-linear"
+                      className="h-full bg-[#78A832] transition-all duration-75 ease-linear"
                       style={{ width: prefersReducedMotion ? '100%' : `${progressPercent}%` }}
                     />
                   </div>
@@ -547,28 +543,28 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
       </div>
 
       {/* Stage Content Panel */}
-      <div className="p-6 sm:p-8 lg:p-10 space-y-6">
+      <div className="p-6 sm:p-8 lg:p-9 space-y-6">
         {/* Top Header of Stage */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800/80">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#DCE4EE]">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-xs font-mono font-bold text-[#7BA238] uppercase">
+              <span className="text-xs font-mono font-bold text-[#78A832] uppercase">
                 Stage {stage.stageNumber} · {stage.stageLabel}
               </span>
             </div>
-            <h3 className="text-xl sm:text-2xl lg:text-3xl font-serif font-medium text-white tracking-tight">
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-[#17243A] tracking-tight">
               {stage.title}
             </h3>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#52647D] mt-1 max-w-2xl leading-relaxed">
               {stage.subtitle}
             </p>
           </div>
 
-          <div className="bg-[#131F31] px-5 py-3.5 rounded-2xl border border-slate-800 shrink-0 text-left md:text-right">
-            <span className="text-[11px] font-mono text-slate-400 block mb-0.5">
+          <div className="bg-[#F2F6FB] px-5 py-3.5 rounded-2xl border border-[#DCE4EE] shrink-0 text-left md:text-right shadow-2xs">
+            <span className="text-[11px] font-mono text-[#52647D] block mb-0.5">
               {stage.metricLabel}
             </span>
-            <div className="text-xl sm:text-2xl font-bold font-mono text-[#7BA238] flex items-baseline gap-2 md:justify-end">
+            <div className="text-xl sm:text-2xl font-bold font-mono text-[#78A832] flex items-baseline gap-2 md:justify-end">
               {stage.metricDisplayOverride ? (
                 <span>{stage.metricDisplayOverride}</span>
               ) : (
@@ -580,7 +576,7 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
               )}
             </div>
             <div className="mt-1 flex items-center md:justify-end">
-              <span className="inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800/90 text-slate-400 border border-slate-700/60">
+              <span className="inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-white text-[#52647D] border border-[#DCE4EE]">
                 Illustrative example · Target value based on your inputs
               </span>
             </div>
@@ -588,42 +584,42 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
         </div>
 
         {/* Dynamic Trajectory SVG Visual (Communicates Goal Runway Progress, NOT Performance) */}
-        <div className="bg-[#0E1724] p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-3">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
+        <div className="bg-[#FAFBFC] p-4 sm:p-5 rounded-2xl border border-[#DCE4EE] space-y-3">
+          <div className="flex items-center justify-between text-xs text-[#52647D] font-mono">
             <span className="flex items-center gap-2">
-              <Target className="w-3.5 h-3.5 text-[#7BA238]" />
-              <span>Goal Runway Trajectory</span>
+              <Target className="w-3.5 h-3.5 text-[#78A832]" />
+              <span className="text-[#17243A] font-medium">Goal Runway Trajectory</span>
             </span>
-            <span className="text-[#7BA238]">
+            <span className="text-[#78A832] font-semibold">
               {Math.round(stage.curveProgress * 100)}% Milestone Direction
             </span>
           </div>
 
           {/* SVG Trajectory Chart */}
-          <div className="h-20 w-full relative">
+          <div className="h-20 w-full relative bg-white rounded-xl border border-[#DCE4EE] p-2 shadow-2xs">
             <svg viewBox="0 0 500 80" className="w-full h-full overflow-visible">
               <defs>
                 <linearGradient id="journeyGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#5B92D1" stopOpacity="0.3" />
-                  <stop offset="50%" stopColor="#7BA238" stopOpacity="0.8" />
-                  <stop offset="100%" stopColor="#7BA238" stopOpacity="1" />
+                  <stop offset="0%" stopColor="#315FCE" stopOpacity="0.3" />
+                  <stop offset="50%" stopColor="#78A832" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="#78A832" stopOpacity="1" />
                 </linearGradient>
                 <linearGradient id="areaFill" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#7BA238" stopOpacity="0.2" />
-                  <stop offset="100%" stopColor="#7BA238" stopOpacity="0" />
+                  <stop offset="0%" stopColor="#78A832" stopOpacity="0.15" />
+                  <stop offset="100%" stopColor="#78A832" stopOpacity="0" />
                 </linearGradient>
               </defs>
 
               {/* Background Reference Grid Line */}
-              <line x1="20" y1="70" x2="480" y2="70" stroke="#1E293B" strokeWidth="1" strokeDasharray="3 3" />
-              <line x1="20" y1="40" x2="480" y2="40" stroke="#1E293B" strokeWidth="1" strokeDasharray="3 3" />
-              <line x1="20" y1="10" x2="480" y2="10" stroke="#1E293B" strokeWidth="1" strokeDasharray="3 3" />
+              <line x1="20" y1="70" x2="480" y2="70" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="3 3" />
+              <line x1="20" y1="40" x2="480" y2="40" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="3 3" />
+              <line x1="20" y1="10" x2="480" y2="10" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="3 3" />
 
               {/* Base Compounding Curve */}
               <path
                 d="M 20 70 Q 180 65, 300 45 T 480 12"
                 fill="none"
-                stroke="#334155"
+                stroke="#CBD5E1"
                 strokeWidth="2"
                 strokeDasharray="4 4"
               />
@@ -651,7 +647,7 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
                     cx={node.x}
                     cy={node.y}
                     r={node.active ? 4.5 : 2.5}
-                    fill={node.active ? '#7BA238' : '#475569'}
+                    fill={node.active ? '#78A832' : '#94A3B8'}
                     className="transition-all duration-300"
                   />
                   {node.active && (
@@ -659,7 +655,7 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
                       cx={node.x}
                       cy={node.y}
                       r={7}
-                      stroke="#7BA238"
+                      stroke="#78A832"
                       strokeWidth="1"
                       fill="none"
                       opacity="0.6"
@@ -669,13 +665,13 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
                 </g>
               ))}
             </svg>
-            <div className="absolute bottom-1 right-2 text-[9px] font-mono text-slate-500">
+            <div className="absolute bottom-1 right-2 text-[9px] font-mono text-[#52647D]">
               Runway Trajectory
             </div>
           </div>
 
           {/* Trajectory Note */}
-          <div className="text-[10px] font-mono text-slate-400 pt-1">
+          <div className="text-[10px] font-mono text-[#52647D] pt-1">
             {COMPLIANCE_REGISTRY.journey.trajectoryNote}
           </div>
         </div>
@@ -683,11 +679,11 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
         {/* Three Editorial Micro-Details */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 py-1">
           {stage.details.map((d, i) => (
-            <div key={i} className="p-3 bg-[#0E1724] rounded-xl border border-slate-800/80 space-y-1">
-              <span className="text-[10px] text-slate-400 font-mono block truncate">
+            <div key={i} className="p-3.5 bg-[#F2F6FB] rounded-xl border border-[#DCE4EE] space-y-1 shadow-2xs">
+              <span className="text-[10px] text-[#52647D] font-mono block truncate">
                 {d.label}
               </span>
-              <strong className="text-xs font-mono text-slate-200 block truncate">
+              <strong className="text-xs font-mono text-[#17243A] block truncate">
                 {d.value}
               </strong>
             </div>
@@ -695,30 +691,30 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
         </div>
 
         {/* Architectural Philosophy Note */}
-        <div className="p-3.5 bg-[#0E1724]/90 rounded-xl border border-slate-800 text-xs text-slate-300 flex items-start gap-2.5">
-          <ShieldCheck className="w-4 h-4 text-[#7BA238] shrink-0 mt-0.5" />
-          <p className="leading-relaxed text-[11px] text-slate-300">
+        <div className="p-3.5 bg-[#EDF3FF] rounded-xl border border-[#DCE4EE] text-xs text-[#17243A] flex items-start gap-2.5">
+          <ShieldCheck className="w-4 h-4 text-[#315FCE] shrink-0 mt-0.5" />
+          <p className="leading-relaxed text-[11px] text-[#17243A]">
             {stage.architecturalPrinciple}
           </p>
         </div>
 
         {/* Stage Navigation & Primary Actions */}
-        <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-800/80">
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[#DCE4EE]">
           {/* Previous / Next Stepper Controls */}
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <button
               onClick={handlePrevStage}
-              className="p-2 rounded-lg bg-[#131F31] hover:bg-slate-800 text-slate-300 hover:text-white transition-colors border border-slate-700/60"
+              className="p-2 rounded-lg bg-[#F2F6FB] hover:bg-slate-200/80 text-[#17243A] transition-colors border border-[#DCE4EE]"
               aria-label="Previous Stage"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="text-xs font-mono text-slate-400 px-2">
+            <span className="text-xs font-mono text-[#52647D] px-2 font-medium">
               0{activeStageIndex + 1} / 04
             </span>
             <button
               onClick={handleNextStage}
-              className="p-2 rounded-lg bg-[#131F31] hover:bg-slate-800 text-slate-300 hover:text-white transition-colors border border-slate-700/60"
+              className="p-2 rounded-lg bg-[#F2F6FB] hover:bg-slate-200/80 text-[#17243A] transition-colors border border-[#DCE4EE]"
               aria-label="Next Stage"
             >
               <ChevronRight className="w-4 h-4" />
@@ -729,7 +725,7 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
           <div className="flex items-center gap-2.5 w-full sm:w-auto">
             <button
               onClick={() => navigate('/wealth-planner')}
-              className="flex-1 sm:flex-none py-2.5 px-4 text-xs font-semibold text-[#0B131E] bg-[#7BA238] hover:bg-[#8EB942] rounded-md transition-colors flex items-center justify-center gap-1.5 shadow-xs"
+              className="flex-1 sm:flex-none py-2.5 px-4 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors flex items-center justify-center gap-1.5 shadow-xs"
             >
               <span>Explore Wealth Planner</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -737,7 +733,7 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
 
             <button
               onClick={onOpenConsultation}
-              className="py-2.5 px-4 text-xs font-semibold text-white bg-slate-800 hover:bg-slate-700 rounded-md transition-colors"
+              className="py-2.5 px-4 text-xs font-semibold text-[#17243A] bg-white border border-[#DCE4EE] hover:bg-slate-50 rounded-md transition-colors shadow-2xs"
             >
               Discuss Planning Direction
             </button>

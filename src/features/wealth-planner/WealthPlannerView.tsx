@@ -54,7 +54,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
     <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-16">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-12">
-        <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+        <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
           Guided Diagnostic Experience
         </span>
         <h1 className="mt-2.5 text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
@@ -71,14 +71,14 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
           <span className="font-semibold text-slate-900">
             Step {step} of 6: {stepLabels[step - 1]}
           </span>
-          <span className="font-mono text-[#7BA238] font-bold">
+          <span className="font-mono text-[#78A832] font-bold">
             {Math.round((step / 6) * 100)}%
           </span>
         </div>
 
         <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
           <div
-            className="h-full bg-[#7BA238] transition-all duration-300 rounded-full"
+            className="h-full bg-[#78A832] transition-all duration-300 rounded-full"
             style={{ width: `${(step / 6) * 100}%` }}
           />
         </div>
@@ -90,7 +90,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 1 && (
           <div className="space-y-7 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono text-[#5B92D1] font-semibold block mb-1">
+              <span className="text-xs font-mono text-[#315FCE] font-semibold block mb-1">
                 STEP 01
               </span>
               <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900">
@@ -142,7 +142,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                 step={5000}
                 value={plannerData.monthlySurplus}
                 onChange={(e) => setPlannerData({ ...plannerData, monthlySurplus: Number(e.target.value) })}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#7BA238]"
+                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
               />
             </div>
           </div>
@@ -152,7 +152,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 2 && (
           <div className="space-y-7 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono text-[#5B92D1] font-semibold block mb-1">
+              <span className="text-xs font-mono text-[#315FCE] font-semibold block mb-1">
                 STEP 02
               </span>
               <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900">
@@ -175,7 +175,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                   onClick={() => setPlannerData({ ...plannerData, goal: g.title })}
                   className={`p-5 rounded-2xl border text-left transition-all ${
                     plannerData.goal === g.title
-                      ? 'border-[#0B131E] bg-slate-50 shadow-xs ring-1 ring-[#0B131E]'
+                      ? 'border-[#101A2C] bg-slate-50 shadow-xs ring-1 ring-[#101A2C]'
                       : 'border-slate-200 hover:border-slate-300'
                   }`}
                 >
@@ -197,7 +197,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                 step={500000}
                 value={plannerData.goalAmount}
                 onChange={(e) => setPlannerData({ ...plannerData, goalAmount: Number(e.target.value) })}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#7BA238]"
+                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
               />
             </div>
           </div>
@@ -207,7 +207,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 3 && (
           <div className="space-y-7 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono text-[#5B92D1] font-semibold block mb-1">
+              <span className="text-xs font-mono text-[#315FCE] font-semibold block mb-1">
                 STEP 03
               </span>
               <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900">
@@ -221,7 +221,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
             <div>
               <div className="flex justify-between items-center mb-2.5">
                 <label className="text-xs font-medium text-slate-700">Goal Timeline (Years)</label>
-                <span className="text-lg font-bold font-mono text-[#7BA238]">{plannerData.horizonYears} Years</span>
+                <span className="text-lg font-bold font-mono text-[#78A832]">{plannerData.horizonYears} Years</span>
               </div>
               <input
                 type="range"
@@ -230,7 +230,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                 step={1}
                 value={plannerData.horizonYears}
                 onChange={(e) => setPlannerData({ ...plannerData, horizonYears: Number(e.target.value) })}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#7BA238]"
+                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
               />
               <div className="flex justify-between text-[11px] text-slate-400 mt-1.5 font-mono">
                 <span>3 Years</span>
@@ -249,7 +249,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 4 && (
           <div className="space-y-7 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono text-[#5B92D1] font-semibold block mb-1">
+              <span className="text-xs font-mono text-[#315FCE] font-semibold block mb-1">
                 STEP 04
               </span>
               <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900">
@@ -272,7 +272,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                 step={50000}
                 value={plannerData.existingSavings}
                 onChange={(e) => setPlannerData({ ...plannerData, existingSavings: Number(e.target.value) })}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#7BA238]"
+                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
               />
               <div className="flex justify-between text-[11px] text-slate-400 mt-1.5 font-mono">
                 <span>₹0 (Starting Fresh)</span>
@@ -287,7 +287,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 5 && (
           <div className="space-y-7 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono text-[#5B92D1] font-semibold block mb-1">
+              <span className="text-xs font-mono text-[#315FCE] font-semibold block mb-1">
                 STEP 05
               </span>
               <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900">
@@ -310,7 +310,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                   step={0.5}
                   value={plannerData.assumedInflation}
                   onChange={(e) => setPlannerData({ ...plannerData, assumedInflation: Number(e.target.value) })}
-                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#7BA238]"
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
                 />
                 <span className="text-[10px] text-slate-400 block mt-1">Indian long-term baseline ~6%</span>
               </div>
@@ -326,7 +326,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                   step={0.5}
                   value={plannerData.assumedReturn}
                   onChange={(e) => setPlannerData({ ...plannerData, assumedReturn: Number(e.target.value) })}
-                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#7BA238]"
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
                 />
                 <span className="text-[10px] text-slate-400 block mt-1">Diversified equity benchmark ~12%</span>
               </div>
@@ -338,7 +338,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 6 && (
           <div className="space-y-8 animate-in fade-in duration-300">
             <div>
-              <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238] font-mono">
+              <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832] font-mono">
                 PLANNING BLUEPRINT
               </span>
               <h2 className="text-2xl sm:text-3xl font-poppins font-medium text-slate-900 mt-1">
@@ -346,33 +346,33 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
               </h2>
             </div>
 
-            {/* Dominant Metric Box */}
-            <div className="p-7 sm:p-8 bg-[#0B131E] text-white rounded-2xl border border-slate-800 space-y-4">
-              <span className="text-xs text-slate-400 block">
+            {/* Dominant Metric Box (Clean Light-First Surface) */}
+            <div className="p-7 sm:p-8 bg-[#F2F6FB] text-[#17243A] rounded-2xl border border-[#DCE4EE] space-y-4 shadow-xs">
+              <span className="text-xs text-[#52647D] block font-medium">
                 Indicative Monthly SIP Required
               </span>
-              <div className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-mono text-[#7BA238] tracking-tight">
+              <div className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-mono text-[#78A832] tracking-tight">
                 {formatINR(goalCalculation.requiredMonthlySIP)}/month
               </div>
 
-              <div className="mt-6 pt-6 border-t border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+              <div className="mt-6 pt-6 border-t border-[#DCE4EE] grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Today's Target</span>
-                  <span className="font-mono font-medium">{formatINR(plannerData.goalAmount, { compact: true })}</span>
+                  <span className="text-[#52647D] block text-[11px]">Today's Target</span>
+                  <span className="font-mono font-medium text-[#17243A]">{formatINR(plannerData.goalAmount, { compact: true })}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Future Target</span>
-                  <span className="font-mono font-medium text-[#5B92D1]">
+                  <span className="text-[#52647D] block text-[11px]">Future Target</span>
+                  <span className="font-mono font-medium text-[#315FCE]">
                     {formatINR(goalCalculation.futureInflationAdjustedGoal, { compact: true })}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Horizon</span>
-                  <span className="font-mono font-medium">{plannerData.horizonYears} Years</span>
+                  <span className="text-[#52647D] block text-[11px]">Horizon</span>
+                  <span className="font-mono font-medium text-[#17243A]">{plannerData.horizonYears} Years</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Status</span>
-                  <span className="font-mono font-medium text-[#7BA238]">
+                  <span className="text-[#52647D] block text-[11px]">Status</span>
+                  <span className="font-mono font-medium text-[#78A832]">
                     {goalCalculation.requiredMonthlySIP <= plannerData.monthlySurplus
                       ? 'Within Surplus'
                       : 'Requires Step-up'}
@@ -390,7 +390,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
             <div className="flex flex-wrap gap-4 pt-2">
               <button
                 onClick={() => onOpenConsultation(`${plannerData.goal} Blueprint Execution`)}
-                className="px-6 py-3 text-xs font-semibold text-white bg-[#0B131E] hover:bg-slate-800 rounded-md transition-colors shadow-xs"
+                className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] hover:bg-slate-800 rounded-md transition-colors shadow-xs"
               >
                 Book Free Consultation to Execute
               </button>
@@ -419,7 +419,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
 
             <button
               onClick={nextStep}
-              className="inline-flex items-center gap-1.5 px-6 py-2.5 text-xs font-semibold text-white bg-[#0B131E] hover:bg-slate-800 rounded-md transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 px-6 py-2.5 text-xs font-semibold text-white bg-[#101A2C] hover:bg-slate-800 rounded-md transition-colors shadow-xs"
             >
               <span>{step === 5 ? 'Review Blueprint' : 'Continue'}</span>
               <ArrowRight className="w-3.5 h-3.5" />

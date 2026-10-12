@@ -54,7 +54,7 @@ export const PortfolioReviewView: React.FC<PortfolioReviewViewProps> = ({ naviga
     <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-16">
       {/* Editorial Header */}
       <div className="text-center max-w-3xl mx-auto mb-12">
-        <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+        <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
           Confidential Portfolio Diagnostic
         </span>
         <h1 className="mt-2.5 text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
@@ -66,60 +66,60 @@ export const PortfolioReviewView: React.FC<PortfolioReviewViewProps> = ({ naviga
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        {/* Left Editorial Guidance */}
-        <div className="lg:col-span-5 bg-[#0B131E] text-white p-7 sm:p-10 rounded-2xl border border-slate-800 space-y-7 shadow-xl">
+        {/* Left Editorial Guidance (Pale Blue-Grey Diagnostic Panel) */}
+        <div className="lg:col-span-5 bg-[#F2F6FB] text-[#17243A] p-7 sm:p-9 rounded-2xl border border-[#DCE4EE] space-y-7 shadow-xs">
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-[#5B92D1]">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#315FCE]">
               The Farcon Diagnostic Process
             </h3>
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+            <p className="text-xs text-[#52647D] mt-1.5 leading-relaxed">
               We evaluate your Consolidated Account Statement (CAS) with institutional rigor.
             </p>
           </div>
 
-          <div className="space-y-4 text-xs text-slate-300">
-            <div className="flex items-start gap-3">
-              <span className="w-5 h-5 rounded-full bg-[#131F31] border border-slate-700 flex items-center justify-center text-[10px] font-bold text-[#7BA238] shrink-0">
+          <div className="space-y-4 text-xs text-[#17243A]">
+            <div className="flex items-start gap-3 bg-white p-3.5 rounded-xl border border-[#DCE4EE] shadow-2xs">
+              <span className="w-5 h-5 rounded-full bg-[#EDF3FF] border border-[#DCE4EE] flex items-center justify-center text-[10px] font-bold text-[#315FCE] shrink-0 mt-0.5">
                 1
               </span>
               <div>
-                <strong className="text-white block">Stock Overlap Audit</strong>
-                <span className="text-slate-400">Discover duplicate underlying holdings across multiple equity schemes.</span>
+                <strong className="text-[#17243A] block">Stock Overlap Audit</strong>
+                <span className="text-[#52647D] text-[11px] leading-relaxed">Discover duplicate underlying holdings across multiple equity schemes.</span>
               </div>
             </div>
 
-            <div className="flex items-start gap-3">
-              <span className="w-5 h-5 rounded-full bg-[#131F31] border border-slate-700 flex items-center justify-center text-[10px] font-bold text-[#7BA238] shrink-0">
+            <div className="flex items-start gap-3 bg-white p-3.5 rounded-xl border border-[#DCE4EE] shadow-2xs">
+              <span className="w-5 h-5 rounded-full bg-[#EDF3FF] border border-[#DCE4EE] flex items-center justify-center text-[10px] font-bold text-[#315FCE] shrink-0 mt-0.5">
                 2
               </span>
               <div>
-                <strong className="text-white block">Category Suitability</strong>
-                <span className="text-slate-400">Ensure your asset allocation matches your true retirement or education horizon.</span>
+                <strong className="text-[#17243A] block">Category Suitability</strong>
+                <span className="text-[#52647D] text-[11px] leading-relaxed">Ensure your asset allocation matches your true retirement or education horizon.</span>
               </div>
             </div>
 
-            <div className="flex items-start gap-3">
-              <span className="w-5 h-5 rounded-full bg-[#131F31] border border-slate-700 flex items-center justify-center text-[10px] font-bold text-[#7BA238] shrink-0">
+            <div className="flex items-start gap-3 bg-white p-3.5 rounded-xl border border-[#DCE4EE] shadow-2xs">
+              <span className="w-5 h-5 rounded-full bg-[#EDF3FF] border border-[#DCE4EE] flex items-center justify-center text-[10px] font-bold text-[#315FCE] shrink-0 mt-0.5">
                 3
               </span>
               <div>
-                <strong className="text-white block">Tax-Aware Consolidation</strong>
-                <span className="text-slate-400">Plan phased rebalancing without triggering avoidable capital gains taxation or exit loads.</span>
+                <strong className="text-[#17243A] block">Tax-Aware Consolidation</strong>
+                <span className="text-[#52647D] text-[11px] leading-relaxed">Plan phased rebalancing without triggering avoidable capital gains taxation or exit loads.</span>
               </div>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-800 text-[11px] text-slate-400 flex items-start gap-2">
-            <Lock className="w-4 h-4 text-[#7BA238] shrink-0 mt-0.5" />
+          <div className="pt-4 border-t border-[#DCE4EE] text-[11px] text-[#52647D] flex items-start gap-2">
+            <Lock className="w-4 h-4 text-[#78A832] shrink-0 mt-0.5" />
             <span>Strict confidentiality. Your statement data is evaluated strictly in-house and never shared.</span>
           </div>
         </div>
 
         {/* Right Form */}
-        <div className="lg:col-span-7 bg-white p-7 sm:p-10 rounded-2xl border border-slate-200/90 shadow-md">
+        <div className="lg:col-span-7 bg-white p-7 sm:p-9 rounded-2xl border border-[#DCE4EE] shadow-xs">
           {submitted ? (
             <div className="text-center py-8 space-y-4">
-              <div className="w-12 h-12 bg-[#7BA238]/10 text-[#7BA238] rounded-full flex items-center justify-center mx-auto">
+              <div className="w-12 h-12 bg-[#78A832]/10 text-[#78A832] rounded-full flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900">
@@ -134,7 +134,7 @@ export const PortfolioReviewView: React.FC<PortfolioReviewViewProps> = ({ naviga
               <div className="pt-4">
                 <button
                   onClick={() => setSubmitted(false)}
-                  className="px-5 py-2 text-xs font-semibold text-white bg-[#0B131E] rounded-md hover:bg-slate-800"
+                  className="px-5 py-2 text-xs font-semibold text-white bg-[#101A2C] rounded-md hover:bg-slate-800"
                 >
                   Submit Another Request
                 </button>
@@ -254,7 +254,7 @@ export const PortfolioReviewView: React.FC<PortfolioReviewViewProps> = ({ naviga
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-2.5 px-4 text-xs font-semibold text-white bg-[#0B131E] hover:bg-[#131F31] rounded-md transition-colors flex items-center justify-center gap-2 shadow-xs disabled:opacity-50"
+                  className="w-full py-2.5 px-4 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors flex items-center justify-center gap-2 shadow-xs disabled:opacity-50"
                 >
                   {submitting ? 'Submitting...' : 'Request Confidential Portfolio Review'}
                 </button>

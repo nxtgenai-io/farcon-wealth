@@ -104,9 +104,9 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
       aria-modal="true"
       aria-labelledby="consultation-modal-title"
     >
-      <div className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
+      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl border border-[#DCE4EE] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-[#F8FAFC]">
+        <div className="flex items-center justify-between px-6 py-4.5 border-b border-[#DCE4EE] bg-[#FAFBFC]">
           <div>
             <h3 id="consultation-modal-title" className="text-base font-semibold text-slate-900">
               Book a Free Financial Consultation
@@ -117,7 +117,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
           </div>
           <button
             onClick={handleResetAndClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
+            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
             aria-label="Close dialog"
           >
             <X className="w-5 h-5" />
@@ -128,7 +128,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
         <div className="p-6">
           {submitted ? (
             <div className="text-center py-6 space-y-4">
-              <div className="w-12 h-12 bg-[#7BA238]/10 text-[#7BA238] rounded-full flex items-center justify-center mx-auto">
+              <div className="w-12 h-12 bg-[#78A832]/10 text-[#78A832] rounded-full flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <h4 className="text-lg font-semibold text-slate-900">
@@ -143,7 +143,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               <div className="pt-4">
                 <button
                   onClick={handleResetAndClose}
-                  className="px-6 py-2.5 text-xs font-semibold text-white bg-[#0B131E] rounded-md hover:bg-slate-800 transition-colors"
+                  className="px-6 py-2.5 text-xs font-semibold text-white bg-[#101A2C] rounded-md hover:bg-slate-800 transition-colors"
                 >
                   Return to Exploration
                 </button>
@@ -258,8 +258,8 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               </div>
 
               {/* Regulatory Assurance Strip */}
-              <div className="flex items-start gap-2.5 p-2.5 bg-slate-50 rounded-md border border-slate-200/80 text-[11px] text-slate-600">
-                <ShieldCheck className="w-4 h-4 text-[#7BA238] shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2.5 p-3 bg-[#F2F6FB] rounded-xl border border-[#DCE4EE] text-[11px] text-slate-600">
+                <ShieldCheck className="w-4 h-4 text-[#78A832] shrink-0 mt-0.5" />
                 <p>
                   Zero sales pressure. AMFI Registered (ARN: 329006). Farcon Wealth does not hold custody of your investment funds. Investments are made through official channels in the investor’s name.
                 </p>
@@ -269,7 +269,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-2.5 px-4 text-xs font-semibold text-white bg-[#0B131E] hover:bg-[#131F31] rounded-md transition-colors flex items-center justify-center gap-2 shadow-xs disabled:opacity-50"
+                  className="w-full py-2.5 px-4 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-lg transition-colors flex items-center justify-center gap-2 shadow-xs disabled:opacity-50 cursor-pointer"
                 >
                   {submitting ? (
                     <span>Securing Request...</span>

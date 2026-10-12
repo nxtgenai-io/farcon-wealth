@@ -23,11 +23,11 @@ export const FloatingContactActions: React.FC<FloatingContactActionsProps> = ({ 
         onClick={onOpenAI}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="flex items-center gap-2 bg-[#0B131E] hover:bg-[#131F31] text-white p-3 sm:px-3.5 sm:py-2.5 rounded-full shadow-2xl border border-slate-700/80 transition-all duration-300 group cursor-pointer active:scale-95"
+        className="flex items-center gap-2 bg-[#101A2C] hover:bg-[#15243B] text-white p-3 sm:px-3.5 sm:py-2.5 rounded-full shadow-2xl border border-slate-700/80 transition-all duration-300 group cursor-pointer active:scale-95"
         aria-label="Ask Farcon AI"
         title="Ask Farcon AI"
       >
-        <span className="text-[#7BA238] font-bold text-sm leading-none transition-transform group-hover:scale-110">
+        <span className="text-[#78A832] font-bold text-sm leading-none transition-transform group-hover:scale-110">
           ✦
         </span>
         <span
@@ -58,7 +58,7 @@ export const FloatingContactActions: React.FC<FloatingContactActionsProps> = ({ 
         aria-label="Call Farcon Wealth"
         title={`Call ${FARCON_CONFIG.phoneNumber}`}
       >
-        <Phone className="w-3.5 h-3.5 text-[#0B131E]" />
+        <Phone className="w-3.5 h-3.5 text-[#101A2C]" />
       </a>
     </aside>
   );

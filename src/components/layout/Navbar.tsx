@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FarconLogo } from '@/components/ui/FarconLogo';
+import { MarketStrip } from '@/components/layout/MarketStrip';
 import { RoutePath } from '@/types';
 import { Menu, X, ChevronDown, Lock } from 'lucide-react';
 
@@ -31,27 +32,32 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
   };
 
   return (
-    <header
-      className={`sticky top-0 z-40 transition-all duration-300 ${
-        scrolled
-          ? 'bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs py-3'
-          : 'bg-[#F8FAFC]/80 backdrop-blur-xs border-b border-slate-200/60 py-4 sm:py-5'
-      } ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
-      style={{ transitionProperty: 'background-color, padding, border-color, opacity, transform' }}
-    >
-      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="flex items-center justify-between gap-6 lg:gap-12">
-          {/* Zone 1: Farcon Brand Logo on Left */}
-          <div
-            onClick={() => handleNavClick('/')}
-            className="cursor-pointer shrink-0 transition-opacity hover:opacity-90"
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && handleNavClick('/')}
-            aria-label="Farcon Wealth Homepage"
-          >
-            <FarconLogo variant="horizontal" size="md" />
-          </div>
+    <header className="sticky top-0 z-40">
+      {/* Top Benchmark & Market Hours Strip */}
+      <MarketStrip />
+
+      {/* Main Navbar */}
+      <div
+        className={`transition-all duration-300 ${
+          scrolled
+            ? 'bg-white/95 backdrop-blur-md border-b border-[#DCE4EE] shadow-xs py-3'
+            : 'bg-[#FAFBFC]/90 backdrop-blur-xs border-b border-[#DCE4EE] py-3.5 sm:py-4'
+        } ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
+        style={{ transitionProperty: 'background-color, padding, border-color, opacity, transform' }}
+      >
+        <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="flex items-center justify-between gap-6 lg:gap-12">
+            {/* Zone 1: Farcon Brand Logo on Left */}
+            <div
+              onClick={() => handleNavClick('/')}
+              className="cursor-pointer shrink-0 transition-opacity hover:opacity-90"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && handleNavClick('/')}
+              aria-label="Farcon Wealth Homepage"
+            >
+              <FarconLogo variant="horizontal" size="md" />
+            </div>
 
           {/* Zone 2: Balanced Center Navigation Links */}
           <nav className="hidden xl:flex items-center gap-7 2xl:gap-8 text-xs font-medium text-slate-600">
@@ -201,7 +207,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
 
             <button
               onClick={onOpenConsultation}
-              className="px-4 py-2 text-xs font-semibold text-white bg-[#0B131E] hover:bg-[#131F31] rounded-md transition-all whitespace-nowrap shrink-0 shadow-xs hover:shadow-sm active:scale-[0.98]"
+              className="px-4 py-2 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-all whitespace-nowrap shrink-0 shadow-xs hover:shadow-sm active:scale-[0.98]"
             >
               Book Consultation
             </button>
@@ -211,7 +217,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
           <div className="flex xl:hidden items-center gap-2">
             <button
               onClick={onOpenConsultation}
-              className="px-3 py-1.5 text-xs font-semibold text-white bg-[#0B131E] rounded-md"
+              className="px-3 py-1.5 text-xs font-semibold text-white bg-[#101A2C] rounded-md"
             >
               Consult
             </button>
@@ -262,7 +268,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
             </button>
             <button
               onClick={() => handleNavClick('/investor-quiz')}
-              className="text-left px-3 py-2 rounded-md hover:bg-slate-50 text-[#7BA238] font-semibold"
+              className="text-left px-3 py-2 rounded-md hover:bg-slate-50 text-[#78A832] font-semibold"
             >
               Investor Quiz
             </button>
@@ -305,13 +311,14 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
                 setMobileMenuOpen(false);
                 onOpenConsultation();
               }}
-              className="w-full text-center py-2.5 text-xs font-semibold text-white bg-[#0B131E] rounded-md shadow-xs"
+              className="w-full text-center py-2.5 text-xs font-semibold text-white bg-[#101A2C] rounded-md shadow-xs"
             >
               Book a Free Consultation
             </button>
           </div>
         </div>
       )}
+      </div>
     </header>
   );
 };

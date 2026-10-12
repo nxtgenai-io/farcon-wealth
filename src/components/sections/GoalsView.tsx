@@ -29,7 +29,7 @@ export const GoalsView: React.FC<GoalsViewProps> = ({
             <span className="text-slate-900 font-medium">{goal.title}</span>
           </div>
 
-          <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+          <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
             Purpose-Driven Capital
           </span>
           <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
@@ -45,7 +45,7 @@ export const GoalsView: React.FC<GoalsViewProps> = ({
           <div className="mt-8 flex flex-wrap gap-4">
             <button
               onClick={() => onOpenConsultation(goal.title)}
-              className="px-6 py-3 text-xs font-semibold text-white bg-[#0B131E] hover:bg-slate-800 rounded-md transition-colors"
+              className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors shadow-xs"
             >
               Start {goal.title} Planning
             </button>
@@ -59,7 +59,7 @@ export const GoalsView: React.FC<GoalsViewProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-xs">
+          <div className="bg-white p-6 sm:p-8 rounded-xl border border-[#DCE4EE] shadow-xs">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-900 mb-4">
               Critical Considerations & Risks
             </h3>
@@ -73,14 +73,14 @@ export const GoalsView: React.FC<GoalsViewProps> = ({
             </ul>
           </div>
 
-          <div className="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-xs">
+          <div className="bg-white p-6 sm:p-8 rounded-xl border border-[#DCE4EE] shadow-xs">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-900 mb-4">
               The Farcon Suitability Approach
             </h3>
             <ul className="space-y-3 text-xs text-slate-600">
               {goal.farconApproach.map((a, i) => (
                 <li key={i} className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#7BA238] shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-[#78A832] shrink-0 mt-0.5" />
                   <span className="leading-relaxed">{a}</span>
                 </li>
               ))}
@@ -89,18 +89,18 @@ export const GoalsView: React.FC<GoalsViewProps> = ({
         </div>
 
         {/* Action card */}
-        <div className="bg-[#0B131E] text-white p-8 rounded-xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="bg-[#F2F6FB] text-[#17243A] p-8 rounded-2xl border border-[#DCE4EE] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
           <div>
-            <h3 className="text-xl font-poppins font-medium">
+            <h3 className="text-xl font-poppins font-medium text-[#17243A]">
               Typical Horizon: {goal.typicalHorizon}
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-[#52647D] mt-1">
               Begin by mapping your monthly cash flow with zero commitment.
             </p>
           </div>
           <button
             onClick={() => onOpenConsultation(goal.title)}
-            className="px-6 py-3 text-xs font-semibold text-[#0B131E] bg-[#7BA238] hover:bg-[#8EB942] rounded-md transition-colors"
+            className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors shadow-xs"
           >
             Book Free Consultation
           </button>
@@ -113,7 +113,7 @@ export const GoalsView: React.FC<GoalsViewProps> = ({
   return (
     <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-16">
       <div className="text-center max-w-3xl mx-auto mb-12">
-        <span className="text-xs font-semibold tracking-wider uppercase text-[#7BA238]">
+        <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
           Goal-Based Architecture
         </span>
         <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
@@ -125,7 +125,7 @@ export const GoalsView: React.FC<GoalsViewProps> = ({
       </div>
 
       {/* Editorial Horizontal Goal List */}
-      <div className="border-t border-slate-200 divide-y divide-slate-200">
+      <div className="border-t border-[#DCE4EE] divide-y divide-[#DCE4EE]">
         {FARCON_GOALS.map((goal, idx) => (
           <div
             key={goal.id}
@@ -133,11 +133,11 @@ export const GoalsView: React.FC<GoalsViewProps> = ({
             className="py-8 sm:py-10 transition-all duration-300 cursor-pointer group flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-slate-50/80 px-4 sm:px-6 -mx-4 sm:-mx-6 rounded-2xl"
           >
             <div className="flex items-start sm:items-center gap-6 sm:gap-8 md:w-5/12">
-              <span className="text-xl sm:text-2xl font-mono text-slate-400 group-hover:text-[#7BA238] transition-colors">
+              <span className="text-xl sm:text-2xl font-mono text-slate-400 group-hover:text-[#78A832] transition-colors">
                 0{idx + 1}
               </span>
               <div>
-                <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900 group-hover:text-[#7BA238] transition-colors leading-snug">
+                <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900 group-hover:text-[#78A832] transition-colors leading-snug">
                   {goal.title}
                 </h2>
                 <span className="text-xs font-mono text-slate-400 block mt-1">
@@ -150,7 +150,7 @@ export const GoalsView: React.FC<GoalsViewProps> = ({
               <p>{goal.description}</p>
             </div>
 
-            <div className="md:w-2/12 flex items-center md:justify-end gap-3 text-xs font-semibold text-slate-900 group-hover:text-[#7BA238] transition-colors">
+            <div className="md:w-2/12 flex items-center md:justify-end gap-3 text-xs font-semibold text-slate-900 group-hover:text-[#78A832] transition-colors">
               <span className="hidden sm:inline">Explore</span>
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5" />
             </div>
