@@ -184,6 +184,110 @@ body {
   background: #94A3B8;
 }
 
+/* Semantic tokens for future site-wide adoption. Existing page classes remain unchanged in this showcase-only milestone. */
+:root {
+  --farcon-canvas: #F5F7FA;
+  --farcon-surface: #FFFFFF;
+  --farcon-surface-subtle: #F8FAFC;
+  --farcon-surface-muted: #F0F4F8;
+  --farcon-text-primary: #17243A;
+  --farcon-text-secondary: #52647D;
+  --farcon-text-muted: #8492A6;
+  --farcon-border: #DCE4EE;
+  --farcon-border-subtle: #EAEFF5;
+  --farcon-brand: #78A832;
+  --farcon-brand-soft: #F2F7EB;
+  --farcon-navy-cta: #101A2C;
+  --farcon-navy-cta-hover: #192742;
+  --farcon-fintech-positive: #008A68;
+  --farcon-fintech-positive-soft: #E8F5EF;
+  --farcon-negative: #B93822;
+  --farcon-negative-soft: #FDF2F0;
+  --farcon-focus-ring: #008A68;
+}
+
+/* Semantic variants are intentionally distinct: use only where appropriate. */
+.farcon-card-base {
+  background: var(--farcon-surface);
+  color: var(--farcon-text-primary);
+  border: 1px solid var(--farcon-border);
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(16, 26, 44, .025);
+}
+.farcon-card-flat {
+  background: var(--farcon-surface-subtle);
+  color: var(--farcon-text-primary);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  box-shadow: none;
+}
+.farcon-card-featured {
+  background: var(--farcon-navy-cta);
+  color: #FFFFFF;
+  border: 1px solid var(--farcon-navy-cta);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(16, 26, 44, .09);
+}
+.farcon-card-metric {
+  background: linear-gradient(145deg, #FFFFFF, #F8FBF4);
+  color: var(--farcon-text-primary);
+  border: 1px solid var(--farcon-border);
+  border-radius: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.farcon-card-interactive {
+  background: var(--farcon-surface);
+  color: var(--farcon-text-primary);
+  border: 1px solid var(--farcon-border);
+  border-radius: 14px;
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.farcon-card-interactive:hover {
+  border-color: #BBC9D9;
+  box-shadow: 0 7px 20px rgba(16, 26, 44, .055);
+  transform: translateY(-1px);
+}
+.farcon-card-selected {
+  background: var(--farcon-brand-soft);
+  color: var(--farcon-text-primary);
+  border: 1px solid var(--farcon-brand);
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px rgba(120, 168, 50, .15);
+}
+.farcon-pill-tab {
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--farcon-text-secondary);
+  transition: background-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+}
+.farcon-pill-tab[aria-selected="true"],
+.farcon-pill-tab.is-active {
+  background: #FFFFFF;
+  color: var(--farcon-text-primary);
+  box-shadow: 0 1px 4px rgba(16, 26, 44, .10);
+}
+.farcon-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.farcon-data-table th {
+  color: var(--farcon-text-muted);
+  background: var(--farcon-surface-subtle);
+  border-bottom: 1px solid var(--farcon-border-subtle);
+  font-weight: 650;
+  text-align: left;
+}
+.farcon-data-table td { border-bottom: 1px solid var(--farcon-border-subtle); }
+.farcon-data-table .numeric { text-align: right; font-variant-numeric: tabular-nums; }
+.farcon-positive { color: var(--farcon-fintech-positive); }
+.farcon-negative { color: var(--farcon-negative); }
+.farcon-focus:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--farcon-focus-ring) 36%, transparent);
+  outline-offset: 3px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
     animation-duration: 0.01ms !important;
