@@ -1,176 +1,97 @@
 import React from 'react';
-import { FarconLogo } from '@/components/ui/FarconLogo';
-import { FARCON_CONFIG, SERVICE_NAV_ITEMS, GOAL_NAV_ITEMS, CALCULATOR_NAV_ITEMS } from '@/content/site/config';
 import { RoutePath } from '@/types';
-import { Mail, MapPin, ShieldCheck } from 'lucide-react';
+import { FARCON_CONFIG } from '@/content/site/config';
+import { BrandLockup } from '@/components/layout/BrandLockup';
 
 interface FooterProps {
   navigate: (path: RoutePath) => void;
 }
 
+const columns: { title: string; links: { label: string; href: RoutePath }[] }[] = [
+  {
+    title: 'Quick Links',
+    links: [
+      { label: 'Home', href: '/' },
+      { label: 'About Us', href: '/about' },
+      { label: 'Services', href: '/services' },
+      { label: 'Mutual Funds', href: '/mutual-funds' },
+    ],
+  },
+  {
+    title: 'Tools',
+    links: [
+      { label: 'Calculators', href: '/calculators' },
+      { label: 'Investor Quiz', href: '/investor-quiz' },
+      { label: 'Wealth Planner', href: '/wealth-planner' },
+      { label: 'Portfolio Review', href: '/portfolio-review' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { label: 'Education', href: '/education' },
+      { label: 'Blogs', href: '/blogs' },
+      { label: 'FAQs', href: '/faq' },
+      { label: 'Contact Us', href: '/contact' },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      { label: 'Privacy Policy', href: '/privacy' },
+      { label: 'Terms of Use', href: '/terms' },
+      { label: 'DPDP Policy', href: '/privacy' },
+      { label: 'Grievance Redressal', href: '/grievance' },
+    ],
+  },
+];
+
 export const Footer: React.FC<FooterProps> = ({ navigate }) => {
+  const whatsapp = `https://wa.me/${FARCON_CONFIG.whatsappNumber}`;
   return (
-    <footer className="bg-[#101A2C] text-slate-300 border-t border-[#20314F] pt-16 pb-12">
-      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 pb-12 border-b border-[#20314F]">
-          {/* Brand & Regulatory Column */}
-          <div className="lg:col-span-2 space-y-4">
-            <div
-              onClick={() => navigate('/')}
-              className="cursor-pointer inline-block"
-              role="button"
-              tabIndex={0}
-            >
-              <FarconLogo variant="horizontal" size="md" className="brightness-110" />
-            </div>
-
-            <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
-              Farcon Wealth Private Limited is an AMFI-registered Mutual Fund Distributor (ARN: 329006) dedicated to goal-based investing with clarity, suitability, and zero noise.
-            </p>
-
-            <div className="space-y-2 text-xs text-slate-400 pt-2">
-              <div className="flex items-start gap-2">
-                <MapPin className="w-3.5 h-3.5 mt-0.5 text-[#78A832] shrink-0" />
-                <span>{FARCON_CONFIG.registeredAddress}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="w-3.5 h-3.5 text-[#315FCE] shrink-0" />
-                <a href={`mailto:${FARCON_CONFIG.email}`} className="hover:text-white transition-colors">
-                  {FARCON_CONFIG.email}
-                </a>
-              </div>
-              <div className="flex items-center gap-2 text-slate-400">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#78A832] shrink-0" />
-                <span>AMFI Registration ARN: <strong className="text-white">329006</strong></span>
-              </div>
-            </div>
-          </div>
-
-          {/* Services Column */}
-          <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-white mb-4">
-              Services
-            </h4>
-            <ul className="space-y-2.5 text-xs text-slate-400">
-              {SERVICE_NAV_ITEMS.map((item) => (
-                <li key={item.href}>
-                  <button
-                    onClick={() => navigate(item.href as RoutePath)}
-                    className="hover:text-white transition-colors text-left"
-                  >
-                    {item.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Goals & Calculators */}
-          <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-white mb-4">
-              Goals & Tools
-            </h4>
-            <ul className="space-y-2.5 text-xs text-slate-400 mb-6">
-              {GOAL_NAV_ITEMS.map((item) => (
-                <li key={item.href}>
-                  <button
-                    onClick={() => navigate(item.href as RoutePath)}
-                    className="hover:text-white transition-colors text-left"
-                  >
-                    {item.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-white mb-3">
-              Calculators
-            </h4>
-            <ul className="space-y-2 text-xs text-slate-400">
-              {CALCULATOR_NAV_ITEMS.map((item) => (
-                <li key={item.href}>
-                  <button
-                    onClick={() => navigate(item.href as RoutePath)}
-                    className="hover:text-white transition-colors text-left"
-                  >
-                    {item.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company & Compliance */}
-          <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-white mb-4">
-              Governance & Trust
-            </h4>
-            <ul className="space-y-2.5 text-xs text-slate-400">
-              <li>
-                <button onClick={() => navigate('/about')} className="hover:text-white transition-colors">
-                  About Farcon
-                </button>
-              </li>
-              <li>
-                <button onClick={() => navigate('/investor-quiz')} className="hover:text-white transition-colors">
-                  Investor Fit Quiz
-                </button>
-              </li>
-              <li>
-                <button onClick={() => navigate('/wealth-planner')} className="hover:text-white transition-colors">
-                  Wealth Planner Lite
-                </button>
-              </li>
-              <li>
-                <button onClick={() => navigate('/mutual-funds')} className="hover:text-white transition-colors">
-                  Mutual Fund Explorer
-                </button>
-              </li>
-              <li>
-                <button onClick={() => navigate('/disclosures')} className="hover:text-white transition-colors">
-                  Regulatory Disclosures
-                </button>
-              </li>
-              <li>
-                <button onClick={() => navigate('/grievance')} className="hover:text-white transition-colors">
-                  Grievance Redressal
-                </button>
-              </li>
-              <li>
-                <button onClick={() => navigate('/privacy')} className="hover:text-white transition-colors">
-                  Privacy Policy
-                </button>
-              </li>
-              <li>
-                <button onClick={() => navigate('/terms')} className="hover:text-white transition-colors">
-                  Terms of Service
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Regulatory Disclosure & Custody Statement */}
-        <div className="pt-8 pb-4 text-[11px] leading-relaxed text-slate-500 border-b border-slate-900">
-          <p className="mb-2">
-            <strong className="text-slate-400">Statutory Regulatory Notice:</strong> Mutual fund investments are subject to market risks. Please read all scheme related documents carefully before investing. Past performance is not an indicator of future returns.
-          </p>
-          <p>
-            Farcon Wealth Private Limited is an AMFI-registered Mutual Fund Distributor (ARN: 329006). Farcon does not provide portfolio management services (PMS), alternative investment funds (AIF), or direct equity trading. Farcon Wealth does not hold custody of your investment funds. Investments are made through official channels in the investor’s name.
+    <footer className="fw-footer">
+      <div className="fw-footer-grid">
+        <div>
+          <BrandLockup tone="light" size="footer" onClick={() => navigate('/')} />
+          <p style={{ fontSize: 13, lineHeight: 1.5, maxWidth: 280 }}>
+            Goal-based mutual fund guidance. Investments are made in your name. Farcon does not hold your money.
           </p>
         </div>
-
-        {/* Bottom Bar: Copyright & Unboxed Links */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-          <div>
-            © {new Date().getFullYear()} Farcon Wealth Private Limited. All rights reserved.
+        {columns.map((column) => (
+          <div key={column.title}>
+            <h2>{column.title}</h2>
+            {column.links.map((link) => (
+              <button key={link.label} type="button" onClick={() => navigate(link.href)}>
+                {link.label}
+              </button>
+            ))}
           </div>
-          <div className="flex items-center gap-4 text-slate-400">
-            <span>Investing, without the noise.</span>
-            <span aria-hidden="true">·</span>
-            <span>AMFI ARN 329006</span>
+        ))}
+        <div>
+          <h2>Connect With Us</h2>
+          <div className="fw-social">
+            <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.7 3.3A1.7 1.7 0 1 0 4.7 6.7 1.7 1.7 0 0 0 4.7 3.3zM3.2 8.2h3v12h-3v-12zM9.2 8.2h2.9v1.6h.1c.4-.8 1.4-1.6 2.9-1.6 3.1 0 3.7 2 3.7 4.7v7.3h-3v-6.5c0-1.5 0-3.5-2.1-3.5s-2.5 1.7-2.5 3.4v6.6h-3v-12z" /></svg>
+            </a>
+            <a href="https://www.youtube.com/" target="_blank" rel="noreferrer" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23 12.2s0-3.2-.4-4.6c-.2-.9-.9-1.6-1.8-1.8C19.2 5.4 12 5.4 12 5.4s-7.2 0-8.8.4c-.9.2-1.6.9-1.8 1.8C1 9 1 12.2 1 12.2s0 3.2.4 4.6c.2.9.9 1.6 1.8 1.8 1.6.4 8.8.4 8.8.4s7.2 0 8.8-.4c.9-.2 1.6-.9 1.8-1.8.4-1.4.4-4.6.4-4.6zM9.8 15.5v-6.6l6.2 3.3-6.2 3.3z" /></svg>
+            </a>
+            <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zm10 2H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm-5 3.2A3.8 3.8 0 1 1 8.2 12 3.8 3.8 0 0 1 12 8.2zm0 2A1.8 1.8 0 1 0 13.8 12 1.8 1.8 0 0 0 12 10.2zM17.4 6.6a1 1 0 1 1-1 1 1 1 0 0 1 1-1z" /></svg>
+            </a>
+            <a href={whatsapp} target="_blank" rel="noreferrer" aria-label="WhatsApp">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3.2A8.7 8.7 0 0 0 4.6 16.3L3.4 20.6l4.4-1.2A8.7 8.7 0 1 0 12 3.2zm5 12.3c-.2.6-1.2 1.1-1.7 1.2-.4.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.5-2.6-1.1-4.3-3.8-4.4-4-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1.6-.4.8-.4h.6c.2 0 .4 0 .6.5.2.6.7 2 .8 2.1.1.2.1.3 0 .5-.1.2-.2.4-.3.5-.1.2-.3.3-.1.6.2.3.7 1.2 1.6 1.9 1.1.9 2 1.1 2.3 1.3.2.1.4.1.5-.1.1-.2.6-.7.8-.9.2-.2.3-.2.6-.1.2.1 1.5.7 1.8.8.2.1.4.2.4.3.1.2 0 .8-.2 1.4z" /></svg>
+            </a>
           </div>
+          <a href={`mailto:${FARCON_CONFIG.email}`}>{FARCON_CONFIG.email}</a>
+          <a href={`tel:${FARCON_CONFIG.phoneNumber}`}>{FARCON_CONFIG.phoneNumber}</a>
         </div>
+      </div>
+      <div className="fw-legal">
+        <p>
+          Mutual fund investments are subject to market risks. Read all scheme related documents carefully. | AMFI-registered Mutual Fund Distributor | ARN: {FARCON_CONFIG.arn}
+        </p>
+        <p>© 2026 Farcon Wealth. All rights reserved.</p>
       </div>
     </footer>
   );

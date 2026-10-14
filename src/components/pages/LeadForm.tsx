@@ -1,0 +1,146 @@
+import React, { useState } from 'react';
+import { leadService } from '@/lib/api/leadService';
+
+export interface LeadFormValues {
+  name: string;
+  email: string;
+  phone: string;
+  city: string;
+  goal: string;
+  investmentType: string;
+  amount: string;
+  timeHorizon: string;
+  riskProfile: string;
+  message: string;
+  companyWebsite: string;
+}
+
+const empty: LeadFormValues = {
+  name: '',
+  email: '',
+  phone: '',
+  city: '',
+  goal: '',
+  investmentType: '',
+  amount: '',
+  timeHorizon: '',
+  riskProfile: '',
+  message: '',
+  companyWebsite: '',
+};
+
+interface LeadFormProps {
+  form: string;
+  submitLabel: string;
+  requireMessage?: boolean;
+  showPreferences?: boolean;
+}
+
+export const LeadForm: React.FC<LeadFormProps> = ({ form, submitLabel, requireMessage = false, showPreferences = false }) => {
+  const [values, setValues] = useState<LeadFormValues>(empty);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [status, setStatus] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  const set = (key: keyof LeadFormValues) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setValues((current) => ({ ...current, [key]: event.target.value }));
+  };
+
+  const onSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const next: Record<string, string> = {};
+    if (values.name.trim().length < 2) next.name = 'Enter your name.';
+    if (!/^\S+@\S+\.\S+$/.test(values.email.trim())) next.email = 'Enter a valid email.';
+    if (values.phone.replace(/\D/g, '').length < 10) next.phone = 'Enter a valid phone number.';
+    if (values.city.trim().length < 2) next.city = 'Enter your city.';
+    if (requireMessage && values.message.trim().length < 8) next.message = 'Tell us a little more.';
+    if (showPreferences && !values.goal) next.goal = 'Choose a goal.';
+    setErrors(next);
+    if (Object.keys(next).length) return;
+
+    setBusy(true);
+    setStatus('');
+    try {
+      const result = await leadService.submitSheetLead({
+        form,
+        name: values.name,
+        email: values.email,
+        phone: values.phone,
+        city: values.city,
+        goal: values.goal,
+        investmentType: values.investmentType,
+        amount: values.amount,
+        timeHorizon: values.timeHorizon,
+        riskProfile: values.riskProfile,
+        message: values.message,
+        sourcePage: window.location.pathname,
+        companyWebsite: values.companyWebsite,
+      });
+      if (!result.success) {
+        setStatus(result.message);
+        return;
+      }
+      setStatus(result.message);
+      setValues(empty);
+    } catch {
+      setStatus('We could not send this just now. Please call or use WhatsApp.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <form className="form-card" onSubmit={onSubmit} noValidate>
+      <label className="hp">
+        Website
+        <input tabIndex={-1} autoComplete="off" value={values.companyWebsite} onChange={set('companyWebsite')} />
+      </label>
+      <label className="field">Name<input value={values.name} onChange={set('name')} autoComplete="name" />{errors.name && <span className="err">{errors.name}</span>}</label>
+      <label className="field">Email<input type="email" value={values.email} onChange={set('email')} autoComplete="email" />{errors.email && <span className="err">{errors.email}</span>}</label>
+      <label className="field">Phone<input inputMode="tel" value={values.phone} onChange={set('phone')} autoComplete="tel" />{errors.phone && <span className="err">{errors.phone}</span>}</label>
+      <label className="field">City<input value={values.city} onChange={set('city')} autoComplete="address-level2" />{errors.city && <span className="err">{errors.city}</span>}</label>
+      <label className="field">Goal
+        <select value={values.goal} onChange={set('goal')}>
+          <option value="">Select</option>
+          {['Retirement', 'Child Education', 'Wealth Creation', 'Tax Saving', 'Portfolio Review', 'Something else'].map((goal) => (
+            <option key={goal}>{goal}</option>
+          ))}
+        </select>
+        {errors.goal && <span className="err">{errors.goal}</span>}
+      </label>
+      {showPreferences && (
+        <>
+          <label className="field">Investment Type
+            <select value={values.investmentType} onChange={set('investmentType')}>
+              <option value="">Select</option>
+              <option>SIP</option>
+              <option>Lumpsum</option>
+              <option>SIP and Lumpsum</option>
+            </select>
+          </label>
+          <label className="field">Amount<input value={values.amount} onChange={set('amount')} placeholder="₹25,000 a month" /></label>
+          <label className="field">Time Horizon
+            <select value={values.timeHorizon} onChange={set('timeHorizon')}>
+              <option value="">Select</option>
+              <option>Under 3 years</option>
+              <option>3–5 years</option>
+              <option>5–10 years</option>
+              <option>10+ years</option>
+            </select>
+          </label>
+          <label className="field">Risk Profile
+            <select value={values.riskProfile} onChange={set('riskProfile')}>
+              <option value="">Select</option>
+              <option>Conservative</option>
+              <option>Moderate</option>
+              <option>Aggressive</option>
+            </select>
+          </label>
+        </>
+      )}
+      <label className="field">Message<textarea value={values.message} onChange={set('message')} />{errors.message && <span className="err">{errors.message}</span>}</label>
+      <button className="hf-btn hf-btn-green" type="submit" disabled={busy}>{busy ? 'Sending…' : submitLabel}</button>
+      {status && <p className="hf-note">{status}</p>}
+    </form>
+  );
+};

@@ -6,17 +6,20 @@ import { FloatingContactActions } from '@/components/layout/FloatingContactActio
 import { ConsultationModal } from '@/components/ui/ConsultationModal';
 import { AIChatDrawer } from '@/features/farcon-ai/AIChatDrawer';
 import { HomeView } from '@/components/sections/HomeView';
-import { AboutView } from '@/components/sections/AboutView';
-import { ServicesView } from '@/components/sections/ServicesView';
 import { GoalsView } from '@/components/sections/GoalsView';
-import { CalculatorsHub } from '@/features/calculators/CalculatorsHub';
+import { CalculatorsPage } from '@/components/pages/CalculatorsPage';
 import { InvestorQuizView } from '@/features/investor-quiz/InvestorQuizView';
 import { WealthPlannerView } from '@/features/wealth-planner/WealthPlannerView';
-import { MutualFundExplorerView } from '@/features/mutual-funds/MutualFundExplorerView';
-import { PortfolioReviewView } from '@/features/portfolio-review/PortfolioReviewView';
-import { InvestorLoginView } from '@/features/investor-login/InvestorLoginView';
-import { EducationView } from '@/components/sections/EducationView';
-import { LegalViews } from '@/components/sections/LegalViews';
+import {
+  AboutPage,
+  ContactPage,
+  DisclosuresPage,
+  EducationPage,
+  FundsPage,
+  LoginPage,
+  PortfolioPage,
+  ServicesPage,
+} from '@/components/pages/SitePages';
 
 export function App() {
   const [currentPath, setCurrentPath] = useState<RoutePath>(() => {
@@ -70,25 +73,11 @@ export function App() {
 
     // 2. About
     if (currentPath === '/about') {
-      return (
-        <AboutView
-          navigate={navigate}
-          onOpenConsultation={() => handleOpenConsultation('About Farcon Inquiry')}
-        />
-      );
+      return <AboutPage navigate={navigate} onOpenConsultation={handleOpenConsultation} />;
     }
 
-    // 3. Services Overview & Detail Routes
     if (currentPath.startsWith('/services')) {
-      const slug = currentPath.replace('/services/', '');
-      const activeSlug = slug !== '/services' && slug !== '' ? slug : undefined;
-      return (
-        <ServicesView
-          activeSlug={activeSlug}
-          navigate={navigate}
-          onOpenConsultation={handleOpenConsultation}
-        />
-      );
+      return <ServicesPage navigate={navigate} onOpenConsultation={handleOpenConsultation} />;
     }
 
     // 4. Goals Overview & Detail Routes
@@ -112,7 +101,7 @@ export function App() {
       else if (currentPath.includes('/retirement')) calcType = 'retirement';
 
       return (
-        <CalculatorsHub
+        <CalculatorsPage
           initialType={calcType}
           navigate={navigate}
           onOpenConsultation={handleOpenConsultation}
@@ -142,82 +131,30 @@ export function App() {
 
     // 8. Mutual Fund Explorer
     if (currentPath === '/mutual-funds') {
-      return (
-        <MutualFundExplorerView
-          navigate={navigate}
-          onOpenConsultation={handleOpenConsultation}
-        />
-      );
+      return <FundsPage />;
     }
 
-    // 9. Portfolio Review
     if (currentPath === '/portfolio-review') {
-      return <PortfolioReviewView navigate={navigate} />;
+      return <PortfolioPage />;
     }
 
-    // 10. Investor Login
     if (currentPath === '/investor-login') {
-      return (
-        <InvestorLoginView
-          navigate={navigate}
-          onOpenConsultation={() => handleOpenConsultation('Investor Login Assistance')}
-        />
-      );
+      return <LoginPage navigate={navigate} onOpenConsultation={handleOpenConsultation} />;
     }
 
-    // 11. Education & Blogs & FAQ
     if (currentPath === '/education' || currentPath === '/blogs' || currentPath === '/faq') {
-      return (
-        <EducationView
-          navigate={navigate}
-          onOpenConsultation={() => handleOpenConsultation('Educational Discussion')}
-        />
-      );
+      return <EducationPage navigate={navigate} onOpenConsultation={handleOpenConsultation} />;
     }
 
     // 12. Contact / Direct Consultation Booking
     if (currentPath === '/contact') {
-      return (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center max-w-xl mx-auto mb-10">
-            <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
-              Direct Advisory Desk
-            </span>
-            <h1 className="mt-2 text-3xl font-poppins font-medium text-slate-900">
-              Connect With Farcon Wealth
-            </h1>
-            <p className="mt-2 text-xs sm:text-sm text-slate-600">
-              Schedule a quiet, confidential conversation with our AMFI-registered team.
-            </p>
-          </div>
-          <div className="bg-white rounded-xl border border-[#DCE4EE] p-8 shadow-xs max-w-xl mx-auto text-center space-y-6">
-            <p className="text-xs text-slate-600 leading-relaxed">
-              We respond to all investor inquiries promptly with zero sales push.
-            </p>
-            <button
-              onClick={() => handleOpenConsultation('Contact Page Request')}
-              className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] rounded-md hover:bg-[#15243B] transition-colors shadow-xs"
-            >
-              Open Consultation Form
-            </button>
-          </div>
-        </div>
-      );
+      return <ContactPage />;
     }
 
-    // 13. Legal & Regulatory
-    if (currentPath === '/disclosures') {
-      return <LegalViews type="disclosures" navigate={navigate} />;
-    }
-    if (currentPath === '/grievance') {
-      return <LegalViews type="grievance" navigate={navigate} />;
-    }
-    if (currentPath === '/privacy') {
-      return <LegalViews type="privacy" navigate={navigate} />;
-    }
-    if (currentPath === '/terms') {
-      return <LegalViews type="terms" navigate={navigate} />;
-    }
+    if (currentPath === '/disclosures') return <DisclosuresPage section="disclosures" />;
+    if (currentPath === '/grievance') return <DisclosuresPage section="grievance" />;
+    if (currentPath === '/privacy') return <DisclosuresPage section="privacy" />;
+    if (currentPath === '/terms') return <DisclosuresPage section="terms" />;
 
     // Fallback: Home
     return (
@@ -230,7 +167,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAFBFC] text-[#17243A] antialiased selection:bg-[#78A832]/20 selection:text-[#101A2C]">
+    <div className="min-h-screen flex flex-col bg-[#F7F4EC] text-[#1A241C] antialiased selection:bg-[#C9A24A]/30 selection:text-[#0F3D2E]">
       {/* Top Navigation */}
       <Navbar
         currentPath={currentPath}

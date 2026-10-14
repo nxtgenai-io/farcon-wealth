@@ -131,27 +131,17 @@ app.post('/api/ai', async (req, res) => {
   return res.json({ state, text });
 });
 
-// API: Lead Capture
-app.post('/api/leads', (req, res) => {
-  const leadData = req.body;
-  if (!leadData || !leadData.name || !leadData.phone) {
-    return res.status(400).json({ error: 'Name and phone number are required.' });
+// API: Lead Capture — validates, then forwards to LEADS_WEBHOOK_URL when set.
+app.post('/api/leads', async (req, res) => {
+  const { sanitiseLead, forwardLead } = await import('./src/lib/api/sheetLead.ts');
+  const sanitised = sanitiseLead(req.body);
+  if (!sanitised.ok) {
+    return res.status(400).json({ ok: false, success: false, error: sanitised.error });
   }
 
-  const enrichedLead = {
-    ...leadData,
-    id: `LEAD-${Date.now().toString(36).toUpperCase()}-${Math.floor(100 + Math.random() * 900)}`,
-    receivedAt: new Date().toISOString(),
-  };
-
-  leadsStore.unshift(enrichedLead);
-  console.log(`[Farcon Leads] New submission from ${enrichedLead.name} (${enrichedLead.phone}) for goal: ${enrichedLead.goal || 'General'}`);
-
-  return res.json({
-    success: true,
-    leadId: enrichedLead.id,
-    message: 'Lead captured successfully.',
-  });
+  leadsStore.unshift({ ...sanitised.lead, receivedAt: new Date().toISOString() });
+  const result = await forwardLead(process.env.LEADS_WEBHOOK_URL, sanitised.lead);
+  return res.status(result.status).json(result.body);
 });
 
 // Serve frontend

@@ -2,6 +2,7 @@ export const FARCON_CONFIG = {
   brandName: 'FARCON WEALTH',
   legalName: 'Farcon Wealth Private Limited',
   registrationType: 'AMFI Registered Mutual Fund Distributor',
+  /** Live worker value. An earlier design brief used 229006; confirm with Ankit. */
   arn: '329006',
   tagline: 'Investing, without the noise.',
   subTagline: 'Clarity over complexity. Suitability before returns. Transparent process.',
