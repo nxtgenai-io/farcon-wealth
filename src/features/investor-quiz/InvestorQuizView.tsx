@@ -306,7 +306,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                     {COMPLIANCE_REGISTRY.quiz.distributorSeparateDisclosure}
                   </strong>
                   <span className="text-slate-500">
-                    Registration ARN: 329006. Operating strictly under AMFI regulatory guidelines.
+                    Registration ARN: 229006. Operating strictly under AMFI regulatory guidelines.
                   </span>
                 </div>
               </div>

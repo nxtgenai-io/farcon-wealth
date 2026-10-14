@@ -261,7 +261,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               <div className="flex items-start gap-2.5 p-3 bg-[#F2F6FB] rounded-xl border border-[#DCE4EE] text-[11px] text-slate-600">
                 <ShieldCheck className="w-4 h-4 text-[#78A832] shrink-0 mt-0.5" />
                 <p>
-                  Zero sales pressure. AMFI Registered (ARN: 329006). Farcon Wealth does not hold custody of your investment funds. Investments are made through official channels in the investor’s name.
+                  Zero sales pressure. AMFI Registered (ARN: 229006). Farcon Wealth does not hold custody of your investment funds. Investments are made through official channels in the investor’s name.
                 </p>
               </div>
 

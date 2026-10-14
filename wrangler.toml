@@ -1,0 +1,13 @@
+name = "farcon-wealth"
+main = "worker/index.ts"
+compatibility_date = "2026-10-14"
+
+# Static Vite build. SPA routes fall back to index.html.
+# This file does not deploy anything by itself.
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+# Production secret (do not commit the URL):
+#   npx wrangler secret put LEADS_WEBHOOK_URL

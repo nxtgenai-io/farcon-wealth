@@ -27,7 +27,7 @@ export const FarconLogo: React.FC<FarconLogoProps> = ({
       <div className={`inline-flex items-center select-none ${heightClasses} ${className}`}>
         <img
           src="/farcon-horizontal.svg"
-          alt="Farcon Wealth - AMFI Registered MF Distributor ARN: 329006"
+          alt="Farcon Wealth - AMFI Registered MF Distributor ARN: 229006"
           className="h-full w-auto object-contain block select-none pointer-events-none"
           loading="eager"
         />
@@ -41,7 +41,7 @@ export const FarconLogo: React.FC<FarconLogoProps> = ({
       <div className={`flex flex-col items-center select-none ${heightClasses} ${className}`}>
         <img
           src="/logo-hd-new.svg"
-          alt="Farcon Wealth - AMFI Registered MF Distributor ARN: 329006"
+          alt="Farcon Wealth - AMFI Registered MF Distributor ARN: 229006"
           className="h-full w-auto object-contain block select-none pointer-events-none"
           loading="eager"
         />

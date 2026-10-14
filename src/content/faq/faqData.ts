@@ -11,7 +11,7 @@ export const FAQ_ITEMS: FAQItem[] = [
     category: 'About Farcon',
     question: 'What is Farcon Wealth and how is it regulated?',
     answer:
-      'Farcon Wealth Private Limited is an AMFI-registered Mutual Fund Distributor holding ARN: 329006. We operate under the regulatory framework established by the Association of Mutual Funds in India (AMFI) and the Securities and Exchange Board of India (SEBI).',
+      'Farcon Wealth Private Limited is an AMFI-registered Mutual Fund Distributor holding ARN: 229006. We operate under the regulatory framework established by the Association of Mutual Funds in India (AMFI) and the Securities and Exchange Board of India (SEBI).',
   },
   {
     id: 'faq-2',

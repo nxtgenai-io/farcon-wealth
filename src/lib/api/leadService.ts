@@ -1,4 +1,5 @@
 import { LeadContext } from '@/types';
+import { SheetLead } from '@/lib/api/sheetLead';
 
 export interface LeadSubmissionResponse {
   success: boolean;
@@ -14,7 +15,47 @@ export interface LeadService {
 
 const STORAGE_KEY = 'farcon_leads_store';
 
+export interface SheetLeadInput extends SheetLead {
+  companyWebsite?: string;
+}
+
 export class LocalAndRemoteLeadService implements LeadService {
+  async submitSheetLead(input: SheetLeadInput): Promise<LeadSubmissionResponse> {
+    const timestamp = new Date().toISOString();
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...input,
+          sourcePage: input.sourcePage || (typeof window !== 'undefined' ? window.location.pathname : '/'),
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) {
+        return {
+          success: false,
+          leadId: data.leadId || '',
+          message: data.error || data.message || 'Please check the form and try again.',
+          timestamp,
+        };
+      }
+      return {
+        success: true,
+        leadId: data.leadId || `LEAD-${Date.now().toString(36).toUpperCase()}`,
+        message: data.message || 'Thank you. Your details are with the Farcon team.',
+        timestamp,
+      };
+    } catch {
+      return {
+        success: true,
+        leadId: `FRC-${Date.now().toString(36).toUpperCase()}`,
+        message: 'Saved on this device. The server was not reachable, so this was not sent to the sheet.',
+        timestamp,
+      };
+    }
+  }
+
   async submitLead(lead: LeadContext): Promise<LeadSubmissionResponse> {
     const timestamp = new Date().toISOString();
     const enrichedLead: LeadContext = {
@@ -34,25 +75,25 @@ export class LocalAndRemoteLeadService implements LeadService {
       }
     }
 
-    // Try posting to backend API proxy /api/leads if available
-    try {
-      const response = await fetch('/api/leads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(enrichedLead),
-      });
-      if (response.ok) {
-        const resJson = await response.json();
-        return {
-          success: true,
-          leadId: resJson.leadId || `LEAD-${Date.now().toString(36).toUpperCase()}`,
-          message: 'Thank you. A Farcon Wealth advisor will reach out to you calmly and confidentially.',
-          timestamp,
-        };
-      }
-    } catch {
-      // In offline / preview fallback:
-    }
+    const sheet = await this.submitSheetLead({
+      form: lead.source?.toLowerCase().includes('portfolio')
+        ? 'Portfolio Review'
+        : lead.source?.toLowerCase().includes('contact')
+          ? 'Contact'
+          : 'Consultation',
+      name: lead.name,
+      email: lead.email,
+      phone: lead.phone,
+      city: '',
+      goal: lead.goal || '',
+      investmentType: '',
+      amount: lead.monthlySavings || '',
+      timeHorizon: lead.investmentHorizon || '',
+      riskProfile: lead.quizProfile || '',
+      message: lead.notes || lead.plannerSummary || '',
+      sourcePage: typeof window !== 'undefined' ? window.location.pathname : '/',
+    });
+    if (sheet.leadId) return sheet;
 
     // Clean mock response for client-side execution / Cloudflare Worker fallback
     const simulatedId = `FRC-${Math.floor(100000 + Math.random() * 900000)}`;

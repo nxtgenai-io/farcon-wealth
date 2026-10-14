@@ -7,9 +7,9 @@
 export const COMPLIANCE_REGISTRY = {
   distributor: {
     entityName: 'Farcon Wealth Private Limited',
-    arn: '329006',
-    amfiRegistration: 'Farcon Wealth is an AMFI-registered Mutual Fund Distributor · ARN: 329006',
-    amfiShortBadge: 'AMFI-registered MFD · ARN: 329006',
+    arn: '229006',
+    amfiRegistration: 'Farcon Wealth is an AMFI-registered Mutual Fund Distributor · ARN: 229006',
+    amfiShortBadge: 'AMFI-registered MFD · ARN: 229006',
     registeredOffice: 'Farcon Wealth Private Limited, Bangalore, Karnataka, India',
     custodyStatement:
       'Farcon Wealth does not hold custody of your investment funds. Investments are made through official channels in the investor’s name.',
@@ -34,7 +34,7 @@ export const COMPLIANCE_REGISTRY = {
     disclaimer:
       'This assessment is an educational starting point and does not constitute personalised investment advice or a recommendation to purchase a particular mutual fund.',
     distributorSeparateDisclosure:
-      'Farcon Wealth is an AMFI-registered Mutual Fund Distributor · ARN: 329006',
+      'Farcon Wealth is an AMFI-registered Mutual Fund Distributor · ARN: 229006',
   },
 
   scheme: {
