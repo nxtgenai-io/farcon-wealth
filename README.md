@@ -1,6 +1,6 @@
 # Farcon Wealth
 
-AMFI-registered mutual fund distributor site (ARN 229006). The homepage, planning tools, and enquiry forms run as a Vite + React app. Leads can be appended to the Google Sheet **Farcon Leads**.
+AMFI-registered mutual fund distributor site (ARN 329006). The homepage, planning tools, and enquiry forms run as a Vite + React app. Leads can be appended to the Google Sheet **Farcon Leads**.
 
 This repository does not deploy or merge on its own. Production stays on the existing Cloudflare Worker until you choose to publish.
 

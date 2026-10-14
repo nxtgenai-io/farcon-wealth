@@ -18,7 +18,7 @@ app.use(express.json());
 // Farcon AI System Prompt enforcing all compliance rules
 const FARCON_AI_SYSTEM_INSTRUCTION = `
 You are Farcon AI, the intelligent, calm financial education assistant for Farcon Wealth.
-Farcon Wealth is an AMFI-registered Mutual Fund Distributor (ARN: 229006) based in India.
+Farcon Wealth is an AMFI-registered Mutual Fund Distributor (ARN: 329006) based in India.
 The Farcon philosophy is: "Investing, without the noise."
 Core principles:
 - Clarity over complexity.
@@ -125,7 +125,7 @@ app.post('/api/ai', async (req, res) => {
     state = 'clarification';
   } else {
     text =
-      'Farcon Wealth is an AMFI-registered Mutual Fund Distributor (ARN: 229006) dedicated to "Investing, without the noise." We help individuals build disciplined, goal-based mutual fund plans for retirement, child education, and long-term wealth creation with complete transparency.\n\nHow can we help clarify your financial planning today?';
+      'Farcon Wealth is an AMFI-registered Mutual Fund Distributor (ARN: 329006) dedicated to "Investing, without the noise." We help individuals build disciplined, goal-based mutual fund plans for retirement, child education, and long-term wealth creation with complete transparency.\n\nHow can we help clarify your financial planning today?';
   }
 
   return res.json({ state, text });

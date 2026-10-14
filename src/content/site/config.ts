@@ -2,7 +2,8 @@ export const FARCON_CONFIG = {
   brandName: 'FARCON WEALTH',
   legalName: 'Farcon Wealth Private Limited',
   registrationType: 'AMFI Registered Mutual Fund Distributor',
-  arn: '229006',
+  /** Live worker value. An earlier design brief used 229006; confirm with Ankit. */
+  arn: '329006',
   tagline: 'Investing, without the noise.',
   subTagline: 'Clarity over complexity. Suitability before returns. Transparent process.',
   email: 'hello@farconwealth.com',
@@ -12,7 +13,7 @@ export const FARCON_CONFIG = {
   investorLoginUrl: 'https://farconwealth.com/investor-login',
   hours: 'Mon – Sat: 9:30 AM – 6:30 PM IST',
   regulatoryNotice:
-    'Farcon Wealth Private Limited is an AMFI-registered Mutual Fund Distributor (ARN: 229006). Mutual fund investments are subject to market risks, read all scheme related documents carefully before investing. Past performance is not indicative of future returns. Farcon Wealth does not hold custody of your investment funds. Investments are made through official channels in the investor’s name.',
+    'Farcon Wealth Private Limited is an AMFI-registered Mutual Fund Distributor (ARN: 329006). Mutual fund investments are subject to market risks, read all scheme related documents carefully before investing. Past performance is not indicative of future returns. Farcon Wealth does not hold custody of your investment funds. Investments are made through official channels in the investor’s name.',
   demoMode: true,
 };
 

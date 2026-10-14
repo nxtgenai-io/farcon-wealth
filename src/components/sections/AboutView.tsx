@@ -20,7 +20,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ navigate, onOpenConsultati
           Investing, Without the Noise.
         </h1>
         <p className="mt-5 text-base sm:text-lg text-slate-600 leading-relaxed">
-          Farcon Wealth Private Limited is an AMFI-registered Mutual Fund Distributor (ARN: 229006) established on the foundational belief that disciplined, calm compounding outperforms frantic financial speculation every single time.
+          Farcon Wealth Private Limited is an AMFI-registered Mutual Fund Distributor (ARN: 329006) established on the foundational belief that disciplined, calm compounding outperforms frantic financial speculation every single time.
         </p>
       </div>
 

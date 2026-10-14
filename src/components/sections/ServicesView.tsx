@@ -176,7 +176,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
           Goal-Based Mutual Fund Guidance
         </h1>
         <p className="mt-4 text-sm text-slate-600 leading-relaxed">
-          Farcon Wealth is an AMFI-registered Mutual Fund Distributor (ARN: 229006). We focus strictly on transparent, long-term mutual fund architectures—with zero unnecessary products or hidden agendas.
+          Farcon Wealth is an AMFI-registered Mutual Fund Distributor (ARN: 329006). We focus strictly on transparent, long-term mutual fund architectures—with zero unnecessary products or hidden agendas.
         </p>
       </div>
 

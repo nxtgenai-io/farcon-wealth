@@ -115,7 +115,7 @@ const JOURNEYS: JourneyArchetype[] = [
         details: [
           { label: 'Annual Step-Up Option', value: '+10% Optional' },
           { label: 'Investment Route', value: 'Directly in Investor’s Name' },
-          { label: 'Regulatory Registration', value: 'AMFI ARN: 229006' },
+          { label: 'Regulatory Registration', value: 'AMFI ARN: 329006' },
         ],
         architecturalPrinciple: 'Farcon Wealth does not hold custody of your investment funds. Investments are made through official channels in the investor’s name.',
       },
@@ -260,7 +260,7 @@ const JOURNEYS: JourneyArchetype[] = [
         curveProgress: 1.0,
         details: [
           { label: 'Recommended Step-Up', value: '+10% Every 12 Months' },
-          { label: 'Direct Execution', value: 'AMFI ARN: 229006' },
+          { label: 'Direct Execution', value: 'AMFI ARN: 329006' },
           { label: 'Investor Custody', value: 'Held Directly in Your Name' },
         ],
         architecturalPrinciple: 'Disciplined automated debit ensures emotions never interrupt the compounding process.',

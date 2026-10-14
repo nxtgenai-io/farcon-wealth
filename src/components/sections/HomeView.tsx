@@ -30,27 +30,22 @@ const MARKET = {
   sensex: { name: 'SENSEX', value: '81,050.62', change: '+618.51', pct: '(+0.77%)' },
 };
 
+function smoothSeries(start: number, end: number, points = 24): number[] {
+  return Array.from({ length: points }, (_, i) => {
+    const t = i / (points - 1);
+    const eased = t * t * (3 - 2 * t);
+    const lift = Math.sin(t * Math.PI) * (end - start) * 0.035;
+    const value = start + (end - start) * eased + lift;
+    return i === points - 1 ? end : Math.round(value);
+  });
+}
+
 const PATHS: Record<Period, { nifty: number[]; sensex: number[] }> = {
-  '1D': {
-    nifty: [24420, 24480, 24440, 24510, 24540, 24490, 24580, 24612],
-    sensex: [80420, 80580, 80490, 80740, 80880, 80640, 80920, 81050],
-  },
-  '1W': {
-    nifty: [24110, 24240, 24180, 24360, 24480, 24420, 24570, 24612],
-    sensex: [79200, 79840, 79550, 80120, 80640, 80380, 80890, 81050],
-  },
-  '1M': {
-    nifty: [23680, 23840, 23720, 24010, 24280, 24150, 24460, 24612],
-    sensex: [77600, 78240, 77980, 78840, 79620, 79240, 80480, 81050],
-  },
-  '1Y': {
-    nifty: [21840, 22110, 21980, 22640, 23120, 22840, 23980, 24612],
-    sensex: [72400, 73680, 73120, 75240, 76880, 75940, 79220, 81050],
-  },
-  '5Y': {
-    nifty: [14200, 15840, 17120, 18940, 20480, 22110, 23640, 24612],
-    sensex: [48200, 52840, 57420, 63200, 68840, 74220, 78640, 81050],
-  },
+  '1D': { nifty: smoothSeries(24420, 24612), sensex: smoothSeries(80420, 81051) },
+  '1W': { nifty: smoothSeries(24110, 24612), sensex: smoothSeries(79200, 81051) },
+  '1M': { nifty: smoothSeries(23680, 24612), sensex: smoothSeries(77600, 81051) },
+  '1Y': { nifty: smoothSeries(21840, 24612), sensex: smoothSeries(72400, 81051) },
+  '5Y': { nifty: smoothSeries(14200, 24612), sensex: smoothSeries(48200, 81051) },
 };
 
 const GOALS = [
@@ -62,11 +57,17 @@ const GOALS = [
 
 const PLAN_TABS = ['Retirement', 'Child Education', 'Wealth Creation', 'Tax Saving'] as const;
 
+const RISK = {
+  veryHigh: '#0E6B38',
+  high: '#9B2C2C',
+  moderate: '#9A5410',
+} as const;
+
 const FUNDS = [
-  { name: 'SBI Small Cap Fund', group: 'Equity Funds', tags: ['Equity', 'Small Cap'], cagr: '26.4%', nav: '₹164.72', risk: 'Very High Risk', tone: '#0E6B38', mark: 'S', color: '#1F4E9A', spark: [8, 12, 10, 16, 18, 15, 22, 26] },
-  { name: 'HDFC Flexi Cap Fund', group: 'Equity Funds', tags: ['Equity', 'Flexi Cap'], cagr: '21.8%', nav: '₹712.35', risk: 'High Risk', tone: '#9B2C2C', mark: 'H', color: '#B42318', spark: [10, 14, 13, 17, 16, 19, 18, 22] },
-  { name: 'ICICI Prudential Balanced Advantage Fund', group: 'Hybrid Funds', tags: ['Hybrid', 'Dynamic'], cagr: '14.6%', nav: '₹348.12', risk: 'Moderate Risk', tone: '#9A5410', mark: 'I', color: '#C46B12', spark: [12, 13, 14, 13, 15, 16, 15, 17] },
-  { name: 'Axis ELSS Tax Saver Fund', group: 'Tax Saving (ELSS)', tags: ['Equity', 'ELSS'], cagr: '18.2%', nav: '₹112.46', risk: 'High Risk', tone: '#9B2C2C', mark: 'A', color: '#7A1F3D', spark: [9, 11, 13, 12, 16, 15, 18, 19] },
+  { name: 'SBI Small Cap Fund', group: 'Equity Funds', tags: ['Equity', 'Small Cap'], cagr: '26.4%', nav: '₹164.72', risk: 'Very High Risk', tone: RISK.veryHigh, logo: '/images/amc/sbi.svg', spark: [12, 13, 15, 16, 18, 20, 22, 24, 26] },
+  { name: 'HDFC Flexi Cap Fund', group: 'Equity Funds', tags: ['Equity', 'Flexi Cap'], cagr: '21.8%', nav: '₹712.35', risk: 'High Risk', tone: RISK.high, logo: '/images/amc/hdfc.svg', spark: [11, 13, 14, 16, 17, 18, 20, 21, 22] },
+  { name: 'ICICI Prudential Balanced Advantage Fund', group: 'Hybrid Funds', tags: ['Hybrid', 'Dynamic'], cagr: '14.6%', nav: '₹348.12', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/icici.svg', spark: [12, 12.4, 13, 13.6, 14.2, 14.8, 15.4, 16.2, 17] },
+  { name: 'Axis ELSS Tax Saver Fund', group: 'Tax Saving (ELSS)', tags: ['Equity', 'ELSS'], cagr: '18.2%', nav: '₹112.46', risk: 'High Risk', tone: RISK.high, logo: '/images/amc/axis.svg', spark: [10, 11, 12.5, 13.5, 15, 16, 17.2, 18.2, 19] },
 ];
 
 const TOOLS: { title: string; text: string; href: RoutePath; tint: string; icon: React.ReactNode }[] = [
@@ -79,47 +80,78 @@ const TOOLS: { title: string; text: string; href: RoutePath; tint: string; icon:
 ];
 
 const STORIES = [
-  { initials: 'A.S.', role: 'Retired Professional', quote: 'Farcon helped me plan my retirement in a very simple and clear way. I finally feel confident about my financial future.' },
-  { initials: 'R.K.', role: 'Parent', quote: 'The goal planning process made it easy for me to invest for my child\'s education. Very supportive team.' },
-  { initials: 'M.P.', role: 'Business Owner', quote: 'Transparent advice and a very disciplined approach. I appreciate the focus on long-term investing.' },
+  { initials: 'A.S.', role: 'Retired Professional', avatar: '/images/home/avatar-as.webp', quote: 'Farcon helped me plan my retirement in a very simple and clear way. I finally feel confident about my financial future.' },
+  { initials: 'R.K.', role: 'Parent', avatar: '/images/home/avatar-rk.webp', quote: 'The goal planning process made it easy for me to invest for my child\'s education. Very supportive team.' },
+  { initials: 'M.P.', role: 'Business Owner', avatar: '/images/home/avatar-mp.webp', quote: 'Transparent advice and a very disciplined approach. I appreciate the focus on long-term investing.' },
 ];
 
+function smoothLine(pts: Array<readonly [number, number]>): string {
+  if (pts.length === 0) return '';
+  let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i += 1) {
+    const p0 = pts[i - 1] ?? pts[i];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[i + 2] ?? p2;
+    const c1x = p1[0] + (p2[0] - p0[0]) / 6;
+    const c1y = p1[1] + (p2[1] - p0[1]) / 6;
+    const c2x = p2[0] - (p3[0] - p1[0]) / 6;
+    const c2y = p2[1] - (p3[1] - p1[1]) / 6;
+    d += ` C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+  }
+  return d;
+}
+
 function Spark({ values, color }: { values: number[]; color: string }) {
-  const w = 140;
-  const h = 36;
+  const w = 180;
+  const h = 84;
   const min = Math.min(...values);
   const max = Math.max(...values);
-  const d = values
-    .map((v, i) => {
-      const x = (i / (values.length - 1)) * w;
-      const y = h - ((v - min) / (max - min || 1)) * (h - 4) - 2;
-      return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)} ${y.toFixed(1)}`;
-    })
-    .join(' ');
+  const pts = values.map((v, i) => {
+    const x = (i / (values.length - 1)) * w;
+    const y = h - 8 - ((v - min) / (max - min || 1)) * (h - 16);
+    return [x, y] as const;
+  });
+  const d = smoothLine(pts);
+  const area = `${d} L${w} ${h} L0 ${h} Z`;
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} width="100%" height="36" aria-hidden="true">
-      <path d={d} fill="none" stroke={color} strokeWidth="2" />
+    <svg className="hf-spark" viewBox={`0 0 ${w} ${h}`} width="100%" height="84" aria-hidden="true">
+      <path d={area} fill={color} opacity="0.14" />
+      <path d={d} fill="none" stroke={color} strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
 }
 
-function MarketLine({ values }: { values: number[] }) {
-  const w = 320;
-  const h = 110;
+function MarketLine({ values, label }: { values: number[]; label: string }) {
+  const w = 360;
+  const h = 132;
+  const left = 58;
+  const top = 12;
+  const bottom = 18;
   const min = Math.min(...values);
   const max = Math.max(...values);
-  const left = 54;
+  const span = max - min || 1;
   const pts = values.map((v, i) => {
-    const x = left + (i / (values.length - 1)) * (w - left - 8);
-    const y = 12 + (1 - (v - min) / (max - min || 1)) * (h - 24);
+    const x = left + (i / (values.length - 1)) * (w - left - 10);
+    const y = top + (1 - (v - min) / span) * (h - top - bottom);
     return [x, y] as const;
   });
-  const d = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ');
+  const d = smoothLine(pts);
+  const area = `${d} L${pts[pts.length - 1][0].toFixed(1)} ${h - bottom} L${pts[0][0].toFixed(1)} ${h - bottom} Z`;
+  const ticks = [0, 0.5, 1].map((t) => ({
+    y: top + (1 - t) * (h - top - bottom),
+    label: Math.round(min + span * t).toLocaleString('en-IN'),
+  }));
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} role="img" aria-label="Illustrative line chart">
-      <text x="0" y="14" fontSize="10" fill="#5e675c">{max.toLocaleString('en-IN')}</text>
-      <text x="0" y={h - 2} fontSize="10" fill="#5e675c">{min.toLocaleString('en-IN')}</text>
-      <path d={d} fill="none" stroke="#1F9D55" strokeWidth="2.4" />
+    <svg viewBox={`0 0 ${w} ${h}`} role="img" aria-label={`Illustrative ${label} chart`}>
+      {ticks.map((tick) => (
+        <g key={tick.label}>
+          <line x1={left} x2={w - 8} y1={tick.y} y2={tick.y} stroke="#e6e0d4" strokeWidth="1" />
+          <text x="0" y={tick.y + 4} fontSize="11" fill="#3d4a40">{tick.label}</text>
+        </g>
+      ))}
+      <path d={area} fill="rgba(31,157,85,0.16)" />
+      <path d={d} fill="none" stroke="#1F9D55" strokeWidth="2.6" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
 }
@@ -162,7 +194,10 @@ function AreaChart({
         {point && <circle cx={x(active)} cy={y(point.estimated)} r="4" fill="#0F3D2E" />}
       </svg>
       {point && (
-        <div className="hf-tip" style={{ left: `${tipLeft}%` }}>
+        <div
+          className={`hf-tip ${tipLeft > 72 ? 'is-end' : tipLeft < 18 ? 'is-start' : ''}`}
+          style={tipLeft > 72 || tipLeft < 18 ? undefined : { left: `${tipLeft}%` }}
+        >
           Year {point.year} {formatTargetLabel(point.estimated)}
         </div>
       )}
@@ -225,31 +260,41 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             </div>
           </div>
           <article className="hf-market" aria-label="Illustrative market snapshot">
-            <div className="hf-tabs">
-              <button type="button" className={indexFocus === 'nifty' ? 'is-on' : ''} onClick={() => setIndexFocus('nifty')}>NIFTY 50</button>
-              <button type="button" className={indexFocus === 'sensex' ? 'is-on' : ''} onClick={() => setIndexFocus('sensex')}>SENSEX</button>
-              {PERIODS.map((item) => (
-                <button key={item} type="button" className={period === item ? 'is-on' : ''} onClick={() => setPeriod(item)}>{item}</button>
-              ))}
+            <div className="hf-market-tabs">
+              <div className="hf-tabs" role="group" aria-label="Index">
+                <button type="button" className={indexFocus === 'nifty' ? 'is-on' : ''} onClick={() => setIndexFocus('nifty')}>NIFTY 50</button>
+                <button type="button" className={indexFocus === 'sensex' ? 'is-on' : ''} onClick={() => setIndexFocus('sensex')}>SENSEX</button>
+              </div>
+              <div className="hf-tabs" role="group" aria-label="Period">
+                {PERIODS.map((item) => (
+                  <button key={item} type="button" className={period === item ? 'is-on' : ''} onClick={() => setPeriod(item)}>{item}</button>
+                ))}
+              </div>
             </div>
-            <div className="hf-quote-row">
-              <strong>NIFTY 50 {MARKET.nifty.value}</strong>
-              <span className="hf-up">{MARKET.nifty.change} {MARKET.nifty.pct}</span>
+            <div className={`hf-quote-block ${indexFocus === 'nifty' ? 'is-focus' : ''}`}>
+              <div className="hf-quote-row">
+                <strong>NIFTY 50</strong>
+                <span className="hf-up">{MARKET.nifty.change} {MARKET.nifty.pct}</span>
+              </div>
+              <p className="hf-level">{MARKET.nifty.value}</p>
+              <MarketLine values={PATHS[period].nifty} label="NIFTY 50" />
+            </div>
+            <div className={`hf-quote-block ${indexFocus === 'sensex' ? 'is-focus' : ''}`}>
+              <div className="hf-quote-row">
+                <strong>SENSEX</strong>
+                <span className="hf-up">{MARKET.sensex.change} {MARKET.sensex.pct}</span>
+              </div>
+              <p className="hf-level">{MARKET.sensex.value}</p>
+              <MarketLine values={PATHS[period].sensex} label="SENSEX" />
             </div>
             <p className="hf-note">Illustrative snapshot · not a live quote</p>
-            <MarketLine values={PATHS[period].nifty} />
-            <div className="hf-quote-row">
-              <strong>SENSEX {MARKET.sensex.value}</strong>
-              <span className="hf-up">{MARKET.sensex.change} {MARKET.sensex.pct}</span>
-            </div>
-            <MarketLine values={PATHS[period].sensex} />
           </article>
         </div>
       </section>
 
       <section className="hf-section" id="goals">
         <div className="hf-wrap">
-          <div className="hf-row">
+          <div className="hf-goals">
             {GOALS.map((goal) => (
               <button key={goal.title} type="button" className="hf-goal" onClick={() => navigate(goal.href)}>
                 <img src={goal.image} alt="" width={720} height={480} loading="lazy" />
@@ -267,15 +312,18 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
       <section className="hf-section" id="planner">
         <div className="hf-wrap">
           <div className="hf-plan">
-            <div>
+            <div className="hf-plan-copy">
               <span className="hf-eye">Interactive goal planning calculator</span>
               <h2>Your Goals.<br /><em>Our Planning.</em></h2>
               <p className="hf-lede">See how small, consistent steps today can create a brighter tomorrow.</p>
-              <svg className="hf-plant" viewBox="0 0 160 180" aria-hidden="true">
-                <path d="M80 170 V70" stroke="#1F9D55" strokeWidth="3" />
-                <path d="M80 110 C40 90 30 50 48 30 C70 48 78 80 80 110" fill="#1F9D55" />
-                <path d="M80 96 C120 78 138 40 118 22 C96 40 86 72 80 96" fill="#0F3D2E" />
-                <ellipse cx="80" cy="168" rx="28" ry="8" fill="#E7F3EC" />
+              <svg className="hf-plant" viewBox="0 0 220 260" aria-hidden="true">
+                <ellipse cx="110" cy="236" rx="46" ry="12" fill="#E4F2E8" />
+                <path d="M110 230 V92" stroke="#1F7A45" strokeWidth="4" strokeLinecap="round" />
+                <path d="M110 168 C62 150 28 112 46 72 C78 96 98 140 110 168" fill="#1F9D55" />
+                <path d="M110 150 C158 128 196 86 176 48 C142 74 122 118 110 150" fill="#0F3D2E" />
+                <path d="M110 118 C70 104 48 74 62 46 C86 64 102 92 110 118" fill="#3CB371" />
+                <path d="M110 104 C146 88 172 58 160 32 C136 50 120 78 110 104" fill="#146C43" />
+                <circle cx="110" cy="78" r="7" fill="#C9A24A" />
               </svg>
             </div>
             <div>
@@ -336,7 +384,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             {funds.map((fund) => (
               <article key={fund.name} className="hf-fund">
                 <div className="hf-amc">
-                  <span className="hf-mark" style={{ background: fund.color }}>{fund.mark}</span>
+                  <img className="hf-logo" src={fund.logo} alt="" />
                   <div>
                     <h2>{fund.name}</h2>
                     <div className="hf-sub">Direct Growth</div>
@@ -364,15 +412,15 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
 
       <section className="hf-why">
         <img className="hf-why-photo" src="/images/home/why-mountains.webp" alt="" width={1400} height={834} loading="lazy" />
-        <svg className="hf-flag" viewBox="0 0 220 340" aria-hidden="true">
-          <path d="M30 16 C 90 70, 40 130, 120 180 S 70 260, 150 320" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="2" strokeDasharray="2 7" />
-          <path d="M168 48 v78" stroke="#C9A24A" strokeWidth="3" />
-          <path d="M168 48 h42 l-10 14 10 14 h-42 z" fill="#C9A24A" />
+        <svg className="hf-flag" viewBox="0 0 1200 640" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+          <path d="M760 560 C 820 470, 780 390, 900 330 S 860 180, 1020 120 S 980 40, 1120 28" fill="none" stroke="rgba(255,255,255,0.78)" strokeWidth="2.5" strokeDasharray="1.5 8" strokeLinecap="round" />
+          <path d="M1112 28 v92" stroke="#F3D48A" strokeWidth="3" />
+          <path d="M1112 28 h52 l-12 16 12 16 h-52 z" fill="#F3D48A" />
         </svg>
         <div className="hf-why-inner">
           <span className="hf-eye">Why Farcon Wealth</span>
           <h2>A disciplined approach to wealth creation.</h2>
-          <p style={{ maxWidth: 560, lineHeight: 1.6 }}>We combine research, technology and a goal-based approach to help you invest with confidence.</p>
+          <p className="hf-why-lead">We combine research, technology and a goal-based approach to help you invest with confidence.</p>
           <button type="button" className="hf-btn hf-btn-white" onClick={() => navigate('/about')}>Know More About Us <ArrowRight size={16} /></button>
           <div className="hf-cols">
             <article>
@@ -397,7 +445,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </section>
 
-      <section className="hf-section">
+      <section className="hf-section hf-tools-section">
         <div className="hf-wrap">
           <span className="hf-eye">Powerful tools for every stage</span>
           <h2>Calculators & Planners</h2>
@@ -420,10 +468,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           <span className="hf-eye">Investor stories</span>
           <h2>What our investors say</h2>
           <p className="hf-lede">Real experiences, real journeys, a shared belief in long-term wealth creation.</p>
-          <div className="hf-cta-row">
-            <button type="button" className="hf-btn hf-btn-outline" onClick={() => scrollStories(-1)}><span className="sr-only">Previous stories</span><span aria-hidden="true">←</span></button>
-            <button type="button" className="hf-btn hf-btn-outline" onClick={() => scrollStories(1)}><span className="sr-only">Next stories</span><span aria-hidden="true">→</span></button>
-          </div>
+          <div className="hf-carousel">
+            <button type="button" className="hf-side" onClick={() => scrollStories(-1)} aria-label="Previous stories">‹</button>
           <div
             className="hf-stories"
             ref={storyRef}
@@ -439,11 +485,16 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                 <div className="hf-quote">“</div>
                 <p>{story.quote}</p>
                 <div className="hf-who">
-                  <span className="hf-avatar">{story.initials}</span>
-                  <span><b>{story.initials}</b><br />{story.role}</span>
+                  <img className="hf-avatar" src={story.avatar} alt="" width={48} height={48} />
+                  <span className="hf-who-text">
+                    <b>{story.initials}</b>
+                    <small>{story.role}</small>
+                  </span>
                 </div>
               </article>
             ))}
+          </div>
+            <button type="button" className="hf-side" onClick={() => scrollStories(1)} aria-label="Next stories">›</button>
           </div>
           <div className="hf-dots">
             {STORIES.map((story, index) => (
@@ -461,7 +512,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           <h2>Learn, Plan & Grow</h2>
           <p className="hf-lede">Simplified insights to help you make informed decisions.</p>
           <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/education')}>Explore All Articles <ArrowRight size={16} /></button>
-          <div style={{ marginTop: 16 }}>
+          <div className="hf-articles">
             {[
               ['/images/home/article-funds.webp', 'Mutual Funds 101', 'A beginner\'s guide to investing in mutual funds'],
               ['/images/home/article-sip.webp', 'SIP vs Lumpsum', 'Which strategy is right for you?'],
@@ -472,7 +523,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                 <div>
                   <h2>{title}</h2>
                   <p>{text}</p>
-                  <strong>Read Article →</strong>
+                  <span className="hf-read">Read Article →</span>
                 </div>
               </a>
             ))}

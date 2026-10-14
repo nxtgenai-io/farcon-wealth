@@ -125,7 +125,7 @@ export const AIChatDrawer: React.FC<AIChatDrawerProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold tracking-wider uppercase text-[#17243A]">Farcon AI</span>
-              <span className="text-[10px] text-[#52647D] font-mono">ARN: 229006</span>
+              <span className="text-[10px] text-[#52647D] font-mono">ARN: 329006</span>
             </div>
             <p className="text-[10px] text-[#52647D]">Educational · Unbiased · Zero Noise</p>
           </div>

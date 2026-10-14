@@ -241,10 +241,10 @@ export const DisclosuresPage: React.FC<{ section?: 'privacy' | 'terms' | 'grieva
   <div className="pg">
     <div className="pg-wrap">
       <span className="hf-eye">Regulatory Disclosures</span>
-      <h1>ARN 229006, in plain language.</h1>
+      <h1>ARN {FARCON_CONFIG.arn}, in plain language.</h1>
       <article className="pg-card" id="registration">
         <h2>Registration</h2>
-        <p>{FARCON_CONFIG.legalName} is an AMFI-registered mutual fund distributor. ARN: 229006. Registered office: {FARCON_CONFIG.registeredAddress}. Email {FARCON_CONFIG.email}.</p>
+        <p>{FARCON_CONFIG.legalName} is an AMFI-registered mutual fund distributor. ARN: {FARCON_CONFIG.arn}. Phone {FARCON_CONFIG.phoneNumber}. Registered office: {FARCON_CONFIG.registeredAddress}. Email {FARCON_CONFIG.email}.</p>
       </article>
       <article className="pg-card" id="risk" style={{ marginTop: 12 }}>
         <h2>Risk disclosure</h2>
