@@ -396,9 +396,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           src={bleedSrc('hero').src}
           srcSet={bleedSrc('hero').srcSet}
           sizes="100vw"
-          alt="A couple seen from behind, sitting on a hill above misty mountains at sunrise"
+          alt="An Indian family smiling together in a park: parents with their son and daughter"
           width={2880}
-          height={1620}
+          height={1120}
           fetchPriority="high"
           decoding="async"
         />

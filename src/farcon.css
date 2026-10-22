@@ -1137,7 +1137,7 @@ html { scroll-behavior: smooth; }
     margin: 0;
     border-radius: 0;
     object-fit: cover;
-    object-position: 55% 72%;
+    object-position: center 68%;
     transform: none;
     -webkit-mask-image: none;
     mask-image: none;
@@ -1179,7 +1179,7 @@ html { scroll-behavior: smooth; }
     height: 220px;
     margin: 14px 16px 0;
     border-radius: 18px;
-    object-position: 62% 70%;
+    object-position: center 62%;
     transform: none;
   }
   .hf-market, .is-home .hf-market { order: 3; width: calc(100% - 32px); max-width: 640px; margin: 14px auto 22px; justify-self: center; }
