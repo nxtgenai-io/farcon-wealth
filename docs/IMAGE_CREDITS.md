@@ -2,7 +2,7 @@
 
 Homepage photographs replace the earlier reference-screenshot crops. Each file is stored under `public/images/home/` as WebP. Full-bleed photos are 800, 1440 and 2880 pixels wide, except the hero, which is 800, 1024, and a sharpened 1600 upscale. Card photos are 800 and 1600. Pexels photos are free to use under the [Pexels License](https://www.pexels.com/license/), including commercial use, without attribution. Attribution is listed here anyway.
 
-The Farcon stag mark is the project file `public/brand-mark.svg`. The “Your Goals. Our Planning.” plant is an original SVG in `HomeView.tsx`, not a photograph. The small gold flag on the Why ridge is a separate SVG overlay in the page, not painted into the mountain photograph.
+The Farcon Wealth lockup and stag are the official artwork supplied for the site, exported without redrawing from the transparent master. Header and footer use `public/brand/farcon-lockup-1x` and `farcon-lockup-2x` (WebP with a PNG fallback). Favicon, apple-touch, and PWA icons crop that same stag onto a white square. The social image is `public/images/og.jpg`: the lockup on the existing hero photograph. The “Your Goals. Our Planning.” plant is an original SVG in `HomeView.tsx`, not a photograph. The small gold flag on the Why ridge is a separate SVG overlay in the page, not painted into the mountain photograph.
 
 | File | Scene | Source | Author | License |
 | --- | --- | --- | --- | --- |

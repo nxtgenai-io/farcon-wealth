@@ -15,8 +15,10 @@
 
 .fw-lockup {
   display: inline-flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 3px;
   text-align: left;
   text-decoration: none;
   color: inherit;
@@ -25,30 +27,21 @@
   padding: 0;
   cursor: pointer;
   min-height: 44px;
+  max-width: 100%;
 }
-.fw-lockup img { width: 46px; height: 56px; flex: none; object-fit: contain; }
-.fw-lockup strong {
-  display: block;
-  font-family: var(--fw-sans);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  font-size: 14px;
-  line-height: 1.1;
-  white-space: nowrap;
-}
+.fw-lockup img { height: 48px; width: auto; flex: none; object-fit: contain; }
 .fw-lockup small {
   display: block;
-  margin-top: 3px;
+  margin-top: 0;
   font-size: 8px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   line-height: 1.2;
   max-width: none;
   white-space: nowrap;
   text-transform: uppercase;
 }
-.fw-lockup.is-footer img { width: 68px; height: 82px; }
-.fw-lockup.is-footer strong { font-size: 16px; white-space: normal; }
-.fw-lockup.is-footer small { font-size: 12px; max-width: 260px; white-space: normal; }
+.fw-lockup.is-footer img { height: 52px; width: auto; }
+.fw-lockup.is-footer small { font-size: 11px; max-width: 240px; white-space: normal; }
 .fw-header {
   position: sticky;
   top: 0;
@@ -740,10 +733,9 @@
 }
 @media (min-width: 900px) and (max-width: 1140px) {
   .fw-header-bar { gap: 6px; padding: 8px 10px; }
-  .fw-lockup { gap: 6px; }
-  .fw-lockup img { width: 40px; height: 50px; }
-  .fw-lockup strong { font-size: 12px; letter-spacing: 0.03em; }
-  .fw-lockup small { font-size: 11px; max-width: 148px; }
+  .fw-lockup { gap: 2px; }
+  .fw-lockup img { height: 44px; width: auto; }
+  .fw-lockup small { font-size: 8px; max-width: none; }
   .fw-nav { gap: 0; margin-left: 0; }
   .fw-nav button { font-size: 11px; padding: 10px 3px; }
   .fw-actions { gap: 4px; }
@@ -863,8 +855,8 @@ html, body { overflow-x: clip; }
   .is-home .fw-footer-grid,
   .is-home .fw-legal { max-width: 1280px; }
   .is-home .fw-header-bar { height: 88px; padding: 0 24px; }
-  .is-home .fw-lockup img { width: 42px; height: 50px; }
-  .is-home .fw-lockup strong { font-size: 15px; }
+  .is-home .fw-lockup img { height: 48px; width: auto; }
+  .is-home .fw-lockup.is-footer img { height: 52px; width: auto; }
   .is-home .fw-lockup small { font-size: 8px; max-width: none; white-space: nowrap; }
   .is-home .fw-header-bar { gap: 8px; }
   .is-home .fw-nav { gap: 0; margin-left: 4px; min-width: 0; }
@@ -1009,7 +1001,6 @@ html, body { overflow-x: clip; }
   .fw-header { position: sticky; top: 0; }
   .fw-header-bar { min-height: 64px; height: auto; padding: 8px 12px; flex-wrap: nowrap; }
   .fw-lockup:not(.is-footer) small { max-width: none; font-size: 7px; letter-spacing: 0; }
-  .fw-lockup:not(.is-footer) strong { font-size: 13px; }
   .fw-footer-grid { grid-template-columns: 1fr 1fr; gap: 24px 20px; }
   .fw-footer button, .fw-footer a { min-height: 44px; font-size: 14px; }
   .hf-lede, .hf-goal p, .hf-why-lead, .hf-tool p, .hf-story p, .hf-article p, .hf-cols p, .pg .lede {
@@ -1066,8 +1057,8 @@ html, body { overflow-x: clip; }
   .hf-cta-row .hf-btn { width: 100%; }
   .fw-footer-grid { grid-template-columns: 1fr; }
   .fw-lockup:not(.is-footer) small { font-size: 7px; letter-spacing: 0; }
-  .fw-lockup:not(.is-footer) strong { font-size: 12px; }
-  .fw-lockup:not(.is-footer) img { width: 36px; height: 44px; }
+  .fw-lockup:not(.is-footer) img { height: 38px; width: auto; }
+  .fw-lockup.is-footer img { height: 40px; width: auto; }
 }
 
 @media (min-width: 700px) and (max-width: 1099px) {
@@ -1105,7 +1096,6 @@ html, body { overflow-x: clip; }
   .is-home .fw-book-full { display: none; }
   .is-home .fw-book-short { display: inline; }
   .is-home .fw-menu-btn { display: inline-flex; width: 36px; height: 36px; min-width: 36px; min-height: 36px; }
-  .is-home .fw-lockup strong { font-size: 13px; letter-spacing: 0.04em; }
   .is-home .fw-lockup small { font-size: 8px; max-width: none; }
   .is-home .hf-goals { gap: 12px; }
   .is-home .hf .hf-goal h2 { font-size: 16px; }
@@ -1137,7 +1127,7 @@ html { scroll-behavior: smooth; }
 }
 .fw-header.is-compact .fw-header-bar { min-height: 64px; }
 .is-home .fw-header.is-compact .fw-header-bar { height: 64px; }
-.fw-header.is-compact .fw-lockup img { width: 34px; height: 42px; }
+.fw-header.is-compact .fw-lockup img { height: 44px; width: auto; }
 @media (min-width: 1100px) {
   .hf-hero-photo, .is-home .hf-hero-photo {
     position: absolute;
