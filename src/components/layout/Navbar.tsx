@@ -36,6 +36,18 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
   }, []);
 
   useEffect(() => {
+    const header = document.querySelector('.fw-header');
+    if (!header) return undefined;
+    const sync = () => {
+      document.documentElement.style.setProperty('--fw-header-h', `${header.getBoundingClientRect().height}px`);
+    };
+    sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, [compact]);
+
+  useEffect(() => {
     if (!open) return undefined;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -79,6 +91,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
 
   return (
     <header className={`fw-header${compact ? ' is-compact' : ''}`}>
+      <div className="fw-util">
+        <p>AMFI Registered Mutual Fund Distributor · ARN {FARCON_CONFIG.arn}</p>
+        <a href={`https://wa.me/${FARCON_CONFIG.whatsappNumber}`} target="_blank" rel="noreferrer">WhatsApp</a>
+      </div>
       <div className="fw-header-bar">
         <BrandLockup onClick={() => go('/')} />
         <nav className="fw-nav" aria-label="Primary">

@@ -489,6 +489,26 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               <span className="hf-eye">Interactive goal planning calculator</span>
               <h2>Your Goals.<br /><em>Our Planning.</em></h2>
               <p className="hf-lede">See how small, consistent steps today can create a brighter tomorrow.</p>
+              <ol className="hf-how">
+                <li>
+                  <span><Target size={16} /></span>
+                  <div><strong>Pick a goal</strong><p>Retirement, a child, wealth, or tax.</p></div>
+                </li>
+                <li>
+                  <span><Wallet size={16} /></span>
+                  <div><strong>Set amount & time</strong><p>A corpus, a horizon, and a rate you can live with.</p></div>
+                </li>
+                <li>
+                  <span><LineChart size={16} /></span>
+                  <div><strong>See your monthly SIP</strong><p>The figure updates as you move the sliders.</p></div>
+                </li>
+              </ol>
+              <ul className="hf-truststrip">
+                <li>AMFI-registered · ARN {FARCON_CONFIG.arn}</li>
+                <li>Investments in your name</li>
+                <li>No hidden fees</li>
+              </ul>
+              <a className="hf-btn hf-btn-outline hf-expert" href={whatsapp} target="_blank" rel="noreferrer">Talk to an expert</a>
               <PlanningPlant />
             </div>
             <div className="hf-plan-panel">
