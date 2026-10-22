@@ -2,22 +2,21 @@ import { RoutePath } from '@/types';
 
 export const PRIMARY_NAV: { label: string; href: RoutePath; short: string }[] = [
   { label: 'Home', short: 'Home', href: '/' },
-  { label: 'About Us', short: 'About', href: '/about' },
-  { label: 'Our Services', short: 'Services', href: '/services' },
-  { label: 'Mutual Funds', short: 'Funds', href: '/mutual-funds' },
+  { label: 'Services', short: 'Services', href: '/services' },
+  { label: 'Goals', short: 'Goals', href: '/goals' },
   { label: 'Calculators', short: 'Calculators', href: '/calculators' },
-  { label: 'Portfolio Review', short: 'Portfolio', href: '/portfolio-review' },
-  { label: 'Investor Education', short: 'Education', href: '/education' },
-  { label: 'Contact Us', short: 'Contact', href: '/contact' },
-  { label: 'Regulatory Disclosures', short: 'Disclosures', href: '/disclosures' },
+  { label: 'Investor Quiz', short: 'Investor Quiz', href: '/investor-quiz' },
+  { label: 'Planner', short: 'Planner', href: '/wealth-planner' },
+  { label: 'Funds', short: 'Funds', href: '/mutual-funds' },
+  { label: 'Education', short: 'Education', href: '/education' },
+  { label: 'About', short: 'About', href: '/about' },
 ];
 
 export const SERVICE_LINKS: { label: string; href: RoutePath }[] = [
-  { label: 'SIP', href: '/services' },
-  { label: 'Lumpsum', href: '/services' },
-  { label: 'Goal-Based Investment', href: '/services' },
-  { label: 'Portfolio Review', href: '/portfolio-review' },
-  { label: 'Child Education', href: '/goals/child-education' },
-  { label: 'Retirement', href: '/goals/retirement' },
-  { label: 'Tax Saving', href: '/goals/tax-saving' },
+  { label: 'Goal-Based SIP Planning', href: '/services/sip-planning' },
+  { label: 'Portfolio Review', href: '/services/portfolio-review' },
+  { label: 'ELSS / Tax-Saving', href: '/services/elss' },
+  { label: 'Retirement Planning', href: '/services/retirement' },
+  { label: 'Child Education', href: '/services/child-education' },
+  { label: 'Systematic Withdrawal (SWP)', href: '/services/swp' },
 ];

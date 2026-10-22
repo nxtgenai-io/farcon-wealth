@@ -16,9 +16,7 @@ export const BrandLockup: React.FC<BrandLockupProps> = ({ tone = 'dark', size = 
       <span>
         <strong style={{ color: ink }}>{FARCON_CONFIG.brandName}</strong>
         <small style={{ color: sub }}>
-          AMFI-registered mutual fund distributor
-          <br />
-          ARN: {FARCON_CONFIG.arn}
+          AMFI REGISTERED MUTUAL FUND DISTRIBUTOR | ARN: {FARCON_CONFIG.arn}
         </small>
       </span>
     </button>

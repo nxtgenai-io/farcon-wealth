@@ -8,8 +8,9 @@ export const FARCON_CONFIG = {
   subTagline: 'Clarity over complexity. Suitability before returns. Transparent process.',
   email: 'hello@farconwealth.com',
   registeredAddress: 'A-160, P.C. Colony, Kankarbagh, Patna, Bihar, India – 800020',
-  whatsappNumber: '918000000000', // Configurable via environment
-  phoneNumber: '+91 80000 00000',
+  whatsappNumber: '917673008502',
+  /** Blank on purpose: the site must not publish a phone number or tel: link. */
+  phoneNumber: '',
   investorLoginUrl: 'https://farconwealth.com/investor-login',
   hours: 'Mon – Sat: 9:30 AM – 6:30 PM IST',
   regulatoryNotice:

@@ -6,6 +6,8 @@ import { FloatingContactActions } from '@/components/layout/FloatingContactActio
 import { ConsultationModal } from '@/components/ui/ConsultationModal';
 import { AIChatDrawer } from '@/features/farcon-ai/AIChatDrawer';
 import { HomeView } from '@/components/sections/HomeView';
+import { PageCta } from '@/components/sections/home/PageCta';
+import { ServicesView } from '@/components/sections/ServicesView';
 import { GoalsView } from '@/components/sections/GoalsView';
 import { CalculatorsPage } from '@/components/pages/CalculatorsPage';
 import { InvestorQuizView } from '@/features/investor-quiz/InvestorQuizView';
@@ -18,7 +20,6 @@ import {
   FundsPage,
   LoginPage,
   PortfolioPage,
-  ServicesPage,
 } from '@/components/pages/SitePages';
 
 export function App() {
@@ -77,7 +78,14 @@ export function App() {
     }
 
     if (currentPath.startsWith('/services')) {
-      return <ServicesPage navigate={navigate} onOpenConsultation={handleOpenConsultation} />;
+      const slug = currentPath === '/services' ? undefined : currentPath.slice('/services/'.length);
+      return (
+        <ServicesView
+          activeSlug={slug}
+          navigate={navigate}
+          onOpenConsultation={handleOpenConsultation}
+        />
+      );
     }
 
     // 4. Goals Overview & Detail Routes
@@ -176,8 +184,9 @@ export function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1">
+      <main className="flex-1 fw-skin">
         {renderView()}
+        {currentPath !== '/' && <PageCta onBook={() => handleOpenConsultation('Book a Free 15-Minute Call')} />}
       </main>
 
       {/* Footer */}

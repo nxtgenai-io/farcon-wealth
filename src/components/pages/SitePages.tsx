@@ -226,7 +226,6 @@ export const ContactPage: React.FC = () => {
         <p className="lede">{FARCON_CONFIG.hours}. {FARCON_CONFIG.registeredAddress}</p>
         <div className="hf-cta-row">
           <a className="hf-btn hf-btn-green" href={whatsapp} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
-          <a className="hf-btn hf-btn-outline" href={`tel:${FARCON_CONFIG.phoneNumber}`}>Call {FARCON_CONFIG.phoneNumber}</a>
         </div>
         <div className="split" style={{ marginTop: 18 }}>
           <LeadForm form="Contact" submitLabel="Send inquiry" requireMessage />
@@ -244,7 +243,7 @@ export const DisclosuresPage: React.FC<{ section?: 'privacy' | 'terms' | 'grieva
       <h1>ARN {FARCON_CONFIG.arn}, in plain language.</h1>
       <article className="pg-card" id="registration">
         <h2>Registration</h2>
-        <p>{FARCON_CONFIG.legalName} is an AMFI-registered mutual fund distributor. ARN: {FARCON_CONFIG.arn}. Phone {FARCON_CONFIG.phoneNumber}. Registered office: {FARCON_CONFIG.registeredAddress}. Email {FARCON_CONFIG.email}.</p>
+        <p>{FARCON_CONFIG.legalName} is an AMFI-registered mutual fund distributor. ARN: {FARCON_CONFIG.arn}. Registered office: {FARCON_CONFIG.registeredAddress}. Email {FARCON_CONFIG.email}. WhatsApp +91 76730 08502.</p>
       </article>
       <article className="pg-card" id="risk" style={{ marginTop: 12 }}>
         <h2>Risk disclosure</h2>

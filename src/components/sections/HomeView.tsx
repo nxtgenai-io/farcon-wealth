@@ -68,6 +68,10 @@ const FUNDS = [
   { name: 'HDFC Flexi Cap Fund', group: 'Equity Funds', tags: ['Equity', 'Flexi Cap'], cagr: '21.8%', nav: '₹712.35', risk: 'High Risk', tone: RISK.high, logo: '/images/amc/hdfc.svg', spark: [11, 13, 14, 16, 17, 18, 20, 21, 22] },
   { name: 'ICICI Prudential Balanced Advantage Fund', group: 'Hybrid Funds', tags: ['Hybrid', 'Dynamic'], cagr: '14.6%', nav: '₹348.12', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/icici.svg', spark: [12, 12.4, 13, 13.6, 14.2, 14.8, 15.4, 16.2, 17] },
   { name: 'Axis ELSS Tax Saver Fund', group: 'Tax Saving (ELSS)', tags: ['Equity', 'ELSS'], cagr: '18.2%', nav: '₹112.46', risk: 'High Risk', tone: RISK.high, logo: '/images/amc/axis.svg', spark: [10, 11, 12.5, 13.5, 15, 16, 17.2, 18.2, 19] },
+  { name: 'HDFC Short Term Debt Fund', group: 'Debt Funds', tags: ['Debt', 'Short Duration'], cagr: '7.4%', nav: '₹28.16', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/hdfc.svg', spark: [12, 12.2, 12.4, 12.7, 13, 13.2, 13.5, 13.8, 14] },
+  { name: 'SBI Magnum Gilt Fund', group: 'Debt Funds', tags: ['Debt', 'Gilt'], cagr: '7.1%', nav: '₹58.40', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/sbi.svg', spark: [11, 11.4, 11.2, 11.8, 12.1, 12.4, 12.2, 12.8, 13.1] },
+  { name: 'ICICI Prudential Corporate Bond Fund', group: 'Debt Funds', tags: ['Debt', 'Corporate'], cagr: '7.6%', nav: '₹26.90', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/icici.svg', spark: [10, 10.4, 10.8, 11.1, 11.4, 11.8, 12.1, 12.5, 12.8] },
+  { name: 'Axis Treasury Advantage Fund', group: 'Debt Funds', tags: ['Debt', 'Money Market'], cagr: '6.8%', nav: '₹2,746', risk: 'Low Risk', tone: RISK.moderate, logo: '/images/amc/axis.svg', spark: [9, 9.2, 9.4, 9.5, 9.7, 9.9, 10.1, 10.3, 10.5] },
 ];
 
 const TOOLS: { title: string; text: string; href: RoutePath; tint: string; icon: React.ReactNode }[] = [
@@ -80,9 +84,9 @@ const TOOLS: { title: string; text: string; href: RoutePath; tint: string; icon:
 ];
 
 const STORIES = [
-  { initials: 'A.S.', role: 'Retired Professional', avatar: '/images/home/avatar-as.webp', quote: 'Farcon helped me plan my retirement in a very simple and clear way. I finally feel confident about my financial future.' },
-  { initials: 'R.K.', role: 'Parent', avatar: '/images/home/avatar-rk.webp', quote: 'The goal planning process made it easy for me to invest for my child\'s education. Very supportive team.' },
-  { initials: 'M.P.', role: 'Business Owner', avatar: '/images/home/avatar-mp.webp', quote: 'Transparent advice and a very disciplined approach. I appreciate the focus on long-term investing.' },
+  { initials: 'A.S.', role: 'Retired Professional', quote: 'Farcon helped me plan my retirement in a very simple and clear way. I finally feel confident about my financial future.' },
+  { initials: 'R.K.', role: 'Parent', quote: 'The goal planning process made it easy for me to invest for my child\'s education. Very supportive team.' },
+  { initials: 'M.P.', role: 'Business Owner', quote: 'Transparent advice and a very disciplined approach. I appreciate the focus on long-term investing.' },
 ];
 
 function smoothLine(pts: Array<readonly [number, number]>): string {
@@ -193,6 +197,9 @@ function AreaChart({
         <path d={line('invested')} fill="none" stroke="#C9A24A" strokeWidth="2" />
         {point && <circle cx={x(active)} cy={y(point.estimated)} r="4" fill="#0F3D2E" />}
       </svg>
+      <div className="hf-year-badge">
+        Year {series[series.length - 1]?.year} {formatTargetLabel(series[series.length - 1]?.estimated ?? 0)}
+      </div>
       {point && (
         <div
           className={`hf-tip ${tipLeft > 72 ? 'is-end' : tipLeft < 18 ? 'is-start' : ''}`}
@@ -220,7 +227,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
   const storyRef = useRef<HTMLDivElement>(null);
   const [storyDot, setStoryDot] = useState(0);
   const plan = useMemo(() => planIllustration(target, years, rate), [target, years, rate]);
-  const funds = fundTab === 'Equity Funds' ? FUNDS : FUNDS.filter((fund) => fund.group === fundTab);
+  const funds = fundTab === 'Equity Funds'
+    ? FUNDS.filter((fund) => fund.group !== 'Debt Funds')
+    : FUNDS.filter((fund) => fund.group === fundTab);
   const whatsapp = `https://wa.me/${FARCON_CONFIG.whatsappNumber}`;
 
   const scrollStories = (dir: number) => {
@@ -237,13 +246,16 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         <img className="hf-hero-photo" src="/images/home/hero.webp" alt="A family sitting together, looking toward misty green mountains" width={1600} height={1068} fetchPriority="high" />
         <div className="hf-hero-scrim" />
         <div className="hf-hero-inner">
-          <div>
+          <div className="hf-hero-copy">
             <span className="hf-eye">Goal-based wealth guidance</span>
+            <p className="hf-script">
+              A more secure tomorrow, together.
+              <svg className="hf-script-arrow" viewBox="0 0 140 54" aria-hidden="true">
+                <path d="M118 8 C 78 12, 46 30, 16 44" fill="none" stroke="#3e4a3d" strokeWidth="1.4" />
+                <path d="M16 44 l12 -1 M16 44 l4 11" fill="none" stroke="#3e4a3d" strokeWidth="1.4" strokeLinecap="round" />
+              </svg>
+            </p>
             <h1>Investing,<br /><em>without the noise.</em></h1>
-            <p className="hf-script">A more secure tomorrow, together.</p>
-            <svg className="hf-swoosh" width="180" height="16" viewBox="0 0 180 16" aria-hidden="true">
-              <path d="M2 10 C 40 2, 90 14, 178 4" fill="none" stroke="#C9A24A" strokeWidth="1.4" />
-            </svg>
             <p className="hf-lede">Your goals are personal. Your investment journey should be too. Farcon helps you approach mutual fund investing with clarity, discipline and purpose.</p>
             <div className="hf-cta-row">
               <button type="button" className="hf-btn hf-btn-green" onClick={() => document.getElementById('goals')?.scrollIntoView({ behavior: 'smooth' })}>
@@ -326,12 +338,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                 <circle cx="110" cy="78" r="7" fill="#C9A24A" />
               </svg>
             </div>
-            <div>
+            <div className="hf-plan-panel">
               <div className="hf-tabs">
                 {PLAN_TABS.map((tab) => (
                   <button key={tab} type="button" className={planTab === tab ? 'is-on' : ''} onClick={() => setPlanTab(tab)}>{tab}</button>
                 ))}
               </div>
+              <div className="hf-plan-grid">
+              <div>
               <label className="hf-slider">
                 <span className="hf-slider-top"><span>Target Corpus</span><b>{formatINR(target)}</b></span>
                 <input type="range" min={5_000_000} max={100_000_000} step={500_000} value={target} style={{ ['--pct' as string]: `${((target - 5_000_000) / 95_000_000) * 100}%` }} onChange={(e) => setTarget(Number(e.target.value))} />
@@ -347,6 +361,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                 <input type="range" min={6} max={18} step={1} value={rate} style={{ ['--pct' as string]: `${((rate - 6) / 12) * 100}%` }} onChange={(e) => setRate(Number(e.target.value))} />
                 <span className="hf-scale"><span>6%</span><span>18%</span></span>
               </label>
+              </div>
               <div className="hf-result" aria-live="polite">
                 <span>Required Monthly SIP</span>
                 <strong>{formatSip(plan.requiredMonthlySIP)}</strong>
@@ -358,8 +373,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                   View Detailed Plan <ArrowRight size={16} />
                 </button>
               </div>
-              <AreaChart series={plan.series} />
-              <p className="hf-note">This is an estimate based on the returns assumed. Actual results may vary. Illustrative planning aid for {planTab.toLowerCase()}.</p>
+              <div>
+                <AreaChart series={plan.series} />
+                <p className="hf-note">This is an estimate based on the returns assumed. Actual results may vary. Illustrative planning aid for {planTab.toLowerCase()}.</p>
+              </div>
+              </div>
             </div>
           </div>
         </div>
@@ -370,12 +388,12 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           <span className="hf-eye">Featured mutual funds</span>
           <h2>Explore top funds for your <em>goals.</em></h2>
           <p className="hf-lede">Handpicked schemes across categories to help you build a stronger tomorrow.</p>
-          <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/mutual-funds')}>Explore All Mutual Funds <ArrowRight size={16} /></button>
+          <button type="button" className="hf-textlink" onClick={() => navigate('/mutual-funds')}>Explore All Mutual Funds →</button>
           <div className="hf-pills" style={{ marginTop: 16 }}>
             {['Equity Funds', 'Hybrid Funds', 'Debt Funds', 'Tax Saving (ELSS)'].map((tab) => (
               <button key={tab} type="button" className={fundTab === tab ? 'is-on' : ''} onClick={() => setFundTab(tab)}>{tab}</button>
             ))}
-            <button type="button" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
+            <button type="button" className="hf-textlink" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
           </div>
           <p className="hf-note">Figures are illustrative, not live NAVs, and not a recommendation.</p>
         </div>
@@ -411,7 +429,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
       </section>
 
       <section className="hf-why">
-        <img className="hf-why-photo" src="/images/home/why-mountains.webp" alt="" width={1400} height={834} loading="lazy" />
+        <img className="hf-why-photo" src="/images/home/why-mountains.webp" alt="" width={1400} height={834} />
         <svg className="hf-flag" viewBox="0 0 1200 640" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
           <path d="M760 560 C 820 470, 780 390, 900 330 S 860 180, 1020 120 S 980 40, 1120 28" fill="none" stroke="rgba(255,255,255,0.78)" strokeWidth="2.5" strokeDasharray="1.5 8" strokeLinecap="round" />
           <path d="M1112 28 v92" stroke="#F3D48A" strokeWidth="3" />
@@ -485,7 +503,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                 <div className="hf-quote">“</div>
                 <p>{story.quote}</p>
                 <div className="hf-who">
-                  <img className="hf-avatar" src={story.avatar} alt="" width={48} height={48} />
+                  <span className="hf-initials" aria-hidden="true">{story.initials.replace(/\./g, '')}</span>
                   <span className="hf-who-text">
                     <b>{story.initials}</b>
                     <small>{story.role}</small>
@@ -519,7 +537,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               ['/images/home/article-elss.webp', 'Tax Saving with ELSS', 'Save tax while building wealth'],
             ].map(([src, title, text]) => (
               <a key={title} className="hf-article" href="/education" onClick={(event) => { event.preventDefault(); navigate('/education'); }}>
-                <img src={src} alt="" loading="lazy" />
+                <img src={src} alt="" width={640} height={480} />
                 <div>
                   <h2>{title}</h2>
                   <p>{text}</p>
@@ -532,7 +550,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
       </section>
 
       <section className="hf-cta">
-        <img className="bg" src="/images/home/cta-sunset.webp" alt="A person sitting on a rock above a mountain valley in warm evening light" width={1600} height={1068} loading="lazy" />
+        <img className="bg" src="/images/home/cta-sunset.webp" alt="A person sitting on a rock above a mountain valley in warm evening light" width={1600} height={900} />
         <div className="hf-cta-scrim" />
         <div className="hf-cta-inner">
           <div>

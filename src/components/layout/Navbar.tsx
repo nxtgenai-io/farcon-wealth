@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { RoutePath } from '@/types';
 import { PRIMARY_NAV, SERVICE_LINKS } from '@/content/site/nav';
 import { BrandLockup } from '@/components/layout/BrandLockup';
-import { ArrowRight, Menu, Search, X } from 'lucide-react';
+import { ChevronDown, Menu, Search, X } from 'lucide-react';
 
 interface NavbarProps {
   currentPath: string;
@@ -49,7 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
                   aria-expanded={servicesOpen}
                   onClick={() => go('/services')}
                 >
-                  Services
+                  Services <ChevronDown size={14} aria-hidden="true" />
                 </button>
                 {servicesOpen && (
                   <div className="fw-nav-panel">
@@ -81,7 +81,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
             Investor Login
           </button>
           <button type="button" className="fw-book" onClick={onOpenConsultation}>
-            Book a Consultation <ArrowRight size={16} />
+            Book a Consultation
           </button>
           <button type="button" className="fw-menu-btn" aria-label="Open menu" onClick={() => setOpen((v) => !v)}>
             {open ? <X size={20} /> : <Menu size={20} />}

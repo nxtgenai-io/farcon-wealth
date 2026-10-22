@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, Phone, X } from 'lucide-react';
+import { MessageSquare, X } from 'lucide-react';
 import { FARCON_CONFIG } from '@/content/site/config';
 
 interface FloatingContactActionsProps {
@@ -21,10 +21,10 @@ export const FloatingContactActions: React.FC<FloatingContactActionsProps> = ({ 
         <a className="fw-fab-item fw-fab-wa" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
           <MessageSquare size={16} aria-hidden="true" /> WhatsApp
         </a>
-        <a className="fw-fab-item fw-fab-call" href={`tel:${FARCON_CONFIG.phoneNumber}`}>
-          <Phone size={16} aria-hidden="true" /> Call
-        </a>
       </div>
+      <a className="fw-fab-item fw-fab-wa fw-fab-sticky" href={whatsappUrl} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+        <MessageSquare size={18} aria-hidden="true" />
+      </a>
       <button
         type="button"
         className="fw-fab-toggle"

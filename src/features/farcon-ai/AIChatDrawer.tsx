@@ -112,7 +112,7 @@ export const AIChatDrawer: React.FC<AIChatDrawerProps> = ({
 
   return (
     <div
-      className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white shadow-2xl border-l border-slate-200 flex flex-col animate-in slide-in-from-right duration-200"
+      className="fw-skin fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white shadow-2xl border-l border-slate-200 flex flex-col animate-in slide-in-from-right duration-200"
       role="dialog"
       aria-label="Farcon AI Guidance Drawer"
     >
