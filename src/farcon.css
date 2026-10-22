@@ -1747,3 +1747,15 @@ html { scroll-behavior: smooth; }
   .fw-footer-grid > :first-child, .is-home .fw-footer-grid > :first-child { grid-column: 1 / -1; }
   .fw-footer-grid > :last-child, .is-home .fw-footer-grid > :last-child { grid-column: auto; }
 }
+@media (min-width: 1100px) {
+  .is-home .hf-amc { grid-template-columns: 24px minmax(0, 1fr); gap: 6px; }
+  .is-home .hf-logo { width: 24px; height: 24px; }
+  .is-home .hf-fund { padding: 12px 10px; }
+  .is-home .hf-fund h2 {
+    font-size: 14px;
+    letter-spacing: -0.02em;
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+}
