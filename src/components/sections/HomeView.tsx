@@ -261,7 +261,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
   return (
     <div className="hf">
       <section className="hf-hero" data-section="hero">
-        <img className="hf-hero-photo" src="/images/home/hero.webp?v=12" alt="A family sitting together, looking toward misty green mountains" width={1618} height={580} fetchPriority="high" />
+        <img className="hf-hero-photo" src="/images/home/hero.webp?v=13" alt="A family sitting together, looking toward misty green mountains" width={1618} height={580} fetchPriority="high" />
         <div className="hf-hero-scrim" />
         <div className="hf-hero-inner">
           <div className="hf-hero-copy">
