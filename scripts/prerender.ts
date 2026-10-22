@@ -1,4 +1,3 @@
-import { spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { seoEntries } from '../src/content/seo/meta.ts';
@@ -17,7 +16,6 @@ function text(value: string) {
 }
 
 const entries = seoEntries();
-const manifest: { file: string; title: string }[] = [];
 
 for (const entry of entries) {
   let html = shell;
@@ -39,8 +37,6 @@ for (const entry of entries) {
   const file = entry.path === '/' ? join(dist, 'index.html') : join(dist, entry.path.slice(1), 'index.html');
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, html);
-  const slug = entry.path === '/' ? 'home' : entry.path.slice(1).replace(/\//g, '-');
-  manifest.push({ file: join(dist, 'og', `${slug}.jpg`), title: entry.h1 });
 }
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -50,11 +46,5 @@ ${entries.map((entry) => `  <url><loc>${entry.url}</loc><changefreq>${entry.path
 `;
 writeFileSync(join(dist, 'sitemap.xml'), sitemap);
 writeFileSync(join(root, 'public', 'sitemap.xml'), sitemap);
-
-mkdirSync(join(dist, 'og'), { recursive: true });
-const manifestPath = join(dist, 'og', 'manifest.json');
-writeFileSync(manifestPath, JSON.stringify(manifest));
-const drawn = spawnSync('python3', [join(root, 'scripts', 'og.py'), manifestPath], { stdio: 'inherit' });
-if (drawn.status !== 0) process.exit(drawn.status || 1);
 
 console.log(`Prerendered ${entries.length} routes.`);
