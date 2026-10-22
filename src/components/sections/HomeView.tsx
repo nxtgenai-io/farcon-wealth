@@ -3,7 +3,7 @@ import { RoutePath } from '@/types';
 import { formatINR } from '@/lib/formatting/currency';
 import { formatPlanCompact, formatSip, formatTargetLabel, planIllustration } from '@/components/sections/home/planGoal';
 import { FARCON_CONFIG } from '@/content/site/config';
-import { FARCON_SERVICES } from '@/content/services/servicesData';
+import { ServiceShowcase } from '@/components/sections/ServiceShowcase';
 import { FAQ_ITEMS } from '@/content/faq/faqData';
 import {
   ArrowRight,
@@ -484,23 +484,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </Reveal>
 
-      <Reveal as="section" className="hf-section" id="services" data-section="services">
+      <Reveal as="section" className="hf-section svc-band" id="services" data-section="services">
         <div className="hf-wrap">
-          <span className="hf-eye">Services</span>
-          <h2>Distribution, planned around a goal.</h2>
-          <p className="hf-lede">Farcon Wealth is an AMFI-registered mutual fund distributor, ARN {FARCON_CONFIG.arn}. These are the conversations we have. We do not give investment advice.</p>
-          <div className="hf-tools" style={{ marginTop: 18 }}>
-            {FARCON_SERVICES.map((service) => (
-              <button key={service.id} type="button" className="hf-tool" onClick={() => navigate(`/services/${service.slug}` as RoutePath)}>
-                <h2>{service.title}</h2>
-                <p>{service.tagline}</p>
-              </button>
-            ))}
-          </div>
-          <div className="hf-cta-row" style={{ marginTop: 8 }}>
-            <button type="button" className="hf-btn hf-btn-green" onClick={() => navigate('/start-investing')}>Start investing</button>
-            <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/portfolio-review')}>Request a portfolio review</button>
-          </div>
+          <ServiceShowcase navigate={navigate} />
         </div>
       </Reveal>
 

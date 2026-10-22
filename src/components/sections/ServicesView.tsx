@@ -4,26 +4,13 @@ import { BLOG_POSTS } from '@/content/blogs/blogData';
 import { RoutePath } from '@/types';
 import { FARCON_CONFIG } from '@/content/site/config';
 import { NotFound } from '@/components/pages/NotFound';
+import { ServiceShowcase } from '@/components/sections/ServiceShowcase';
 
 interface ServicesViewProps {
   activeSlug?: string;
   navigate: (path: RoutePath) => void;
   onOpenConsultation: (serviceName?: string) => void;
 }
-
-const EYEBROW: Record<string, string> = {
-  'sip-planning': 'SIP',
-  'portfolio-review': 'Review',
-  elss: 'Tax',
-  retirement: 'Retirement',
-  'child-education': 'Education',
-  swp: 'Withdrawal',
-  'mutual-fund-distribution': 'Distribution',
-  lumpsum: 'Lump sum',
-  'goal-based-planning': 'Planning',
-  'wealth-creation': 'Wealth',
-  'investment-solutions': 'Solutions',
-};
 
 const RELATED: Record<string, string> = {
   'sip-planning': 'why-sip-beats-market-timing',
@@ -162,25 +149,13 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ activeSlug, navigate
 
   return (
     <div className="pg">
-      <div className="pg-wrap">
-        <span className="hf-eye">Services</span>
-        <h1>Goal-based mutual fund guidance</h1>
-        <p className="lede">
-          Farcon Wealth is an AMFI-registered Mutual Fund Distributor (ARN: {FARCON_CONFIG.arn}). Each service starts with a goal. Farcon distributes mutual funds. It does not hold the money and it does not give investment advice.
-        </p>
-        <div className="pg-grid services">
-          {FARCON_SERVICES.map((service) => (
-            <button key={service.id} type="button" className="pg-card svc" onClick={() => navigate(`/services/${service.slug}` as RoutePath)}>
-              <img {...IMAGES[service.slug]} width={800} height={450} loading="lazy" decoding="async" sizes="(min-width: 900px) 320px, 100vw" />
-              <span className="hf-eye">{EYEBROW[service.slug] || 'Service'}</span>
-              <h2>{service.title}</h2>
-              <p className="svc-tagline">{service.tagline}</p>
-              <p>{service.summary}</p>
-              <span className="hf-textlink">View →</span>
-            </button>
-          ))}
+      <section className="svc-band">
+        <div className="pg-wrap svc-page-wrap">
+          <ServiceShowcase navigate={navigate} heading="h1" />
         </div>
-        <h2 style={{ marginTop: 40 }}>How a conversation goes</h2>
+      </section>
+      <div className="pg-wrap">
+        <h2 style={{ marginTop: 8 }}>How a conversation goes</h2>
         <div className="steps four">
           {[
             ['01', 'The goal', 'What the money is for, and when you need it.'],

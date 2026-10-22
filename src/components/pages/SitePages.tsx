@@ -29,6 +29,7 @@ const ARTICLE_COVERS: Record<string, string> = {
 
 import fundBook from '@/content/funds/schemes.json';
 import { FARCON_SERVICES } from '@/content/services/servicesData';
+import { ServiceShowcase } from '@/components/sections/ServiceShowcase';
 
 function VideoFacade({ id, title }: { id: string; title: string }) {
   const [play, setPlay] = useState(false);
@@ -73,14 +74,8 @@ export const AboutPage: React.FC<PageProps> = ({ onOpenConsultation, navigate })
         <article className="pg-card"><span className="hf-eye">In your name</span><h2>We do not hold the money</h2><p>Purchases sit with the AMC, the exchange and the registrar.</p></article>
         <article className="pg-card"><span className="hf-eye">ARN {FARCON_CONFIG.arn}</span><h2>A registered distributor</h2><p>Farcon is not a portfolio manager and does not promise returns.</p></article>
       </div>
-      <h2 style={{ marginTop: 36 }}>Services</h2>
-      <div className="pg-grid services">
-        {FARCON_SERVICES.map((service) => (
-          <button key={service.id} type="button" className="pg-card svc" onClick={() => navigate(`/services/${service.slug}` as RoutePath)}>
-            <span className="hf-eye">{service.title}</span>
-            <p>{service.tagline}</p>
-          </button>
-        ))}
+      <div className="svc-about">
+        <ServiceShowcase variant="cards" navigate={navigate} />
       </div>
       <h2 style={{ marginTop: 36 }}>How we work</h2>
       <div className="steps four">

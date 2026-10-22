@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { RoutePath } from '@/types';
-import { PRIMARY_NAV, SERVICE_LINKS } from '@/content/site/nav';
+import { PRIMARY_NAV } from '@/content/site/nav';
+import { ServiceShowcase } from '@/components/sections/ServiceShowcase';
 import { BrandLockup } from '@/components/layout/BrandLockup';
 import { FARCON_CONFIG } from '@/content/site/config';
 import { ChevronDown, Menu, Search, X } from 'lucide-react';
@@ -115,12 +116,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
                   Services <ChevronDown size={14} aria-hidden="true" />
                 </button>
                 {servicesOpen && (
-                  <div className="fw-nav-panel">
-                    {SERVICE_LINKS.map((link) => (
-                      <button key={link.label} type="button" onClick={() => go(link.href)}>
-                        {link.label}
-                      </button>
-                    ))}
+                  <div className="fw-nav-panel svc-menu-panel">
+                    <ServiceShowcase variant="menu" navigate={go} />
                   </div>
                 )}
               </div>
@@ -190,12 +187,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
                     Services <ChevronDown size={16} aria-hidden="true" />
                   </button>
                   {menuServices && (
-                    <>
+                    <div className="svc-drawer-menu">
                       <button type="button" onClick={() => go('/services')}>All services</button>
-                      {SERVICE_LINKS.map((link) => (
-                        <button key={link.href} type="button" onClick={() => go(link.href)}>{link.label}</button>
-                      ))}
-                    </>
+                      <ServiceShowcase variant="menu" navigate={go} />
+                    </div>
                   )}
                 </div>
               ) : (
