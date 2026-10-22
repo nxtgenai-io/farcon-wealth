@@ -5,14 +5,14 @@ import { formatPlanCompact, formatSip, formatTargetLabel, planIllustration } fro
 import { FARCON_CONFIG } from '@/content/site/config';
 import {
   ArrowRight,
-  BadgeCheck,
   Calculator,
-  Flag,
+  ChevronDown,
   LineChart,
   Shield,
   Sprout,
   Target,
   TrendingUp,
+  User,
   Wallet,
 } from 'lucide-react';
 
@@ -27,7 +27,7 @@ type Period = (typeof PERIODS)[number];
 
 const MARKET = {
   nifty: { name: 'NIFTY 50', value: '24,612.35', change: '+185.70', pct: '(+0.76%)' },
-  sensex: { name: 'SENSEX', value: '81,050.62', change: '+618.51', pct: '(+0.77%)' },
+  sensex: { name: 'SENSEX', value: '81,050.62', change: '+618.91', pct: '(+0.77%)' },
 };
 
 function smoothSeries(start: number, end: number, points = 24): number[] {
@@ -41,7 +41,7 @@ function smoothSeries(start: number, end: number, points = 24): number[] {
 }
 
 const PATHS: Record<Period, { nifty: number[]; sensex: number[] }> = {
-  '1D': { nifty: smoothSeries(24420, 24612), sensex: smoothSeries(80420, 81051) },
+  '1D': { nifty: [24230, 24270, 24360, 24320, 24410, 24500, 24460, 24540, 24510, 24580, 24550, 24600, 24612], sensex: smoothSeries(80420, 81051) },
   '1W': { nifty: smoothSeries(24110, 24612), sensex: smoothSeries(79200, 81051) },
   '1M': { nifty: smoothSeries(23680, 24612), sensex: smoothSeries(77600, 81051) },
   '1Y': { nifty: smoothSeries(21840, 24612), sensex: smoothSeries(72400, 81051) },
@@ -75,12 +75,12 @@ const FUNDS = [
 ];
 
 const TOOLS: { title: string; text: string; href: RoutePath; tint: string; icon: React.ReactNode }[] = [
-  { title: 'SIP Calculator', text: 'Build wealth regularly', href: '/calculators/sip', tint: '#E5F6EA', icon: <TrendingUp size={20} /> },
-  { title: 'Lumpsum Calculator', text: 'Grow your investments', href: '/calculators/lumpsum', tint: '#FDECDD', icon: <Wallet size={20} /> },
-  { title: 'Goal Planner', text: 'Plan for your dreams', href: '/calculators/goal', tint: '#EEE7FA', icon: <Target size={20} /> },
-  { title: 'Retirement Planner', text: 'Secure your future', href: '/calculators/retirement', tint: '#F8F1DE', icon: <Calculator size={20} /> },
-  { title: 'Historical Returns', text: 'Analyse past performance', href: '/mutual-funds', tint: '#E5F0FA', icon: <LineChart size={20} /> },
-  { title: 'Risk Analysis', text: 'Understand your risk', href: '/investor-quiz', tint: '#FBE7EA', icon: <Shield size={20} /> },
+  { title: 'SIP Calculator', text: 'Build wealth regularly', href: '/calculators/sip', tint: '#E5F6EA', icon: <TrendingUp size={16} color="#1F9D55" /> },
+  { title: 'Lumpsum Calculator', text: 'Grow your investments', href: '/calculators/lumpsum', tint: '#E7F0FB', icon: <Wallet size={16} color="#3B82C4" /> },
+  { title: 'Goal Planner', text: 'Plan for your dreams', href: '/calculators/goal', tint: '#FDE8D0', icon: <Target size={16} color="#E07A2F" /> },
+  { title: 'Retirement Planner', text: 'Secure your future', href: '/calculators/retirement', tint: '#E5F2FB', icon: <User size={16} color="#3B82C4" /> },
+  { title: 'Historical Returns', text: 'Analyse past performance', href: '/mutual-funds', tint: '#FDE8EA', icon: <LineChart size={16} color="#D4535A" /> },
+  { title: 'Risk Analysis', text: 'Understand your risk', href: '/investor-quiz', tint: '#F3E8FB', icon: <Shield size={16} color="#8A4FB3" /> },
 ];
 
 const STORIES = [
@@ -126,36 +126,57 @@ function Spark({ values, color }: { values: number[]; color: string }) {
   );
 }
 
-function MarketLine({ values, label }: { values: number[]; label: string }) {
-  const w = 360;
-  const h = 132;
-  const left = 58;
-  const top = 12;
+function NiftyChart({ values }: { values: number[] }) {
+  const w = 340;
+  const h = 108;
+  const left = 8;
+  const right = 54;
+  const top = 8;
   const bottom = 18;
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const span = max - min || 1;
+  const min = 24200;
+  const max = 24800;
   const pts = values.map((v, i) => {
-    const x = left + (i / (values.length - 1)) * (w - left - 10);
-    const y = top + (1 - (v - min) / span) * (h - top - bottom);
-    return [x, y] as const;
+    const x = left + (i / (values.length - 1)) * (w - left - right);
+    const y = top + (1 - (v - min) / (max - min)) * (h - top - bottom);
+    return [x, Math.min(h - bottom, Math.max(top, y))] as const;
   });
   const d = smoothLine(pts);
   const area = `${d} L${pts[pts.length - 1][0].toFixed(1)} ${h - bottom} L${pts[0][0].toFixed(1)} ${h - bottom} Z`;
-  const ticks = [0, 0.5, 1].map((t) => ({
-    y: top + (1 - t) * (h - top - bottom),
-    label: Math.round(min + span * t).toLocaleString('en-IN'),
-  }));
+  const ticks = [24800, 24600, 24400, 24200];
+  const times = ['09:15', '11:00', '13:00', '15:30'];
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} role="img" aria-label={`Illustrative ${label} chart`}>
-      {ticks.map((tick) => (
-        <g key={tick.label}>
-          <line x1={left} x2={w - 8} y1={tick.y} y2={tick.y} stroke="#e6e0d4" strokeWidth="1" />
-          <text x="0" y={tick.y + 4} fontSize="11" fill="#3d4a40">{tick.label}</text>
-        </g>
+    <svg viewBox={`0 0 ${w} ${h}`} role="img" aria-label="Illustrative NIFTY 50 chart">
+      {ticks.map((tick) => {
+        const y = top + (1 - (tick - min) / (max - min)) * (h - top - bottom);
+        return (
+          <g key={tick}>
+            <line x1={left} x2={w - right} y1={y} y2={y} stroke="#e7efe9" strokeWidth="1" />
+            <text x={w - 4} y={y + 3} fontSize="9" fill="#5c675f" textAnchor="end">{tick.toLocaleString('en-IN')}</text>
+          </g>
+        );
+      })}
+      {times.map((label, i) => (
+        <text key={label} x={left + (i / (times.length - 1)) * (w - left - right)} y={h - 2} fontSize="9" fill="#5c675f" textAnchor={i === 0 ? 'start' : i === times.length - 1 ? 'end' : 'middle'}>{label}</text>
       ))}
-      <path d={area} fill="rgba(31,157,85,0.16)" />
-      <path d={d} fill="none" stroke="#1F9D55" strokeWidth="2.6" strokeLinejoin="round" strokeLinecap="round" />
+      <path d={area} fill="rgba(31,157,85,0.18)" />
+      <path d={d} fill="none" stroke="#1F9D55" strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function SensexSpark({ values }: { values: number[] }) {
+  const w = 92;
+  const h = 28;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const pts = values.map((v, i) => {
+    const x = (i / (values.length - 1)) * w;
+    const y = 4 + (1 - (v - min) / (max - min || 1)) * (h - 8);
+    return [x, y] as const;
+  });
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} width="92" height="28" aria-hidden="true">
+      <path d={smoothLine(pts)} fill="none" stroke="#1F9D55" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
 }
@@ -179,7 +200,6 @@ function AreaChart({
     series.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)} ${y(p[key]).toFixed(1)}`).join(' ');
   const area = `${line('estimated')} L${x(series.length - 1).toFixed(1)} ${y(0)} L${x(0).toFixed(1)} ${y(0)} Z`;
   const point = series[Math.min(active, series.length - 1)];
-  const tipLeft = series.length > 1 ? (active / (series.length - 1)) * 100 : 50;
 
   return (
     <div className="hf-chart">
@@ -192,6 +212,9 @@ function AreaChart({
           setActive(index);
         }}
       >
+        {[0, 5, 10, 15, 20].map((label) => (
+          <text key={label} x={left + (label / 20) * (w - left - right)} y={h - 4} fontSize="11" fill="#6a736c" textAnchor="middle">{label}</text>
+        ))}
         <path d={area} fill="rgba(31,157,85,0.16)" />
         <path d={line('estimated')} fill="none" stroke="#1F9D55" strokeWidth="2.5" />
         <path d={line('invested')} fill="none" stroke="#C9A24A" strokeWidth="2" />
@@ -200,14 +223,9 @@ function AreaChart({
       <div className="hf-year-badge">
         Year {series[series.length - 1]?.year} {formatTargetLabel(series[series.length - 1]?.estimated ?? 0)}
       </div>
-      {point && (
-        <div
-          className={`hf-tip ${tipLeft > 72 ? 'is-end' : tipLeft < 18 ? 'is-start' : ''}`}
-          style={tipLeft > 72 || tipLeft < 18 ? undefined : { left: `${tipLeft}%` }}
-        >
-          Year {point.year} {formatTargetLabel(point.estimated)}
-        </div>
-      )}
+      <div className="hf-axis" aria-hidden="true">
+        <span>3 Cr</span><span>2 Cr</span><span>1 Cr</span><span>0</span>
+      </div>
       <div className="hf-legend">
         <span><i style={{ background: '#1F9D55' }} />Estimated Value</span>
         <span><i style={{ background: '#C9A24A' }} />Invested Amount</span>
@@ -242,33 +260,35 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
 
   return (
     <div className="hf">
-      <section className="hf-hero">
-        <img className="hf-hero-photo" src="/images/home/hero.webp" alt="A family sitting together, looking toward misty green mountains" width={1600} height={1068} fetchPriority="high" />
+      <section className="hf-hero" data-section="hero">
+        <img className="hf-hero-photo" src="/images/home/hero.webp?v=7" alt="A family sitting together, looking toward misty green mountains" width={1618} height={580} fetchPriority="high" />
         <div className="hf-hero-scrim" />
         <div className="hf-hero-inner">
           <div className="hf-hero-copy">
             <span className="hf-eye">Goal-based wealth guidance</span>
             <p className="hf-script">
-              A more secure tomorrow, together.
-              <svg className="hf-script-arrow" viewBox="0 0 140 54" aria-hidden="true">
-                <path d="M118 8 C 78 12, 46 30, 16 44" fill="none" stroke="#3e4a3d" strokeWidth="1.4" />
-                <path d="M16 44 l12 -1 M16 44 l4 11" fill="none" stroke="#3e4a3d" strokeWidth="1.4" strokeLinecap="round" />
+              A more secure
+              <br />tomorrow, together.
+              <svg className="hf-script-arrow" viewBox="0 0 140 36" aria-hidden="true">
+                <path d="M120 6 C 80 10, 48 22, 18 30" fill="none" stroke="#2c3a34" strokeWidth="1.2" />
+                <path d="M18 30 l10 -2 M18 30 l3 8" fill="none" stroke="#2c3a34" strokeWidth="1.2" strokeLinecap="round" />
               </svg>
             </p>
             <h1>Investing,<br /><em>without the noise.</em></h1>
-            <p className="hf-lede">Your goals are personal. Your investment journey should be too. Farcon helps you approach mutual fund investing with clarity, discipline and purpose.</p>
+            <p className="hf-lede">Your goals are personal. Your investment journey should be too.</p>
+            <p className="hf-lede">Farcon helps you approach mutual fund investing with clarity, discipline and purpose.</p>
             <div className="hf-cta-row">
               <button type="button" className="hf-btn hf-btn-green" onClick={() => document.getElementById('goals')?.scrollIntoView({ behavior: 'smooth' })}>
-                Start with a Goal <ArrowRight size={16} />
+                Start with a Goal <ArrowRight size={14} />
               </button>
               <button type="button" className="hf-btn hf-btn-outline" onClick={() => onOpenConsultation('Book a Free 15-Minute Call')}>
                 Book a Free 15-Minute Call
               </button>
             </div>
             <div className="hf-trust">
-              <span><Target size={16} /> Goal-based</span>
-              <span><BadgeCheck size={16} /> Transparent</span>
-              <span><Shield size={16} /> In your name</span>
+              <span><Target size={14} /> Goal-based</span>
+              <span><Shield size={14} /> Transparent</span>
+              <span><User size={14} /> In your name</span>
             </div>
           </div>
           <article className="hf-market" aria-label="Illustrative market snapshot">
@@ -283,28 +303,24 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                 ))}
               </div>
             </div>
-            <div className={`hf-quote-block ${indexFocus === 'nifty' ? 'is-focus' : ''}`}>
-              <div className="hf-quote-row">
-                <strong>NIFTY 50</strong>
-                <span className="hf-up">{MARKET.nifty.change} {MARKET.nifty.pct}</span>
-              </div>
-              <p className="hf-level">{MARKET.nifty.value}</p>
-              <MarketLine values={PATHS[period].nifty} label="NIFTY 50" />
-            </div>
-            <div className={`hf-quote-block ${indexFocus === 'sensex' ? 'is-focus' : ''}`}>
-              <div className="hf-quote-row">
-                <strong>SENSEX</strong>
+            <p className="hf-index-name">NIFTY 50</p>
+            <p className="hf-level">{MARKET.nifty.value} <span className="hf-up">{MARKET.nifty.change} {MARKET.nifty.pct}</span></p>
+            <p className="hf-note">As of 12 Mar 2025, 03:30 PM IST</p>
+            <NiftyChart values={PATHS[period].nifty} />
+            <div className="hf-sensex">
+              <div>
+                <b>SENSEX</b>
+                <strong>{MARKET.sensex.value}</strong>
                 <span className="hf-up">{MARKET.sensex.change} {MARKET.sensex.pct}</span>
               </div>
-              <p className="hf-level">{MARKET.sensex.value}</p>
-              <MarketLine values={PATHS[period].sensex} label="SENSEX" />
+              <SensexSpark values={PATHS[period].sensex} />
+              <ChevronDown size={14} aria-hidden="true" />
             </div>
-            <p className="hf-note">Illustrative snapshot · not a live quote</p>
           </article>
         </div>
       </section>
 
-      <section className="hf-section" id="goals">
+      <section className="hf-section" id="goals" data-section="goals">
         <div className="hf-wrap">
           <div className="hf-goals">
             {GOALS.map((goal) => (
@@ -321,25 +337,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </section>
 
-      <section className="hf-section" id="planner">
+      <section className="hf-section" id="planner" data-section="planner">
         <div className="hf-wrap">
           <div className="hf-plan">
             <div className="hf-plan-copy">
               <span className="hf-eye">Interactive goal planning calculator</span>
               <h2>Your Goals.<br /><em>Our Planning.</em></h2>
               <p className="hf-lede">See how small, consistent steps today can create a brighter tomorrow.</p>
-              <svg className="hf-plant" viewBox="0 0 280 360" aria-hidden="true">
-                <ellipse cx="140" cy="332" rx="78" ry="16" fill="#E3F3E8" />
-                <path d="M140 328 V150" stroke="#17693A" strokeWidth="7" strokeLinecap="round" />
-                <path d="M140 250 C70 230 18 170 48 108 C92 142 124 200 140 250" fill="#1F9D55" />
-                <path d="M140 228 C214 200 268 140 236 78 C188 118 156 176 140 228" fill="#0E3D2C" />
-                <path d="M140 196 C78 176 40 128 62 82 C98 108 122 156 140 196" fill="#3CB371" />
-                <path d="M140 172 C198 150 236 108 214 68 C176 96 152 136 140 172" fill="#146C43" />
-                <path d="M140 150 C96 128 70 92 86 58 C112 78 128 116 140 150" fill="#8FCB6A" />
-                <path d="M140 138 C182 116 210 82 196 50 C166 72 148 108 140 138" fill="#1B7A45" />
-                <ellipse cx="140" cy="96" rx="16" ry="22" fill="#C9A24A" transform="rotate(-18 140 96)" />
-                <ellipse cx="128" cy="88" rx="7" ry="12" fill="#E2C56A" transform="rotate(-30 128 88)" />
-              </svg>
+              <img className="hf-plant" src="/images/home/calc-plant.webp" alt="" width={450} height={150} />
             </div>
             <div className="hf-plan-panel">
               <div className="hf-tabs">
@@ -348,19 +353,22 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                 ))}
               </div>
               <div className="hf-plan-grid">
-              <div>
+              <div className="hf-controls">
               <label className="hf-slider">
-                <span className="hf-slider-top"><span>Target Corpus</span><b>{formatINR(target)}</b></span>
+                <span className="hf-slider-top"><span>Target Corpus</span></span>
+                <span className="hf-select">{formatINR(target)} <ChevronDown size={14} /></span>
                 <input type="range" min={5_000_000} max={100_000_000} step={500_000} value={target} style={{ ['--pct' as string]: `${((target - 5_000_000) / 95_000_000) * 100}%` }} onChange={(e) => setTarget(Number(e.target.value))} />
                 <span className="hf-scale"><span>₹50 L</span><span>₹10 Cr</span></span>
               </label>
               <label className="hf-slider">
-                <span className="hf-slider-top"><span>Time Horizon</span><b>{years} Years</b></span>
-                <input type="range" min={1} max={30} step={1} value={years} style={{ ['--pct' as string]: `${((years - 1) / 29) * 100}%` }} onChange={(e) => setYears(Number(e.target.value))} />
-                <span className="hf-scale"><span>1 Yr</span><span>30 Yrs</span></span>
+                <span className="hf-slider-top"><span>Time Horizon</span></span>
+                <span className="hf-select">{years} Years <ChevronDown size={14} /></span>
+                <input type="range" min={3} max={30} step={1} value={years} style={{ ['--pct' as string]: `${((years - 3) / 27) * 100}%` }} onChange={(e) => setYears(Number(e.target.value))} />
+                <span className="hf-scale"><span>3 Yrs</span><span>30 Yrs</span></span>
               </label>
-              <label className="hf-slider">
-                <span className="hf-slider-top"><span>Expected Return</span><b>{rate}%</b></span>
+              <label className="hf-slider hf-return">
+                <span className="hf-slider-top"><span>Expected Return (p.a.)</span></span>
+                <span className="hf-select">{rate}% <ChevronDown size={14} /></span>
                 <input type="range" min={6} max={18} step={1} value={rate} style={{ ['--pct' as string]: `${((rate - 6) / 12) * 100}%` }} onChange={(e) => setRate(Number(e.target.value))} />
                 <span className="hf-scale"><span>6%</span><span>18%</span></span>
               </label>
@@ -378,7 +386,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               </div>
               <div>
                 <AreaChart series={plan.series} />
-                <p className="hf-note">This is an estimate based on the returns assumed. Actual results may vary. Illustrative planning aid for {planTab.toLowerCase()}.</p>
+                <p className="hf-note">This is an estimate based on the returns assumed. Actual results may vary.</p>
               </div>
               </div>
             </div>
@@ -386,7 +394,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </section>
 
-      <section className="hf-section">
+      <section className="hf-section" data-section="funds">
         <div className="hf-wrap hf-split">
           <div>
             <span className="hf-eye">Featured mutual funds</span>
@@ -401,7 +409,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             ))}
             <button type="button" className="hf-textlink" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
           </div>
-          <p className="hf-note">Figures are illustrative, not live NAVs, and not a recommendation.</p>
           <div className="hf-fund-row">
             {funds.map((fund) => (
               <article key={fund.name} className="hf-fund">
@@ -433,8 +440,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </section>
 
-      <section className="hf-why">
-        <img className="hf-why-photo" src="/images/home/why-mountains.webp" alt="" width={1400} height={834} />
+      <section className="hf-why" data-section="why">
+        <img className="hf-why-photo" src="/images/home/why-mountains.webp?v=7" alt="" width={1618} height={444} />
         <svg className="hf-flag" viewBox="0 0 1200 640" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
           <path d="M760 560 C 820 470, 780 390, 900 330 S 860 180, 1020 120 S 980 40, 1120 28" fill="none" stroke="rgba(255,255,255,0.78)" strokeWidth="2.5" strokeDasharray="1.5 8" strokeLinecap="round" />
           <path d="M1112 28 v92" stroke="#F3D48A" strokeWidth="3" />
@@ -462,7 +469,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             </article>
             <article>
               <div className="hf-num">03</div>
-              <div className="hf-icon-tile"><Flag size={18} /></div>
+              <div className="hf-icon-tile"><Shield size={18} /></div>
               <h3>Transparent & Client-First</h3>
               <p>No hidden charges. No pressure. Just clear guidance, in your best interest.</p>
             </article>
@@ -470,7 +477,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </section>
 
-      <section className="hf-section hf-tools-section">
+      <section className="hf-section hf-tools-section" data-section="tools">
         <div className="hf-wrap hf-split">
           <div>
             <span className="hf-eye">Powerful tools for every stage</span>
@@ -490,7 +497,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </section>
 
-      <section className="hf-section">
+      <section className="hf-section" data-section="stories">
         <div className="hf-wrap hf-split">
           <div>
             <span className="hf-eye">Investor stories</span>
@@ -513,9 +520,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             {STORIES.map((story) => (
               <article key={story.initials} className="hf-story">
                 <div className="hf-quote">“</div>
-                <p>{story.quote}</p>
+                <p>“{story.quote}”</p>
                 <div className="hf-who">
-                  <span className="hf-initials" aria-hidden="true">{story.initials.replace(/\./g, '')}</span>
+                  <span className="hf-initials" data-who={story.initials[0]} aria-hidden="true">{story.initials[0]}</span>
                   <span className="hf-who-text">
                     <b>{story.initials}</b>
                     <small>{story.role}</small>
@@ -537,7 +544,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </section>
 
-      <section className="hf-section">
+      <section className="hf-section" data-section="articles">
         <div className="hf-wrap hf-split">
           <div>
             <span className="hf-eye">Investor education</span>
@@ -564,8 +571,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </section>
 
-      <section className="hf-cta">
-        <img className="bg" src="/images/home/cta-sunset.webp" alt="A person sitting on a rock above a mountain valley in warm evening light" width={1600} height={900} />
+      <section className="hf-cta" data-section="cta">
+        <img className="bg" src="/images/home/cta-sunset.webp?v=7" alt="A person sitting on a rock above a mountain valley in warm evening light" width={1618} height={492} />
         <div className="hf-cta-scrim" />
         <div className="hf-cta-inner">
           <div>
@@ -581,8 +588,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           </div>
           <ol className="hf-path">
             <li><span><Target size={16} /></span> Your Goals</li>
-            <li><span><Sprout size={16} /></span> Our Guidance</li>
-            <li><span><Flag size={16} /></span> A Brighter Tomorrow</li>
+            <li><span><User size={16} /></span> Our Guidance</li>
+            <li><span><Sprout size={16} /></span> A Brighter Tomorrow</li>
           </ol>
         </div>
       </section>

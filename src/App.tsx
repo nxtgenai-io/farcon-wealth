@@ -174,8 +174,10 @@ export function App() {
     );
   };
 
+  const home = currentPath === '/';
   return (
-    <div className="min-h-screen flex flex-col bg-[#F7F4EC] text-[#1A241C] antialiased selection:bg-[#C9A24A]/30 selection:text-[#0F3D2E]">
+    <div className={`min-h-screen flex flex-col bg-[#F7F4EC] text-[#1A241C] antialiased selection:bg-[#C9A24A]/30 selection:text-[#0F3D2E] ${home ? 'is-home' : ''}`}>
+      <div className={home ? 'fw-stage' : 'contents'}>
       {/* Top Navigation */}
       <Navbar
         currentPath={currentPath}
@@ -191,6 +193,7 @@ export function App() {
 
       {/* Footer */}
       <Footer navigate={navigate} />
+      </div>
 
       {/* Sticky / Floating Quick Contact Actions */}
       <FloatingContactActions onOpenAI={() => setAiOpen(true)} />
