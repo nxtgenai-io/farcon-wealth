@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { RoutePath } from '@/types';
 import { formatINR } from '@/lib/formatting/currency';
 import { formatPlanCompact, formatTargetLabel, planIllustration } from '@/components/sections/home/planGoal';
@@ -8,7 +8,6 @@ import { FAQ_ITEMS } from '@/content/faq/faqData';
 import {
   ArrowRight,
   Calculator,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   LineChart,
@@ -21,38 +20,13 @@ import {
 } from 'lucide-react';
 import { Reveal } from '@/components/ui/Reveal';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
+import { SensexOverview } from '@/components/market/TradingViewEmbed';
 
 interface HomeViewProps {
   navigate: (path: RoutePath) => void;
   onOpenConsultation: (subject?: string) => void;
   onOpenAI: () => void;
 }
-
-const PERIODS = ['1D', '1W', '1M', '1Y', '5Y'] as const;
-type Period = (typeof PERIODS)[number];
-
-const MARKET = {
-  nifty: { name: 'NIFTY 50', value: '24,612.35', change: '+185.70', pct: '(+0.76%)' },
-  sensex: { name: 'SENSEX', value: '81,050.62', change: '+618.91', pct: '(+0.77%)' },
-};
-
-function smoothSeries(start: number, end: number, points = 24): number[] {
-  return Array.from({ length: points }, (_, i) => {
-    const t = i / (points - 1);
-    const eased = t * t * (3 - 2 * t);
-    const lift = Math.sin(t * Math.PI) * (end - start) * 0.035;
-    const value = start + (end - start) * eased + lift;
-    return i === points - 1 ? end : Math.round(value);
-  });
-}
-
-const PATHS: Record<Period, { nifty: number[]; sensex: number[] }> = {
-  '1D': { nifty: [24230, 24270, 24360, 24320, 24410, 24500, 24460, 24540, 24510, 24580, 24550, 24600, 24612], sensex: smoothSeries(80420, 81051) },
-  '1W': { nifty: smoothSeries(24110, 24612), sensex: smoothSeries(79200, 81051) },
-  '1M': { nifty: smoothSeries(23680, 24612), sensex: smoothSeries(77600, 81051) },
-  '1Y': { nifty: smoothSeries(21840, 24612), sensex: smoothSeries(72400, 81051) },
-  '5Y': { nifty: smoothSeries(14200, 24612), sensex: smoothSeries(48200, 81051) },
-};
 
 const GOALS = [
   { title: 'Retirement', text: 'Live your next chapter with confidence', image: 'goal-retirement', alt: 'A beach chair facing the ocean at sunset', href: '/goals/retirement' as RoutePath },
@@ -91,63 +65,6 @@ function bleedSrc(name: string) {
 
 function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
-
-function CountUp({ value, decimals = 2, fromZero = true }: { value: number; decimals?: number; fromZero?: boolean }) {
-  const [shown, setShown] = useState(value);
-  const ref = useRef<HTMLSpanElement>(null);
-  const shownRef = useRef(value);
-  shownRef.current = shown;
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return undefined;
-    let frame = 0;
-    let observer: IntersectionObserver | undefined;
-    const play = (from: number) => {
-      cancelAnimationFrame(frame);
-      const start = performance.now();
-      const tick = (now: number) => {
-        const progress = Math.min(1, (now - start) / 520);
-        const eased = 1 - (1 - progress) ** 3;
-        setShown(from + (value - from) * eased);
-        if (progress < 1) frame = requestAnimationFrame(tick);
-      };
-      frame = requestAnimationFrame(tick);
-    };
-    const startFrom = () => (el.dataset.played === '1' ? shownRef.current : (fromZero ? 0 : value * 0.94));
-    if (prefersReducedMotion()) {
-      setShown(value);
-      return undefined;
-    }
-    const arm = () => {
-      const from = startFrom();
-      el.dataset.played = '1';
-      setShown(from);
-      play(from);
-    };
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight && rect.bottom > 0) arm();
-    else {
-      observer = new IntersectionObserver(([entry]) => {
-        if (!entry.isIntersecting) return;
-        observer?.disconnect();
-        arm();
-      }, { threshold: 0.4 });
-      observer.observe(el);
-    }
-    return () => {
-      cancelAnimationFrame(frame);
-      observer?.disconnect();
-    };
-  }, [fromZero, value]);
-  const finalText = value.toLocaleString('en-IN', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-  const shownText = shown.toLocaleString('en-IN', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-  return (
-    <span className="count-up" ref={ref}>
-      <span className="count-up-sizer" aria-hidden="true">{finalText}</span>
-      <span>{shownText}</span>
-    </span>
-  );
 }
 
 function SyncedField({
@@ -259,61 +176,6 @@ function Spark({ values, color }: { values: number[]; color: string }) {
   );
 }
 
-function NiftyChart({ values }: { values: number[] }) {
-  const w = 340;
-  const h = 108;
-  const left = 8;
-  const right = 54;
-  const top = 8;
-  const bottom = 18;
-  const min = 24200;
-  const max = 24800;
-  const pts = values.map((v, i) => {
-    const x = left + (i / (values.length - 1)) * (w - left - right);
-    const y = top + (1 - (v - min) / (max - min)) * (h - top - bottom);
-    return [x, Math.min(h - bottom, Math.max(top, y))] as const;
-  });
-  const d = smoothLine(pts);
-  const area = `${d} L${pts[pts.length - 1][0].toFixed(1)} ${h - bottom} L${pts[0][0].toFixed(1)} ${h - bottom} Z`;
-  const ticks = [24800, 24600, 24400, 24200];
-  const times = ['09:15', '11:00', '13:00', '15:30'];
-  return (
-    <svg viewBox={`0 0 ${w} ${h}`} role="img" aria-label="Illustrative NIFTY 50 chart">
-      {ticks.map((tick) => {
-        const y = top + (1 - (tick - min) / (max - min)) * (h - top - bottom);
-        return (
-          <g key={tick}>
-            <line x1={left} x2={w - right} y1={y} y2={y} stroke="#e7efe9" strokeWidth="1" />
-            <text x={w - 4} y={y + 3} fontSize="9" fill="#5c675f" textAnchor="end">{tick.toLocaleString('en-IN')}</text>
-          </g>
-        );
-      })}
-      {times.map((label, i) => (
-        <text key={label} x={left + (i / (times.length - 1)) * (w - left - right)} y={h - 2} fontSize="9" fill="#5c675f" textAnchor={i === 0 ? 'start' : i === times.length - 1 ? 'end' : 'middle'}>{label}</text>
-      ))}
-      <path d={area} fill="rgba(31,157,85,0.18)" />
-      <path className="hf-line" d={d} fill="none" stroke="#1F9D55" strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function SensexSpark({ values }: { values: number[] }) {
-  const w = 92;
-  const h = 28;
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const pts = values.map((v, i) => {
-    const x = (i / (values.length - 1)) * w;
-    const y = 4 + (1 - (v - min) / (max - min || 1)) * (h - 8);
-    return [x, y] as const;
-  });
-  return (
-    <svg viewBox={`0 0 ${w} ${h}`} width="92" height="28" aria-hidden="true">
-      <path className="hf-line" d={smoothLine(pts)} fill="none" stroke="#1F9D55" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 function AreaChart({
   series,
 }: {
@@ -368,8 +230,6 @@ function AreaChart({
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation }) => {
-  const [period, setPeriod] = useState<Period>('1D');
-  const [indexFocus, setIndexFocus] = useState<'nifty' | 'sensex'>('nifty');
   const [planTab, setPlanTab] = useState<(typeof PLAN_TABS)[number]>('Retirement');
   const [target, setTarget] = useState(35_000_000);
   const [years, setYears] = useState(20);
@@ -472,33 +332,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               <span><User size={14} /> In your name</span>
             </div>
           </div>
-          <article className="hf-market" aria-label="Illustrative market snapshot">
-            <div className="hf-market-tabs">
-              <div className="hf-tabs" role="group" aria-label="Index">
-                <button type="button" className={indexFocus === 'nifty' ? 'is-on' : ''} onClick={() => setIndexFocus('nifty')}>NIFTY 50</button>
-                <button type="button" className={indexFocus === 'sensex' ? 'is-on' : ''} onClick={() => setIndexFocus('sensex')}>SENSEX</button>
-              </div>
-              <div className="hf-tabs" role="group" aria-label="Period">
-                {PERIODS.map((item) => (
-                  <button key={item} type="button" className={period === item ? 'is-on' : ''} onClick={() => setPeriod(item)}>{item}</button>
-                ))}
-              </div>
-            </div>
-            <p className="hf-index-name">NIFTY 50</p>
-            <p className="hf-level"><CountUp value={24612.35} /> <span className="hf-up">{MARKET.nifty.change} {MARKET.nifty.pct}</span></p>
-            <p className="hf-note">Sample levels as of {FARCON_CONFIG.illustrativeMarketAsOf}. <span className="hf-indicative">Illustrative</span></p>
-            <div key={period} className="hf-draw">
-              <NiftyChart values={PATHS[period].nifty} />
-            </div>
-            <div className="hf-sensex">
-              <div>
-                <b>SENSEX</b>
-                <strong><CountUp value={81050.62} /></strong>
-                <span className="hf-up">{MARKET.sensex.change} {MARKET.sensex.pct}</span>
-              </div>
-              <span key={period} className="hf-draw"><SensexSpark values={PATHS[period].sensex} /></span>
-              <ChevronDown size={14} aria-hidden="true" />
-            </div>
+          <article className="hf-market" aria-label="S&P BSE SENSEX">
+            <SensexOverview />
           </article>
         </div>
       </section>

@@ -6,6 +6,7 @@ import { ServiceShowcase } from '@/components/sections/ServiceShowcase';
 import { BrandLockup } from '@/components/layout/BrandLockup';
 import { FARCON_CONFIG } from '@/content/site/config';
 import { ChevronDown, Menu, Search, X } from 'lucide-react';
+import { MarketTape } from '@/components/market/TradingViewEmbed';
 
 interface NavbarProps {
   currentPath: string;
@@ -149,6 +150,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
           </button>
         </div>
       </div>
+      <MarketTape />
       {searchOpen && (
         <div className="fw-search">
           <label>
