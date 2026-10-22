@@ -3,6 +3,8 @@ import { RoutePath } from '@/types';
 import { formatINR } from '@/lib/formatting/currency';
 import { formatPlanCompact, formatSip, formatTargetLabel, planIllustration } from '@/components/sections/home/planGoal';
 import { FARCON_CONFIG } from '@/content/site/config';
+import { FARCON_SERVICES } from '@/content/services/servicesData';
+import { FAQ_ITEMS } from '@/content/faq/faqData';
 import {
   ArrowRight,
   Calculator,
@@ -181,7 +183,7 @@ const TOOLS: { title: string; text: string; href: RoutePath; tint: string; icon:
 const STORIES = [
   { initials: 'A.S.', role: 'Retired Professional', quote: 'Farcon helped me plan my retirement in a very simple and clear way. I finally feel confident about my financial future.' },
   { initials: 'R.K.', role: 'Parent', quote: 'The goal planning process made it easy for me to invest for my child\'s education. Very supportive team.' },
-  { initials: 'M.P.', role: 'Business Owner', quote: 'Transparent advice and a very disciplined approach. I appreciate the focus on long-term investing.' },
+  { initials: 'M.P.', role: 'Business Owner', quote: 'A clear process and a very disciplined approach. I appreciate the focus on long-term investing.' },
 ];
 
 function smoothLine(pts: Array<readonly [number, number]>): string {
@@ -343,9 +345,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
   const [storyStart, setStoryStart] = useState(0);
   const [storiesPaused, setStoriesPaused] = useState(false);
   const plan = useMemo(() => planIllustration(target, years, rate), [target, years, rate]);
-  const asOf = new Date().toLocaleDateString('en-IN', {
-    day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata',
-  });
   const funds = fundTab === 'Equity Funds'
     ? FUNDS.filter((fund) => fund.group !== 'Debt Funds')
     : FUNDS.filter((fund) => fund.group === fundTab);
@@ -424,6 +423,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               <button type="button" className="hf-btn hf-btn-green" onClick={() => document.getElementById('goals')?.scrollIntoView({ behavior: 'smooth' })}>
                 Start with a Goal <ArrowRight size={14} />
               </button>
+              <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/start-investing')}>
+                Start investing
+              </button>
               <button type="button" className="hf-btn hf-btn-outline" onClick={() => onOpenConsultation('Book a Free 15-Minute Call')}>
                 Book a Free 15-Minute Call
               </button>
@@ -448,7 +450,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             </div>
             <p className="hf-index-name">NIFTY 50</p>
             <p className="hf-level"><CountUp value={24612.35} /> <span className="hf-up">{MARKET.nifty.change} {MARKET.nifty.pct}</span></p>
-            <p className="hf-note">As of {asOf} IST <span className="hf-indicative">Indicative</span></p>
+            <p className="hf-note">Sample levels as of {FARCON_CONFIG.illustrativeMarketAsOf}. <span className="hf-indicative">Illustrative</span></p>
             <div key={period} className="hf-draw">
               <NiftyChart values={PATHS[period].nifty} />
             </div>
@@ -478,6 +480,26 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                 <span className="hf-arrow" aria-hidden="true"><ArrowRight size={16} /></span>
               </button>
             ))}
+          </div>
+        </div>
+      </Reveal>
+
+      <Reveal as="section" className="hf-section" id="services" data-section="services">
+        <div className="hf-wrap">
+          <span className="hf-eye">Services</span>
+          <h2>Distribution, planned around a goal.</h2>
+          <p className="hf-lede">Farcon Wealth is an AMFI-registered mutual fund distributor, ARN {FARCON_CONFIG.arn}. These are the conversations we have. We do not give investment advice.</p>
+          <div className="hf-tools" style={{ marginTop: 18 }}>
+            {FARCON_SERVICES.map((service) => (
+              <button key={service.id} type="button" className="hf-tool" onClick={() => navigate(`/services/${service.slug}` as RoutePath)}>
+                <h2>{service.title}</h2>
+                <p>{service.tagline}</p>
+              </button>
+            ))}
+          </div>
+          <div className="hf-cta-row" style={{ marginTop: 8 }}>
+            <button type="button" className="hf-btn hf-btn-green" onClick={() => navigate('/start-investing')}>Start investing</button>
+            <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/portfolio-review')}>Request a portfolio review</button>
           </div>
         </div>
       </Reveal>
@@ -572,7 +594,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           <div>
             <span className="hf-eye">Featured mutual funds</span>
             <h2>Explore top funds for your <em>goals.</em></h2>
-            <p className="hf-lede">Handpicked schemes across categories to help you build a stronger tomorrow.</p>
+            <p className="hf-lede">A teaching set, as of {FARCON_CONFIG.illustrativeMarketAsOf}. These figures are not live NAV and not a recommendation.</p>
           </div>
           <div>
           <div className="hf-pills">
@@ -684,9 +706,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
       <Reveal as="section" className="hf-section" data-section="stories">
         <div className="hf-wrap hf-split">
           <div>
-            <span className="hf-eye">Investor stories</span>
-            <h2>What our investors say</h2>
-            <p className="hf-lede">Real experiences, real journeys, a shared belief in long-term wealth creation.</p>
+            <span className="hf-eye">Sample wording</span>
+            <h2>The tone of a conversation</h2>
+            <p className="hf-lede">These lines show how a planning conversation sounds. They are not client endorsements.</p>
           </div>
           <div>
           <div
@@ -762,6 +784,25 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </Reveal>
 
+      <Reveal as="section" className="hf-section" id="faqs" data-section="faqs">
+        <div className="hf-wrap hf-split">
+          <div>
+            <span className="hf-eye">Common questions</span>
+            <h2>Before you write in</h2>
+            <p className="hf-lede">A short set. The full list is on the FAQ page.</p>
+            <button type="button" className="hf-textlink" onClick={() => navigate('/faq')}>Read all FAQs →</button>
+          </div>
+          <div>
+            {FAQ_ITEMS.slice(0, 4).map((item) => (
+              <details key={item.id} className="acc">
+                <summary>{item.question}</summary>
+                <p>{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </Reveal>
+
       <section className="hf-cta" data-section="cta">
         <img
           className="bg"
@@ -784,6 +825,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               <button type="button" className="hf-btn hf-btn-gold" onClick={() => onOpenConsultation('Book a Free 15-Minute Call')}>
                 Book a Free 15-Minute Call <ArrowRight size={16} />
               </button>
+              <button type="button" className="hf-btn hf-btn-white" onClick={() => navigate('/portfolio-review')}>Request a portfolio review</button>
               <a className="hf-btn hf-btn-white" href={whatsapp} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
             </div>
           </div>

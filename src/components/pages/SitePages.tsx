@@ -19,43 +19,8 @@ const ARTICLE_IMAGES = [
   '/images/home/why-mountains-800.webp',
 ];
 
-const FUNDS: { name: string; group: string; tags: string[]; cagr: string; nav: string; risk: string; tone: string; logo: string; mark: string; spark: number[] }[] = [
-  { name: 'SBI Small Cap Fund', group: 'Equity', tags: ['Equity', 'Small Cap'], cagr: '26.4%', nav: '₹164.72', risk: 'Very High Risk', tone: '#0E6B38', logo: '/images/amc/sbi.svg', mark: '', spark: [12, 13, 15, 16, 18, 20, 22, 24, 26] },
-  { name: 'HDFC Flexi Cap Fund', group: 'Equity', tags: ['Equity', 'Flexi Cap'], cagr: '21.8%', nav: '₹712.35', risk: 'High Risk', tone: '#9B2C2C', logo: '/images/amc/hdfc-mark.svg', mark: '', spark: [11, 13, 14, 16, 17, 18, 20, 21, 22] },
-  { name: 'ICICI Prudential Balanced Advantage Fund', group: 'Hybrid', tags: ['Hybrid', 'Dynamic'], cagr: '14.6%', nav: '₹348.12', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/icici-mark.png', mark: '', spark: [12, 12.4, 13, 13.6, 14.2, 14.8, 15.4, 16.2, 17] },
-  { name: 'Axis ELSS Tax Saver Fund', group: 'ELSS', tags: ['Equity', 'ELSS'], cagr: '18.2%', nav: '₹112.46', risk: 'High Risk', tone: '#9B2C2C', logo: '/images/amc/axis-mark.svg', mark: '', spark: [10, 11, 12.5, 13.5, 15, 16, 17.2, 18.2, 19] },
-  { name: 'Nippon India Growth Fund', group: 'Equity', tags: ['Equity', 'Mid Cap'], cagr: '22.1%', nav: '₹3,842', risk: 'Very High Risk', tone: '#0E6B38', logo: '/images/amc/nippon.png', mark: '', spark: [13, 14, 15, 16, 18, 19, 21, 22, 24] },
-  { name: 'Mirae Asset Large Cap Fund', group: 'Equity', tags: ['Equity', 'Large Cap'], cagr: '16.4%', nav: '₹98.20', risk: 'High Risk', tone: '#9B2C2C', logo: '/images/amc/mirae-mark.svg', mark: '', spark: [11, 12, 12.6, 13.2, 14, 14.6, 15.2, 15.8, 16.4] },
-  { name: 'HDFC Short Term Debt Fund', group: 'Debt', tags: ['Debt', 'Short Duration'], cagr: '7.4%', nav: '₹28.16', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/hdfc-mark.svg', mark: '', spark: [12, 12.2, 12.4, 12.7, 13, 13.2, 13.5, 13.8, 14] },
-  { name: 'SBI Magnum Gilt Fund', group: 'Debt', tags: ['Debt', 'Gilt'], cagr: '7.1%', nav: '₹58.40', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/sbi.svg', mark: '', spark: [11, 11.4, 11.2, 11.8, 12.1, 12.4, 12.2, 12.8, 13.1] },
-  { name: 'ICICI Prudential Corporate Bond Fund', group: 'Debt', tags: ['Debt', 'Corporate'], cagr: '7.6%', nav: '₹26.90', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/icici-mark.png', mark: '', spark: [10, 10.4, 10.8, 11.1, 11.4, 11.8, 12.1, 12.5, 12.8] },
-  { name: 'Axis Treasury Advantage Fund', group: 'Debt', tags: ['Debt', 'Money Market'], cagr: '6.8%', nav: '₹2,746', risk: 'Low Risk', tone: '#9A5410', logo: '/images/amc/axis-mark.svg', mark: '', spark: [9, 9.2, 9.4, 9.5, 9.7, 9.9, 10.1, 10.3, 10.5] },
-];
-
-const CATEGORIES = [
-  ['Equity', 'Long horizons. Very high volatility is normal, including years that finish lower.'],
-  ['Hybrid', 'A mix of equity and debt. The split is defined by the scheme, not by the day’s news.'],
-  ['Debt', 'Nearer goals and parking. Credit and interest-rate movement still matter.'],
-  ['ELSS', 'Equity with a three-year lock-in on each allotment. Tax treatment depends on your regime.'],
-];
-
-function Spark({ values, color }: { values: number[]; color: string }) {
-  const w = 180;
-  const h = 64;
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const d = values.map((v, i) => {
-    const x = (i / (values.length - 1)) * w;
-    const y = h - 8 - ((v - min) / (max - min || 1)) * (h - 16);
-    return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)} ${y.toFixed(1)}`;
-  }).join(' ');
-  return (
-    <svg className="hf-spark" viewBox={`0 0 ${w} ${h}`} aria-hidden="true">
-      <path d={`${d} L${w} ${h} L0 ${h} Z`} fill={color} opacity="0.14" />
-      <path d={d} fill="none" stroke={color} strokeWidth="2.4" strokeLinecap="round" />
-    </svg>
-  );
-}
+import fundBook from '@/content/funds/schemes.json';
+import { FARCON_SERVICES } from '@/content/services/servicesData';
 
 function VideoFacade({ id, title }: { id: string; title: string }) {
   const [play, setPlay] = useState(false);
@@ -81,7 +46,7 @@ function VideoFacade({ id, title }: { id: string; title: string }) {
   );
 }
 
-export const AboutPage: React.FC<PageProps> = ({ onOpenConsultation }) => (
+export const AboutPage: React.FC<PageProps> = ({ onOpenConsultation, navigate }) => (
   <div className="pg">
     <div className="pg-wrap">
       <div className="page-hero split-hero">
@@ -99,6 +64,15 @@ export const AboutPage: React.FC<PageProps> = ({ onOpenConsultation }) => (
         <article className="pg-card"><span className="hf-eye">Goals first</span><h2>The date before the scheme</h2><p>A goal, a horizon and a surplus come before any fund name.</p></article>
         <article className="pg-card"><span className="hf-eye">In your name</span><h2>We do not hold the money</h2><p>Purchases sit with the AMC, the exchange and the registrar.</p></article>
         <article className="pg-card"><span className="hf-eye">ARN {FARCON_CONFIG.arn}</span><h2>A registered distributor</h2><p>Farcon is not a portfolio manager and does not promise returns.</p></article>
+      </div>
+      <h2 style={{ marginTop: 36 }}>Services</h2>
+      <div className="pg-grid services">
+        {FARCON_SERVICES.map((service) => (
+          <button key={service.id} type="button" className="pg-card svc" onClick={() => navigate(`/services/${service.slug}` as RoutePath)}>
+            <span className="hf-eye">{service.title}</span>
+            <p>{service.tagline}</p>
+          </button>
+        ))}
       </div>
       <h2 style={{ marginTop: 36 }}>How we work</h2>
       <div className="steps four">
@@ -146,50 +120,146 @@ export const ServicesPage: React.FC<PageProps> = ({ onOpenConsultation }) => (
   </div>
 );
 
-export const FundsPage: React.FC = () => {
-  const [tab, setTab] = useState('Equity');
-  const shown = FUNDS.filter((fund) => fund.group === tab);
+type FundScheme = (typeof fundBook.categories)[number]['schemes'][number];
+
+export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; categorySlug?: string; schemeSlug?: string }> = ({ navigate, categorySlug, schemeSlug }) => {
+  const category = fundBook.categories.find((item) => item.slug === categorySlug);
+  const scheme = category?.schemes.find((item) => item.slug === schemeSlug);
+  if (categorySlug && !category) return null;
+  if (schemeSlug && category && !scheme) return null;
+  const shown = category ? category.schemes : fundBook.categories.flatMap((item) => item.schemes.map((fund) => ({ ...fund, categoryName: item.name, categorySlug: item.slug })));
+  if (scheme && category) {
+    return (
+      <div className="pg">
+        <div className="pg-wrap">
+          <div className="breadcrumbs">
+            <button type="button" onClick={() => navigate('/mutual-funds')}>Mutual funds</button>
+            <span aria-hidden="true">/</span>
+            <button type="button" onClick={() => navigate(`/mutual-funds/${category.slug}` as RoutePath)}>{category.name}</button>
+            <span aria-hidden="true">/</span>
+            <span>{scheme.name}</span>
+          </div>
+          <span className="hf-eye">Illustrative scheme</span>
+          <h1>{scheme.name}</h1>
+          <p className="lede">{scheme.amc}. {scheme.plan}. This page is a teaching card, not a live factsheet and not a recommendation.</p>
+          <article className="pg-card" style={{ marginTop: 16 }}>
+            <div className="hf-amc">
+              <img className="hf-logo" src={scheme.logo} alt="" />
+              <div>
+                <h2>{scheme.subCategory}</h2>
+                <div className="hf-sub">Riskometer label: {scheme.risk}</div>
+              </div>
+            </div>
+            <div className="hf-metrics">
+              <span>Illustrative NAV<b>₹{scheme.nav}</b></span>
+              <span>Illustrative 3Y CAGR<b>{scheme.cagr3y}</b></span>
+              <span>Horizon fit<b>{scheme.horizon}</b></span>
+            </div>
+            <p className="hf-note">As of {fundBook.asOf}. {fundBook.source}</p>
+            <p className="hf-note">{fundBook.disclaimer}</p>
+          </article>
+          <div className="hf-cta-row" style={{ marginTop: 16 }}>
+            <button type="button" className="hf-btn hf-btn-green" onClick={() => navigate('/start-investing')}>Enquire about this scheme</button>
+            <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/calculators/sip')}>SIP calculator</button>
+            <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/calculators/lumpsum')}>Lumpsum calculator</button>
+            <a className="hf-btn hf-btn-outline" href="https://www.sebi.gov.in/filings/mutual-funds.html" target="_blank" rel="noreferrer">Scheme documents</a>
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="pg">
       <div className="pg-wrap">
         <span className="hf-eye">Mutual Funds</span>
-        <h1>Explore mutual funds</h1>
-        <p className="lede">Handpicked schemes across categories. The figures below are a teaching set.</p>
-        <span className="horizon">Illustrative data, not live NAV</span>
+        <h1>{category ? category.name : 'Explore mutual funds'}</h1>
+        <p className="lede">{category ? category.summary : 'Category pages for a teaching set. Open a scheme to see the illustrative figures and the risk line.'}</p>
+        <span className="horizon">Illustrative data as of {fundBook.asOf}. Not live NAV.</span>
         <div className="hf-pills" style={{ margin: '18px 0' }}>
-          {['Equity', 'Hybrid', 'Debt', 'ELSS'].map((item) => (
-            <button key={item} type="button" className={tab === item ? 'is-on' : ''} onClick={() => setTab(item)}>{item}</button>
+          <button type="button" className={!category ? 'is-on' : ''} onClick={() => navigate('/mutual-funds')}>All</button>
+          {fundBook.categories.map((item) => (
+            <button key={item.slug} type="button" className={category?.slug === item.slug ? 'is-on' : ''} onClick={() => navigate(`/mutual-funds/${item.slug}` as RoutePath)}>{item.name}</button>
           ))}
         </div>
         <div className="hf-fund-row">
-          {shown.map((fund) => (
-            <article key={fund.name} className="hf-fund">
-              <div className="hf-amc">
-                {fund.logo
-                  ? <img className="hf-logo" src={fund.logo} alt="" />
-                  : <span className="hf-logo hf-mono" aria-hidden="true">{fund.mark}</span>}
-                <div>
-                  <h2>{fund.name}</h2>
-                  <div className="hf-sub">Direct Growth</div>
+          {shown.map((fund) => {
+            const catSlug = 'categorySlug' in fund ? fund.categorySlug : category?.slug;
+            return (
+              <button key={fund.slug} type="button" className="hf-fund" onClick={() => navigate(`/mutual-funds/${catSlug}/${fund.slug}` as RoutePath)}>
+                <div className="hf-amc">
+                  <img className="hf-logo" src={fund.logo} alt="" />
+                  <div>
+                    <h2>{fund.name}</h2>
+                    <div className="hf-sub">{fund.plan}</div>
+                  </div>
                 </div>
-              </div>
-              <div className="hf-tags">{fund.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-              <div className="hf-metrics">
-                <span>3Y CAGR<b>{fund.cagr}</b></span>
-                <span>NAV<b>{fund.nav}</b></span>
-              </div>
-              <Spark values={fund.spark} color={fund.tone} />
-              <span className="hf-pill" style={{ background: fund.tone }}>{fund.risk}</span>
-            </article>
-          ))}
+                <div className="hf-tags"><span>{fund.subCategory}</span><span>{fund.risk}</span></div>
+                <div className="hf-metrics">
+                  <span>3Y CAGR<b>{fund.cagr3y}</b></span>
+                  <span>NAV<b>₹{fund.nav}</b></span>
+                </div>
+              </button>
+            );
+          })}
         </div>
-        <p className="hf-note" style={{ marginTop: 16 }}>
-          {CATEGORIES.find(([title]) => title === tab)?.[1]} Figures are a teaching set, not live NAVs. Read the scheme information document before acting.
-        </p>
+        <p className="hf-note" style={{ marginTop: 16 }}>{fundBook.source} {fundBook.disclaimer}</p>
+        <div className="hf-cta-row" style={{ marginTop: 12 }}>
+          <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/calculators/sip')}>SIP calculator</button>
+          <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/calculators/lumpsum')}>Lumpsum calculator</button>
+          <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/start-investing')}>Start investing</button>
+        </div>
       </div>
     </div>
   );
 };
+
+export const ArticlePage: React.FC<PageProps & { slug: string }> = ({ navigate, slug }) => {
+  const post = BLOG_POSTS.find((item) => item.slug === slug);
+  if (!post) return null;
+  const related = BLOG_POSTS.filter((item) => item.slug !== post.slug && item.category === post.category).slice(0, 2);
+  const more = related.length ? related : BLOG_POSTS.filter((item) => item.slug !== post.slug).slice(0, 2);
+  const service = FARCON_SERVICES.find((item) => item.title.toLowerCase().includes(post.category.toLowerCase().split(' ')[0])) || FARCON_SERVICES[0];
+  return (
+    <div className="pg">
+      <div className="pg-wrap" style={{ maxWidth: 760 }}>
+        <div className="breadcrumbs">
+          <button type="button" onClick={() => navigate('/blogs')}>Notes</button>
+          <span aria-hidden="true">/</span>
+          <span>{post.category}</span>
+        </div>
+        <span className="hf-eye">{post.category} · {post.readTime} · {post.publishedDate}</span>
+        <h1>{post.title}</h1>
+        <p className="lede">{post.excerpt}</p>
+        {post.content.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+        <p className="hf-note">Educational note from a mutual fund distributor. Not investment advice and not a scheme recommendation.</p>
+        <h2>Related</h2>
+        {more.map((item) => (
+          <button key={item.id} type="button" className="hf-textlink" onClick={() => navigate(`/blogs/${item.slug}` as RoutePath)}>{item.title}</button>
+        ))}
+        <div className="hf-cta-row" style={{ marginTop: 16 }}>
+          <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate(`/services/${(ARTICLE_SERVICE[post.category] || service.slug)}` as RoutePath)}>Related service</button>
+          <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/calculators/sip')}>SIP calculator</button>
+          <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/faq')}>FAQs</button>
+        </div>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'Article', headline: post.title, datePublished: post.publishedDate, description: post.seoDescription, author: { '@type': 'Organization', name: 'Farcon Wealth' } }) }} />
+      </div>
+    </div>
+  );
+};
+
+export const StartInvestingPage: React.FC = () => (
+  <div className="pg">
+    <div className="pg-wrap split">
+      <div>
+        <span className="hf-eye">Start investing</span>
+        <h1>Tell us the goal, then the amount.</h1>
+        <p className="lede">This is a mutual fund distribution enquiry. It is separate from a general consultation. Farcon does not place an order from this form.</p>
+        <p className="hf-note">AMFI-registered Mutual Fund Distributor · ARN {FARCON_CONFIG.arn}. You can also <a href={whatsappHref}>message us on WhatsApp</a>.</p>
+      </div>
+      <LeadForm form="Start Investing" submitLabel="Send the investing enquiry" showPreferences requireGoal />
+    </div>
+  </div>
+);
 
 export const PortfolioPage: React.FC = () => (
   <div className="pg">
@@ -230,15 +300,29 @@ export const LoginPage: React.FC<PageProps> = ({ onOpenConsultation }) => (
       <p className="lede">
         Farcon does not keep a password for your folios. Holdings stay with the mutual fund, the exchange or the registrar, in your name. Until portfolio access is available here, message us or ask for a statement.
       </p>
-      <div className="hf-cta-row">
+        <div className="hf-cta-row">
         <a className="hf-btn hf-btn-green" href={whatsappHref} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
         <button type="button" className="hf-btn hf-btn-outline" onClick={() => onOpenConsultation('Portfolio statement')}>Request a portfolio statement</button>
+        {FARCON_CONFIG.investorLoginUrl ? (
+          <a className="hf-btn hf-btn-outline" href={FARCON_CONFIG.investorLoginUrl} target="_blank" rel="noreferrer">Open the investor platform</a>
+        ) : null}
       </div>
     </div>
   </div>
 );
 
-export const EducationPage: React.FC<PageProps & { focus?: 'education' | 'blogs' | 'faq' }> = ({ focus = 'education' }) => {
+const ARTICLE_SERVICE: Record<string, string> = {
+  SIP: 'sip-planning',
+  'Tax Planning': 'elss',
+  Retirement: 'retirement',
+  'Mutual Funds': 'portfolio-review',
+  Basics: 'goal-based-planning',
+};
+
+export const EducationPage: React.FC<PageProps & { focus?: 'education' | 'blogs' | 'faq' }> = ({ focus = 'education', navigate }) => {
+  const [category, setCategory] = useState('All');
+  const categories = ['All', ...Array.from(new Set(BLOG_POSTS.map((post) => post.category)))];
+  const posts = category === 'All' ? BLOG_POSTS : BLOG_POSTS.filter((post) => post.category === category);
   const title = focus === 'blogs' ? 'Notes on staying invested.' : focus === 'faq' ? 'Common questions.' : 'Learn, plan, and grow.';
   const lede = focus === 'blogs'
     ? 'Short notes on SIPs, volatility and staying with a plan.'
@@ -255,6 +339,18 @@ export const EducationPage: React.FC<PageProps & { focus?: 'education' | 'blogs'
         <span className="hf-eye">{focus === 'blogs' ? 'Notes' : focus === 'faq' ? 'FAQ' : 'Investor Education'}</span>
         <h1>{title}</h1>
         <p className="lede">{lede}</p>
+        {focus === 'education' && (
+          <div className="hf-pills" style={{ marginBottom: 18 }}>
+            {[
+              ['articles', 'Articles'],
+              ['faqs', 'FAQs'],
+              ['videos', 'Videos'],
+              ['downloads', 'Downloads'],
+            ].map(([id, label]) => (
+              <button key={id} type="button" onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })}>{label}</button>
+            ))}
+          </div>
+        )}
         {showFaqs && focus === 'faq' && FAQ_ITEMS.map((item) => (
           <details key={item.id} className="acc">
             <summary>{item.question}</summary>
@@ -262,26 +358,37 @@ export const EducationPage: React.FC<PageProps & { focus?: 'education' | 'blogs'
           </details>
         ))}
         {showArticles && (
-          <>
-            <article className="pg-card feature-article" id="articles">
-              <img src={ARTICLE_IMAGES[0]} alt="" />
-              <div>
-                <span className="hf-eye">{BLOG_POSTS[0].category} · {BLOG_POSTS[0].readTime}</span>
-                <h2>{BLOG_POSTS[0].title}</h2>
-                <p>{BLOG_POSTS[0].excerpt}</p>
-              </div>
-            </article>
+          <div id="articles">
+            <div className="hf-pills" style={{ marginBottom: 16 }}>
+              {categories.map((item) => (
+                <button key={item} type="button" className={category === item ? 'is-on' : ''} onClick={() => setCategory(item)}>{item}</button>
+              ))}
+            </div>
+            {posts[0] && (
+              <button type="button" className="pg-card feature-article" onClick={() => navigate(`/blogs/${posts[0].slug}` as RoutePath)}>
+                <img src={ARTICLE_IMAGES[0]} alt={posts[0].title} />
+                <div>
+                  <span className="hf-eye">{posts[0].category} · {posts[0].readTime}</span>
+                  <h2>{posts[0].title}</h2>
+                  <p>{posts[0].excerpt}</p>
+                </div>
+              </button>
+            )}
             <div className="pg-grid articles-rest" style={{ marginTop: 16 }}>
-              {BLOG_POSTS.slice(1, 4).map((post, index) => (
-                <article key={post.id} className="pg-card article-card">
-                  <img src={ARTICLE_IMAGES[(index + 1) % ARTICLE_IMAGES.length]} alt="" />
+              {posts.slice(1).map((post, index) => (
+                <button key={post.id} type="button" className="pg-card article-card" onClick={() => navigate(`/blogs/${post.slug}` as RoutePath)}>
+                  <img src={ARTICLE_IMAGES[(index + 1) % ARTICLE_IMAGES.length]} alt={post.title} />
                   <span className="hf-eye">{post.category} · {post.readTime}</span>
                   <h2>{post.title}</h2>
                   <p>{post.excerpt}</p>
-                </article>
+                </button>
               ))}
             </div>
-          </>
+            <div className="hf-cta-row" style={{ marginTop: 16 }}>
+              <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/calculators/sip')}>SIP calculator</button>
+              <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/services')}>Services</button>
+            </div>
+          </div>
         )}
         {showFaqs && focus !== 'faq' && (
           <>
@@ -296,7 +403,7 @@ export const EducationPage: React.FC<PageProps & { focus?: 'education' | 'blogs'
         )}
         {showRest && (
           <>
-            <h2 style={{ marginTop: 36 }}>Educational videos</h2>
+            <h2 id="videos" style={{ marginTop: 36 }}>Educational videos</h2>
             <p className="hf-note">Third-party films for general context. They are not Farcon advice and not scheme recommendations. Press play to load the film.</p>
             <div className="videos">
               <VideoFacade id="PHe0bXAIuk0" title="How The Economic Machine Works by Ray Dalio" />
@@ -306,7 +413,7 @@ export const EducationPage: React.FC<PageProps & { focus?: 'education' | 'blogs'
         )}
         {focus === 'education' && (
           <>
-            <h2 style={{ marginTop: 36 }}>Downloadable resources</h2>
+            <h2 id="downloads" style={{ marginTop: 36 }}>Downloadable resources</h2>
             <div className="pg-grid downloads">
               {[
                 ['/resources/sip-basics.pdf', 'SIP basics'],

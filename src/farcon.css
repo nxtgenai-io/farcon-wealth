@@ -593,6 +593,9 @@
   background: rgba(201, 162, 74, 0.18); color: var(--fw-gold); margin: 8px 0;
 }
 .hf-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
+@media (min-width: 900px) {
+  #services .hf-tools { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 .hf-section.hf-tools-section { padding-top: 28px; }
 .hf-tool {
   background: white; border: 1px solid var(--fw-line); border-radius: 16px;
@@ -685,6 +688,7 @@
   min-height: 120px;
 }
 .svc h2 { font-size: 22px; margin: 8px 0; }
+button.feature-article, button.article-card { text-align: left; cursor: pointer; color: inherit; font: inherit; width: 100%; }
 .acc { border-top: 1px solid var(--fw-line); }
 .acc summary { min-height: 48px; cursor: pointer; font-weight: 650; display: flex; align-items: center; justify-content: space-between; gap: 12px; list-style: none; }
 .acc summary::-webkit-details-marker { display: none; }
@@ -692,6 +696,9 @@
 .acc[open] summary::after { transform: rotate(45deg); }
 .acc summary:hover { color: var(--fw-forest); }
 .field { display: block; margin-bottom: 12px; font-size: 14px; }
+.field.consent-row { display: flex; align-items: flex-start; gap: 10px; line-height: 1.45; }
+.field.consent-row input { width: 18px; height: 18px; min-height: 18px; margin-top: 3px; flex: none; padding: 0; }
+.field.consent-row a { color: var(--fw-forest); text-decoration: underline; }
 .field input, .field select, .field textarea {
   width: 100%; min-height: 48px; margin-top: 6px; border-radius: 12px;
   border: 1px solid var(--fw-line); padding: 10px 12px; font: 16px/1.4 var(--fw-sans); background: white;

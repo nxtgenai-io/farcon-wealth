@@ -19,4 +19,9 @@ export const SERVICE_LINKS: { label: string; href: RoutePath }[] = [
   { label: 'Retirement Planning', href: '/services/retirement' },
   { label: 'Child Education', href: '/services/child-education' },
   { label: 'Systematic Withdrawal (SWP)', href: '/services/swp' },
+  { label: 'Mutual Fund Distribution', href: '/services/mutual-fund-distribution' },
+  { label: 'Lump-Sum Investing', href: '/services/lumpsum' },
+  { label: 'Goal-Based Planning', href: '/services/goal-based-planning' },
+  { label: 'Wealth Creation', href: '/services/wealth-creation' },
+  { label: 'Investment Solutions', href: '/services/investment-solutions' },
 ];

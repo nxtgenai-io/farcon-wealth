@@ -67,8 +67,9 @@ function Slider({ label, value, min, max, step, display, minLabel, maxLabel, onC
   label: string; value: number; min: number; max: number; step: number; display: string; minLabel: string; maxLabel: string; onChange: (n: number) => void;
 }) {
   const money = display.trim().startsWith('₹');
-  const [focused, setFocused] = useState(false);
-  const pct = `${((value - min) / (max - min)) * 100}%`;
+  const [draft, setDraft] = useState<string | null>(null);
+  const [hint, setHint] = useState('');
+  const pct = `${((Math.min(max, Math.max(min, value)) - min) / (max - min)) * 100}%`;
   return (
     <label className="hf-slider">
       <span className="hf-slider-top">
@@ -78,18 +79,22 @@ function Slider({ label, value, min, max, step, display, minLabel, maxLabel, onC
           type="text"
           inputMode="decimal"
           aria-label={label}
-          value={focused || !money ? String(value) : display}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          onChange={(event) => {
-            const next = Number(event.target.value.replace(/[^\d.]/g, ''));
+          value={draft ?? (money ? display : String(value))}
+          onFocus={() => { setDraft(String(value)); setHint(''); }}
+          onBlur={() => {
+            const next = Number((draft ?? String(value)).replace(/[^\d.]/g, ''));
+            setDraft(null);
             if (!Number.isFinite(next)) return;
+            if (next < min || next > max) setHint(`Adjusted to stay between ${minLabel} and ${maxLabel}.`);
+            else setHint('');
             onChange(Math.min(max, Math.max(min, next)));
           }}
+          onChange={(event) => setDraft(event.target.value)}
         />
       </span>
-      <input type="range" min={min} max={max} step={step} value={value} style={{ ['--pct' as string]: pct }} onChange={(e) => onChange(Number(e.target.value))} />
+      <input type="range" min={min} max={max} step={step} value={Math.min(max, Math.max(min, value))} style={{ ['--pct' as string]: pct }} onChange={(e) => { setHint(''); onChange(Number(e.target.value)); }} />
       <span className="hf-scale"><span>{minLabel}</span><span>{maxLabel}</span></span>
+      {hint && <span className="hf-note">{hint}</span>}
     </label>
   );
 }
@@ -109,9 +114,9 @@ const RETIRE_POST = 8;
 
 /** Chart series only. The SIP headline still comes from calculateRetirement. */
 function retirementChartSeries(result: ReturnType<typeof calculateRetirement>) {
-  const inf = RETIRE_INFLATION / 100;
-  const post = RETIRE_POST / 100;
-  const monthlyRate = RETIRE_PRE / 100 / 12;
+  const inf = result.inflationRate / 100;
+  const post = result.postRetirementReturn / 100;
+  const monthlyRate = result.preRetirementReturn / 100 / 12;
   const ages: number[] = [];
   for (let year = result.currentAge; year <= result.lifeExpectancy; year += 1) ages.push(year);
   const annualAtRetirement = result.monthlyExpenseAtRetirement * 12;
@@ -122,7 +127,10 @@ function retirementChartSeries(result: ReturnType<typeof calculateRetirement>) {
       const sipFuture = months > 0
         ? result.requiredMonthlySIP * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate)
         : 0;
-      return Math.round(sipFuture);
+      const existing = result.existingCorpusFutureValue > 0 && result.yearsToRetire > 0
+        ? (result.existingCorpusFutureValue / Math.pow(1 + result.preRetirementReturn / 100, result.yearsToRetire)) * Math.pow(1 + result.preRetirementReturn / 100, year - result.currentAge)
+        : 0;
+      return Math.round(sipFuture + existing);
     }
     let corpus = result.requiredRetirementCorpus;
     const yearsIn = year - result.retirementAge;
@@ -169,14 +177,21 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
   const [goal, setGoal] = useState(goalQuery.target);
   const [goalRate, setGoalRate] = useState(goalQuery.rate);
   const [goalYears, setGoalYears] = useState(goalQuery.years);
+  const [goalSavings, setGoalSavings] = useState(0);
+  const [goalInflation, setGoalInflation] = useState(6);
   const [age, setAge] = useState(32);
   const [retireAge, setRetireAge] = useState(60);
+  const [lifeAge, setLifeAge] = useState(85);
   const [expense, setExpense] = useState(50000);
+  const [retireSavings, setRetireSavings] = useState(0);
+  const [retireInflation, setRetireInflation] = useState(RETIRE_INFLATION);
+  const [retirePre, setRetirePre] = useState(RETIRE_PRE);
+  const [retirePost, setRetirePost] = useState(RETIRE_POST);
 
   const sip = useMemo(() => calculateSIP(sipAmount, sipRate, sipYears), [sipAmount, sipRate, sipYears]);
   const lumpsum = useMemo(() => calculateLumpsum(lump, lumpRate, lumpYears), [lump, lumpRate, lumpYears]);
-  const goalResult = useMemo(() => calculateGoalSIP(goal, goalRate, goalYears, 0), [goal, goalRate, goalYears]);
-  const retirement = useMemo(() => calculateRetirement(age, retireAge, 85, expense, RETIRE_INFLATION, RETIRE_PRE, RETIRE_POST, 0), [age, retireAge, expense]);
+  const goalResult = useMemo(() => calculateGoalSIP(goal, goalRate, goalYears, goalInflation, goalSavings), [goal, goalRate, goalYears, goalInflation, goalSavings]);
+  const retirement = useMemo(() => calculateRetirement(age, retireAge, lifeAge, expense, retireInflation, retirePre, retirePost, retireSavings), [age, retireAge, lifeAge, expense, retireInflation, retirePre, retirePost, retireSavings]);
   const retirementChart = useMemo(() => retirementChartSeries(retirement), [retirement]);
 
   const copy = COPY[tab];
@@ -212,7 +227,9 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
             )}
             {tab === 'goal' && (
               <>
-                <Slider label="Target corpus" min={500000} max={100000000} step={500000} value={goal} display={formatINR(goal)} minLabel="₹5 L" maxLabel="₹10 Cr" onChange={setGoal} />
+                <Slider label="Target corpus today" min={500000} max={100000000} step={500000} value={goal} display={formatINR(goal)} minLabel="₹5 L" maxLabel="₹10 Cr" onChange={setGoal} />
+                <Slider label="Current savings" min={0} max={50000000} step={100000} value={goalSavings} display={formatINR(goalSavings)} minLabel="₹0" maxLabel="₹5 Cr" onChange={setGoalSavings} />
+                <Slider label="Inflation" min={0} max={12} step={1} value={goalInflation} display={`${goalInflation}%`} minLabel="0%" maxLabel="12%" onChange={setGoalInflation} />
                 <Slider label="Expected return" min={6} max={18} step={1} value={goalRate} display={`${goalRate}%`} minLabel="6%" maxLabel="18%" onChange={setGoalRate} />
                 <Slider label="Years" min={1} max={30} step={1} value={goalYears} display={`${goalYears} years`} minLabel="1 year" maxLabel="30 years" onChange={setGoalYears} />
               </>
@@ -221,9 +238,20 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
               <>
                 <Slider label="Current age" min={18} max={70} step={1} value={age} display={`${age}`} minLabel="18" maxLabel="70" onChange={setAge} />
                 <Slider label="Retirement age" min={age + 1} max={75} step={1} value={retireAge} display={`${retireAge}`} minLabel={`${age + 1}`} maxLabel="75" onChange={setRetireAge} />
+                <Slider label="Life expectancy" min={retireAge + 5} max={100} step={1} value={lifeAge} display={`${lifeAge}`} minLabel={`${retireAge + 5}`} maxLabel="100" onChange={setLifeAge} />
                 <Slider label="Monthly expense today" min={10000} max={300000} step={5000} value={expense} display={formatINR(expense)} minLabel="₹10,000" maxLabel="₹3 L" onChange={setExpense} />
+                <Slider label="Current savings" min={0} max={50000000} step={100000} value={retireSavings} display={formatINR(retireSavings)} minLabel="₹0" maxLabel="₹5 Cr" onChange={setRetireSavings} />
+                <Slider label="Inflation" min={0} max={12} step={1} value={retireInflation} display={`${retireInflation}%`} minLabel="0%" maxLabel="12%" onChange={setRetireInflation} />
+                <Slider label="Return before retirement" min={6} max={18} step={1} value={retirePre} display={`${retirePre}%`} minLabel="6%" maxLabel="18%" onChange={setRetirePre} />
+                <Slider label="Return after retirement" min={4} max={12} step={1} value={retirePost} display={`${retirePost}%`} minLabel="4%" maxLabel="12%" onChange={setRetirePost} />
               </>
             )}
+            <button type="button" className="hf-btn hf-btn-outline" onClick={() => {
+              setSipAmount(25000); setSipRate(12); setSipYears(15);
+              setLump(500000); setLumpRate(12); setLumpYears(10);
+              setGoal(goalQuery.target); setGoalRate(goalQuery.rate); setGoalYears(goalQuery.years); setGoalSavings(0); setGoalInflation(6);
+              setAge(32); setRetireAge(60); setLifeAge(85); setExpense(50000); setRetireSavings(0); setRetireInflation(RETIRE_INFLATION); setRetirePre(RETIRE_PRE); setRetirePost(RETIRE_POST);
+            }}>Reset</button>
             <button type="button" className="hf-btn hf-btn-outline" onClick={() => setShowYears((value) => !value)}>{showYears ? 'Hide year by year' : 'Show year by year'}</button>
             {showYears && tab === 'sip' && (
               <table className="year-table"><tbody>{sip.breakdown.map((row) => <tr key={row.year}><td>Year {row.year}</td><td>{formatINR(row.invested)}</td><td>{formatINR(row.value)}</td></tr>)}</tbody></table>
@@ -239,7 +267,13 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
             )}
             <details className="acc">
               <summary>How this is calculated</summary>
-              <p>The figure uses the rate you set, compounded on the schedule in Farcon’s existing formula. It is an estimate. Mutual fund investments are subject to market risks. Read all scheme related documents carefully.</p>
+              <p>
+                {tab === 'sip' && `Monthly SIP ${formatINR(sipAmount)} for ${sipYears} years at ${sipRate}% a year, compounded monthly. Invested ${formatINR(sip.investedAmount)}. Projected value ${formatINR(sip.projectedValue)}. Gain ${formatINR(sip.estimatedGain)}.`}
+                {tab === 'lumpsum' && `A single amount of ${formatINR(lump)} for ${lumpYears} years at ${lumpRate}% a year. Projected value ${formatINR(lumpsum.projectedValue)}. Gain ${formatINR(lumpsum.estimatedGain)}.`}
+                {tab === 'goal' && `Today’s target ${formatINR(goal)} grows at ${goalInflation}% inflation for ${goalYears} years, to ${formatINR(goalResult.futureInflationAdjustedGoal)}. Current savings of ${formatINR(goalSavings)} are assumed to grow at ${goalRate}% to ${formatINR(goalResult.existingFutureValue)}. ${goalResult.surplus > 0 ? `That leaves a surplus of ${formatINR(goalResult.surplus)}.` : `The shortfall is ${formatINR(goalResult.shortfall)}.`} The monthly SIP of ${formatINR(goalResult.requiredMonthlySIP)} is what closes that shortfall at ${goalRate}%.`}
+                {tab === 'retirement' && `Spending of ${formatINR(expense)} a month, inflated at ${retireInflation}% for ${retirement.yearsToRetire} years (age ${age} to ${retireAge}, life expectancy ${lifeAge}). Corpus at retirement ${formatINR(retirement.requiredRetirementCorpus)}. Savings of ${formatINR(retireSavings)} grow at ${retirePre}% to ${formatINR(retirement.existingCorpusFutureValue)}. Funding gap ${formatINR(retirement.netCorpusDeficit)}. Required SIP ${formatINR(retirement.requiredMonthlySIP)} at ${retirePre}% before retirement and ${retirePost}% after.`}
+                {' '}It is an estimate. Mutual fund investments are subject to market risks. Read all scheme related documents carefully.
+              </p>
             </details>
           </div>
           <div className="hf-result">
@@ -267,7 +301,7 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
               <>
                 <span>Required monthly SIP</span>
                 <strong>{formatINR(goalResult.requiredMonthlySIP)}</strong>
-                <p>Target {formatINR(goalResult.futureInflationAdjustedGoal)} · Total investment {formatINR(goalResult.totalInvestment)}</p>
+                <p>Future target {formatINR(goalResult.futureInflationAdjustedGoal)} · Savings then {formatINR(goalResult.existingFutureValue)} · {goalResult.surplus > 0 ? `Surplus ${formatINR(goalResult.surplus)}` : `Shortfall ${formatINR(goalResult.shortfall)}`}</p>
                 <span className="hf-year-chip">Year {goalResult.breakdown.at(-1)?.year} · {formatINR(goalResult.breakdown.at(-1)?.accumulated ?? 0)}</span>
                 <Chart invested={goalResult.breakdown.map((row) => row.year * goalResult.requiredMonthlySIP * 12)} value={goalResult.breakdown.map((row) => row.accumulated)} startLabel="Year 1" endLabel={`Year ${goalYears}`} />
                 <Legend />
@@ -277,7 +311,7 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
               <>
                 <span>Illustrative corpus</span>
                 <strong>{formatINR(retirement.requiredRetirementCorpus)}</strong>
-                <p>Required SIP {formatINR(retirement.requiredMonthlySIP)} · Expense at retirement {formatINR(retirement.monthlyExpenseAtRetirement)}</p>
+                <p>Funding gap {formatINR(retirement.netCorpusDeficit)} · Required SIP {formatINR(retirement.requiredMonthlySIP)} · Expense at retirement {formatINR(retirement.monthlyExpenseAtRetirement)}</p>
                 <span className="hf-year-chip">Age {retirement.retirementAge} · {formatINR(retirement.requiredRetirementCorpus)}</span>
                 <Chart invested={retirementChart.invested} value={retirementChart.value} startLabel={`Age ${retirementChart.ages[0] ?? age}`} endLabel={`Age ${retirementChart.ages.at(-1) ?? retireAge}`} />
                 <Legend />

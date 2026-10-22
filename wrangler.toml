@@ -9,8 +9,15 @@ directory = "./dist"
 binding = "ASSETS"
 not_found_handling = "single-page-application"
 
-# Production secret (do not commit the URL):
+# Secrets (do not commit the values):
 #   npx wrangler secret put LEADS_WEBHOOK_URL
+#   npx wrangler secret put LEADS_SECRET
+# Optional. The worker skips Turnstile when this is unset:
+#   npx wrangler secret put TURNSTILE_SECRET
+# Optional KV binding for the lead rate limit. Without it, the limit is in-memory.
+# [[kv_namespaces]]
+# binding = "LEADS_KV"
+# id = ""
 
 # Required by `wrangler preview`. Empty so previews use the top-level Worker settings.
 [previews]

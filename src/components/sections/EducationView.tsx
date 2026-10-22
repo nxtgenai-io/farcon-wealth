@@ -69,7 +69,7 @@ export const EducationView: React.FC<EducationViewProps> = ({
         <div className="mt-12 p-6 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <h4 className="text-sm font-semibold text-slate-900">Have questions about this topic?</h4>
-            <p className="text-xs text-slate-600 mt-0.5">Discuss your situation with our advisory team.</p>
+            <p className="text-xs text-slate-600 mt-0.5">Message the Farcon team. We are a mutual fund distributor.</p>
           </div>
           <button
             onClick={onOpenConsultation}

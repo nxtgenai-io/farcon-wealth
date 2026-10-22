@@ -100,7 +100,7 @@ export const AIChatDrawer: React.FC<AIChatDrawerProps> = ({
         {
           id: `bot-err-${Date.now()}`,
           role: 'assistant',
-          text: 'Farcon Wealth focuses on goal-based suitability. To discuss your exact portfolio or specific scenario, we recommend speaking directly with our advisory team.',
+          text: 'Farcon Wealth focuses on goal-based suitability. To discuss your exact portfolio or a specific scheme, message the Farcon team. We distribute mutual funds. We do not give investment advice.',
           state: 'escalation',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },

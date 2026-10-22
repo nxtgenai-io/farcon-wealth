@@ -16,7 +16,7 @@ export const PortfolioReviewView: React.FC<PortfolioReviewViewProps> = ({ naviga
     estimatedFundCount: '8 – 15 Funds',
     primaryConcern: 'Too many duplicate funds & portfolio overlap',
     investorNotes: '',
-    consent: true,
+    consent: false,
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -41,10 +41,11 @@ export const PortfolioReviewView: React.FC<PortfolioReviewViewProps> = ({ naviga
       };
 
       const res = await leadService.submitLead(payload);
+      if (!res.success) return;
       setLeadId(res.leadId);
       setSubmitted(true);
     } catch {
-      // Continue gracefully
+      setSubmitted(false);
     } finally {
       setSubmitting(false);
     }

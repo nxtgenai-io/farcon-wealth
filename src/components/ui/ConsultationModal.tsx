@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { leadService } from '@/lib/api/leadService';
 import { LeadContext } from '@/types';
 import { planningContextService } from '@/lib/planningContext';
 import { analytics } from '@/lib/analytics';
+import { FARCON_CONFIG } from '@/content/site/config';
 import { X, CheckCircle2, ShieldCheck, ArrowRight } from 'lucide-react';
 import { isIndianMobile } from '@/lib/phone';
 
@@ -25,9 +26,14 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     investmentHorizon: '5–10 Years',
     monthlySavings: '₹10,000 – ₹25,000',
     notes: '',
-    consent: true,
+    consent: false,
+    contactPreference: '',
     companyWebsite: '',
   });
+  const [startedAt, setStartedAt] = useState(() => Date.now());
+  useEffect(() => {
+    if (isOpen) setStartedAt(Date.now());
+  }, [isOpen]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -47,8 +53,11 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     if (formData.email.trim() && !/^\S+@\S+\.\S+$/.test(formData.email.trim())) {
       newErrors.email = 'Please provide a valid email address.';
     }
+    if (!formData.contactPreference) {
+      newErrors.contactPreference = 'Choose WhatsApp, email or a call.';
+    }
     if (!formData.consent) {
-      newErrors.consent = 'Consent is required to contact you regarding your investments.';
+      newErrors.consent = 'Tick the box so we may store this enquiry.';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -58,7 +67,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     e.preventDefault();
     if (!validate()) return;
     if (formData.companyWebsite.trim()) {
-      setSubmitted(true);
+      setErrors({ form: 'Unable to accept this submission.' });
       return;
     }
 
@@ -80,9 +89,16 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
           : undefined,
         source: 'Consultation Modal',
         consent: formData.consent,
+        contactPreference: formData.contactPreference,
+        formStartedAt: startedAt,
+        companyWebsite: formData.companyWebsite,
       };
 
       const res = await leadService.submitLead(payload);
+      if (!res.success) {
+        setErrors({ form: res.message });
+        return;
+      }
       setAssignedLeadId(res.leadId);
       setSubmitted(true);
       analytics.track('consultation_submitted', {
@@ -117,7 +133,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               Book a Free Financial Consultation
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Calm, confidential discussion with Farcon’s AMFI-registered advisory team.
+              A calm conversation with Farcon’s AMFI-registered distributor team.
             </p>
           </div>
           <button
@@ -140,7 +156,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 Consultation Request Confirmed
               </h4>
               <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-                Thank you, <strong>{formData.name}</strong>. A dedicated Farcon Wealth advisor will review your requested focus ({formData.goal}) and reach out calmly on <strong>{formData.phone}</strong>.
+                Thank you, <strong>{formData.name}</strong>. The Farcon team will look at {formData.goal} and reply on <strong>{formData.phone}</strong>.
               </p>
               <div className="inline-block px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-md text-[11px] text-slate-500 font-mono">
                 Reference ID: {assignedLeadId}
@@ -274,6 +290,22 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 </p>
               </div>
 
+              <div>
+                <label className="block text-xs font-medium text-slate-700 mb-1">How should we reply? <span className="text-red-500">*</span></label>
+                <select value={formData.contactPreference} onChange={(e) => setFormData({ ...formData, contactPreference: e.target.value })} className="w-full px-3 py-2 text-xs rounded-md border border-slate-300 bg-white">
+                  <option value="">Select</option>
+                  <option>WhatsApp</option>
+                  <option>Email</option>
+                  <option>Call</option>
+                </select>
+                {errors.contactPreference && <p className="text-[11px] text-red-600 mt-1">{errors.contactPreference}</p>}
+              </div>
+              <label className="flex items-start gap-2 text-[11px] text-slate-600">
+                <input type="checkbox" checked={formData.consent} onChange={(e) => setFormData({ ...formData, consent: e.target.checked })} />
+                <span>I agree Farcon Wealth may store this enquiry and reply about it. Read the <a href="/privacy">privacy policy</a>.</span>
+              </label>
+              {errors.consent && <p className="text-[11px] text-red-600">{errors.consent}</p>}
+              {errors.form && <a className="hf-btn hf-btn-outline" href={`https://wa.me/${FARCON_CONFIG.whatsappNumber}`} target="_blank" rel="noreferrer">Message us on WhatsApp</a>}
               <div className="pt-2">
                 <button
                   type="submit"

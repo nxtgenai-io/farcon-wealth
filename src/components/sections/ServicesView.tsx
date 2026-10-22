@@ -1,7 +1,9 @@
 import React from 'react';
 import { FARCON_SERVICES } from '@/content/services/servicesData';
+import { BLOG_POSTS } from '@/content/blogs/blogData';
 import { RoutePath } from '@/types';
 import { FARCON_CONFIG } from '@/content/site/config';
+import { NotFound } from '@/components/pages/NotFound';
 
 interface ServicesViewProps {
   activeSlug?: string;
@@ -16,6 +18,25 @@ const EYEBROW: Record<string, string> = {
   retirement: 'Retirement',
   'child-education': 'Education',
   swp: 'Withdrawal',
+  'mutual-fund-distribution': 'Distribution',
+  lumpsum: 'Lump sum',
+  'goal-based-planning': 'Planning',
+  'wealth-creation': 'Wealth',
+  'investment-solutions': 'Solutions',
+};
+
+const RELATED: Record<string, string> = {
+  'sip-planning': 'why-sip-beats-market-timing',
+  elss: 'demystifying-elss-tax-saving-beyond-80c',
+  retirement: 'the-hidden-enemy-inflation-in-retirement',
+  swp: 'the-hidden-enemy-inflation-in-retirement',
+  'portfolio-review': 'portfolio-consolidation-trimming-the-foliage',
+  'mutual-fund-distribution': 'the-mathematics-of-staying-calm',
+  lumpsum: 'why-sip-beats-market-timing',
+  'goal-based-planning': 'the-mathematics-of-staying-calm',
+  'wealth-creation': 'why-sip-beats-market-timing',
+  'investment-solutions': 'portfolio-consolidation-trimming-the-foliage',
+  'child-education': 'the-mathematics-of-staying-calm',
 };
 
 const CALC_LABEL: Record<string, string> = {
@@ -36,7 +57,9 @@ const IMAGES: Record<string, string> = {
 
 export const ServicesView: React.FC<ServicesViewProps> = ({ activeSlug, navigate, onOpenConsultation }) => {
   if (activeSlug) {
-    const service = FARCON_SERVICES.find((item) => item.slug === activeSlug) || FARCON_SERVICES[0];
+    const service = FARCON_SERVICES.find((item) => item.slug === activeSlug);
+    if (!service) return <NotFound navigate={navigate} />;
+    const article = BLOG_POSTS.find((post) => post.slug === RELATED[service.slug]);
     return (
       <div className="pg">
         <div className="pg-wrap">
@@ -52,21 +75,24 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ activeSlug, navigate
               <p className="lede">{service.tagline}</p>
               <p>{service.summary}</p>
               <div className="hf-cta-row" style={{ marginTop: 16 }}>
-                <button type="button" className="hf-btn hf-btn-green" onClick={() => onOpenConsultation(service.title)}>Book a Free Consultation</button>
+                <button type="button" className="hf-btn hf-btn-green" onClick={() => navigate('/start-investing')}>Start investing</button>
+                <button type="button" className="hf-btn hf-btn-outline" onClick={() => onOpenConsultation(service.title)}>Book a consultation</button>
+                {service.slug !== 'portfolio-review' && (
+                  <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/portfolio-review')}>Portfolio review</button>
+                )}
                 <button
                   type="button"
                   className="hf-btn hf-btn-outline"
                   onClick={() => {
                     const path: RoutePath = service.slug === 'portfolio-review'
                       ? '/portfolio-review'
-                      : service.slug === 'swp'
-                        ? '/calculators/retirement'
-                        : `/calculators/${service.calculatorType}` as RoutePath;
+                      : `/calculators/${service.calculatorType}` as RoutePath;
                     navigate(path);
                   }}
                 >
-                  {service.slug === 'portfolio-review' ? 'Request a portfolio review' : `Open the ${service.slug === 'swp' ? 'Retirement' : CALC_LABEL[service.calculatorType] || 'SIP'} calculator`}
+                  {service.slug === 'portfolio-review' ? 'Open the review form' : `Open the ${CALC_LABEL[service.calculatorType] || 'SIP'} calculator`}
                 </button>
+                <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/contact')}>Contact</button>
               </div>
             </div>
             <img src={IMAGES[service.slug] || IMAGES['sip-planning']} alt="" />
@@ -102,8 +128,14 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ activeSlug, navigate
               ))}
             </div>
           )}
-          <p className="hf-note" style={{ marginTop: 20 }}>
+          {article && (
+            <p className="hf-note" style={{ marginTop: 20 }}>
+              Related note: <button type="button" className="hf-textlink" onClick={() => navigate(`/blogs/${article.slug}` as RoutePath)}>{article.title}</button>
+            </p>
+          )}
+          <p className="hf-note" style={{ marginTop: 12 }}>
             Related goal: <button type="button" className="hf-textlink" onClick={() => navigate(`/goals/${service.primaryGoalSlug}` as RoutePath)}>See the goal</button>
+            {' '}· <button type="button" className="hf-textlink" onClick={() => navigate('/contact')}>Contact</button>
             {' '}· ARN {FARCON_CONFIG.arn}
           </p>
         </div>
@@ -117,7 +149,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ activeSlug, navigate
         <span className="hf-eye">Services</span>
         <h1>Goal-based mutual fund guidance</h1>
         <p className="lede">
-          Farcon Wealth is an AMFI-registered Mutual Fund Distributor (ARN: {FARCON_CONFIG.arn}). Six ways to work together, each one starting with a goal.
+          Farcon Wealth is an AMFI-registered Mutual Fund Distributor (ARN: {FARCON_CONFIG.arn}). Each service starts with a goal. Farcon distributes mutual funds. It does not hold the money and it does not give investment advice.
         </p>
         <div className="pg-grid services">
           {FARCON_SERVICES.map((service) => (

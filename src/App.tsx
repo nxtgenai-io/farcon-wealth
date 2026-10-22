@@ -1,5 +1,8 @@
 import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { RoutePath } from '@/types';
+import { FARCON_SERVICES } from '@/content/services/servicesData';
+import { BLOG_POSTS } from '@/content/blogs/blogData';
+import fundBook from '@/content/funds/schemes.json';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { FloatingContactActions } from '@/components/layout/FloatingContactActions';
@@ -19,6 +22,8 @@ const ContactPage = lazy(() => import('@/components/pages/SitePages').then((m) =
 const DisclosuresPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.DisclosuresPage })));
 const EducationPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.EducationPage })));
 const FundsPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.FundsPage })));
+const ArticlePage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.ArticlePage })));
+const StartInvestingPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.StartInvestingPage })));
 const LoginPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.LoginPage })));
 const PortfolioPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.PortfolioPage })));
 
@@ -95,6 +100,10 @@ const PAGE_META: Record<string, { title: string; description: string }> = {
     title: 'Contact | Farcon Wealth',
     description: 'Book a conversation or message Farcon Wealth on WhatsApp. ARN 329006.',
   },
+  '/start-investing': {
+    title: 'Start Investing | Farcon Wealth',
+    description: 'A mutual fund distribution enquiry: goal, amount or SIP, horizon, risk and how you would like Farcon to reply.',
+  },
   '/privacy': {
     title: 'Privacy Policy | Farcon Wealth',
     description: 'How Farcon Wealth handles personal information.',
@@ -113,15 +122,61 @@ const PAGE_META: Record<string, { title: string; description: string }> = {
   },
 };
 
+const NOT_FOUND_META = {
+  title: 'Page not found | Farcon Wealth',
+  description: 'This page is not on the Farcon Wealth site.',
+};
+
 function metaFor(path: string) {
   if (PAGE_META[path]) return PAGE_META[path];
-  if (path.startsWith('/goals')) return PAGE_META['/goals'];
-  if (path.startsWith('/services')) return PAGE_META['/services'];
+  if (path.startsWith('/goals/')) return PAGE_META['/goals'];
+  if (path.startsWith('/services/')) {
+    const service = FARCON_SERVICES.find((item) => item.slug === path.slice('/services/'.length));
+    if (!service) return NOT_FOUND_META;
+    return {
+      title: `${service.title} | Farcon Wealth`,
+      description: service.summary.slice(0, 160),
+    };
+  }
   if (path.startsWith('/calculators')) return PAGE_META['/calculators'];
-  return {
-    title: 'Page not found | Farcon Wealth',
-    description: 'This page is not on the Farcon Wealth site.',
-  };
+  if (path.startsWith('/blogs/')) {
+    const post = BLOG_POSTS.find((item) => item.slug === path.slice('/blogs/'.length));
+    if (!post) return NOT_FOUND_META;
+    return { title: post.seoTitle, description: post.seoDescription };
+  }
+  if (path.startsWith('/mutual-funds/')) {
+    const [categorySlug, schemeSlug] = path.slice('/mutual-funds/'.length).split('/');
+    const category = fundBook.categories.find((item) => item.slug === categorySlug);
+    if (!category) return NOT_FOUND_META;
+    const scheme = schemeSlug ? category.schemes.find((item) => item.slug === schemeSlug) : undefined;
+    if (schemeSlug && !scheme) return NOT_FOUND_META;
+    return {
+      title: `${scheme ? scheme.name : category.name} | Farcon Wealth`,
+      description: scheme
+        ? `Illustrative teaching card for ${scheme.name}. Not a live NAV and not a recommendation.`
+        : category.summary,
+    };
+  }
+  return NOT_FOUND_META;
+}
+
+const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'] as const;
+
+function captureUtm() {
+  if (typeof window === 'undefined') return;
+  const params = new URLSearchParams(window.location.search);
+  const next: Record<string, string> = {};
+  UTM_KEYS.forEach((key) => {
+    const value = params.get(key);
+    if (value) next[key] = value.slice(0, 120);
+  });
+  if (!Object.keys(next).length) return;
+  try {
+    const prev = JSON.parse(sessionStorage.getItem('farcon_utm') || '{}') as Record<string, string>;
+    sessionStorage.setItem('farcon_utm', JSON.stringify({ ...prev, ...next }));
+  } catch {
+    sessionStorage.setItem('farcon_utm', JSON.stringify(next));
+  }
 }
 
 export function App() {
@@ -140,7 +195,9 @@ export function App() {
 
   // Sync browser back/forward buttons
   useEffect(() => {
+    captureUtm();
     const handlePopState = () => {
+      captureUtm();
       setCurrentPath((window.location.pathname as RoutePath) || '/');
     };
     window.addEventListener('popstate', handlePopState);
@@ -155,6 +212,7 @@ export function App() {
         window.history.pushState({}, '', raw);
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      captureUtm();
     }
     setCurrentPath(pathname);
   };
@@ -267,8 +325,26 @@ export function App() {
     }
 
     // 8. Mutual Fund Explorer
-    if (currentPath === '/mutual-funds') {
-      return <FundsPage />;
+    if (currentPath === '/start-investing') {
+      return <StartInvestingPage />;
+    }
+
+    if (currentPath === '/mutual-funds' || currentPath.startsWith('/mutual-funds/')) {
+      const rest = currentPath === '/mutual-funds' ? '' : currentPath.slice('/mutual-funds/'.length);
+      const parts = rest.split('/').filter(Boolean);
+      const [categorySlug, schemeSlug, extra] = parts;
+      const category = categorySlug ? fundBook.categories.find((item) => item.slug === categorySlug) : undefined;
+      const scheme = category && schemeSlug ? category.schemes.find((item) => item.slug === schemeSlug) : undefined;
+      if (extra || (categorySlug && !category) || (schemeSlug && !scheme)) {
+        return <NotFound navigate={navigate} />;
+      }
+      return <FundsPage navigate={navigate} categorySlug={categorySlug} schemeSlug={schemeSlug} />;
+    }
+
+    if (currentPath.startsWith('/blogs/') && currentPath !== '/blogs') {
+      const slug = currentPath.slice('/blogs/'.length);
+      if (!BLOG_POSTS.some((item) => item.slug === slug)) return <NotFound navigate={navigate} />;
+      return <ArticlePage navigate={navigate} onOpenConsultation={handleOpenConsultation} slug={slug} />;
     }
 
     if (currentPath === '/portfolio-review') {

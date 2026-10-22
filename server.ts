@@ -42,9 +42,6 @@ Response format:
 Provide a clear, educational, calm answer. At the end, if appropriate, mention a relevant Farcon tool (e.g. SIP Calculator, Investor Quiz, Wealth Planner, or Consultation).
 `;
 
-// In-memory leads storage for development/prototype
-const leadsStore: any[] = [];
-
 // API: AI Assistant
 app.post('/api/ai', async (req, res) => {
   const { message, history } = req.body;
@@ -133,14 +130,19 @@ app.post('/api/ai', async (req, res) => {
 
 // API: Lead Capture — validates, then forwards to LEADS_WEBHOOK_URL when set.
 app.post('/api/leads', async (req, res) => {
-  const { sanitiseLead, forwardLead } = await import('./src/lib/api/sheetLead.ts');
+  const { sanitiseLead, forwardLead, allowLead, verifyTurnstile } = await import('./src/lib/api/sheetLead.ts');
+  const ip = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown');
+  if (!(await allowLead(ip))) {
+    return res.status(429).json({ ok: false, success: false, message: 'Too many attempts. Please message us on WhatsApp.', error: 'Rate limit.' });
+  }
   const sanitised = sanitiseLead(req.body);
   if (!sanitised.ok) {
-    return res.status(400).json({ ok: false, success: false, error: sanitised.error });
+    return res.status(400).json({ ok: false, success: false, error: sanitised.error, message: sanitised.error });
   }
-
-  leadsStore.unshift({ ...sanitised.lead, receivedAt: new Date().toISOString() });
-  const result = await forwardLead(process.env.LEADS_WEBHOOK_URL, sanitised.lead);
+  if (!(await verifyTurnstile(process.env.TURNSTILE_SECRET, sanitised.lead.turnstileToken, ip))) {
+    return res.status(400).json({ ok: false, success: false, error: 'Please confirm you are not a robot.', message: 'Please confirm you are not a robot.' });
+  }
+  const result = await forwardLead(process.env.LEADS_WEBHOOK_URL, sanitised.lead, process.env.LEADS_SECRET);
   return res.status(result.status).json(result.body);
 });
 

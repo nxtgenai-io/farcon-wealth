@@ -8,6 +8,12 @@ export type RoutePath =
   | '/services/retirement'
   | '/services/child-education'
   | '/services/swp'
+  | '/services/mutual-fund-distribution'
+  | '/services/lumpsum'
+  | '/services/goal-based-planning'
+  | '/services/wealth-creation'
+  | '/services/investment-solutions'
+  | '/start-investing'
   | '/goals'
   | '/goals/retirement'
   | '/goals/child-education'
@@ -143,4 +149,7 @@ export interface LeadContext {
   pageUrl?: string;
   timestamp?: string;
   consent: boolean;
+  contactPreference?: string;
+  formStartedAt?: number;
+  companyWebsite?: string;
 }

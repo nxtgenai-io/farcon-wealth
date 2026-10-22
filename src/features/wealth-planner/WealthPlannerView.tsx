@@ -362,28 +362,40 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                   <span className="font-mono font-medium text-[#17243A]">{plannerData.horizonYears} Years</span>
                 </div>
                 <div>
-                  <span className="text-[#52647D] block text-[11px]">Status</span>
-                  <span className="font-mono font-medium text-[#78A832]">
-                    {goalCalculation.requiredMonthlySIP <= plannerData.monthlySurplus
-                      ? 'Within Surplus'
-                      : 'Requires Step-up'}
-                  </span>
+                  <span className="text-[#52647D] block text-[11px]">Shortfall</span>
+                  <span className="font-mono font-medium text-[#17243A]">{formatINR(goalCalculation.shortfall, { compact: true })}</span>
                 </div>
+              </div>
+              <p className="text-xs text-[#52647D]">
+                Savings of {formatINR(plannerData.existingSavings, { compact: true })} are assumed to grow to {formatINR(goalCalculation.existingFutureValue, { compact: true })}.
+                {goalCalculation.surplus > 0
+                  ? ` That is a surplus of ${formatINR(goalCalculation.surplus, { compact: true })} against the future target.`
+                  : ` The gap still to fund is ${formatINR(goalCalculation.shortfall, { compact: true })}.`}
+                {' '}Monthly surplus {formatINR(plannerData.monthlySurplus)} covers {Math.min(100, Math.round((plannerData.monthlySurplus / Math.max(1, goalCalculation.requiredMonthlySIP)) * 100))}% of the required SIP.
+              </p>
+              <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden" aria-label="Progress of monthly surplus against the required SIP">
+                <div className="h-full bg-[#0F3D2E]" style={{ width: `${Math.min(100, Math.round((plannerData.monthlySurplus / Math.max(1, goalCalculation.requiredMonthlySIP)) * 100))}%` }} />
               </div>
             </div>
 
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 leading-relaxed">
               <p>
-                <strong>Next Suggested Action:</strong> Book a free consultation with Farcon Wealth. We will help you select the exact category blend (Flexi-Cap, Large-Cap, or Hybrid) and register the automated mandate directly in your own name.
+                <strong>Action plan:</strong> {goalCalculation.requiredMonthlySIP <= plannerData.monthlySurplus
+                  ? 'The required SIP fits the surplus you entered. Open the matching calculator, then start an investing enquiry or ask for a portfolio review if you already hold funds.'
+                  : `The required SIP is ${formatINR(goalCalculation.requiredMonthlySIP - plannerData.monthlySurplus)} a month above the surplus you entered. Raise the SIP later, lengthen the horizon, or lower the target, then send the plan to the Farcon team.`}
+                {' '}Farcon is a mutual fund distributor. This is an illustration, not a scheme recommendation.
               </p>
             </div>
 
             <div className="flex flex-wrap gap-4 pt-2">
+              <button type="button" className="hf-btn hf-btn-green" onClick={() => navigate(plannerData.goal.toLowerCase().includes('education') ? '/calculators/goal' : plannerData.goal.toLowerCase().includes('retirement') ? '/calculators/retirement' : '/calculators/goal')}>Open the matching calculator</button>
+              <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/portfolio-review')}>Request a portfolio review</button>
+              <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/start-investing')}>Start investing</button>
               <button
                 onClick={() => onOpenConsultation(`${plannerData.goal} Blueprint Execution`)}
                 className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] hover:bg-slate-800 rounded-md transition-colors shadow-xs"
               >
-                Book Free Consultation to Execute
+                Book a consultation
               </button>
               <button
                 onClick={() => setStep(1)}

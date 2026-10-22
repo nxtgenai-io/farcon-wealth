@@ -34,6 +34,10 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [transitionDirection, setTransitionDirection] = useState<'next' | 'prev'>('next');
   const [leadCaptured, setLeadCaptured] = useState(false);
+  const [leadError, setLeadError] = useState('');
+  const [quizConsent, setQuizConsent] = useState(false);
+  const [quizPreference, setQuizPreference] = useState('');
+  const [quizStartedAt] = useState(() => Date.now());
   const [leadPhone, setLeadPhone] = useState('');
   const [leadName, setLeadName] = useState('');
   const [savingLead, setSavingLead] = useState(false);
@@ -156,8 +160,13 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
   const handleSaveResultWithConsultation = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!leadName.trim() || leadPhone.replace(/[^0-9]/g, '').length < 10) return;
+    if (!quizConsent || !quizPreference) {
+      setLeadError('Choose how we should reply, and tick consent, before sending.');
+      return;
+    }
 
     setSavingLead(true);
+    setLeadError('');
     try {
       const payload: LeadContext = {
         name: leadName.trim(),
@@ -166,12 +175,18 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
         quizProfile: result.profile.title,
         quizScore: result.totalScore,
         source: 'Investor Fit Diagnostic Result',
-        consent: true,
+        consent: quizConsent,
+        contactPreference: quizPreference,
+        formStartedAt: quizStartedAt,
       };
-      await leadService.submitLead(payload);
+      const res = await leadService.submitLead(payload);
+      if (!res.success) {
+        setLeadError(res.message);
+        return;
+      }
       setLeadCaptured(true);
     } catch {
-      // Continue gracefully
+      setLeadError('We could not send this. Please message us on WhatsApp.');
     } finally {
       setSavingLead(false);
     }
@@ -585,20 +600,31 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                   className="px-4 py-2.5 text-xs rounded-lg border border-[#DCE4EE] focus:border-slate-900 focus:outline-hidden bg-[#FAFBFC]"
                   required
                 />
+                <select value={quizPreference} onChange={(e) => setQuizPreference(e.target.value)} className="px-4 py-2.5 text-xs rounded-lg border border-[#DCE4EE] bg-white" required>
+                  <option value="">How should we reply?</option>
+                  <option>WhatsApp</option>
+                  <option>Email</option>
+                  <option>Call</option>
+                </select>
+                <label className="sm:col-span-3 flex items-start gap-2 text-[11px] text-slate-600">
+                  <input type="checkbox" checked={quizConsent} onChange={(e) => setQuizConsent(e.target.checked)} />
+                  <span>I agree Farcon may store this quiz result and reply about it. Read the <a href="/privacy">privacy policy</a>.</span>
+                </label>
                 <button
                   type="submit"
                   disabled={savingLead}
                   className="py-2.5 px-5 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-lg transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
                 >
-                  {savingLead ? 'Saving...' : 'Connect With Advisor'}
+                  {savingLead ? 'Sending...' : 'Send to the Farcon team'}
                 </button>
+                {leadError && <p className="sm:col-span-3 text-[11px] text-red-700" role="alert">{leadError}</p>}
               </form>
             </div>
           ) : (
             <div className="p-5 bg-[#E8F5E9] rounded-2xl border border-[#C8E6C9] text-xs text-[#17243A] flex items-center gap-2.5 shadow-2xs">
               <CheckCircle2 className="w-5 h-5 text-[#78A832] shrink-0" />
               <span>
-                Your investor profile has been securely saved. A Farcon advisor will reach out to you calmly on {leadPhone}.
+                Your note is with the Farcon team. We will reply on {leadPhone}.
               </span>
             </div>
           )}

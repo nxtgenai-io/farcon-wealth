@@ -24,6 +24,11 @@ export interface GoalResult {
   requiredMonthlySIP: number;
   totalInvestment: number;
   futureInflationAdjustedGoal: number;
+  existingSavings: number;
+  existingFutureValue: number;
+  shortfall: number;
+  surplus: number;
+  inflationRate: number;
   breakdown: { year: number; accumulated: number; target: number }[];
 }
 
@@ -39,6 +44,9 @@ export interface RetirementResult {
   existingCorpusFutureValue: number;
   netCorpusDeficit: number;
   requiredMonthlySIP: number;
+  inflationRate: number;
+  preRetirementReturn: number;
+  postRetirementReturn: number;
   breakdown: { age: number; accumulatedCorpus: number; phase: 'accumulation' | 'distribution' }[];
 }
 
@@ -224,6 +232,11 @@ export function calculateGoalSIP(
     requiredMonthlySIP,
     totalInvestment,
     futureInflationAdjustedGoal,
+    existingSavings: Math.round(existingSavings),
+    existingFutureValue: existingFutureVal,
+    shortfall: netTargetNeeded,
+    surplus: Math.max(0, existingFutureVal - futureInflationAdjustedGoal),
+    inflationRate,
     breakdown,
   };
 }
@@ -325,6 +338,9 @@ export function calculateRetirement(
     existingCorpusFutureValue,
     netCorpusDeficit,
     requiredMonthlySIP,
+    inflationRate,
+    preRetirementReturn,
+    postRetirementReturn,
     breakdown,
   };
 }
