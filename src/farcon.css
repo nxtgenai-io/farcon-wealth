@@ -2135,6 +2135,50 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .fw-book-short, .is-home .fw-book-short { display: inline; }
   .fw-nav button, .is-home .fw-nav button { font-size: 15px; padding: 0 12px; }
 }
+@media (min-width: 1024px) {
+  .fw-header-bar, .is-home .fw-header-bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 8px;
+  }
+  .fw-header-bar > .fw-lockup { justify-self: start; }
+  .fw-nav, .is-home .fw-nav {
+    display: flex;
+    justify-self: center;
+    margin-left: 0;
+    width: max-content;
+    max-width: 100%;
+  }
+  .fw-actions, .is-home .fw-actions { justify-self: end; margin-left: 0; }
+  .fw-login, .fw-book, .is-home .fw-login, .is-home .fw-book { display: inline-flex; }
+}
+@media (min-width: 1024px) and (max-width: 1099px) {
+  .fw-nav-later, .is-home .fw-nav-later { display: none; }
+  .fw-menu-btn, .is-home .fw-menu-btn { display: inline-flex; width: 36px; height: 36px; min-width: 36px; min-height: 36px; }
+  .fw-book-full, .is-home .fw-book-full { display: none; }
+  .fw-book-short, .is-home .fw-book-short { display: inline; }
+  .fw-nav button, .is-home .fw-nav button { font-size: 13px; padding: 0 7px; min-height: 40px; }
+  .fw-login, .fw-book, .is-home .fw-login, .is-home .fw-book { font-size: 12px; padding: 0 8px; height: 36px; min-height: 36px; }
+}
+@media (min-width: 1100px) and (max-width: 1180px) {
+  .fw-nav button, .is-home .fw-nav button { padding: 0 8px; }
+}
+@media (min-width: 1440px) and (max-width: 1599px) {
+  .fw-nav button, .is-home .fw-nav button { padding: 0 10px; }
+}
+.hf-level {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  white-space: nowrap;
+  font-size: clamp(16px, 4.6vw, 22px);
+}
+.is-home .hf-level { font-size: clamp(17px, 1.7vw, 26px); }
+.hf-level .hf-up, .is-home .hf-level .hf-up {
+  white-space: nowrap;
+  font-size: clamp(11px, 0.62em, 15px);
+}
 
 /* Services showcase: grouped cards, trust panel, AMC wordmarks. */
 .svc-band {
