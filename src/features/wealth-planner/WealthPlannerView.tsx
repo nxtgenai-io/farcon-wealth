@@ -49,13 +49,14 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
     'Planning Assumptions',
     'Planning Blueprint',
   ];
+  const track = (value: number, min: number, max: number) => ({ ['--pct' as string]: `${((value - min) / (max - min)) * 100}%` });
 
   return (
     <div className="pg planner-page">
       <div className="pg-wrap">
       <span className="hf-eye">Wealth planner</span>
       <h1>See the monthly amount.</h1>
-      <p className="lede">Six short steps. The figure on the right updates as you go. It is an illustration, not a promise.</p>
+      <p className="lede">Six short steps. The figure <span className="planner-right">on the right</span><span className="planner-below">below</span> updates as you go. It is an illustration, not a promise.</p>
       <div className="planner-split">
       <div>
 
@@ -86,9 +87,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 1 && (
           <div className="space-y-7 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono text-[#315FCE] font-semibold block mb-1">
-                STEP 01
-              </span>
+              <span className="hf-eye">Step 1</span>
               <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900">
                 Tell Us About Yourself
               </h2>
@@ -138,7 +137,8 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                 step={5000}
                 value={plannerData.monthlySurplus}
                 onChange={(e) => setPlannerData({ ...plannerData, monthlySurplus: Number(e.target.value) })}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
+                className="planner-range"
+                style={track(plannerData.monthlySurplus, 5000, 300000)}
               />
             </div>
           </div>
@@ -148,9 +148,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 2 && (
           <div className="space-y-7 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono text-[#315FCE] font-semibold block mb-1">
-                STEP 02
-              </span>
+              <span className="hf-eye">Step 2</span>
               <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900">
                 Choose Your Primary Goal
               </h2>
@@ -193,7 +191,8 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                 step={500000}
                 value={plannerData.goalAmount}
                 onChange={(e) => setPlannerData({ ...plannerData, goalAmount: Number(e.target.value) })}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
+                className="planner-range"
+                style={track(plannerData.goalAmount, 1000000, 50000000)}
               />
             </div>
           </div>
@@ -203,9 +202,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 3 && (
           <div className="space-y-7 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono text-[#315FCE] font-semibold block mb-1">
-                STEP 03
-              </span>
+              <span className="hf-eye">Step 3</span>
               <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900">
                 When Do You Need This Money?
               </h2>
@@ -226,7 +223,8 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                 step={1}
                 value={plannerData.horizonYears}
                 onChange={(e) => setPlannerData({ ...plannerData, horizonYears: Number(e.target.value) })}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
+                className="planner-range"
+                style={track(plannerData.horizonYears, 3, 30)}
               />
               <div className="flex justify-between text-[11px] text-slate-400 mt-1.5 font-mono">
                 <span>3 Years</span>
@@ -245,9 +243,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 4 && (
           <div className="space-y-7 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono text-[#315FCE] font-semibold block mb-1">
-                STEP 04
-              </span>
+              <span className="hf-eye">Step 4</span>
               <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900">
                 Existing Capital Earmarked
               </h2>
@@ -268,7 +264,8 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                 step={50000}
                 value={plannerData.existingSavings}
                 onChange={(e) => setPlannerData({ ...plannerData, existingSavings: Number(e.target.value) })}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
+                className="planner-range"
+                style={track(plannerData.existingSavings, 0, 5000000)}
               />
               <div className="flex justify-between text-[11px] text-slate-400 mt-1.5 font-mono">
                 <span>₹0 (Starting Fresh)</span>
@@ -283,9 +280,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 5 && (
           <div className="space-y-7 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono text-[#315FCE] font-semibold block mb-1">
-                STEP 05
-              </span>
+              <span className="hf-eye">Step 5</span>
               <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900">
                 Realistic Economic Assumptions
               </h2>
@@ -306,7 +301,8 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                   step={0.5}
                   value={plannerData.assumedInflation}
                   onChange={(e) => setPlannerData({ ...plannerData, assumedInflation: Number(e.target.value) })}
-                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
+                  className="planner-range"
+                  style={track(plannerData.assumedInflation, 4, 9)}
                 />
                 <span className="text-[10px] text-slate-400 block mt-1">Indian long-term baseline ~6%</span>
               </div>
@@ -322,7 +318,8 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                   step={0.5}
                   value={plannerData.assumedReturn}
                   onChange={(e) => setPlannerData({ ...plannerData, assumedReturn: Number(e.target.value) })}
-                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
+                  className="planner-range"
+                  style={track(plannerData.assumedReturn, 8, 15)}
                 />
                 <span className="text-[10px] text-slate-400 block mt-1">Diversified equity benchmark ~12%</span>
               </div>
@@ -334,9 +331,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 6 && (
           <div className="space-y-8 animate-in fade-in duration-300">
             <div>
-              <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832] font-mono">
-                PLANNING BLUEPRINT
-              </span>
+              <span className="hf-eye">Step 6</span>
               <h2 className="text-2xl sm:text-3xl font-poppins font-medium text-slate-900 mt-1">
                 {plannerData.goal} Plan Summary
               </h2>
@@ -404,14 +399,15 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {/* Bottom Nav Buttons */}
         {step < 6 && (
           <div className="flex items-center justify-between pt-8 border-t border-slate-100 mt-6">
+            {step > 1 ? (
             <button
               onClick={prevStep}
-              disabled={step === 1}
               className="hf-btn hf-btn-outline"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back</span>
             </button>
+            ) : <span />}
 
             <button
               onClick={nextStep}

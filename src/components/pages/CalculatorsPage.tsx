@@ -11,19 +11,38 @@ interface CalculatorsPageProps {
 
 type Tab = 'sip' | 'lumpsum' | 'goal' | 'retirement';
 
-function Chart({ invested, value }: { invested: number[]; value: number[] }) {
+function axisAmount(n: number) {
+  if (n >= 1e7) return `₹${(n / 1e7).toFixed(n >= 1e8 ? 0 : 1)} Cr`;
+  if (n >= 1e5) return `₹${(n / 1e5).toFixed(n >= 1e6 ? 0 : 1)} L`;
+  if (n >= 1000) return `₹${Math.round(n / 1000)}k`;
+  return '₹0';
+}
+
+function Chart({ invested, value, startLabel, endLabel }: { invested: number[]; value: number[]; startLabel: string; endLabel: string }) {
   const w = 640;
-  const h = 200;
+  const h = 228;
+  const padL = 62;
+  const padR = 12;
+  const padT = 14;
+  const padB = 28;
   const max = Math.max(...value, ...invested, 1);
-  const x = (i: number, n: number) => 12 + (i / Math.max(1, n - 1)) * (w - 24);
-  const y = (v: number) => 16 + (1 - v / max) * (h - 32);
+  const x = (i: number, n: number) => padL + (i / Math.max(1, n - 1)) * (w - padL - padR);
+  const y = (v: number) => padT + (1 - v / max) * (h - padT - padB);
   const path = (series: number[]) => series.map((v, i) => `${i === 0 ? 'M' : 'L'}${x(i, series.length).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
   const area = `${path(value)} L${x(value.length - 1, value.length).toFixed(1)} ${y(0)} L${x(0, value.length).toFixed(1)} ${y(0)} Z`;
   return (
-    <svg className="hf-draw" viewBox={`0 0 ${w} ${h}`} role="img" aria-label="Projected value and amount invested">
+    <svg className="hf-draw calc-chart" viewBox={`0 0 ${w} ${h}`} role="img" aria-label="Projected value and amount invested">
+      {[max, max / 2, 0].map((tick) => (
+        <g key={tick}>
+          <line x1={padL} x2={w - padR} y1={y(tick)} y2={y(tick)} stroke="#e6e0d4" strokeWidth="1" />
+          <text x={padL - 8} y={y(tick) + 4} textAnchor="end" fontSize="12" fill="#5c6b64">{tick === 0 ? '0' : axisAmount(tick)}</text>
+        </g>
+      ))}
       <path d={area} fill="rgba(31,157,85,0.15)" />
       <path className="hf-line" d={path(value)} fill="none" stroke="#1F9D55" strokeWidth="2.5" />
       <path className="hf-line" d={path(invested)} fill="none" stroke="#C9A24A" strokeWidth="2" />
+      <text x={padL} y={h - 8} fontSize="12" fill="#5c6b64">{startLabel}</text>
+      <text x={w - padR} y={h - 8} textAnchor="end" fontSize="12" fill="#5c6b64">{endLabel}</text>
     </svg>
   );
 }
@@ -31,22 +50,23 @@ function Chart({ invested, value }: { invested: number[]; value: number[] }) {
 function Slider({ label, value, min, max, step, display, minLabel, maxLabel, onChange }: {
   label: string; value: number; min: number; max: number; step: number; display: string; minLabel: string; maxLabel: string; onChange: (n: number) => void;
 }) {
+  const money = display.trim().startsWith('₹');
+  const [focused, setFocused] = useState(false);
   const pct = `${((value - min) / (max - min)) * 100}%`;
   return (
     <label className="hf-slider">
       <span className="hf-slider-top">
         <span>{label}</span>
         <input
-          className="hf-num-input"
-          type="number"
+          className={money ? 'hf-num-input is-money' : 'hf-num-input'}
+          type="text"
           inputMode="decimal"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
           aria-label={label}
+          value={focused || !money ? String(value) : display}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           onChange={(event) => {
-            const next = Number(event.target.value);
+            const next = Number(event.target.value.replace(/[^\d.]/g, ''));
             if (!Number.isFinite(next)) return;
             onChange(Math.min(max, Math.max(min, next)));
           }}
@@ -122,7 +142,7 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
           ))}
         </div>
         <div className="calc-card split">
-          <div>
+          <div className="calc-side">
             {tab === 'sip' && (
               <>
                 <Slider label="Monthly SIP" min={1000} max={200000} step={1000} value={sipAmount} display={formatINR(sipAmount)} minLabel="₹1,000" maxLabel="₹2 L" onChange={setSipAmount} />
@@ -151,48 +171,6 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
                 <Slider label="Monthly expense today" min={10000} max={300000} step={5000} value={expense} display={formatINR(expense)} minLabel="₹10,000" maxLabel="₹3 L" onChange={setExpense} />
               </>
             )}
-          </div>
-          <div className="hf-result">
-            {tab === 'sip' && (
-              <>
-                <span>Projected value</span>
-                <strong>{formatINR(sip.projectedValue)}</strong>
-                <p>Invested {formatINR(sip.investedAmount)} · Gain {formatINR(sip.estimatedGain)}</p>
-                <span className="hf-year-chip">Year {sip.breakdown.at(-1)?.year} · {formatINR(sip.breakdown.at(-1)?.value ?? 0)}</span>
-                <Chart invested={sip.breakdown.map((row) => row.invested)} value={sip.breakdown.map((row) => row.value)} />
-                <Legend />
-              </>
-            )}
-            {tab === 'lumpsum' && (
-              <>
-                <span>Projected value</span>
-                <strong>{formatINR(lumpsum.projectedValue)}</strong>
-                <p>Invested {formatINR(lumpsum.investedAmount)} · Gain {formatINR(lumpsum.estimatedGain)}</p>
-                <span className="hf-year-chip">Year {lumpsum.breakdown.at(-1)?.year} · {formatINR(lumpsum.breakdown.at(-1)?.value ?? 0)}</span>
-                <Chart invested={lumpsum.breakdown.map((row) => row.invested)} value={lumpsum.breakdown.map((row) => row.value)} />
-                <Legend />
-              </>
-            )}
-            {tab === 'goal' && (
-              <>
-                <span>Required monthly SIP</span>
-                <strong>{formatINR(goalResult.requiredMonthlySIP)}</strong>
-                <p>Target {formatINR(goalResult.futureInflationAdjustedGoal)} · Total investment {formatINR(goalResult.totalInvestment)}</p>
-                <span className="hf-year-chip">Year {goalResult.breakdown.at(-1)?.year} · {formatINR(goalResult.breakdown.at(-1)?.accumulated ?? 0)}</span>
-                <Chart invested={goalResult.breakdown.map((row) => row.year * goalResult.requiredMonthlySIP * 12)} value={goalResult.breakdown.map((row) => row.accumulated)} />
-                <Legend />
-              </>
-            )}
-            {tab === 'retirement' && (
-              <>
-                <span>Illustrative corpus</span>
-                <strong>{formatINR(retirement.requiredRetirementCorpus)}</strong>
-                <p>Required SIP {formatINR(retirement.requiredMonthlySIP)} · Expense at retirement {formatINR(retirement.monthlyExpenseAtRetirement)}</p>
-                <span className="hf-year-chip">Age {retirement.breakdown.at(-1)?.age} · {formatINR(retirement.breakdown.at(-1)?.accumulatedCorpus ?? 0)}</span>
-                <Chart invested={retirement.breakdown.map(() => 0)} value={retirement.breakdown.map((row) => row.accumulatedCorpus)} />
-                <Legend />
-              </>
-            )}
             <button type="button" className="hf-btn hf-btn-outline" onClick={() => setShowYears((value) => !value)}>{showYears ? 'Hide year by year' : 'Show year by year'}</button>
             {showYears && tab === 'sip' && (
               <table className="year-table"><tbody>{sip.breakdown.map((row) => <tr key={row.year}><td>Year {row.year}</td><td>{formatINR(row.invested)}</td><td>{formatINR(row.value)}</td></tr>)}</tbody></table>
@@ -210,6 +188,48 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
               <summary>How this is calculated</summary>
               <p>The figure uses the rate you set, compounded on the schedule in Farcon’s existing formula. It is an estimate. Mutual fund investments are subject to market risks. Read all scheme related documents carefully.</p>
             </details>
+          </div>
+          <div className="hf-result">
+            {tab === 'sip' && (
+              <>
+                <span>Projected value</span>
+                <strong>{formatINR(sip.projectedValue)}</strong>
+                <p>Invested {formatINR(sip.investedAmount)} · Gain {formatINR(sip.estimatedGain)}</p>
+                <span className="hf-year-chip">Year {sip.breakdown.at(-1)?.year} · {formatINR(sip.breakdown.at(-1)?.value ?? 0)}</span>
+                <Chart invested={sip.breakdown.map((row) => row.invested)} value={sip.breakdown.map((row) => row.value)} startLabel="Year 1" endLabel={`Year ${sipYears}`} />
+                <Legend />
+              </>
+            )}
+            {tab === 'lumpsum' && (
+              <>
+                <span>Projected value</span>
+                <strong>{formatINR(lumpsum.projectedValue)}</strong>
+                <p>Invested {formatINR(lumpsum.investedAmount)} · Gain {formatINR(lumpsum.estimatedGain)}</p>
+                <span className="hf-year-chip">Year {lumpsum.breakdown.at(-1)?.year} · {formatINR(lumpsum.breakdown.at(-1)?.value ?? 0)}</span>
+                <Chart invested={lumpsum.breakdown.map((row) => row.invested)} value={lumpsum.breakdown.map((row) => row.value)} startLabel="Year 1" endLabel={`Year ${lumpYears}`} />
+                <Legend />
+              </>
+            )}
+            {tab === 'goal' && (
+              <>
+                <span>Required monthly SIP</span>
+                <strong>{formatINR(goalResult.requiredMonthlySIP)}</strong>
+                <p>Target {formatINR(goalResult.futureInflationAdjustedGoal)} · Total investment {formatINR(goalResult.totalInvestment)}</p>
+                <span className="hf-year-chip">Year {goalResult.breakdown.at(-1)?.year} · {formatINR(goalResult.breakdown.at(-1)?.accumulated ?? 0)}</span>
+                <Chart invested={goalResult.breakdown.map((row) => row.year * goalResult.requiredMonthlySIP * 12)} value={goalResult.breakdown.map((row) => row.accumulated)} startLabel="Year 1" endLabel={`Year ${goalYears}`} />
+                <Legend />
+              </>
+            )}
+            {tab === 'retirement' && (
+              <>
+                <span>Illustrative corpus</span>
+                <strong>{formatINR(retirement.requiredRetirementCorpus)}</strong>
+                <p>Required SIP {formatINR(retirement.requiredMonthlySIP)} · Expense at retirement {formatINR(retirement.monthlyExpenseAtRetirement)}</p>
+                <span className="hf-year-chip">Age {retirement.breakdown.at(-1)?.age} · {formatINR(retirement.breakdown.at(-1)?.accumulatedCorpus ?? 0)}</span>
+                <Chart invested={retirement.breakdown.map(() => 0)} value={retirement.breakdown.map((row) => row.accumulatedCorpus)} startLabel={`Age ${retirement.breakdown[0]?.age ?? age}`} endLabel={`Age ${retirement.breakdown.at(-1)?.age ?? retireAge}`} />
+                <Legend />
+              </>
+            )}
             <button type="button" className="hf-btn hf-btn-green" onClick={() => onOpenConsultation(`${tab} calculator`)}>Discuss this plan</button>
             <p className="hf-note">Estimate only. Past performance is not indicative of future returns.</p>
           </div>

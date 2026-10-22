@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { RoutePath } from '@/types';
 import { FARCON_CONFIG } from '@/content/site/config';
 import { BLOG_POSTS } from '@/content/blogs/blogData';
@@ -19,15 +19,17 @@ const ARTICLE_IMAGES = [
   '/images/home/why-mountains-800.webp',
 ];
 
-const FUNDS = [
-  { name: 'SBI Small Cap Fund', group: 'Equity', tags: ['Equity', 'Small Cap'], cagr: '26.4%', nav: '₹164.72', risk: 'Very High Risk', tone: '#0E6B38', logo: '/images/amc/sbi.svg', spark: [12, 13, 15, 16, 18, 20, 22, 24, 26] },
-  { name: 'HDFC Flexi Cap Fund', group: 'Equity', tags: ['Equity', 'Flexi Cap'], cagr: '21.8%', nav: '₹712.35', risk: 'High Risk', tone: '#9B2C2C', logo: '/images/amc/hdfc.svg', spark: [11, 13, 14, 16, 17, 18, 20, 21, 22] },
-  { name: 'ICICI Prudential Balanced Advantage Fund', group: 'Hybrid', tags: ['Hybrid', 'Dynamic'], cagr: '14.6%', nav: '₹348.12', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/icici.webp', spark: [12, 12.4, 13, 13.6, 14.2, 14.8, 15.4, 16.2, 17] },
-  { name: 'Axis ELSS Tax Saver Fund', group: 'ELSS', tags: ['Equity', 'ELSS'], cagr: '18.2%', nav: '₹112.46', risk: 'High Risk', tone: '#9B2C2C', logo: '/images/amc/axis.svg', spark: [10, 11, 12.5, 13.5, 15, 16, 17.2, 18.2, 19] },
-  { name: 'HDFC Short Term Debt Fund', group: 'Debt', tags: ['Debt', 'Short Duration'], cagr: '7.4%', nav: '₹28.16', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/hdfc.svg', spark: [12, 12.2, 12.4, 12.7, 13, 13.2, 13.5, 13.8, 14] },
-  { name: 'SBI Magnum Gilt Fund', group: 'Debt', tags: ['Debt', 'Gilt'], cagr: '7.1%', nav: '₹58.40', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/sbi.svg', spark: [11, 11.4, 11.2, 11.8, 12.1, 12.4, 12.2, 12.8, 13.1] },
-  { name: 'ICICI Prudential Corporate Bond Fund', group: 'Debt', tags: ['Debt', 'Corporate'], cagr: '7.6%', nav: '₹26.90', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/icici.webp', spark: [10, 10.4, 10.8, 11.1, 11.4, 11.8, 12.1, 12.5, 12.8] },
-  { name: 'Axis Treasury Advantage Fund', group: 'Debt', tags: ['Debt', 'Money Market'], cagr: '6.8%', nav: '₹2,746', risk: 'Low Risk', tone: '#9A5410', logo: '/images/amc/axis.svg', spark: [9, 9.2, 9.4, 9.5, 9.7, 9.9, 10.1, 10.3, 10.5] },
+const FUNDS: { name: string; group: string; tags: string[]; cagr: string; nav: string; risk: string; tone: string; logo: string; mark: string; spark: number[] }[] = [
+  { name: 'SBI Small Cap Fund', group: 'Equity', tags: ['Equity', 'Small Cap'], cagr: '26.4%', nav: '₹164.72', risk: 'Very High Risk', tone: '#0E6B38', logo: '/images/amc/sbi.svg', mark: '', spark: [12, 13, 15, 16, 18, 20, 22, 24, 26] },
+  { name: 'HDFC Flexi Cap Fund', group: 'Equity', tags: ['Equity', 'Flexi Cap'], cagr: '21.8%', nav: '₹712.35', risk: 'High Risk', tone: '#9B2C2C', logo: '/images/amc/hdfc.svg', mark: '', spark: [11, 13, 14, 16, 17, 18, 20, 21, 22] },
+  { name: 'ICICI Prudential Balanced Advantage Fund', group: 'Hybrid', tags: ['Hybrid', 'Dynamic'], cagr: '14.6%', nav: '₹348.12', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/icici.webp', mark: '', spark: [12, 12.4, 13, 13.6, 14.2, 14.8, 15.4, 16.2, 17] },
+  { name: 'Axis ELSS Tax Saver Fund', group: 'ELSS', tags: ['Equity', 'ELSS'], cagr: '18.2%', nav: '₹112.46', risk: 'High Risk', tone: '#9B2C2C', logo: '/images/amc/axis.svg', mark: '', spark: [10, 11, 12.5, 13.5, 15, 16, 17.2, 18.2, 19] },
+  { name: 'Nippon India Growth Fund', group: 'Equity', tags: ['Equity', 'Mid Cap'], cagr: '22.1%', nav: '₹3,842', risk: 'Very High Risk', tone: '#0E6B38', logo: '', mark: 'NI', spark: [13, 14, 15, 16, 18, 19, 21, 22, 24] },
+  { name: 'Mirae Asset Large Cap Fund', group: 'Equity', tags: ['Equity', 'Large Cap'], cagr: '16.4%', nav: '₹98.20', risk: 'High Risk', tone: '#9B2C2C', logo: '', mark: 'MA', spark: [11, 12, 12.6, 13.2, 14, 14.6, 15.2, 15.8, 16.4] },
+  { name: 'HDFC Short Term Debt Fund', group: 'Debt', tags: ['Debt', 'Short Duration'], cagr: '7.4%', nav: '₹28.16', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/hdfc.svg', mark: '', spark: [12, 12.2, 12.4, 12.7, 13, 13.2, 13.5, 13.8, 14] },
+  { name: 'SBI Magnum Gilt Fund', group: 'Debt', tags: ['Debt', 'Gilt'], cagr: '7.1%', nav: '₹58.40', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/sbi.svg', mark: '', spark: [11, 11.4, 11.2, 11.8, 12.1, 12.4, 12.2, 12.8, 13.1] },
+  { name: 'ICICI Prudential Corporate Bond Fund', group: 'Debt', tags: ['Debt', 'Corporate'], cagr: '7.6%', nav: '₹26.90', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/icici.webp', mark: '', spark: [10, 10.4, 10.8, 11.1, 11.4, 11.8, 12.1, 12.5, 12.8] },
+  { name: 'Axis Treasury Advantage Fund', group: 'Debt', tags: ['Debt', 'Money Market'], cagr: '6.8%', nav: '₹2,746', risk: 'Low Risk', tone: '#9A5410', logo: '/images/amc/axis.svg', mark: '', spark: [9, 9.2, 9.4, 9.5, 9.7, 9.9, 10.1, 10.3, 10.5] },
 ];
 
 const CATEGORIES = [
@@ -68,13 +70,13 @@ function VideoFacade({ id, title }: { id: string; title: string }) {
     );
   }
   return (
-    <button type="button" className="yt-facade" onClick={() => setPlay(true)}>
+    <button type="button" className="yt-facade" aria-label={`Play ${title}`} onClick={() => setPlay(true)}>
       <img
         src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
         alt=""
         onError={(event) => { (event.currentTarget as HTMLImageElement).src = '/images/home/article-funds-800.webp'; }}
       />
-      <span>Play</span>
+      <span aria-hidden="true">Play</span>
     </button>
   );
 }
@@ -163,7 +165,9 @@ export const FundsPage: React.FC = () => {
           {shown.map((fund) => (
             <article key={fund.name} className="hf-fund">
               <div className="hf-amc">
-                <img className="hf-logo" src={fund.logo} alt="" />
+                {fund.logo
+                  ? <img className="hf-logo" src={fund.logo} alt="" />
+                  : <span className="hf-logo hf-mono" aria-hidden="true">{fund.mark}</span>}
                 <div>
                   <h2>{fund.name}</h2>
                   <div className="hf-sub">Direct Growth</div>
@@ -179,14 +183,9 @@ export const FundsPage: React.FC = () => {
             </article>
           ))}
         </div>
-        <div style={{ marginTop: 28 }}>
-          {CATEGORIES.map(([title, text]) => (
-            <details key={title} className="acc">
-              <summary>{title}</summary>
-              <p>{text} Read the scheme information document from the AMC before acting.</p>
-            </details>
-          ))}
-        </div>
+        <p className="hf-note" style={{ marginTop: 16 }}>
+          {CATEGORIES.find(([title]) => title === tab)?.[1]} Figures are a teaching set, not live NAVs. Read the scheme information document before acting.
+        </p>
       </div>
     </div>
   );
@@ -195,17 +194,26 @@ export const FundsPage: React.FC = () => {
 export const PortfolioPage: React.FC = () => (
   <div className="pg">
     <div className="pg-wrap split">
-      <div>
+      <div className="portfolio-aside">
         <span className="hf-eye">Portfolio Review</span>
         <h1>Tell us the goal before the scheme.</h1>
         <p className="lede">Share enough for a first conversation. This form does not place an order and does not upload a CAS.</p>
         <article className="pg-card">
           <span className="hf-eye">What happens next</span>
+          <h2>A first look, then a call.</h2>
           <ol className="tick">
             <li><i>1</i><span>We read the note and reply on the contact you gave.</span></li>
             <li><i>2</i><span>A short call covers the goal, the horizon and what you already hold.</span></li>
             <li><i>3</i><span>Any investment stays in your name with the AMC or the registrar.</span></li>
           </ol>
+          <h3>What you’ll get</h3>
+          <ul className="tick">
+            <li><i>✓</i><span>A category mix that matches the horizon, not the headline.</span></li>
+            <li><i>✓</i><span>A plain note on what to keep, pause or add.</span></li>
+            <li><i>✓</i><span>The folio stays in your name. Farcon does not hold the money.</span></li>
+          </ul>
+          <h3>What we need</h3>
+          <p>The goal, the date, and a rough picture of what you already hold. No password, and no CAS upload on this form.</p>
           <p className="hf-note" style={{ marginTop: 12 }}>AMFI-registered Mutual Fund Distributor · ARN {FARCON_CONFIG.arn} · Investments are in your name.</p>
         </article>
       </div>
@@ -231,72 +239,88 @@ export const LoginPage: React.FC<PageProps> = ({ onOpenConsultation }) => (
 );
 
 export const EducationPage: React.FC<PageProps & { focus?: 'education' | 'blogs' | 'faq' }> = ({ focus = 'education' }) => {
-  useEffect(() => {
-    const id = focus === 'blogs' ? 'articles' : focus === 'faq' ? 'faqs' : '';
-    if (!id) return undefined;
-    const timer = window.setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 50);
-    return () => window.clearTimeout(timer);
-  }, [focus]);
-
   const title = focus === 'blogs' ? 'Notes on staying invested.' : focus === 'faq' ? 'Common questions.' : 'Learn, plan, and grow.';
   const lede = focus === 'blogs'
     ? 'Short notes on SIPs, volatility and staying with a plan.'
     : focus === 'faq'
       ? 'Answers we give most often, in plain language.'
       : 'Articles from Farcon, questions we hear often, a few public films, and short notes you can download.';
+  const showArticles = focus !== 'faq';
+  const showFaqs = focus !== 'blogs';
+  const showRest = focus === 'education' || focus === 'faq';
 
   return (
     <div className="pg">
       <div className="pg-wrap">
-        <span className="hf-eye">Investor Education</span>
+        <span className="hf-eye">{focus === 'blogs' ? 'Notes' : focus === 'faq' ? 'FAQ' : 'Investor Education'}</span>
         <h1>{title}</h1>
         <p className="lede">{lede}</p>
-        <article className="pg-card feature-article" id="articles">
-          <img src={ARTICLE_IMAGES[0]} alt="" />
-          <div>
-            <span className="hf-eye">{BLOG_POSTS[0].category} · {BLOG_POSTS[0].readTime}</span>
-            <h2>{BLOG_POSTS[0].title}</h2>
-            <p>{BLOG_POSTS[0].excerpt}</p>
-          </div>
-        </article>
-        <div className="pg-grid cards" style={{ marginTop: 16 }}>
-          {BLOG_POSTS.slice(1, 4).map((post, index) => (
-            <article key={post.id} className="pg-card article-card">
-              <img src={ARTICLE_IMAGES[(index + 1) % ARTICLE_IMAGES.length]} alt="" />
-              <span className="hf-eye">{post.category} · {post.readTime}</span>
-              <h2>{post.title}</h2>
-              <p>{post.excerpt}</p>
-            </article>
-          ))}
-        </div>
-        <h2 id="faqs" style={{ marginTop: 40 }}>Common questions</h2>
-        {FAQ_ITEMS.map((item) => (
+        {showFaqs && focus === 'faq' && FAQ_ITEMS.map((item) => (
           <details key={item.id} className="acc">
             <summary>{item.question}</summary>
             <p>{item.answer}</p>
           </details>
         ))}
-        <h2 style={{ marginTop: 36 }}>Educational videos</h2>
-        <p className="hf-note">Third-party films for general context. They are not Farcon advice and not scheme recommendations. Press play to load the film.</p>
-        <div className="videos">
-          <VideoFacade id="PHe0bXAIuk0" title="How The Economic Machine Works by Ray Dalio" />
-          <VideoFacade id="fTTGALaRZoc" title="Banking Explained – Money and Credit" />
-        </div>
-        <h2 style={{ marginTop: 36 }}>Downloadable resources</h2>
-        <div className="pg-grid cards">
-          {[
-            ['/resources/sip-basics.pdf', 'SIP basics', '1 KB'],
-            ['/resources/elss-checklist.pdf', 'ELSS checklist', '1 KB'],
-            ['/resources/goal-planning-worksheet.pdf', 'Goal planning worksheet', '1 KB'],
-          ].map(([href, label, size]) => (
-            <a key={href} className="pg-card pdf-card" href={href} download>
-              <span className="hf-eye">PDF · {size}</span>
-              <strong>{label}</strong>
-            </a>
-          ))}
-        </div>
+        {showArticles && (
+          <>
+            <article className="pg-card feature-article" id="articles">
+              <img src={ARTICLE_IMAGES[0]} alt="" />
+              <div>
+                <span className="hf-eye">{BLOG_POSTS[0].category} · {BLOG_POSTS[0].readTime}</span>
+                <h2>{BLOG_POSTS[0].title}</h2>
+                <p>{BLOG_POSTS[0].excerpt}</p>
+              </div>
+            </article>
+            <div className="pg-grid articles-rest" style={{ marginTop: 16 }}>
+              {BLOG_POSTS.slice(1, 4).map((post, index) => (
+                <article key={post.id} className="pg-card article-card">
+                  <img src={ARTICLE_IMAGES[(index + 1) % ARTICLE_IMAGES.length]} alt="" />
+                  <span className="hf-eye">{post.category} · {post.readTime}</span>
+                  <h2>{post.title}</h2>
+                  <p>{post.excerpt}</p>
+                </article>
+              ))}
+            </div>
+          </>
+        )}
+        {showFaqs && focus !== 'faq' && (
+          <>
+            <h2 id="faqs" style={{ marginTop: 40 }}>Common questions</h2>
+            {FAQ_ITEMS.map((item) => (
+              <details key={item.id} className="acc">
+                <summary>{item.question}</summary>
+                <p>{item.answer}</p>
+              </details>
+            ))}
+          </>
+        )}
+        {showRest && (
+          <>
+            <h2 style={{ marginTop: 36 }}>Educational videos</h2>
+            <p className="hf-note">Third-party films for general context. They are not Farcon advice and not scheme recommendations. Press play to load the film.</p>
+            <div className="videos">
+              <VideoFacade id="PHe0bXAIuk0" title="How The Economic Machine Works by Ray Dalio" />
+              <VideoFacade id="fTTGALaRZoc" title="Banking Explained – Money and Credit" />
+            </div>
+          </>
+        )}
+        {focus === 'education' && (
+          <>
+            <h2 style={{ marginTop: 36 }}>Downloadable resources</h2>
+            <div className="pg-grid downloads">
+              {[
+                ['/resources/sip-basics.pdf', 'SIP basics'],
+                ['/resources/elss-checklist.pdf', 'ELSS checklist'],
+                ['/resources/goal-planning-worksheet.pdf', 'Goal planning worksheet'],
+              ].map(([href, label]) => (
+                <a key={href} className="pg-card pdf-card" href={href} download>
+                  <span className="hf-eye">PDF</span>
+                  <strong>{label}</strong>
+                </a>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -325,11 +349,23 @@ export const ContactPage: React.FC = () => {
               <iframe className="map" title="Farcon Wealth office on Google Maps" src={map} />
             ) : (
               <div className="map-poster">
-                <div>
+                <svg className="map-art" viewBox="0 0 360 240" aria-hidden="true">
+                  <rect width="360" height="240" fill="#e4f0e8" />
+                  <path d="M0 48h360M0 96h360M0 144h360M0 192h360M48 0v240M108 0v240M168 0v240M228 0v240M288 0v240" stroke="#c5ddd0" strokeWidth="10" />
+                  <path d="M-10 78C70 62 120 118 190 96s90-48 180-8" fill="none" stroke="#f7f1e4" strokeWidth="16" strokeLinecap="round" />
+                  <path d="M-10 168C80 150 140 196 220 176s90-20 160 8" fill="none" stroke="#d9c48a" strokeWidth="12" strokeLinecap="round" />
+                  <path d="M24 16C90 70 70 150 150 214" fill="none" stroke="#8fb89a" strokeWidth="7" strokeLinecap="round" />
+                  <path d="M188 86c-16 0-28 12-28 28 0 20 28 46 28 46s28-26 28-46c0-16-12-28-28-28zm0 36a8 8 0 1 1 0-16 8 8 0 0 1 0 16z" fill="#0f3d2e" />
+                  <circle cx="188" cy="114" r="4" fill="#f3d48a" />
+                  <text x="188" y="196" textAnchor="middle" fill="#0f3d2e" fontSize="18" fontFamily="Poppins, sans-serif" fontWeight="700">Patna</text>
+                </svg>
+                <div className="map-caption">
                   <strong>Patna office</strong>
                   <p>Kankarbagh · the map loads when you ask for it.</p>
-                  <button type="button" className="hf-btn hf-btn-outline" onClick={() => setMapOn(true)}>Show the map</button>
-                  <a className="hf-btn hf-btn-outline" href={mapsLink} target="_blank" rel="noreferrer">Open in Google Maps</a>
+                  <div className="hf-cta-row">
+                    <button type="button" className="hf-btn hf-btn-outline" onClick={() => setMapOn(true)}>Show the map</button>
+                    <a className="hf-btn hf-btn-outline" href={mapsLink} target="_blank" rel="noreferrer">Open in Google Maps</a>
+                  </div>
                 </div>
               </div>
             )}
@@ -385,23 +421,28 @@ export const DisclosuresPage: React.FC<{ section?: 'privacy' | 'terms' | 'grieva
 
   return (
     <div className="pg">
-      <div className="pg-wrap legal-layout">
-        <nav className="legal-nav" aria-label="On this page">
-          {ordered.map((card) => (
-            <a key={card.id} href={`#${card.id}`}>{card.title}</a>
-          ))}
-          <a className="hf-btn hf-btn-outline" href={whatsappHref} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
-        </nav>
+      <div className={`pg-wrap legal-layout${ordered.length > 1 ? '' : ' is-single'}`}>
+        {ordered.length > 1 && (
+          <nav className="legal-nav" aria-label="On this page">
+            {ordered.map((card) => (
+              <a key={card.id} href={`#${card.id}`}>{card.title}</a>
+            ))}
+            <a className="hf-btn hf-btn-outline" href={whatsappHref} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
+          </nav>
+        )}
         <div className="legal-read">
           <span className="hf-eye">{heading.eye}</span>
           <h1>{heading.title}</h1>
           <p className="lede">Last updated October 2026. ARN {FARCON_CONFIG.arn}.</p>
           {ordered.map((card) => (
             <article key={card.id} className="pg-card" id={card.id}>
-              <h2>{card.title}</h2>
+              {ordered.length > 1 && <h2>{card.title}</h2>}
               <p>{card.body}</p>
             </article>
           ))}
+          {ordered.length === 1 && (
+            <a className="hf-btn hf-btn-outline" href={whatsappHref} target="_blank" rel="noreferrer" style={{ marginTop: 16 }}>Chat on WhatsApp</a>
+          )}
         </div>
       </div>
     </div>

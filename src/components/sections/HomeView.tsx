@@ -343,6 +343,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
   const [storyStart, setStoryStart] = useState(0);
   const [storiesPaused, setStoriesPaused] = useState(false);
   const plan = useMemo(() => planIllustration(target, years, rate), [target, years, rate]);
+  const asOf = new Date().toLocaleDateString('en-IN', {
+    day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata',
+  });
   const funds = fundTab === 'Equity Funds'
     ? FUNDS.filter((fund) => fund.group !== 'Debt Funds')
     : FUNDS.filter((fund) => fund.group === fundTab);
@@ -445,7 +448,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             </div>
             <p className="hf-index-name">NIFTY 50</p>
             <p className="hf-level"><CountUp value={24612.35} /> <span className="hf-up">{MARKET.nifty.change} {MARKET.nifty.pct}</span></p>
-            <p className="hf-note">As of 12 Mar 2025, 03:30 PM IST <span className="hf-indicative">Indicative</span></p>
+            <p className="hf-note">As of {asOf} IST <span className="hf-indicative">Indicative</span></p>
             <div key={period} className="hf-draw">
               <NiftyChart values={PATHS[period].nifty} />
             </div>
@@ -557,7 +560,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             {['Equity Funds', 'Hybrid Funds', 'Debt Funds', 'Tax Saving (ELSS)'].map((tab) => (
               <button key={tab} type="button" className={fundTab === tab ? 'is-on' : ''} onClick={() => setFundTab(tab)}>{tab}</button>
             ))}
-            <button type="button" className="hf-textlink" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
           </div>
           <div className="hf-fund-row" key={fundTab}>
             {funds.map((fund) => (
@@ -589,7 +591,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               </article>
             )}
           </div>
-          <button type="button" className="hf-textlink hf-more-mobile" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
+          <button type="button" className="hf-textlink hf-fund-more" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
           </div>
         </div>
       </Reveal>

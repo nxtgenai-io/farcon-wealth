@@ -182,24 +182,18 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
   return (
     <div className="pg quiz-page">
       <div className="pg-wrap">
+      {!submitted && (
+        <div className="quiz-page-title">
+          <span className="hf-eye">Suitability diagnostic</span>
+          <h1>Investor Fit Assessment</h1>
+        </div>
+      )}
       {!submitted ? (
         <div className="quiz-layout">
           <div className="quiz-rail pg-card">
-            {/* Header & Assessment Context */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#78A832]" />
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#78A832]">
-                  Suitability Diagnostic
-                </span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-poppins font-semibold tracking-tight text-slate-900 leading-tight">
-                Investor Fit Assessment
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                Determine your objective risk capacity and optimal investment horizon before deploying capital.
-              </p>
-            </div>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+              Determine your objective risk capacity and optimal investment horizon before deploying capital.
+            </p>
 
             {/* Diagnostic Metrics: Estimated Time & Overall Progress */}
             <div className="p-4 bg-white rounded-xl border border-[#DCE4EE] space-y-3 shadow-2xs">

@@ -9,6 +9,22 @@ interface ServicesViewProps {
   onOpenConsultation: (serviceName?: string) => void;
 }
 
+const EYEBROW: Record<string, string> = {
+  'sip-planning': 'SIP',
+  'portfolio-review': 'Review',
+  elss: 'Tax',
+  retirement: 'Retirement',
+  'child-education': 'Education',
+  swp: 'Withdrawal',
+};
+
+const CALC_LABEL: Record<string, string> = {
+  sip: 'SIP',
+  lumpsum: 'Lumpsum',
+  goal: 'Goal',
+  retirement: 'Retirement',
+};
+
 const IMAGES: Record<string, string> = {
   'sip-planning': '/images/home/article-sip-800.webp',
   'portfolio-review': '/images/home/article-funds-800.webp',
@@ -38,7 +54,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ activeSlug, navigate
               <div className="hf-cta-row" style={{ marginTop: 16 }}>
                 <button type="button" className="hf-btn hf-btn-green" onClick={() => onOpenConsultation(service.title)}>Book a Free Consultation</button>
                 <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate(`/calculators/${service.calculatorType}` as RoutePath)}>
-                  Open the {service.calculatorType} calculator
+                  Open the {CALC_LABEL[service.calculatorType] || 'SIP'} calculator
                 </button>
               </div>
             </div>
@@ -96,8 +112,9 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ activeSlug, navigate
           {FARCON_SERVICES.map((service) => (
             <button key={service.id} type="button" className="pg-card svc" onClick={() => navigate(`/services/${service.slug}` as RoutePath)}>
               <img src={IMAGES[service.slug]} alt="" />
-              <span className="hf-eye">{service.tagline}</span>
+              <span className="hf-eye">{EYEBROW[service.slug] || 'Service'}</span>
               <h2>{service.title}</h2>
+              <p className="svc-tagline">{service.tagline}</p>
               <p>{service.summary}</p>
               <span className="hf-textlink">View →</span>
             </button>
