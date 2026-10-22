@@ -123,11 +123,16 @@ export const ServicesPage: React.FC<PageProps> = ({ onOpenConsultation }) => (
 type FundScheme = (typeof fundBook.categories)[number]['schemes'][number];
 
 export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; categorySlug?: string; schemeSlug?: string }> = ({ navigate, categorySlug, schemeSlug }) => {
+  const [query, setQuery] = useState('');
+  const [amc, setAmc] = useState('All');
   const category = fundBook.categories.find((item) => item.slug === categorySlug);
   const scheme = category?.schemes.find((item) => item.slug === schemeSlug);
   if (categorySlug && !category) return null;
   if (schemeSlug && category && !scheme) return null;
-  const shown = category ? category.schemes : fundBook.categories.flatMap((item) => item.schemes.map((fund) => ({ ...fund, categoryName: item.name, categorySlug: item.slug })));
+  const listed = category ? category.schemes : fundBook.categories.flatMap((item) => item.schemes.map((fund) => ({ ...fund, categoryName: item.name, categorySlug: item.slug })));
+  const amcs = ['All', ...Array.from(new Set(listed.map((fund) => fund.amc)))];
+  const needle = query.trim().toLowerCase();
+  const shown = listed.filter((fund) => (amc === 'All' || fund.amc === amc) && (!needle || `${fund.name} ${fund.amc} ${fund.subCategory}`.toLowerCase().includes(needle)));
   if (scheme && category) {
     return (
       <div className="pg">
@@ -181,7 +186,21 @@ export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; category
             <button key={item.slug} type="button" className={category?.slug === item.slug ? 'is-on' : ''} onClick={() => navigate(`/mutual-funds/${item.slug}` as RoutePath)}>{item.name}</button>
           ))}
         </div>
+        <label className="field">Search this teaching set
+          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Scheme, AMC, or category" />
+        </label>
+        <div className="hf-pills" style={{ margin: '0 0 18px' }}>
+          {amcs.map((item) => (
+            <button key={item} type="button" className={amc === item ? 'is-on' : ''} onClick={() => setAmc(item)}>{item.replace(' Mutual Fund', '')}</button>
+          ))}
+        </div>
         <div className="hf-fund-row">
+          {shown.length === 0 && (
+            <article className="pg-card">
+              <h2>No scheme in this filter</h2>
+              <p>Try another AMC, or clear the search. This set is illustrative.</p>
+            </article>
+          )}
           {shown.map((fund) => {
             const catSlug = 'categorySlug' in fund ? fund.categorySlug : category?.slug;
             return (
@@ -284,7 +303,7 @@ export const PortfolioPage: React.FC = () => (
           </ul>
           <h3>What we need</h3>
           <p>The goal, the date, and a rough picture of what you already hold. No password, and no CAS upload on this form.</p>
-          <p className="hf-note" style={{ marginTop: 12 }}>AMFI-registered Mutual Fund Distributor · ARN {FARCON_CONFIG.arn} · Investments are in your name.</p>
+          <p className="hf-note" style={{ marginTop: 12 }}>AMFI-registered Mutual Fund Distributor · ARN {FARCON_CONFIG.arn} · Investments are in your name. You can also <a href={whatsappHref}>message us on WhatsApp</a>.</p>
         </article>
       </div>
       <LeadForm form="Portfolio Review" submitLabel="Request a review" showPreferences />
