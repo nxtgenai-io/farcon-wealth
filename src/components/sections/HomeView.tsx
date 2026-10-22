@@ -393,12 +393,12 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
       <section className="hf-hero" data-section="hero" ref={heroRef}>
         <img
           className="hf-hero-photo"
-          src={bleedSrc('hero').src}
-          srcSet={bleedSrc('hero').srcSet}
+          src="/images/home/hero-1280.webp"
+          srcSet="/images/home/hero-800.webp 800w, /images/home/hero-1280.webp 1280w, /images/home/hero-1920.webp 1920w"
           sizes="100vw"
-          alt="An Indian family smiling together in a park: parents with their son and daughter"
-          width={2880}
-          height={1120}
+          alt="An Indian family of six on a picnic at golden hour: grandfather, grandmother, father, mother, a girl, and a boy"
+          width={1920}
+          height={1080}
           fetchPriority="high"
           decoding="async"
         />
