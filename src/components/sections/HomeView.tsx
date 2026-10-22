@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { RoutePath } from '@/types';
 import { formatINR } from '@/lib/formatting/currency';
-import { formatPlanCompact, formatSip, formatTargetLabel, planIllustration } from '@/components/sections/home/planGoal';
+import { formatPlanCompact, formatTargetLabel, planIllustration } from '@/components/sections/home/planGoal';
 import { FARCON_CONFIG } from '@/content/site/config';
 import { ServiceShowcase } from '@/components/sections/ServiceShowcase';
 import { FAQ_ITEMS } from '@/content/faq/faqData';
@@ -20,6 +20,7 @@ import {
   Wallet,
 } from 'lucide-react';
 import { Reveal } from '@/components/ui/Reveal';
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 
 interface HomeViewProps {
   navigate: (path: RoutePath) => void;
@@ -92,26 +93,61 @@ function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-function CountUp({ value, decimals = 2 }: { value: number; decimals?: number }) {
+function CountUp({ value, decimals = 2, fromZero = true }: { value: number; decimals?: number; fromZero?: boolean }) {
   const [shown, setShown] = useState(value);
-  useEffect(() => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const shownRef = useRef(value);
+  shownRef.current = shown;
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    let frame = 0;
+    let observer: IntersectionObserver | undefined;
+    const play = (from: number) => {
+      cancelAnimationFrame(frame);
+      const start = performance.now();
+      const tick = (now: number) => {
+        const progress = Math.min(1, (now - start) / 520);
+        const eased = 1 - (1 - progress) ** 3;
+        setShown(from + (value - from) * eased);
+        if (progress < 1) frame = requestAnimationFrame(tick);
+      };
+      frame = requestAnimationFrame(tick);
+    };
+    const startFrom = () => (el.dataset.played === '1' ? shownRef.current : (fromZero ? 0 : value * 0.94));
     if (prefersReducedMotion()) {
       setShown(value);
-      return;
+      return undefined;
     }
-    const from = 0;
-    const start = performance.now();
-    let frame = 0;
-    const tick = (now: number) => {
-      const progress = Math.min(1, (now - start) / 900);
-      const eased = 1 - (1 - progress) ** 3;
-      setShown(from + (value - from) * eased);
-      if (progress < 1) frame = requestAnimationFrame(tick);
+    const arm = () => {
+      const from = startFrom();
+      el.dataset.played = '1';
+      setShown(from);
+      play(from);
     };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [value]);
-  return <>{shown.toLocaleString('en-IN', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}</>;
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) arm();
+    else {
+      observer = new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer?.disconnect();
+        arm();
+      }, { threshold: 0.4 });
+      observer.observe(el);
+    }
+    return () => {
+      cancelAnimationFrame(frame);
+      observer?.disconnect();
+    };
+  }, [fromZero, value]);
+  const finalText = value.toLocaleString('en-IN', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  const shownText = shown.toLocaleString('en-IN', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  return (
+    <span className="count-up" ref={ref}>
+      <span className="count-up-sizer" aria-hidden="true">{finalText}</span>
+      <span>{shownText}</span>
+    </span>
+  );
 }
 
 function SyncedField({
@@ -555,7 +591,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               </div>
               <div className="hf-result" aria-live="polite">
                 <span>Required Monthly SIP</span>
-                <strong key={plan.requiredMonthlySIP}>{formatSip(plan.requiredMonthlySIP)}</strong>
+                <strong><AnimatedNumber value={plan.requiredMonthlySIP} durationMs={480} /></strong>
                 <dl>
                   <div><dt>Total Investment</dt><dd>{formatPlanCompact(plan.totalInvestment)}</dd></div>
                   <div><dt>Estimated Growth</dt><dd>{formatPlanCompact(plan.estimatedGrowth)}</dd></div>
@@ -565,7 +601,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                 </button>
               </div>
               <div>
-                <div key={`${target}-${years}-${rate}`} className="hf-draw">
+                <div className="hf-draw">
                   <AreaChart series={plan.series} />
                 </div>
                 <p className="hf-note">This is an estimate based on the returns assumed. Actual results may vary.</p>

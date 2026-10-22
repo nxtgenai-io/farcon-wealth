@@ -14,10 +14,10 @@ interface RevealProps {
 export const Reveal: React.FC<RevealProps & React.HTMLAttributes<HTMLElement>> = ({
   children,
   delayMs = 0,
-  durationMs = 700,
+  durationMs = 480,
   className = '',
   direction = 'up',
-  distance = 24,
+  distance = 14,
   threshold = 0.15,
   as: Component = 'div',
   ...rest
@@ -88,15 +88,14 @@ export const Reveal: React.FC<RevealProps & React.HTMLAttributes<HTMLElement>> =
     <Component
       ref={elementRef}
       {...rest}
-      className={className}
+      className={`${className} rise-host${isVisible ? ' is-in' : ''}`.trim()}
       style={{
         opacity: isVisible ? 1 : 0,
         transform: getTransform(),
         transitionProperty: 'opacity, transform',
         transitionDuration: `${durationMs}ms`,
         transitionDelay: `${delayMs}ms`,
-        transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
-        willChange: 'opacity, transform',
+        transitionTimingFunction: 'ease-out',
       }}
     >
       {children}

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { RoutePath } from '@/types';
 import { calculateGoalSIP, calculateLumpsum, calculateRetirement, calculateSIP } from '@/lib/calculations/financial';
 import { formatINR } from '@/lib/formatting/currency';
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 
 interface CalculatorsPageProps {
   initialType?: 'sip' | 'lumpsum' | 'goal' | 'retirement';
@@ -281,7 +282,7 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
             {tab === 'sip' && (
               <>
                 <span>Projected value</span>
-                <strong>{formatINR(sip.projectedValue)}</strong>
+                <strong><AnimatedNumber value={sip.projectedValue} durationMs={480} /></strong>
                 <p>Invested {formatINR(sip.investedAmount)} · Gain {formatINR(sip.estimatedGain)}</p>
                 <span className="hf-year-chip">Year {sip.breakdown.at(-1)?.year} · {formatINR(sip.breakdown.at(-1)?.value ?? 0)}</span>
                 <Chart invested={sip.breakdown.map((row) => row.invested)} value={sip.breakdown.map((row) => row.value)} startLabel="Year 1" endLabel={`Year ${sipYears}`} />
@@ -291,7 +292,7 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
             {tab === 'lumpsum' && (
               <>
                 <span>Projected value</span>
-                <strong>{formatINR(lumpsum.projectedValue)}</strong>
+                <strong><AnimatedNumber value={lumpsum.projectedValue} durationMs={480} /></strong>
                 <p>Invested {formatINR(lumpsum.investedAmount)} · Gain {formatINR(lumpsum.estimatedGain)}</p>
                 <span className="hf-year-chip">Year {lumpsum.breakdown.at(-1)?.year} · {formatINR(lumpsum.breakdown.at(-1)?.value ?? 0)}</span>
                 <Chart invested={lumpsum.breakdown.map((row) => row.invested)} value={lumpsum.breakdown.map((row) => row.value)} startLabel="Year 1" endLabel={`Year ${lumpYears}`} />
@@ -301,7 +302,7 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
             {tab === 'goal' && (
               <>
                 <span>Required monthly SIP</span>
-                <strong>{formatINR(goalResult.requiredMonthlySIP)}</strong>
+                <strong><AnimatedNumber value={goalResult.requiredMonthlySIP} durationMs={480} /></strong>
                 <p>Future target {formatINR(goalResult.futureInflationAdjustedGoal)} · Savings then {formatINR(goalResult.existingFutureValue)} · {goalResult.surplus > 0 ? `Surplus ${formatINR(goalResult.surplus)}` : `Shortfall ${formatINR(goalResult.shortfall)}`}</p>
                 <span className="hf-year-chip">Year {goalResult.breakdown.at(-1)?.year} · {formatINR(goalResult.breakdown.at(-1)?.accumulated ?? 0)}</span>
                 <Chart invested={goalResult.breakdown.map((row) => row.year * goalResult.requiredMonthlySIP * 12)} value={goalResult.breakdown.map((row) => row.accumulated)} startLabel="Year 1" endLabel={`Year ${goalYears}`} />
@@ -311,7 +312,7 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
             {tab === 'retirement' && (
               <>
                 <span>Illustrative corpus</span>
-                <strong>{formatINR(retirement.requiredRetirementCorpus)}</strong>
+                <strong><AnimatedNumber value={retirement.requiredRetirementCorpus} durationMs={480} /></strong>
                 <p>Funding gap {formatINR(retirement.netCorpusDeficit)} · Required SIP {formatINR(retirement.requiredMonthlySIP)} · Expense at retirement {formatINR(retirement.monthlyExpenseAtRetirement)}</p>
                 <span className="hf-year-chip">Age {retirement.retirementAge} · {formatINR(retirement.requiredRetirementCorpus)}</span>
                 <Chart invested={retirementChart.invested} value={retirementChart.value} startLabel={`Age ${retirementChart.ages[0] ?? age}`} endLabel={`Age ${retirementChart.ages.at(-1) ?? retireAge}`} />

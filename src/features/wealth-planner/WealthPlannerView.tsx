@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { RoutePath } from '@/types';
 import { calculateGoalSIP } from '@/lib/calculations/financial';
 import { formatINR } from '@/lib/formatting/currency';
-import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { ArrowRight, ArrowLeft, RotateCcw, CheckCircle, ShieldCheck, Check } from 'lucide-react';
 
 interface WealthPlannerViewProps {
@@ -435,7 +435,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
       <aside className="pg-card planner-live">
         <span className="hf-eye">What you’ll get</span>
         <p>Indicative monthly SIP</p>
-        <strong>{formatINR(goalCalculation.requiredMonthlySIP)}</strong>
+        <strong><AnimatedNumber value={goalCalculation.requiredMonthlySIP} durationMs={480} /></strong>
         <p>{plannerData.goal}</p>
         <p>{plannerData.horizonYears} years · future target {formatINR(goalCalculation.futureInflationAdjustedGoal)}</p>
         <p className="hf-note">Estimate only. Mutual fund investments are subject to market risks.</p>

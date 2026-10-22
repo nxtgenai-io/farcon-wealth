@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { RoutePath } from '@/types';
 import { FARCON_CONFIG } from '@/content/site/config';
 import { BLOG_POSTS } from '@/content/blogs/blogData';
@@ -165,24 +165,57 @@ function useLiveNav() {
 
 function CountUp({ value }: { value: number }) {
   const [shown, setShown] = useState(value);
-  useEffect(() => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const shownRef = useRef(value);
+  shownRef.current = shown;
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    let frame = 0;
+    let observer: IntersectionObserver | undefined;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) {
       setShown(value);
       return undefined;
     }
-    const from = value * 0.94;
-    const start = performance.now();
-    let frame = 0;
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / 650);
-      setShown(from + (value - from) * (1 - (1 - t) ** 3));
-      if (t < 1) frame = requestAnimationFrame(tick);
+    const play = (from: number) => {
+      const start = performance.now();
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / 520);
+        setShown(from + (value - from) * (1 - (1 - t) ** 3));
+        if (t < 1) frame = requestAnimationFrame(tick);
+      };
+      frame = requestAnimationFrame(tick);
     };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    const arm = () => {
+      const from = el.dataset.played === '1' ? shownRef.current : value * 0.94;
+      el.dataset.played = '1';
+      setShown(from);
+      play(from);
+    };
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) arm();
+    else {
+      observer = new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer?.disconnect();
+        arm();
+      }, { threshold: 0.4 });
+      observer.observe(el);
+    }
+    return () => {
+      cancelAnimationFrame(frame);
+      observer?.disconnect();
+    };
   }, [value]);
-  return <>{shown.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</>;
+  const finalText = value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const shownText = shown.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return (
+    <span className="count-up" ref={ref}>
+      <span className="count-up-sizer" aria-hidden="true">{finalText}</span>
+      <span>{shownText}</span>
+    </span>
+  );
 }
 
 function Spark({ values }: { values: number[] }) {

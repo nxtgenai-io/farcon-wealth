@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useLayoutEffect, useState } from 'react';
 import { RoutePath } from '@/types';
 import { BLOG_POSTS } from '@/content/blogs/blogData';
 import fundBook from '@/content/funds/schemes.json';
@@ -70,6 +70,66 @@ export function App() {
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  useLayoutEffect(() => {
+    const main = document.getElementById('main');
+    if (!main) return undefined;
+    main.classList.remove('is-route');
+    void main.offsetWidth;
+    main.classList.add('is-route');
+    return undefined;
+  }, [currentPath]);
+
+  useLayoutEffect(() => {
+    const main = document.getElementById('main');
+    if (!main) return undefined;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const selector = '.pg-grid, .steps, .videos, .svc-grid, .legal-read, .related-notes, .pg-wrap > .pg-card, .quiz-layout, .planner-split';
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-in');
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '40px 0px' });
+    const arm = () => {
+      main.querySelectorAll(selector).forEach((el) => {
+        if (el.classList.contains('rise') || el.closest('.rise-host') || el.classList.contains('nav-grid')) return;
+        el.classList.add('rise');
+        if (reduce) {
+          el.classList.add('is-in');
+          return;
+        }
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.98 && rect.bottom > 0) el.classList.add('is-in');
+        else io.observe(el);
+      });
+    };
+    arm();
+    const mo = new MutationObserver(arm);
+    mo.observe(main, { childList: true, subtree: true });
+    return () => {
+      mo.disconnect();
+      io.disconnect();
+    };
+  }, [currentPath]);
+
+  useEffect(() => {
+    const onClick = (event: MouseEvent) => {
+      const summary = (event.target as HTMLElement | null)?.closest('summary');
+      const details = summary?.parentElement;
+      if (!summary || !details || !(details instanceof HTMLDetailsElement) || !details.classList.contains('acc') || !details.open || details.classList.contains('is-closing')) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      event.preventDefault();
+      details.classList.add('is-closing');
+      window.setTimeout(() => {
+        details.open = false;
+        details.classList.remove('is-closing');
+      }, 260);
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
   }, []);
 
   const navigate = (path: RoutePath) => {
@@ -257,7 +317,7 @@ export function App() {
       />
 
       {/* Main Content Area */}
-      <main id="main" className="flex-1 fw-skin">
+      <main id="main" className="flex-1 fw-skin is-route">
         <Suspense fallback={<div className="pg"><div className="pg-wrap"><p className="lede">Loading…</p></div></div>}>
           {renderView()}
           {currentPath !== '/' && !metaFor(currentPath).title.startsWith('Page not found') && (
