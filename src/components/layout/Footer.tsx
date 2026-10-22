@@ -66,6 +66,7 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
         ))}
         <div>
           <h2>Connect With Us</h2>
+          <a className="fw-wa-pill" href={whatsapp} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
           <div className="fw-social">
             <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.7 3.3A1.7 1.7 0 1 0 4.7 6.7 1.7 1.7 0 0 0 4.7 3.3zM3.2 8.2h3v12h-3v-12zM9.2 8.2h2.9v1.6h.1c.4-.8 1.4-1.6 2.9-1.6 3.1 0 3.7 2 3.7 4.7v7.3h-3v-6.5c0-1.5 0-3.5-2.1-3.5s-2.5 1.7-2.5 3.4v6.6h-3v-12z" /></svg>
@@ -86,7 +87,7 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
         <p>
           Mutual fund investments are subject to market risks. Read all scheme related documents carefully. | AMFI-registered Mutual Fund Distributor | ARN: {FARCON_CONFIG.arn}
         </p>
-        <p>© 2025 Farcon Wealth. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Farcon Wealth. All rights reserved.</p>
       </div>
     </footer>
   );

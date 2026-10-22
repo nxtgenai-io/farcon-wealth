@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { RoutePath } from '@/types';
 import { PRIMARY_NAV, SERVICE_LINKS } from '@/content/site/nav';
 import { BrandLockup } from '@/components/layout/BrandLockup';
+import { FARCON_CONFIG } from '@/content/site/config';
 import { ChevronDown, Menu, Search, X } from 'lucide-react';
 
 interface NavbarProps {
@@ -15,6 +17,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [menuServices, setMenuServices] = useState(false);
   const [compact, setCompact] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
 
@@ -22,6 +25,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
     setOpen(false);
     setSearchOpen(false);
     setServicesOpen(false);
+    setMenuServices(false);
   }, [currentPath]);
 
   useEffect(() => {
@@ -33,6 +37,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
 
   useEffect(() => {
     if (!open) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     const root = drawerRef.current;
     const previous = document.activeElement as HTMLElement | null;
     const items = () => Array.from(root?.querySelectorAll<HTMLElement>('button, a, input') ?? []);
@@ -57,6 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
     };
     document.addEventListener('keydown', onKey);
     return () => {
+      document.body.style.overflow = previousOverflow;
       document.removeEventListener('keydown', onKey);
       previous?.focus();
     };
@@ -151,18 +158,48 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
           </ul>
         </div>
       )}
-      {open && (
-        <div ref={drawerRef} id="mobile-menu" className="fw-drawer" role="dialog" aria-modal="true" aria-label="Mobile">
-          {PRIMARY_NAV.map((item) => (
-            <button key={item.href} type="button" className={currentPath === item.href ? 'is-active' : ''} onClick={() => go(item.href)}>
-              {item.label}
-            </button>
-          ))}
-          <button type="button" onClick={() => go('/investor-login')}>Investor Login</button>
-          <button type="button" onClick={() => { setOpen(false); onOpenConsultation(); }}>
-            Book a Consultation
-          </button>
-        </div>
+      {open && createPortal(
+        <>
+          <button type="button" className="fw-scrim" aria-label="Close menu" onClick={() => setOpen(false)} />
+          <div ref={drawerRef} id="mobile-menu" className="fw-drawer" role="dialog" aria-modal="true" aria-label="Mobile">
+            {PRIMARY_NAV.map((item) =>
+              item.href === '/services' ? (
+                <div key={item.href} className="fw-sub">
+                  <button
+                    type="button"
+                    className={currentPath.startsWith('/services') ? 'is-active' : ''}
+                    aria-expanded={menuServices}
+                    onClick={() => setMenuServices((value) => !value)}
+                  >
+                    Services <ChevronDown size={16} aria-hidden="true" />
+                  </button>
+                  {menuServices && (
+                    <>
+                      <button type="button" onClick={() => go('/services')}>All services</button>
+                      {SERVICE_LINKS.map((link) => (
+                        <button key={link.href} type="button" onClick={() => go(link.href)}>{link.label}</button>
+                      ))}
+                    </>
+                  )}
+                </div>
+              ) : (
+                <button key={item.href} type="button" className={currentPath === item.href ? 'is-active' : ''} onClick={() => go(item.href)}>
+                  {item.label}
+                </button>
+              ),
+            )}
+            <div className="fw-drawer-actions">
+              <button type="button" className="hf-btn hf-btn-green" onClick={() => { setOpen(false); onOpenConsultation(); }}>
+                Book a Consultation
+              </button>
+              <a className="hf-btn hf-btn-outline" href={`https://wa.me/${FARCON_CONFIG.whatsappNumber}`} target="_blank" rel="noreferrer">
+                Chat on WhatsApp
+              </a>
+              <button type="button" className="fw-drawer-login" onClick={() => go('/investor-login')}>Investor Login</button>
+            </div>
+          </div>
+        </>,
+        document.body,
       )}
     </header>
   );

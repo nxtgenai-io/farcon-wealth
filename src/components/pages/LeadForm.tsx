@@ -111,13 +111,13 @@ export const LeadForm: React.FC<LeadFormProps> = ({ form, submitLabel, requireMe
         Website
         <input tabIndex={-1} autoComplete="off" value={values.companyWebsite} onChange={set('companyWebsite')} />
       </label>
-      <label className="field">Name<input value={values.name} onChange={set('name')} autoComplete="name" />{errors.name && <span className="err">{errors.name}</span>}</label>
-      <label className="field">Email<input type="email" value={values.email} onChange={set('email')} autoComplete="email" />{errors.email && <span className="err">{errors.email}</span>}</label>
-      <label className="field">Phone<input inputMode="tel" value={values.phone} onChange={set('phone')} autoComplete="tel" />{errors.phone && <span className="err">{errors.phone}</span>}</label>
-      <label className="field">City<input value={values.city} onChange={set('city')} autoComplete="address-level2" />{errors.city && <span className="err">{errors.city}</span>}</label>
-      <label className="field">Goal
+      <label className="field"><span className="req">Name</span><input value={values.name} onChange={set('name')} autoComplete="name" placeholder="Your name" required />{errors.name && <span className="err">{errors.name}</span>}</label>
+      <label className="field"><span className="req">Email</span><input type="email" value={values.email} onChange={set('email')} autoComplete="email" placeholder="you@email.com" required />{errors.email && <span className="err">{errors.email}</span>}</label>
+      <label className="field"><span className="req">Phone</span><input inputMode="tel" value={values.phone} onChange={set('phone')} autoComplete="tel" placeholder="10-digit mobile" required />{errors.phone && <span className="err">{errors.phone}</span>}</label>
+      <label className="field"><span className="req">City</span><input value={values.city} onChange={set('city')} autoComplete="address-level2" placeholder="Patna" required />{errors.city && <span className="err">{errors.city}</span>}</label>
+      <label className="field"><span className={showPreferences ? 'req' : undefined}>Goal</span>
         <select value={values.goal} onChange={set('goal')}>
-          <option value="">Select</option>
+          <option value="">Select a goal</option>
           {['Retirement', 'Child Education', 'Wealth Creation', 'Tax Saving', 'Portfolio Review', 'Something else'].map((goal) => (
             <option key={goal}>{goal}</option>
           ))}
@@ -154,7 +154,8 @@ export const LeadForm: React.FC<LeadFormProps> = ({ form, submitLabel, requireMe
           </label>
         </>
       )}
-      <label className="field">Message<textarea value={values.message} onChange={set('message')} />{errors.message && <span className="err">{errors.message}</span>}</label>
+      <label className="field"><span className={requireMessage ? 'req' : undefined}>Message</span><textarea value={values.message} onChange={set('message')} placeholder="What would you like to talk about?" />{errors.message && <span className="err">{errors.message}</span>}</label>
+      <p className="hf-note">By sending this, you agree we may reply about this enquiry. See the privacy policy for how a note is stored.</p>
       <button className="hf-btn hf-btn-green" type="submit" disabled={busy} aria-busy={busy}>{busy ? 'Sending…' : submitLabel}</button>
       {status && <p className="hf-note" role={statusKind === 'err' ? 'alert' : 'status'}>{status}</p>}
     </form>

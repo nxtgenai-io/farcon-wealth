@@ -51,28 +51,24 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
   ];
 
   return (
-    <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-16">
-      {/* Header */}
-      <div className="text-center max-w-3xl mx-auto mb-12">
-        <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
-          Guided Diagnostic Experience
-        </span>
-        <h1 className="mt-2.5 text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
-          Farcon Wealth Planner Lite
-        </h1>
-        <p className="mt-3.5 text-sm sm:text-base text-slate-600 leading-relaxed">
-          Structure your financial goals across 6 clear milestones. Eliminate emotional guesswork and see the exact monthly discipline required.
-        </p>
-      </div>
+    <div className="pg planner-page">
+      <div className="pg-wrap">
+      <span className="hf-eye">Wealth planner</span>
+      <h1>See the monthly amount.</h1>
+      <p className="lede">Six short steps. The figure on the right updates as you go. It is an illustration, not a promise.</p>
+      <div className="planner-split">
+      <div>
 
       {/* Progress Stepper Bar */}
       <div className="max-w-3xl mx-auto mb-10">
+        <div className="planner-chips" aria-label="Planner steps">
+          {stepLabels.map((label, index) => (
+            <span key={label} className={index + 1 === step ? 'is-on' : index + 1 < step ? 'is-done' : ''}>{index + 1}. {label}</span>
+          ))}
+        </div>
         <div className="flex items-center justify-between text-xs text-slate-500 mb-3 font-medium">
           <span className="font-semibold text-slate-900">
             Step {step} of 6: {stepLabels[step - 1]}
-          </span>
-          <span className="font-mono text-[#78A832] font-bold">
-            {Math.round((step / 6) * 100)}%
           </span>
         </div>
 
@@ -411,7 +407,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
             <button
               onClick={prevStep}
               disabled={step === 1}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-950 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+              className="hf-btn hf-btn-outline"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back</span>
@@ -419,13 +415,24 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
 
             <button
               onClick={nextStep}
-              className="inline-flex items-center gap-1.5 px-6 py-2.5 text-xs font-semibold text-white bg-[#101A2C] hover:bg-slate-800 rounded-md transition-colors shadow-xs"
+              className="hf-btn hf-btn-green"
             >
               <span>{step === 5 ? 'Review Blueprint' : 'Continue'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         )}
+      </div>
+      </div>
+      <aside className="pg-card planner-live">
+        <span className="hf-eye">What you’ll get</span>
+        <p>Indicative monthly SIP</p>
+        <strong>{formatINR(goalCalculation.requiredMonthlySIP)}</strong>
+        <p>{plannerData.goal}</p>
+        <p>{plannerData.horizonYears} years · future target {formatINR(goalCalculation.futureInflationAdjustedGoal)}</p>
+        <p className="hf-note">Estimate only. Mutual fund investments are subject to market risks.</p>
+      </aside>
+      </div>
       </div>
     </div>
   );

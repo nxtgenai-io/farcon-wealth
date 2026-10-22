@@ -28,19 +28,53 @@ function Chart({ invested, value }: { invested: number[]; value: number[] }) {
   );
 }
 
-function Slider({ label, value, min, max, step, display, onChange }: {
-  label: string; value: number; min: number; max: number; step: number; display: string; onChange: (n: number) => void;
+function Slider({ label, value, min, max, step, display, minLabel, maxLabel, onChange }: {
+  label: string; value: number; min: number; max: number; step: number; display: string; minLabel: string; maxLabel: string; onChange: (n: number) => void;
 }) {
   const pct = `${((value - min) / (max - min)) * 100}%`;
   return (
     <label className="hf-slider">
-      <span className="hf-slider-top"><span>{label}</span><b>{display}</b></span>
+      <span className="hf-slider-top">
+        <span>{label}</span>
+        <input
+          className="hf-num-input"
+          type="number"
+          inputMode="decimal"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          aria-label={label}
+          onChange={(event) => {
+            const next = Number(event.target.value);
+            if (!Number.isFinite(next)) return;
+            onChange(Math.min(max, Math.max(min, next)));
+          }}
+        />
+      </span>
       <input type="range" min={min} max={max} step={step} value={value} style={{ ['--pct' as string]: pct }} onChange={(e) => onChange(Number(e.target.value))} />
+      <span className="hf-scale"><span>{minLabel}</span><span>{maxLabel}</span></span>
     </label>
   );
 }
 
-export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 'sip', onOpenConsultation }) => {
+function Legend() {
+  return (
+    <div className="calc-legend">
+      <span><i style={{ background: '#1F9D55' }} />Estimated value</span>
+      <span><i style={{ background: '#C9A24A' }} />Invested</span>
+    </div>
+  );
+}
+
+const COPY: Record<Tab, { eye: string; h1: string; lede: string }> = {
+  sip: { eye: 'SIP calculator', h1: 'SIP calculator', lede: 'A monthly amount, a rate and a number of years. The chart is an illustration from those assumptions.' },
+  lumpsum: { eye: 'Lumpsum calculator', h1: 'Lumpsum calculator', lede: 'One amount, left invested. The chart shows the assumed path, not a promise.' },
+  goal: { eye: 'Goal calculator', h1: 'Goal calculator', lede: 'Name a target and a date. The monthly SIP is what the formula needs at the rate you set.' },
+  retirement: { eye: 'Retirement calculator', h1: 'Retirement calculator', lede: 'Today’s spending, grown to a retirement date. The corpus is illustrative.' },
+};
+
+export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 'sip', navigate, onOpenConsultation }) => {
   const [tab, setTab] = useState<Tab>(initialType);
   useEffect(() => setTab(initialType), [initialType]);
   const [sipAmount, setSipAmount] = useState(25000);
@@ -72,15 +106,17 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
   const goalResult = useMemo(() => calculateGoalSIP(goal, goalRate, goalYears, 0), [goal, goalRate, goalYears]);
   const retirement = useMemo(() => calculateRetirement(age, retireAge, 85, expense, 6, 12, 8, 0), [age, retireAge, expense]);
 
+  const copy = COPY[tab];
+  const [showYears, setShowYears] = useState(false);
   return (
     <div className="pg">
       <div className="pg-wrap">
-        <span className="hf-eye">Calculators</span>
-        <h1>Run the numbers.</h1>
-        <p className="lede">SIP, lumpsum, goal and retirement estimates use Farcon’s existing formulas. They are illustrations, not promises.</p>
+        <span className="hf-eye">{copy.eye}</span>
+        <h1>{copy.h1}</h1>
+        <p className="lede">{copy.lede}</p>
         <div className="hf-tabs" style={{ margin: '16px 0' }}>
           {(['sip', 'lumpsum', 'goal', 'retirement'] as Tab[]).map((item) => (
-            <button key={item} type="button" className={tab === item ? 'is-on' : ''} onClick={() => setTab(item)}>
+            <button key={item} type="button" className={tab === item ? 'is-on' : ''} onClick={() => navigate(item === 'sip' ? '/calculators/sip' : `/calculators/${item}` as RoutePath)}>
               {item === 'sip' ? 'SIP' : item === 'lumpsum' ? 'Lumpsum' : item === 'goal' ? 'Goal' : 'Retirement'}
             </button>
           ))}
@@ -89,30 +125,30 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
           <div>
             {tab === 'sip' && (
               <>
-                <Slider label="Monthly SIP" min={1000} max={200000} step={1000} value={sipAmount} display={formatINR(sipAmount)} onChange={setSipAmount} />
-                <Slider label="Expected return" min={6} max={18} step={1} value={sipRate} display={`${sipRate}%`} onChange={setSipRate} />
-                <Slider label="Years" min={1} max={30} step={1} value={sipYears} display={`${sipYears} years`} onChange={setSipYears} />
+                <Slider label="Monthly SIP" min={1000} max={200000} step={1000} value={sipAmount} display={formatINR(sipAmount)} minLabel="₹1,000" maxLabel="₹2 L" onChange={setSipAmount} />
+                <Slider label="Expected return" min={6} max={18} step={1} value={sipRate} display={`${sipRate}%`} minLabel="6%" maxLabel="18%" onChange={setSipRate} />
+                <Slider label="Years" min={1} max={30} step={1} value={sipYears} display={`${sipYears} years`} minLabel="1 year" maxLabel="30 years" onChange={setSipYears} />
               </>
             )}
             {tab === 'lumpsum' && (
               <>
-                <Slider label="Amount" min={10000} max={5000000} step={10000} value={lump} display={formatINR(lump)} onChange={setLump} />
-                <Slider label="Expected return" min={6} max={18} step={1} value={lumpRate} display={`${lumpRate}%`} onChange={setLumpRate} />
-                <Slider label="Years" min={1} max={30} step={1} value={lumpYears} display={`${lumpYears} years`} onChange={setLumpYears} />
+                <Slider label="Amount" min={10000} max={5000000} step={10000} value={lump} display={formatINR(lump)} minLabel="₹10,000" maxLabel="₹50 L" onChange={setLump} />
+                <Slider label="Expected return" min={6} max={18} step={1} value={lumpRate} display={`${lumpRate}%`} minLabel="6%" maxLabel="18%" onChange={setLumpRate} />
+                <Slider label="Years" min={1} max={30} step={1} value={lumpYears} display={`${lumpYears} years`} minLabel="1 year" maxLabel="30 years" onChange={setLumpYears} />
               </>
             )}
             {tab === 'goal' && (
               <>
-                <Slider label="Target corpus" min={500000} max={100000000} step={500000} value={goal} display={formatINR(goal)} onChange={setGoal} />
-                <Slider label="Expected return" min={6} max={18} step={1} value={goalRate} display={`${goalRate}%`} onChange={setGoalRate} />
-                <Slider label="Years" min={1} max={30} step={1} value={goalYears} display={`${goalYears} years`} onChange={setGoalYears} />
+                <Slider label="Target corpus" min={500000} max={100000000} step={500000} value={goal} display={formatINR(goal)} minLabel="₹5 L" maxLabel="₹10 Cr" onChange={setGoal} />
+                <Slider label="Expected return" min={6} max={18} step={1} value={goalRate} display={`${goalRate}%`} minLabel="6%" maxLabel="18%" onChange={setGoalRate} />
+                <Slider label="Years" min={1} max={30} step={1} value={goalYears} display={`${goalYears} years`} minLabel="1 year" maxLabel="30 years" onChange={setGoalYears} />
               </>
             )}
             {tab === 'retirement' && (
               <>
-                <Slider label="Current age" min={18} max={70} step={1} value={age} display={`${age}`} onChange={setAge} />
-                <Slider label="Retirement age" min={age + 1} max={75} step={1} value={retireAge} display={`${retireAge}`} onChange={setRetireAge} />
-                <Slider label="Monthly expense today" min={10000} max={300000} step={5000} value={expense} display={formatINR(expense)} onChange={setExpense} />
+                <Slider label="Current age" min={18} max={70} step={1} value={age} display={`${age}`} minLabel="18" maxLabel="70" onChange={setAge} />
+                <Slider label="Retirement age" min={age + 1} max={75} step={1} value={retireAge} display={`${retireAge}`} minLabel={`${age + 1}`} maxLabel="75" onChange={setRetireAge} />
+                <Slider label="Monthly expense today" min={10000} max={300000} step={5000} value={expense} display={formatINR(expense)} minLabel="₹10,000" maxLabel="₹3 L" onChange={setExpense} />
               </>
             )}
           </div>
@@ -122,7 +158,9 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
                 <span>Projected value</span>
                 <strong>{formatINR(sip.projectedValue)}</strong>
                 <p>Invested {formatINR(sip.investedAmount)} · Gain {formatINR(sip.estimatedGain)}</p>
+                <span className="hf-year-chip">Year {sip.breakdown.at(-1)?.year} · {formatINR(sip.breakdown.at(-1)?.value ?? 0)}</span>
                 <Chart invested={sip.breakdown.map((row) => row.invested)} value={sip.breakdown.map((row) => row.value)} />
+                <Legend />
               </>
             )}
             {tab === 'lumpsum' && (
@@ -130,7 +168,9 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
                 <span>Projected value</span>
                 <strong>{formatINR(lumpsum.projectedValue)}</strong>
                 <p>Invested {formatINR(lumpsum.investedAmount)} · Gain {formatINR(lumpsum.estimatedGain)}</p>
+                <span className="hf-year-chip">Year {lumpsum.breakdown.at(-1)?.year} · {formatINR(lumpsum.breakdown.at(-1)?.value ?? 0)}</span>
                 <Chart invested={lumpsum.breakdown.map((row) => row.invested)} value={lumpsum.breakdown.map((row) => row.value)} />
+                <Legend />
               </>
             )}
             {tab === 'goal' && (
@@ -138,7 +178,9 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
                 <span>Required monthly SIP</span>
                 <strong>{formatINR(goalResult.requiredMonthlySIP)}</strong>
                 <p>Target {formatINR(goalResult.futureInflationAdjustedGoal)} · Total investment {formatINR(goalResult.totalInvestment)}</p>
+                <span className="hf-year-chip">Year {goalResult.breakdown.at(-1)?.year} · {formatINR(goalResult.breakdown.at(-1)?.accumulated ?? 0)}</span>
                 <Chart invested={goalResult.breakdown.map((row) => row.year * goalResult.requiredMonthlySIP * 12)} value={goalResult.breakdown.map((row) => row.accumulated)} />
+                <Legend />
               </>
             )}
             {tab === 'retirement' && (
@@ -146,11 +188,30 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
                 <span>Illustrative corpus</span>
                 <strong>{formatINR(retirement.requiredRetirementCorpus)}</strong>
                 <p>Required SIP {formatINR(retirement.requiredMonthlySIP)} · Expense at retirement {formatINR(retirement.monthlyExpenseAtRetirement)}</p>
+                <span className="hf-year-chip">Age {retirement.breakdown.at(-1)?.age} · {formatINR(retirement.breakdown.at(-1)?.accumulatedCorpus ?? 0)}</span>
                 <Chart invested={retirement.breakdown.map(() => 0)} value={retirement.breakdown.map((row) => row.accumulatedCorpus)} />
+                <Legend />
               </>
             )}
-            <button type="button" className="hf-btn hf-btn-green" onClick={() => onOpenConsultation(`${tab} calculator`)}>Talk this through</button>
-            <p className="hf-note">Estimate only. Mutual fund investments are subject to market risks.</p>
+            <button type="button" className="hf-btn hf-btn-outline" onClick={() => setShowYears((value) => !value)}>{showYears ? 'Hide year by year' : 'Show year by year'}</button>
+            {showYears && tab === 'sip' && (
+              <table className="year-table"><tbody>{sip.breakdown.map((row) => <tr key={row.year}><td>Year {row.year}</td><td>{formatINR(row.invested)}</td><td>{formatINR(row.value)}</td></tr>)}</tbody></table>
+            )}
+            {showYears && tab === 'lumpsum' && (
+              <table className="year-table"><tbody>{lumpsum.breakdown.map((row) => <tr key={row.year}><td>Year {row.year}</td><td>{formatINR(row.invested)}</td><td>{formatINR(row.value)}</td></tr>)}</tbody></table>
+            )}
+            {showYears && tab === 'goal' && (
+              <table className="year-table"><tbody>{goalResult.breakdown.map((row) => <tr key={row.year}><td>Year {row.year}</td><td>{formatINR(row.accumulated)}</td></tr>)}</tbody></table>
+            )}
+            {showYears && tab === 'retirement' && (
+              <table className="year-table"><tbody>{retirement.breakdown.map((row) => <tr key={row.age}><td>Age {row.age}</td><td>{formatINR(row.accumulatedCorpus)}</td></tr>)}</tbody></table>
+            )}
+            <details className="acc">
+              <summary>How this is calculated</summary>
+              <p>The figure uses the rate you set, compounded on the schedule in Farcon’s existing formula. It is an estimate. Mutual fund investments are subject to market risks. Read all scheme related documents carefully.</p>
+            </details>
+            <button type="button" className="hf-btn hf-btn-green" onClick={() => onOpenConsultation(`${tab} calculator`)}>Discuss this plan</button>
+            <p className="hf-note">Estimate only. Past performance is not indicative of future returns.</p>
           </div>
         </div>
       </div>

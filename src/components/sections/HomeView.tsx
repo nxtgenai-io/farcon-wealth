@@ -589,6 +589,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               </article>
             )}
           </div>
+          <button type="button" className="hf-textlink hf-more-mobile" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
           </div>
         </div>
       </Reveal>

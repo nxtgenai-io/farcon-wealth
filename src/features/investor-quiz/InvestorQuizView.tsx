@@ -180,12 +180,11 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
   const progressPercent = Math.round(((currentStep + 1) / totalQuestions) * 100);
 
   return (
-    <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-10 lg:py-16">
+    <div className="pg quiz-page">
+      <div className="pg-wrap">
       {!submitted ? (
-        /* EDITORIAL SPLIT LAYOUT (LEFT: Context Journey Rail, RIGHT: Question Interface) */
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
-          {/* LEFT CONTEXT JOURNEY RAIL (Sticky on Desktop, Pale Blue-Grey Panel) */}
-          <div className="lg:col-span-5 bg-[#F2F6FB] text-[#17243A] p-7 sm:p-9 rounded-2xl border border-[#DCE4EE] shadow-xs space-y-6 lg:sticky lg:top-24">
+        <div className="quiz-layout">
+          <div className="quiz-rail pg-card">
             {/* Header & Assessment Context */}
             <div className="space-y-2">
               <div className="flex items-center gap-2">
@@ -224,7 +223,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
             </div>
 
             {/* Assessment Dimensions Rail (Configurable Dimensions) */}
-            <div className="space-y-2.5 pt-1">
+            <div className="space-y-2.5 pt-1 quiz-dims">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-slate-700">
                   Evaluation Framework
@@ -322,24 +321,14 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
           </div>
 
           {/* RIGHT CURRENT QUESTION INTERFACE */}
-          <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200/90 shadow-xl p-7 sm:p-12 lg:p-14 space-y-8 min-h-[660px] flex flex-col justify-between">
+          <div className="quiz-q pg-card">
             <div>
               {/* Question Header & Micro Stepper */}
               <div className="space-y-4 pb-6 border-b border-slate-100">
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold tracking-wider text-[#315FCE] uppercase text-xs">
-                      QUESTION 0{currentStep + 1} / 0{totalQuestions}
-                    </span>
-                    <span className="text-slate-300">·</span>
-                    <span className="font-mono font-semibold text-[#78A832] uppercase text-[11px]">
-                      DIMENSION: {activeDimension.label.toUpperCase()}
-                    </span>
-                  </div>
-
-                  <span className="font-mono text-slate-400 text-xs">
-                    {progressPercent}% Complete
-                  </span>
+                <div>
+                  <span className="hf-eye">{activeDimension.label}</span>
+                  <p className="quiz-progress-label">Question {currentStep + 1} of {totalQuestions}</p>
+                  <div className="quiz-bar" aria-hidden="true"><i style={{ width: `${progressPercent}%` }} /></div>
                 </div>
 
                 {/* Subtle Dots & Line Stepper */}
@@ -643,6 +632,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

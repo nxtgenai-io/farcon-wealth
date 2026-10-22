@@ -43,6 +43,22 @@ const PAGE_META: Record<string, { title: string; description: string }> = {
     title: 'Calculators | Farcon Wealth',
     description: 'SIP, lumpsum, goal and retirement calculators. Illustrative estimates, not a promise of returns.',
   },
+  '/calculators/sip': {
+    title: 'SIP Calculator | Farcon Wealth',
+    description: 'Illustrative SIP calculator. A monthly amount, a rate and a horizon. Not a promise of returns.',
+  },
+  '/calculators/lumpsum': {
+    title: 'Lumpsum Calculator | Farcon Wealth',
+    description: 'Illustrative lumpsum calculator. Not a promise of returns.',
+  },
+  '/calculators/goal': {
+    title: 'Goal Calculator | Farcon Wealth',
+    description: 'Illustrative goal calculator for a target amount and a date.',
+  },
+  '/calculators/retirement': {
+    title: 'Retirement Calculator | Farcon Wealth',
+    description: 'Illustrative retirement calculator from today’s spending and a retirement age.',
+  },
   '/investor-quiz': {
     title: 'Investor Quiz | Farcon Wealth',
     description: 'A short quiz to understand the kind of mutual fund approach that may fit your horizon and comfort with risk.',
@@ -61,7 +77,7 @@ const PAGE_META: Record<string, { title: string; description: string }> = {
   },
   '/investor-login': {
     title: 'Investor Login | Farcon Wealth',
-    description: 'Investor login for Farcon Wealth clients.',
+    description: 'Online portfolio access is coming soon. Message Farcon on WhatsApp or request a statement.',
   },
   '/education': {
     title: 'Investor Education | Farcon Wealth',
@@ -264,7 +280,8 @@ export function App() {
     }
 
     if (currentPath === '/education' || currentPath === '/blogs' || currentPath === '/faq') {
-      return <EducationPage navigate={navigate} onOpenConsultation={handleOpenConsultation} />;
+      const focus = currentPath === '/blogs' ? 'blogs' : currentPath === '/faq' ? 'faq' : 'education';
+      return <EducationPage navigate={navigate} onOpenConsultation={handleOpenConsultation} focus={focus} />;
     }
 
     // 12. Contact / Direct Consultation Booking

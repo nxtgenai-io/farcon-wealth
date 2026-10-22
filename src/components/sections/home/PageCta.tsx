@@ -14,7 +14,8 @@ export const PageCta: React.FC<{ onBook: () => void }> = ({ onBook }) => {
         alt="A hiker sitting on a rock above a forested mountain valley"
         width={2880}
         height={1620}
-        loading="lazy"
+        loading="eager"
+        fetchPriority="low"
         decoding="async"
       />
       <div className="hf-cta-scrim" />
