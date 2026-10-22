@@ -5,7 +5,27 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      {
+        name: 'farcon-nav',
+        configureServer(server) {
+          server.middlewares.use(async (req, res, next) => {
+            if (!req.url?.startsWith('/api/nav')) return next();
+            try {
+              const { liveNavResponse } = await server.ssrLoadModule('/src/lib/api/liveNav.ts') as { liveNavResponse: () => Promise<unknown> };
+              res.setHeader('Content-Type', 'application/json');
+              res.setHeader('Cache-Control', 'public, max-age=3600');
+              res.end(JSON.stringify(await liveNavResponse()));
+            } catch {
+              res.statusCode = 503;
+              res.end(JSON.stringify({ ok: false, funds: [] }));
+            }
+          });
+        },
+      },
+    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),

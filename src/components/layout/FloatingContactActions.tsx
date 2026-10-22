@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, Sparkles } from 'lucide-react';
 import { FARCON_CONFIG } from '@/content/site/config';
 
-export const FloatingContactActions: React.FC<{ onOpenAI?: () => void }> = () => {
+export const FloatingContactActions: React.FC<{ onOpenAI?: () => void }> = ({ onOpenAI }) => {
   const [show, setShow] = useState(false);
   const whatsappUrl = `https://wa.me/${FARCON_CONFIG.whatsappNumber}?text=${encodeURIComponent(
     'Hello Farcon Wealth. I would like to learn more about your goal-based mutual fund guidance.'
@@ -26,17 +26,23 @@ export const FloatingContactActions: React.FC<{ onOpenAI?: () => void }> = () =>
   }, []);
 
   return (
-    <a
-      className={`fw-wa${show ? ' is-on' : ''}`}
-      href={whatsappUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Chat on WhatsApp"
-      tabIndex={show ? 0 : -1}
-      aria-hidden={show ? undefined : true}
-    >
-      <MessageSquare size={18} aria-hidden="true" />
-      <span>WhatsApp</span>
-    </a>
+    <div className={`fw-float${show ? ' has-wa' : ''}`}>
+      <button type="button" className="fw-ai-launch" onClick={onOpenAI}>
+        <Sparkles size={16} aria-hidden="true" />
+        <span>Ask Farcon AI</span>
+      </button>
+      <a
+        className={`fw-wa${show ? ' is-on' : ''}`}
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat on WhatsApp"
+        tabIndex={show ? 0 : -1}
+        aria-hidden={show ? undefined : true}
+      >
+        <MessageSquare size={18} aria-hidden="true" />
+        <span>WhatsApp</span>
+      </a>
+    </div>
   );
 };

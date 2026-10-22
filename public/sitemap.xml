@@ -201,6 +201,56 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://farconwealth.com/mutual-funds/equity/sbi-small-cap</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://farconwealth.com/mutual-funds/equity/hdfc-flexi-cap</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://farconwealth.com/mutual-funds/equity/nippon-india-growth</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://farconwealth.com/mutual-funds/equity/mirae-asset-large-cap</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://farconwealth.com/mutual-funds/hybrid/icici-prudential-balanced-advantage</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://farconwealth.com/mutual-funds/debt/hdfc-short-term-debt</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://farconwealth.com/mutual-funds/debt/sbi-magnum-gilt</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://farconwealth.com/mutual-funds/debt/icici-prudential-corporate-bond</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://farconwealth.com/mutual-funds/debt/axis-treasury-advantage</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://farconwealth.com/mutual-funds/elss/axis-elss-tax-saver</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://farconwealth.com/mutual-funds/elss</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

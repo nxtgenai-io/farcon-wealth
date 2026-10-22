@@ -8,18 +8,78 @@
       "name": "Equity",
       "summary": "Long horizons. Very high volatility is normal, including years that finish lower.",
       "schemes": [
-        { "slug": "sbi-small-cap", "name": "SBI Small Cap Fund", "amc": "SBI Mutual Fund", "plan": "Direct Growth", "subCategory": "Small Cap", "risk": "Very High", "nav": "164.72", "cagr3y": "26.4%", "horizon": "7 years or more", "logo": "/images/amc/sbi.svg" },
-        { "slug": "hdfc-flexi-cap", "name": "HDFC Flexi Cap Fund", "amc": "HDFC Mutual Fund", "plan": "Direct Growth", "subCategory": "Flexi Cap", "risk": "High", "nav": "712.35", "cagr3y": "21.8%", "horizon": "5 years or more", "logo": "/images/amc/hdfc-mark.svg" },
-        { "slug": "nippon-india-growth", "name": "Nippon India Growth Fund", "amc": "Nippon India Mutual Fund", "plan": "Direct Growth", "subCategory": "Mid Cap", "risk": "Very High", "nav": "3842", "cagr3y": "22.1%", "horizon": "7 years or more", "logo": "/images/amc/nippon.png" },
-        { "slug": "mirae-asset-large-cap", "name": "Mirae Asset Large Cap Fund", "amc": "Mirae Asset Mutual Fund", "plan": "Direct Growth", "subCategory": "Large Cap", "risk": "High", "nav": "98.20", "cagr3y": "16.4%", "horizon": "5 years or more", "logo": "/images/amc/mirae-mark.svg" }
+        {
+          "slug": "sbi-small-cap",
+          "name": "SBI Small Cap Fund",
+          "amc": "SBI Mutual Fund",
+          "plan": "Direct Growth",
+          "subCategory": "Small Cap",
+          "risk": "Very High",
+          "nav": "164.72",
+          "cagr3y": "26.4%",
+          "horizon": "7 years or more",
+          "logo": "/images/amc/sbi.svg",
+          "code": 125497
+        },
+        {
+          "slug": "hdfc-flexi-cap",
+          "name": "HDFC Flexi Cap Fund",
+          "amc": "HDFC Mutual Fund",
+          "plan": "Direct Growth",
+          "subCategory": "Flexi Cap",
+          "risk": "High",
+          "nav": "712.35",
+          "cagr3y": "21.8%",
+          "horizon": "5 years or more",
+          "logo": "/images/amc/hdfc-mark.svg",
+          "code": 118955
+        },
+        {
+          "slug": "nippon-india-growth",
+          "name": "Nippon India Growth Fund",
+          "amc": "Nippon India Mutual Fund",
+          "plan": "Direct Growth",
+          "subCategory": "Mid Cap",
+          "risk": "Very High",
+          "nav": "3842",
+          "cagr3y": "22.1%",
+          "horizon": "7 years or more",
+          "logo": "/images/amc/nippon.png",
+          "code": 118668
+        },
+        {
+          "slug": "mirae-asset-large-cap",
+          "name": "Mirae Asset Large Cap Fund",
+          "amc": "Mirae Asset Mutual Fund",
+          "plan": "Direct Growth",
+          "subCategory": "Large Cap",
+          "risk": "High",
+          "nav": "98.20",
+          "cagr3y": "16.4%",
+          "horizon": "5 years or more",
+          "logo": "/images/amc/mirae-mark.svg",
+          "code": 118825
+        }
       ]
     },
     {
       "slug": "hybrid",
       "name": "Hybrid",
-      "summary": "A mix of equity and debt. The split is defined by the scheme, not by the day’s news.",
+      "summary": "A mix of equity and debt. The split is defined by the scheme, not by the day\u2019s news.",
       "schemes": [
-        { "slug": "icici-prudential-balanced-advantage", "name": "ICICI Prudential Balanced Advantage Fund", "amc": "ICICI Prudential Mutual Fund", "plan": "Direct Growth", "subCategory": "Dynamic Asset Allocation", "risk": "Moderate", "nav": "348.12", "cagr3y": "14.6%", "horizon": "3 years or more", "logo": "/images/amc/icici-mark.png" }
+        {
+          "slug": "icici-prudential-balanced-advantage",
+          "name": "ICICI Prudential Balanced Advantage Fund",
+          "amc": "ICICI Prudential Mutual Fund",
+          "plan": "Direct Growth",
+          "subCategory": "Dynamic Asset Allocation",
+          "risk": "Moderate",
+          "nav": "348.12",
+          "cagr3y": "14.6%",
+          "horizon": "3 years or more",
+          "logo": "/images/amc/icici-mark.png",
+          "code": 120377
+        }
       ]
     },
     {
@@ -27,10 +87,58 @@
       "name": "Debt",
       "summary": "Nearer goals and parking. Credit and interest-rate movement still matter.",
       "schemes": [
-        { "slug": "hdfc-short-term-debt", "name": "HDFC Short Term Debt Fund", "amc": "HDFC Mutual Fund", "plan": "Direct Growth", "subCategory": "Short Duration", "risk": "Moderate", "nav": "28.16", "cagr3y": "7.4%", "horizon": "1 to 3 years", "logo": "/images/amc/hdfc-mark.svg" },
-        { "slug": "sbi-magnum-gilt", "name": "SBI Magnum Gilt Fund", "amc": "SBI Mutual Fund", "plan": "Direct Growth", "subCategory": "Gilt", "risk": "Moderate", "nav": "58.40", "cagr3y": "7.1%", "horizon": "3 years or more", "logo": "/images/amc/sbi.svg" },
-        { "slug": "icici-prudential-corporate-bond", "name": "ICICI Prudential Corporate Bond Fund", "amc": "ICICI Prudential Mutual Fund", "plan": "Direct Growth", "subCategory": "Corporate Bond", "risk": "Moderate", "nav": "26.90", "cagr3y": "7.6%", "horizon": "3 years or more", "logo": "/images/amc/icici-mark.png" },
-        { "slug": "axis-treasury-advantage", "name": "Axis Treasury Advantage Fund", "amc": "Axis Mutual Fund", "plan": "Direct Growth", "subCategory": "Money Market", "risk": "Low", "nav": "2746", "cagr3y": "6.8%", "horizon": "Up to 1 year", "logo": "/images/amc/axis-mark.svg" }
+        {
+          "slug": "hdfc-short-term-debt",
+          "name": "HDFC Short Term Debt Fund",
+          "amc": "HDFC Mutual Fund",
+          "plan": "Direct Growth",
+          "subCategory": "Short Duration",
+          "risk": "Moderate",
+          "nav": "28.16",
+          "cagr3y": "7.4%",
+          "horizon": "1 to 3 years",
+          "logo": "/images/amc/hdfc-mark.svg",
+          "code": 0
+        },
+        {
+          "slug": "sbi-magnum-gilt",
+          "name": "SBI Magnum Gilt Fund",
+          "amc": "SBI Mutual Fund",
+          "plan": "Direct Growth",
+          "subCategory": "Gilt",
+          "risk": "Moderate",
+          "nav": "58.40",
+          "cagr3y": "7.1%",
+          "horizon": "3 years or more",
+          "logo": "/images/amc/sbi.svg",
+          "code": 0
+        },
+        {
+          "slug": "icici-prudential-corporate-bond",
+          "name": "ICICI Prudential Corporate Bond Fund",
+          "amc": "ICICI Prudential Mutual Fund",
+          "plan": "Direct Growth",
+          "subCategory": "Corporate Bond",
+          "risk": "Moderate",
+          "nav": "26.90",
+          "cagr3y": "7.6%",
+          "horizon": "3 years or more",
+          "logo": "/images/amc/icici-mark.png",
+          "code": 120692
+        },
+        {
+          "slug": "axis-treasury-advantage",
+          "name": "Axis Treasury Advantage Fund",
+          "amc": "Axis Mutual Fund",
+          "plan": "Direct Growth",
+          "subCategory": "Money Market",
+          "risk": "Low",
+          "nav": "2746",
+          "cagr3y": "6.8%",
+          "horizon": "Up to 1 year",
+          "logo": "/images/amc/axis-mark.svg",
+          "code": 0
+        }
       ]
     },
     {
@@ -38,7 +146,19 @@
       "name": "ELSS",
       "summary": "Equity with a three-year lock-in on each allotment. Tax treatment depends on your regime.",
       "schemes": [
-        { "slug": "axis-elss-tax-saver", "name": "Axis ELSS Tax Saver Fund", "amc": "Axis Mutual Fund", "plan": "Direct Growth", "subCategory": "ELSS", "risk": "High", "nav": "112.46", "cagr3y": "18.2%", "horizon": "5 years or more, with a 3-year lock-in", "logo": "/images/amc/axis-mark.svg" }
+        {
+          "slug": "axis-elss-tax-saver",
+          "name": "Axis ELSS Tax Saver Fund",
+          "amc": "Axis Mutual Fund",
+          "plan": "Direct Growth",
+          "subCategory": "ELSS",
+          "risk": "High",
+          "nav": "112.46",
+          "cagr3y": "18.2%",
+          "horizon": "5 years or more, with a 3-year lock-in",
+          "logo": "/images/amc/axis-mark.svg",
+          "code": 120503
+        }
       ]
     }
   ]

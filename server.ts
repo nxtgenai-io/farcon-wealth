@@ -128,6 +128,12 @@ app.post('/api/ai', async (req, res) => {
   return res.json({ state, text });
 });
 
+app.get('/api/nav', async (_req, res) => {
+  const { liveNavResponse } = await import('./src/lib/api/liveNav.ts');
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.json(await liveNavResponse());
+});
+
 // API: Lead Capture — validates, then forwards to LEADS_WEBHOOK_URL when set.
 app.post('/api/leads', async (req, res) => {
   const { sanitiseLead, forwardLead, allowLead, verifyTurnstile } = await import('./src/lib/api/sheetLead.ts');

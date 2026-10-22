@@ -19,5 +19,11 @@ not_found_handling = "single-page-application"
 # binding = "LEADS_KV"
 # id = ""
 
-# Required by `wrangler preview`. Empty so previews use the top-level Worker settings.
+# Workers AI. No external key. The same binding is repeated for preview uploads.
+[ai]
+binding = "AI"
+
+# Required by `wrangler preview`. Previews keep the top-level Worker settings, including AI.
 [previews]
+[previews.ai]
+binding = "AI"

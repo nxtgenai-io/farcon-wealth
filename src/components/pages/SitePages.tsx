@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RoutePath } from '@/types';
 import { FARCON_CONFIG } from '@/content/site/config';
 import { BLOG_POSTS } from '@/content/blogs/blogData';
@@ -124,14 +124,92 @@ export const ServicesPage: React.FC<PageProps> = ({ onOpenConsultation }) => (
 );
 
 type FundScheme = (typeof fundBook.categories)[number]['schemes'][number];
+type LiveQuote = { code: number; nav: number; date: string; change: number; spark: number[]; cagr3y: number | null };
+
+function useLiveNav() {
+  const [quotes, setQuotes] = useState<Record<number, LiveQuote>>({});
+  useEffect(() => {
+    let live = true;
+    fetch('/api/nav')
+      .then((response) => response.json())
+      .then((body: { funds?: LiveQuote[] }) => {
+        if (!live) return;
+        const next: Record<number, LiveQuote> = {};
+        for (const fund of body.funds || []) next[fund.code] = fund;
+        setQuotes(next);
+      })
+      .catch(() => undefined);
+    return () => { live = false; };
+  }, []);
+  return quotes;
+}
+
+function CountUp({ value }: { value: number }) {
+  const [shown, setShown] = useState(value);
+  useEffect(() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      setShown(value);
+      return undefined;
+    }
+    const from = value * 0.94;
+    const start = performance.now();
+    let frame = 0;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / 650);
+      setShown(from + (value - from) * (1 - (1 - t) ** 3));
+      if (t < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [value]);
+  return <>{shown.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</>;
+}
+
+function Spark({ values }: { values: number[] }) {
+  if (values.length < 2) return null;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const width = 108;
+  const height = 28;
+  const d = values.map((point, index) => {
+    const x = (index / (values.length - 1)) * width;
+    const y = max === min ? height / 2 : height - ((point - min) / (max - min)) * (height - 4) - 2;
+    return `${index ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  const up = values[values.length - 1] >= values[0];
+  return (
+    <svg className="nav-spark" viewBox={`0 0 ${width} ${height}`} width={width} height={height} aria-hidden="true">
+      <path d={d} fill="none" stroke={up ? '#1f9d55' : '#8a5a2a'} strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; categorySlug?: string; schemeSlug?: string }> = ({ navigate, categorySlug, schemeSlug }) => {
   const [query, setQuery] = useState('');
   const [amc, setAmc] = useState('All');
+  const [risen, setRisen] = useState(false);
+  const quotes = useLiveNav();
   const category = fundBook.categories.find((item) => item.slug === categorySlug);
   const scheme = category?.schemes.find((item) => item.slug === schemeSlug);
+  useEffect(() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const node = document.querySelector('.nav-grid');
+    if (!node || reduce) {
+      setRisen(true);
+      return undefined;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setRisen(true);
+      observer.disconnect();
+    }, { threshold: 0.12 });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [categorySlug, schemeSlug, query, amc]);
   if (categorySlug && !category) return null;
   if (schemeSlug && category && !scheme) return null;
+  const live = (fund: { code?: number }) => (fund.code ? quotes[fund.code] : undefined);
   const listed = category ? category.schemes : fundBook.categories.flatMap((item) => item.schemes.map((fund) => ({ ...fund, categoryName: item.name, categorySlug: item.slug })));
   const amcs = ['All', ...Array.from(new Set(listed.map((fund) => fund.amc)))];
   const needle = query.trim().toLowerCase();
@@ -147,10 +225,10 @@ export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; category
             <span aria-hidden="true">/</span>
             <span>{scheme.name}</span>
           </div>
-          <span className="hf-eye">Illustrative scheme</span>
+          <span className="hf-eye">{live(scheme) ? 'Live NAV' : 'Scheme'}</span>
           <h1>{scheme.name}</h1>
-          <p className="lede">{scheme.amc}. {scheme.plan}. This page is a teaching card, not a live factsheet and not a recommendation.</p>
-          <article className="pg-card" style={{ marginTop: 16 }}>
+          <p className="lede">{scheme.amc}. {scheme.plan}. Educational only. Not a recommendation.</p>
+          <article className={`pg-card nav-card nav-grid${risen ? ' is-in' : ''}`} style={{ marginTop: 16 }}>
             <div className="hf-amc">
               <img className="hf-logo" src={scheme.logo} alt="" />
               <div>
@@ -158,12 +236,17 @@ export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; category
                 <div className="hf-sub">Riskometer label: {scheme.risk}</div>
               </div>
             </div>
+            <div className="nav-figure">
+              <span>{live(scheme) ? 'NAV' : 'Illustrative NAV'}</span>
+              <strong>₹<CountUp value={Number(live(scheme)?.nav || scheme.nav)} /></strong>
+              {live(scheme) && <em className={live(scheme)!.change >= 0 ? 'is-up' : 'is-down'}>{live(scheme)!.change >= 0 ? '+' : ''}{live(scheme)!.change.toFixed(2)}%</em>}
+              <Spark values={live(scheme)?.spark || []} />
+            </div>
             <div className="hf-metrics">
-              <span>Illustrative NAV<b>₹{scheme.nav}</b></span>
-              <span>Illustrative 3Y CAGR<b>{scheme.cagr3y}</b></span>
+              <span>{live(scheme)?.cagr3y != null ? '3Y from NAV history' : 'Illustrative 3Y'}<b>{live(scheme)?.cagr3y != null ? `${live(scheme)!.cagr3y}%` : scheme.cagr3y}</b></span>
               <span>Horizon fit<b>{scheme.horizon}</b></span>
             </div>
-            <p className="hf-note">As of {fundBook.asOf}. {fundBook.source}</p>
+            <p className="hf-note">{live(scheme) ? `As of ${live(scheme)!.date}. AMFI scheme NAV history via mfapi.in.` : `As of ${fundBook.asOf}. ${fundBook.source}`}</p>
             <p className="hf-note">{fundBook.disclaimer}</p>
           </article>
           <div className="hf-cta-row" style={{ marginTop: 16 }}>
@@ -182,7 +265,7 @@ export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; category
         <span className="hf-eye">Mutual Funds</span>
         <h1>{category ? category.name : 'Explore mutual funds'}</h1>
         <p className="lede">{category ? category.summary : 'Category pages for a teaching set. Open a scheme to see the illustrative figures and the risk line.'}</p>
-        <span className="horizon">Illustrative data as of {fundBook.asOf}. Not live NAV.</span>
+        <span className="horizon">NAV where shown live is the latest published scheme NAV. Not a recommendation.</span>
         <div className="hf-pills" style={{ margin: '18px 0' }}>
           <button type="button" className={!category ? 'is-on' : ''} onClick={() => navigate('/mutual-funds')}>All</button>
           {fundBook.categories.map((item) => (
@@ -197,7 +280,7 @@ export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; category
             <button key={item} type="button" className={amc === item ? 'is-on' : ''} onClick={() => setAmc(item)}>{item.replace(' Mutual Fund', '')}</button>
           ))}
         </div>
-        <div className="hf-fund-row">
+        <div className={`hf-fund-row nav-grid${risen ? ' is-in' : ''}`}>
           {shown.length === 0 && (
             <article className="pg-card">
               <h2>No scheme in this filter</h2>
@@ -206,8 +289,9 @@ export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; category
           )}
           {shown.map((fund) => {
             const catSlug = 'categorySlug' in fund ? fund.categorySlug : category?.slug;
+            const quote = live(fund);
             return (
-              <button key={fund.slug} type="button" className="hf-fund" onClick={() => navigate(`/mutual-funds/${catSlug}/${fund.slug}` as RoutePath)}>
+              <button key={fund.slug} type="button" className="hf-fund nav-card" onClick={() => navigate(`/mutual-funds/${catSlug}/${fund.slug}` as RoutePath)}>
                 <div className="hf-amc">
                   <img className="hf-logo" src={fund.logo} alt="" />
                   <div>
@@ -216,9 +300,11 @@ export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; category
                   </div>
                 </div>
                 <div className="hf-tags"><span>{fund.subCategory}</span><span>{fund.risk}</span></div>
-                <div className="hf-metrics">
-                  <span>3Y CAGR<b>{fund.cagr3y}</b></span>
-                  <span>NAV<b>₹{fund.nav}</b></span>
+                <div className="nav-figure">
+                  <span>{quote ? `NAV · ${quote.date}` : 'Illustrative NAV'}</span>
+                  <strong>₹<CountUp value={Number(quote?.nav || fund.nav)} /></strong>
+                  {quote && <em className={quote.change >= 0 ? 'is-up' : 'is-down'}>{quote.change >= 0 ? '+' : ''}{quote.change.toFixed(2)}%</em>}
+                  <Spark values={quote?.spark || []} />
                 </div>
               </button>
             );
