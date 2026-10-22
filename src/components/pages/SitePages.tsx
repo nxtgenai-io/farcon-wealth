@@ -21,15 +21,15 @@ const ARTICLE_IMAGES = [
 
 const FUNDS: { name: string; group: string; tags: string[]; cagr: string; nav: string; risk: string; tone: string; logo: string; mark: string; spark: number[] }[] = [
   { name: 'SBI Small Cap Fund', group: 'Equity', tags: ['Equity', 'Small Cap'], cagr: '26.4%', nav: '₹164.72', risk: 'Very High Risk', tone: '#0E6B38', logo: '/images/amc/sbi.svg', mark: '', spark: [12, 13, 15, 16, 18, 20, 22, 24, 26] },
-  { name: 'HDFC Flexi Cap Fund', group: 'Equity', tags: ['Equity', 'Flexi Cap'], cagr: '21.8%', nav: '₹712.35', risk: 'High Risk', tone: '#9B2C2C', logo: '/images/amc/hdfc.svg', mark: '', spark: [11, 13, 14, 16, 17, 18, 20, 21, 22] },
-  { name: 'ICICI Prudential Balanced Advantage Fund', group: 'Hybrid', tags: ['Hybrid', 'Dynamic'], cagr: '14.6%', nav: '₹348.12', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/icici.webp', mark: '', spark: [12, 12.4, 13, 13.6, 14.2, 14.8, 15.4, 16.2, 17] },
-  { name: 'Axis ELSS Tax Saver Fund', group: 'ELSS', tags: ['Equity', 'ELSS'], cagr: '18.2%', nav: '₹112.46', risk: 'High Risk', tone: '#9B2C2C', logo: '/images/amc/axis.svg', mark: '', spark: [10, 11, 12.5, 13.5, 15, 16, 17.2, 18.2, 19] },
-  { name: 'Nippon India Growth Fund', group: 'Equity', tags: ['Equity', 'Mid Cap'], cagr: '22.1%', nav: '₹3,842', risk: 'Very High Risk', tone: '#0E6B38', logo: '', mark: 'NI', spark: [13, 14, 15, 16, 18, 19, 21, 22, 24] },
-  { name: 'Mirae Asset Large Cap Fund', group: 'Equity', tags: ['Equity', 'Large Cap'], cagr: '16.4%', nav: '₹98.20', risk: 'High Risk', tone: '#9B2C2C', logo: '', mark: 'MA', spark: [11, 12, 12.6, 13.2, 14, 14.6, 15.2, 15.8, 16.4] },
-  { name: 'HDFC Short Term Debt Fund', group: 'Debt', tags: ['Debt', 'Short Duration'], cagr: '7.4%', nav: '₹28.16', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/hdfc.svg', mark: '', spark: [12, 12.2, 12.4, 12.7, 13, 13.2, 13.5, 13.8, 14] },
+  { name: 'HDFC Flexi Cap Fund', group: 'Equity', tags: ['Equity', 'Flexi Cap'], cagr: '21.8%', nav: '₹712.35', risk: 'High Risk', tone: '#9B2C2C', logo: '/images/amc/hdfc-mark.svg', mark: '', spark: [11, 13, 14, 16, 17, 18, 20, 21, 22] },
+  { name: 'ICICI Prudential Balanced Advantage Fund', group: 'Hybrid', tags: ['Hybrid', 'Dynamic'], cagr: '14.6%', nav: '₹348.12', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/icici-mark.png', mark: '', spark: [12, 12.4, 13, 13.6, 14.2, 14.8, 15.4, 16.2, 17] },
+  { name: 'Axis ELSS Tax Saver Fund', group: 'ELSS', tags: ['Equity', 'ELSS'], cagr: '18.2%', nav: '₹112.46', risk: 'High Risk', tone: '#9B2C2C', logo: '/images/amc/axis-mark.svg', mark: '', spark: [10, 11, 12.5, 13.5, 15, 16, 17.2, 18.2, 19] },
+  { name: 'Nippon India Growth Fund', group: 'Equity', tags: ['Equity', 'Mid Cap'], cagr: '22.1%', nav: '₹3,842', risk: 'Very High Risk', tone: '#0E6B38', logo: '/images/amc/nippon.png', mark: '', spark: [13, 14, 15, 16, 18, 19, 21, 22, 24] },
+  { name: 'Mirae Asset Large Cap Fund', group: 'Equity', tags: ['Equity', 'Large Cap'], cagr: '16.4%', nav: '₹98.20', risk: 'High Risk', tone: '#9B2C2C', logo: '/images/amc/mirae-mark.svg', mark: '', spark: [11, 12, 12.6, 13.2, 14, 14.6, 15.2, 15.8, 16.4] },
+  { name: 'HDFC Short Term Debt Fund', group: 'Debt', tags: ['Debt', 'Short Duration'], cagr: '7.4%', nav: '₹28.16', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/hdfc-mark.svg', mark: '', spark: [12, 12.2, 12.4, 12.7, 13, 13.2, 13.5, 13.8, 14] },
   { name: 'SBI Magnum Gilt Fund', group: 'Debt', tags: ['Debt', 'Gilt'], cagr: '7.1%', nav: '₹58.40', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/sbi.svg', mark: '', spark: [11, 11.4, 11.2, 11.8, 12.1, 12.4, 12.2, 12.8, 13.1] },
-  { name: 'ICICI Prudential Corporate Bond Fund', group: 'Debt', tags: ['Debt', 'Corporate'], cagr: '7.6%', nav: '₹26.90', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/icici.webp', mark: '', spark: [10, 10.4, 10.8, 11.1, 11.4, 11.8, 12.1, 12.5, 12.8] },
-  { name: 'Axis Treasury Advantage Fund', group: 'Debt', tags: ['Debt', 'Money Market'], cagr: '6.8%', nav: '₹2,746', risk: 'Low Risk', tone: '#9A5410', logo: '/images/amc/axis.svg', mark: '', spark: [9, 9.2, 9.4, 9.5, 9.7, 9.9, 10.1, 10.3, 10.5] },
+  { name: 'ICICI Prudential Corporate Bond Fund', group: 'Debt', tags: ['Debt', 'Corporate'], cagr: '7.6%', nav: '₹26.90', risk: 'Moderate Risk', tone: '#9A5410', logo: '/images/amc/icici-mark.png', mark: '', spark: [10, 10.4, 10.8, 11.1, 11.4, 11.8, 12.1, 12.5, 12.8] },
+  { name: 'Axis Treasury Advantage Fund', group: 'Debt', tags: ['Debt', 'Money Market'], cagr: '6.8%', nav: '₹2,746', risk: 'Low Risk', tone: '#9A5410', logo: '/images/amc/axis-mark.svg', mark: '', spark: [9, 9.2, 9.4, 9.5, 9.7, 9.9, 10.1, 10.3, 10.5] },
 ];
 
 const CATEGORIES = [

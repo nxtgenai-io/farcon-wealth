@@ -53,8 +53,19 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ activeSlug, navigate
               <p>{service.summary}</p>
               <div className="hf-cta-row" style={{ marginTop: 16 }}>
                 <button type="button" className="hf-btn hf-btn-green" onClick={() => onOpenConsultation(service.title)}>Book a Free Consultation</button>
-                <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate(`/calculators/${service.calculatorType}` as RoutePath)}>
-                  Open the {CALC_LABEL[service.calculatorType] || 'SIP'} calculator
+                <button
+                  type="button"
+                  className="hf-btn hf-btn-outline"
+                  onClick={() => {
+                    const path: RoutePath = service.slug === 'portfolio-review'
+                      ? '/portfolio-review'
+                      : service.slug === 'swp'
+                        ? '/calculators/retirement'
+                        : `/calculators/${service.calculatorType}` as RoutePath;
+                    navigate(path);
+                  }}
+                >
+                  {service.slug === 'portfolio-review' ? 'Request a portfolio review' : `Open the ${service.slug === 'swp' ? 'Retirement' : CALC_LABEL[service.calculatorType] || 'SIP'} calculator`}
                 </button>
               </div>
             </div>

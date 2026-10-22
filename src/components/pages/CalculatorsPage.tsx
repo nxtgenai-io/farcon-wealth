@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { RoutePath } from '@/types';
 import { calculateGoalSIP, calculateLumpsum, calculateRetirement, calculateSIP } from '@/lib/calculations/financial';
 import { formatINR } from '@/lib/formatting/currency';
@@ -21,28 +21,44 @@ function axisAmount(n: number) {
 function Chart({ invested, value, startLabel, endLabel }: { invested: number[]; value: number[]; startLabel: string; endLabel: string }) {
   const w = 640;
   const h = 228;
-  const padL = 62;
-  const padR = 12;
-  const padT = 14;
-  const padB = 28;
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [scale, setScale] = useState(1);
+  useEffect(() => {
+    const el = svgRef.current;
+    if (!el) return;
+    const measure = () => {
+      const width = el.getBoundingClientRect().width;
+      setScale(width > 0 ? width / w : 1);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  const safe = Math.max(scale, 0.3);
+  const font = 12 / safe;
+  const padL = 78 / safe;
+  const padR = 12 / safe;
+  const padT = 16 / safe;
+  const padB = 22 / safe;
   const max = Math.max(...value, ...invested, 1);
   const x = (i: number, n: number) => padL + (i / Math.max(1, n - 1)) * (w - padL - padR);
   const y = (v: number) => padT + (1 - v / max) * (h - padT - padB);
   const path = (series: number[]) => series.map((v, i) => `${i === 0 ? 'M' : 'L'}${x(i, series.length).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
   const area = `${path(value)} L${x(value.length - 1, value.length).toFixed(1)} ${y(0)} L${x(0, value.length).toFixed(1)} ${y(0)} Z`;
   return (
-    <svg className="hf-draw calc-chart" viewBox={`0 0 ${w} ${h}`} role="img" aria-label="Projected value and amount invested">
+    <svg ref={svgRef} className="hf-draw calc-chart" viewBox={`0 0 ${w} ${h}`} role="img" aria-label="Projected value and amount invested">
       {[max, max / 2, 0].map((tick) => (
         <g key={tick}>
-          <line x1={padL} x2={w - padR} y1={y(tick)} y2={y(tick)} stroke="#e6e0d4" strokeWidth="1" />
-          <text x={padL - 8} y={y(tick) + 4} textAnchor="end" fontSize="12" fill="#5c6b64">{tick === 0 ? '0' : axisAmount(tick)}</text>
+          <line x1={padL} x2={w - padR} y1={y(tick)} y2={y(tick)} stroke="#e6e0d4" strokeWidth={1 / safe} />
+          <text x={padL - 8 / safe} y={y(tick) + font * 0.35} textAnchor="end" fontSize={font} fill="#5c6b64">{tick === 0 ? '0' : axisAmount(tick)}</text>
         </g>
       ))}
       <path d={area} fill="rgba(31,157,85,0.15)" />
-      <path className="hf-line" d={path(value)} fill="none" stroke="#1F9D55" strokeWidth="2.5" />
-      <path className="hf-line" d={path(invested)} fill="none" stroke="#C9A24A" strokeWidth="2" />
-      <text x={padL} y={h - 8} fontSize="12" fill="#5c6b64">{startLabel}</text>
-      <text x={w - padR} y={h - 8} textAnchor="end" fontSize="12" fill="#5c6b64">{endLabel}</text>
+      <path className="hf-line" d={path(value)} fill="none" stroke="#1F9D55" strokeWidth={2.5 / safe} />
+      <path className="hf-line" d={path(invested)} fill="none" stroke="#C9A24A" strokeWidth={2 / safe} />
+      <text x={padL} y={h - 8 / safe} fontSize={font} fill="#5c6b64">{startLabel}</text>
+      <text x={w - padR} y={h - 8 / safe} textAnchor="end" fontSize={font} fill="#5c6b64">{endLabel}</text>
     </svg>
   );
 }
@@ -87,6 +103,42 @@ function Legend() {
   );
 }
 
+const RETIRE_INFLATION = 6;
+const RETIRE_PRE = 12;
+const RETIRE_POST = 8;
+
+/** Chart series only. The SIP headline still comes from calculateRetirement. */
+function retirementChartSeries(result: ReturnType<typeof calculateRetirement>) {
+  const inf = RETIRE_INFLATION / 100;
+  const post = RETIRE_POST / 100;
+  const monthlyRate = RETIRE_PRE / 100 / 12;
+  const ages: number[] = [];
+  for (let year = result.currentAge; year <= result.lifeExpectancy; year += 1) ages.push(year);
+  const annualAtRetirement = result.monthlyExpenseAtRetirement * 12;
+  const totalInvested = result.requiredMonthlySIP * 12 * result.yearsToRetire;
+  const value = ages.map((year) => {
+    if (year <= result.retirementAge) {
+      const months = (year - result.currentAge) * 12;
+      const sipFuture = months > 0
+        ? result.requiredMonthlySIP * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate)
+        : 0;
+      return Math.round(sipFuture);
+    }
+    let corpus = result.requiredRetirementCorpus;
+    const yearsIn = year - result.retirementAge;
+    for (let step = 1; step <= yearsIn; step += 1) {
+      const withdrawal = annualAtRetirement * Math.pow(1 + inf, step - 1);
+      corpus = (corpus - withdrawal) * (1 + post);
+    }
+    return Math.max(0, Math.round(corpus));
+  });
+  const invested = ages.map((year) => {
+    const contributedYears = Math.min(Math.max(year - result.currentAge, 0), result.yearsToRetire);
+    return year >= result.retirementAge ? totalInvested : result.requiredMonthlySIP * 12 * contributedYears;
+  });
+  return { ages, value, invested };
+}
+
 const COPY: Record<Tab, { eye: string; h1: string; lede: string }> = {
   sip: { eye: 'SIP calculator', h1: 'SIP calculator', lede: 'A monthly amount, a rate and a number of years. The chart is an illustration from those assumptions.' },
   lumpsum: { eye: 'Lumpsum calculator', h1: 'Lumpsum calculator', lede: 'One amount, left invested. The chart shows the assumed path, not a promise.' },
@@ -124,7 +176,8 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
   const sip = useMemo(() => calculateSIP(sipAmount, sipRate, sipYears), [sipAmount, sipRate, sipYears]);
   const lumpsum = useMemo(() => calculateLumpsum(lump, lumpRate, lumpYears), [lump, lumpRate, lumpYears]);
   const goalResult = useMemo(() => calculateGoalSIP(goal, goalRate, goalYears, 0), [goal, goalRate, goalYears]);
-  const retirement = useMemo(() => calculateRetirement(age, retireAge, 85, expense, 6, 12, 8, 0), [age, retireAge, expense]);
+  const retirement = useMemo(() => calculateRetirement(age, retireAge, 85, expense, RETIRE_INFLATION, RETIRE_PRE, RETIRE_POST, 0), [age, retireAge, expense]);
+  const retirementChart = useMemo(() => retirementChartSeries(retirement), [retirement]);
 
   const copy = COPY[tab];
   const [showYears, setShowYears] = useState(false);
@@ -182,7 +235,7 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
               <table className="year-table"><tbody>{goalResult.breakdown.map((row) => <tr key={row.year}><td>Year {row.year}</td><td>{formatINR(row.accumulated)}</td></tr>)}</tbody></table>
             )}
             {showYears && tab === 'retirement' && (
-              <table className="year-table"><tbody>{retirement.breakdown.map((row) => <tr key={row.age}><td>Age {row.age}</td><td>{formatINR(row.accumulatedCorpus)}</td></tr>)}</tbody></table>
+              <table className="year-table"><tbody>{retirementChart.ages.map((year, index) => <tr key={year}><td>Age {year}</td><td>{formatINR(retirementChart.invested[index])}</td><td>{formatINR(retirementChart.value[index])}</td></tr>)}</tbody></table>
             )}
             <details className="acc">
               <summary>How this is calculated</summary>
@@ -225,8 +278,8 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
                 <span>Illustrative corpus</span>
                 <strong>{formatINR(retirement.requiredRetirementCorpus)}</strong>
                 <p>Required SIP {formatINR(retirement.requiredMonthlySIP)} · Expense at retirement {formatINR(retirement.monthlyExpenseAtRetirement)}</p>
-                <span className="hf-year-chip">Age {retirement.breakdown.at(-1)?.age} · {formatINR(retirement.breakdown.at(-1)?.accumulatedCorpus ?? 0)}</span>
-                <Chart invested={retirement.breakdown.map(() => 0)} value={retirement.breakdown.map((row) => row.accumulatedCorpus)} startLabel={`Age ${retirement.breakdown[0]?.age ?? age}`} endLabel={`Age ${retirement.breakdown.at(-1)?.age ?? retireAge}`} />
+                <span className="hf-year-chip">Age {retirement.retirementAge} · {formatINR(retirement.requiredRetirementCorpus)}</span>
+                <Chart invested={retirementChart.invested} value={retirementChart.value} startLabel={`Age ${retirementChart.ages[0] ?? age}`} endLabel={`Age ${retirementChart.ages.at(-1) ?? retireAge}`} />
                 <Legend />
               </>
             )}
