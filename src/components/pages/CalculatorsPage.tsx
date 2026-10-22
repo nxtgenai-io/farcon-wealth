@@ -67,6 +67,7 @@ function Slider({ label, value, min, max, step, display, minLabel, maxLabel, onC
   label: string; value: number; min: number; max: number; step: number; display: string; minLabel: string; maxLabel: string; onChange: (n: number) => void;
 }) {
   const money = display.trim().startsWith('₹');
+  const percent = !money && display.trim().endsWith('%');
   const [draft, setDraft] = useState<string | null>(null);
   const [hint, setHint] = useState('');
   const pct = `${((Math.min(max, Math.max(min, value)) - min) / (max - min)) * 100}%`;
@@ -79,7 +80,7 @@ function Slider({ label, value, min, max, step, display, minLabel, maxLabel, onC
           type="text"
           inputMode="decimal"
           aria-label={label}
-          value={draft ?? (money ? display : String(value))}
+          value={draft ?? (money ? display : percent ? `${value}%` : String(value))}
           onFocus={() => { setDraft(String(value)); setHint(''); }}
           onBlur={() => {
             const next = Number((draft ?? String(value)).replace(/[^\d.]/g, ''));

@@ -1,6 +1,5 @@
 import { LeadContext } from '@/types';
 import { SheetLead } from '@/lib/api/sheetLead';
-import { FARCON_CONFIG } from '@/content/site/config';
 
 export interface LeadSubmissionResponse {
   success: boolean;
@@ -17,7 +16,15 @@ export interface SheetLeadInput extends Omit<Partial<SheetLead>, 'consent'> {
   consent?: boolean;
 }
 
-const WHATSAPP = `Please message us on WhatsApp: https://wa.me/${FARCON_CONFIG.whatsappNumber}`;
+export function leadErrorLine(message: string): string {
+  const cleaned = message
+    .replace(/https?:\/\/\S+/g, '')
+    .replace(/please message us on whatsapp:?/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[.\s]+$/, '');
+  return cleaned ? `${cleaned}.` : 'We could not save this just now.';
+}
 
 function readUtm(): Record<string, string> {
   if (typeof window === 'undefined') return {};
@@ -60,7 +67,7 @@ export class LocalAndRemoteLeadService {
         return {
           success: false,
           leadId: '',
-          message: `${data.message || data.error || 'Please check the form and try again.'} ${WHATSAPP}`,
+          message: leadErrorLine(data.message || data.error || 'We could not save this just now.'),
           timestamp,
         };
       }
@@ -74,7 +81,7 @@ export class LocalAndRemoteLeadService {
       return {
         success: false,
         leadId: '',
-        message: `We could not reach Farcon just now. ${WHATSAPP}`,
+        message: 'We could not reach Farcon just now.',
         timestamp,
       };
     }

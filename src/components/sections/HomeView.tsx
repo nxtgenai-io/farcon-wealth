@@ -528,8 +528,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               <ul className="hf-truststrip">
                 <li>AMFI-registered · ARN {FARCON_CONFIG.arn}</li>
                 <li>Investments in your name</li>
-                <li>No hidden fees</li>
+                <li><button type="button" onClick={() => navigate('/disclosures')}>Regular plans · Commission disclosed</button></li>
               </ul>
+              <p className="hf-note hf-plan-note">The monthly figure is an illustration from the rate you choose. It is not a promise of returns.</p>
               <a className="hf-btn hf-btn-outline hf-expert" href={whatsapp} target="_blank" rel="noreferrer">Talk to an expert</a>
               <PlanningPlant />
             </div>
@@ -706,9 +707,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
       <Reveal as="section" className="hf-section" data-section="stories">
         <div className="hf-wrap hf-split">
           <div>
-            <span className="hf-eye">Sample wording</span>
-            <h2>The tone of a conversation</h2>
-            <p className="hf-lede">These lines show how a planning conversation sounds. They are not client endorsements.</p>
+            <span className="hf-eye">Sample investor conversations</span>
+            <h2>Sample investor conversations</h2>
+            <p className="hf-lede">Sample wording for how a planning conversation sounds. These are not testimonials and not client endorsements.</p>
           </div>
           <div>
           <div

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { leadService } from '@/lib/api/leadService';
+import React, { useEffect, useRef, useState } from 'react';
+import { leadErrorLine, leadService } from '@/lib/api/leadService';
 import { isIndianMobile } from '@/lib/phone';
 import { FARCON_CONFIG } from '@/content/site/config';
 
@@ -48,7 +48,9 @@ export const LeadForm: React.FC<LeadFormProps> = ({ form, submitLabel, requireMe
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState('');
   const [statusKind, setStatusKind] = useState<'idle' | 'ok' | 'err'>('idle');
+  const [offerWhatsapp, setOfferWhatsapp] = useState(false);
   const [busy, setBusy] = useState(false);
+  const alertRef = useRef<HTMLParagraphElement>(null);
   const [startedAt] = useState(() => Date.now());
   const whatsapp = `https://wa.me/${FARCON_CONFIG.whatsappNumber}`;
 
@@ -73,12 +75,14 @@ export const LeadForm: React.FC<LeadFormProps> = ({ form, submitLabel, requireMe
     if (!values.consent) next.consent = 'Tick the box so we may store this enquiry.';
     setErrors(next);
     if (Object.keys(next).length) {
+      setOfferWhatsapp(false);
       setStatusKind('err');
       setStatus('Please correct the highlighted fields.');
       return;
     }
 
     setBusy(true);
+    setOfferWhatsapp(false);
     setStatus('');
     setStatusKind('idle');
     const result = await leadService.submitSheetLead({
@@ -101,14 +105,21 @@ export const LeadForm: React.FC<LeadFormProps> = ({ form, submitLabel, requireMe
     });
     setBusy(false);
     if (!result.success) {
+      setOfferWhatsapp(true);
       setStatusKind('err');
-      setStatus(result.message);
+      setStatus(leadErrorLine(result.message));
       return;
     }
     setStatusKind('ok');
     setStatus(result.leadId ? `${result.message} Reference ${result.leadId}.` : result.message);
     setValues(empty);
   };
+
+  useEffect(() => {
+    if (statusKind !== 'err') return;
+    alertRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    alertRef.current?.focus();
+  }, [status, statusKind]);
 
   return (
     <form className="form-card" onSubmit={onSubmit} noValidate>
@@ -177,8 +188,10 @@ export const LeadForm: React.FC<LeadFormProps> = ({ form, submitLabel, requireMe
       </label>
       {errors.consent && <span className="err">{errors.consent}</span>}
       <button className="hf-btn hf-btn-green" type="submit" disabled={busy} aria-busy={busy}>{busy ? 'Sending…' : submitLabel}</button>
-      {status && <p className="hf-note" role={statusKind === 'err' ? 'alert' : 'status'}>{status}</p>}
-      {statusKind === 'err' && <a className="hf-btn hf-btn-outline" href={whatsapp} target="_blank" rel="noreferrer">Message us on WhatsApp</a>}
+      {status && (
+        <p ref={alertRef} className="hf-note" tabIndex={-1} role={statusKind === 'err' ? 'alert' : 'status'} aria-live={statusKind === 'err' ? 'assertive' : 'polite'}>{status}</p>
+      )}
+      {offerWhatsapp && <a className="hf-btn hf-btn-outline" href={whatsapp} target="_blank" rel="noreferrer">Message us on WhatsApp</a>}
     </form>
   );
 };

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { QUIZ_QUESTIONS, scoreQuiz, DIAGNOSTIC_DIMENSIONS, DiagnosticDimension } from './quizConfig';
 import { RoutePath, LeadContext } from '@/types';
-import { leadService } from '@/lib/api/leadService';
+import { leadErrorLine, leadService } from '@/lib/api/leadService';
+import { FARCON_CONFIG } from '@/content/site/config';
 import { COMPLIANCE_REGISTRY } from '@/lib/compliance';
 import { planningContextService } from '@/lib/planningContext';
 import { analytics } from '@/lib/analytics';
@@ -35,6 +36,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
   const [transitionDirection, setTransitionDirection] = useState<'next' | 'prev'>('next');
   const [leadCaptured, setLeadCaptured] = useState(false);
   const [leadError, setLeadError] = useState('');
+  const leadAlertRef = useRef<HTMLParagraphElement>(null);
   const [quizConsent, setQuizConsent] = useState(false);
   const [quizPreference, setQuizPreference] = useState('');
   const [quizStartedAt] = useState(() => Date.now());
@@ -118,6 +120,12 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentStep, submitted, isTransitioning, currentQ]);
 
+  useEffect(() => {
+    if (!leadError) return;
+    leadAlertRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    leadAlertRef.current?.focus();
+  }, [leadError]);
+
   const result = scoreQuiz(answers);
 
   // Personalized CTA determination based on quiz inputs
@@ -181,7 +189,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
       };
       const res = await leadService.submitLead(payload);
       if (!res.success) {
-        setLeadError(res.message);
+        setLeadError(leadErrorLine(res.message));
         return;
       }
       setLeadCaptured(true);
@@ -617,7 +625,12 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                 >
                   {savingLead ? 'Sending...' : 'Send to the Farcon team'}
                 </button>
-                {leadError && <p className="sm:col-span-3 text-[11px] text-red-700" role="alert">{leadError}</p>}
+                {leadError && (
+                  <>
+                    <p ref={leadAlertRef} className="sm:col-span-3 text-[11px] text-red-700" tabIndex={-1} role="alert" aria-live="assertive">{leadError}</p>
+                    <a className="hf-btn hf-btn-outline sm:col-span-3" href={`https://wa.me/${FARCON_CONFIG.whatsappNumber}`} target="_blank" rel="noreferrer">Message us on WhatsApp</a>
+                  </>
+                )}
               </form>
             </div>
           ) : (

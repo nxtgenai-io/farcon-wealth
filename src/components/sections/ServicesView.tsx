@@ -46,14 +46,31 @@ const CALC_LABEL: Record<string, string> = {
   retirement: 'Retirement',
 };
 
-const IMAGES: Record<string, string> = {
-  'sip-planning': '/images/home/article-sip-800.webp',
-  'portfolio-review': '/images/home/article-funds-800.webp',
-  elss: '/images/home/goal-tax-800.webp',
-  retirement: '/images/home/goal-retirement-800.webp',
-  'child-education': '/images/home/goal-education-800.webp',
-  swp: '/images/home/why-mountains-800.webp',
+const IMAGES: Record<string, { src: string; srcSet: string; alt: string }> = {
+  'sip-planning': card('/images/home/article-sip', 'A pink piggy bank'),
+  'portfolio-review': card('/images/home/article-funds', 'Coin stacks with a seedling'),
+  elss: card('/images/home/goal-tax', 'A calculator on paperwork'),
+  retirement: card('/images/home/goal-retirement', 'A beach chair at sunset'),
+  'child-education': card('/images/home/goal-education', 'A child walking to school'),
+  swp: {
+    src: '/images/home/why-mountains-800.webp',
+    srcSet: '/images/home/why-mountains-800.webp 800w, /images/home/why-mountains-1440.webp 1440w',
+    alt: 'A mountain ridge at sunset',
+  },
+  'mutual-fund-distribution': card('/images/home/svc-distribution', 'An Indian couple reviewing a folder with an advisor'),
+  lumpsum: card('/images/home/svc-lumpsum', 'A sealed envelope beside a plant in a brass bowl'),
+  'goal-based-planning': card('/images/home/svc-planning', 'A notebook, calendar and cup of tea on a wooden desk'),
+  'wealth-creation': card('/images/home/svc-wealth', 'A plant growing from a jar of coins'),
+  'investment-solutions': card('/images/home/svc-solutions', 'Three potted plants in a row on a wooden ledge'),
 };
+
+function card(base: string, alt: string) {
+  return {
+    src: `${base}-800.webp`,
+    srcSet: `${base}-800.webp 800w, ${base}-1600.webp 1600w`,
+    alt,
+  };
+}
 
 export const ServicesView: React.FC<ServicesViewProps> = ({ activeSlug, navigate, onOpenConsultation }) => {
   if (activeSlug) {
@@ -95,7 +112,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ activeSlug, navigate
                 <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/contact')}>Contact</button>
               </div>
             </div>
-            <img src={IMAGES[service.slug] || IMAGES['sip-planning']} alt="" />
+            <img {...IMAGES[service.slug]} width={800} height={450} loading="lazy" decoding="async" sizes="(min-width: 900px) 560px, 100vw" />
           </div>
           <div className="pg-grid cards">
             <article className="pg-card">
@@ -154,7 +171,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ activeSlug, navigate
         <div className="pg-grid services">
           {FARCON_SERVICES.map((service) => (
             <button key={service.id} type="button" className="pg-card svc" onClick={() => navigate(`/services/${service.slug}` as RoutePath)}>
-              <img src={IMAGES[service.slug]} alt="" />
+              <img {...IMAGES[service.slug]} width={800} height={450} loading="lazy" decoding="async" sizes="(min-width: 900px) 320px, 100vw" />
               <span className="hf-eye">{EYEBROW[service.slug] || 'Service'}</span>
               <h2>{service.title}</h2>
               <p className="svc-tagline">{service.tagline}</p>

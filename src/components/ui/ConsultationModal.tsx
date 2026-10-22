@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { leadService } from '@/lib/api/leadService';
+import React, { useEffect, useRef, useState } from 'react';
+import { leadErrorLine, leadService } from '@/lib/api/leadService';
 import { LeadContext } from '@/types';
 import { planningContextService } from '@/lib/planningContext';
 import { analytics } from '@/lib/analytics';
@@ -36,6 +36,12 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   }, [isOpen]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const formAlertRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!errors.form) return;
+    formAlertRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    formAlertRef.current?.focus();
+  }, [errors.form]);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [assignedLeadId, setAssignedLeadId] = useState('');
@@ -96,7 +102,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
       const res = await leadService.submitLead(payload);
       if (!res.success) {
-        setErrors({ form: res.message });
+        setErrors({ form: leadErrorLine(res.message) });
         return;
       }
       setAssignedLeadId(res.leadId);
@@ -177,7 +183,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 <input tabIndex={-1} autoComplete="off" value={formData.companyWebsite} onChange={(event) => setFormData((current) => ({ ...current, companyWebsite: event.target.value }))} />
               </label>
               {errors.form && (
-                <div className="p-3 text-xs bg-red-50 text-red-700 rounded-md border border-red-200">
+                <div ref={formAlertRef} tabIndex={-1} className="p-3 text-xs bg-red-50 text-red-700 rounded-md border border-red-200" role="alert" aria-live="assertive">
                   {errors.form}
                 </div>
               )}

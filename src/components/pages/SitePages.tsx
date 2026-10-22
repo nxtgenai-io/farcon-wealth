@@ -19,6 +19,14 @@ const ARTICLE_IMAGES = [
   '/images/home/why-mountains-800.webp',
 ];
 
+const ARTICLE_COVERS: Record<string, string> = {
+  'the-mathematics-of-staying-calm': '/images/home/why-mountains-800.webp',
+  'why-sip-beats-market-timing': '/images/home/article-funds-800.webp',
+  'demystifying-elss-tax-saving-beyond-80c': '/images/home/svc-planning-800.webp',
+  'the-hidden-enemy-inflation-in-retirement': '/images/home/goal-retirement-800.webp',
+  'portfolio-consolidation-trimming-the-foliage': '/images/home/svc-wealth-800.webp',
+};
+
 import fundBook from '@/content/funds/schemes.json';
 import { FARCON_SERVICES } from '@/content/services/servicesData';
 
@@ -248,13 +256,22 @@ export const ArticlePage: React.FC<PageProps & { slug: string }> = ({ navigate, 
         </div>
         <span className="hf-eye">{post.category} · {post.readTime} · {post.publishedDate}</span>
         <h1>{post.title}</h1>
+        <img className="article-cover" src={ARTICLE_COVERS[post.slug] || ARTICLE_IMAGES[0]} alt="" width={1600} height={900} loading="lazy" decoding="async" />
         <p className="lede">{post.excerpt}</p>
-        {post.content.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+        <div className="article-prose">
+          {post.content.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+        </div>
         <p className="hf-note">Educational note from a mutual fund distributor. Not investment advice and not a scheme recommendation.</p>
         <h2>Related</h2>
-        {more.map((item) => (
-          <button key={item.id} type="button" className="hf-textlink" onClick={() => navigate(`/blogs/${item.slug}` as RoutePath)}>{item.title}</button>
-        ))}
+        <div className="related-notes">
+          {more.map((item) => (
+            <button key={item.id} type="button" className="pg-card" onClick={() => navigate(`/blogs/${item.slug}` as RoutePath)}>
+              <span className="hf-eye">{item.category} · {item.readTime}</span>
+              <h2>{item.title}</h2>
+              <p>{item.excerpt}</p>
+            </button>
+          ))}
+        </div>
         <div className="hf-cta-row" style={{ marginTop: 16 }}>
           <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate(`/services/${(ARTICLE_SERVICE[post.category] || service.slug)}` as RoutePath)}>Related service</button>
           <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/calculators/sip')}>SIP calculator</button>
@@ -516,7 +533,7 @@ export const DisclosuresPage: React.FC<{ section?: 'privacy' | 'terms' | 'grieva
       id: 'registration',
       title: 'Registration',
       show: section === 'disclosures',
-      body: `${FARCON_CONFIG.legalName} is an AMFI-registered mutual fund distributor. ARN: ${FARCON_CONFIG.arn}. Registered office: ${FARCON_CONFIG.registeredAddress}. Email ${FARCON_CONFIG.email}. Message us on WhatsApp from the button on this page.`,
+      body: `${FARCON_CONFIG.legalName} is an AMFI-registered mutual fund distributor. ARN: ${FARCON_CONFIG.arn}. Registered office: ${FARCON_CONFIG.registeredAddress}. Email ${FARCON_CONFIG.email}. Farcon does not bill an upfront fee. On regular plans, the asset management company may pay Farcon a distributor commission from the scheme expense ratio. That commission is disclosed before you invest. Message us on WhatsApp from the button on this page.`,
     },
     {
       id: 'risk',

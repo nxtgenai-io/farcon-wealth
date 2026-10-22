@@ -16,5 +16,10 @@ The Farcon Wealth lockup and stag are the official artwork supplied for the site
 | `article-funds-800.webp`, `article-funds-1600.webp` | Coin stacks with a seedling | [Pexels 11391951](https://www.pexels.com/photo/green-plant-between-a-pile-of-silver-coins-11391951/) | Towfiqu barbhuiya | Pexels License |
 | `article-sip-800.webp`, `article-sip-1600.webp` | Pink piggy bank | [Pexels 11624819](https://www.pexels.com/photo/close-up-photo-of-pink-piggy-bank-11624819/) | adrian vieriu | Pexels License |
 | `article-elss-800.webp`, `article-elss-1600.webp` | Calculator and tax paperwork | [Pexels 6863202](https://www.pexels.com/photo/tax-documents-on-the-table-6863202/) | Nataliya Vaitkevich | Pexels License |
+| `svc-distribution-800.webp`, `svc-distribution-1600.webp` | An Indian couple reviewing a folder with an advisor | Custom image created for Farcon Wealth | — | No attribution required |
+| `svc-lumpsum-800.webp`, `svc-lumpsum-1600.webp` | A sealed envelope beside a plant in a brass bowl | Custom image created for Farcon Wealth | — | No attribution required |
+| `svc-planning-800.webp`, `svc-planning-1600.webp` | Notebook, calendar and tea on a wooden desk | Custom image created for Farcon Wealth | — | No attribution required |
+| `svc-wealth-800.webp`, `svc-wealth-1600.webp` | A plant growing from a jar of coins | Custom image created for Farcon Wealth | — | No attribution required |
+| `svc-solutions-800.webp`, `svc-solutions-1600.webp` | Three potted plants on a wooden ledge | Custom image created for Farcon Wealth | — | No attribution required |
 
 A light warm grade was applied in production. Photographs were not taken from the 809px reference screenshot.
