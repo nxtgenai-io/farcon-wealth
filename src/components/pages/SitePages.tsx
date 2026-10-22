@@ -686,7 +686,7 @@ export const DisclosuresPage: React.FC<{ section?: 'privacy' | 'terms' | 'grieva
       id: 'risk',
       title: 'Risk disclosure',
       show: section === 'disclosures',
-      body: 'Mutual fund investments are subject to market risks. Read all scheme related documents carefully. Past performance is not indicative of future returns. Figures on this website that are marked illustrative are not live NAVs. Index levels in the header and on the home page are provided by TradingView.',
+      body: 'Mutual fund investments are subject to market risks. Read all scheme related documents carefully. Past performance is not indicative of future returns. Figures on this website that are marked illustrative are not live NAVs. Index levels on the home page come from Yahoo Finance and may be delayed.',
     },
     {
       id: 'grievance',

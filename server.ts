@@ -134,6 +134,14 @@ app.get('/api/nav', async (_req, res) => {
   res.json(await liveNavResponse());
 });
 
+app.get('/api/market', async (req, res) => {
+  const { marketResponse } = await import('./src/lib/api/market.ts');
+  const upstream = await marketResponse(`http://127.0.0.1${req.originalUrl}`);
+  res.status(upstream.status);
+  upstream.headers.forEach((value, key) => res.setHeader(key, value));
+  res.send(Buffer.from(await upstream.arrayBuffer()));
+});
+
 // API: Lead Capture — validates, then forwards to LEADS_WEBHOOK_URL when set.
 app.post('/api/leads', async (req, res) => {
   const { sanitiseLead, forwardLead, allowLead, verifyTurnstile } = await import('./src/lib/api/sheetLead.ts');

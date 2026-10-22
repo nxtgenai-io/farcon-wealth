@@ -321,11 +321,8 @@
   border-radius: 16px;
   border: 1px solid var(--fw-line);
   box-shadow: 0 12px 32px rgba(15, 61, 46, 0.08);
-  padding: 14px 14px 4px;
+  padding: 14px;
   min-width: 0;
-  min-height: 351px;
-  box-sizing: border-box;
-  overflow: hidden;
 }
 .hf-market-tabs { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
 .hf-quote-block { margin-top: 8px; padding-top: 6px; }
@@ -2571,51 +2568,5 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .pg-card:hover, .hf-fund:hover, .hf-goal:hover, .hf-tool:hover, .hf-story:hover,
   .hf-article:hover, .nav-card:hover, .svc-card:hover, .goal-card:hover, .article-card:hover,
   .hf-goal:hover img, .hf-goal:focus-visible img { transform: none !important; }
-  .tv-skel { animation: none !important; }
 }
-
-/* TradingView embeds: fixed slots, no page scrollbars. */
-.fw-tape {
-  background: #fffdf8;
-  border-bottom: 1px solid var(--fw-line);
-  overflow: hidden;
-  height: 116px;
-}
-.tv-host { position: relative; width: 100%; }
-.tv-skel {
-  position: absolute;
-  z-index: 1;
-  left: 0;
-  right: 0;
-  top: 0;
-  border-radius: 12px;
-  background: #f3efe6;
-  pointer-events: none;
-  animation: tv-pulse 900ms ease-out infinite alternate;
-}
-.tv-mini .tv-skel, .tv-mini .tradingview-widget-container__widget { height: 300px; }
-.tv-mini iframe { height: 300px !important; }
-.tv-tape .tv-skel, .tv-tape .tradingview-widget-container__widget { height: 84px; }
-.tv-tape iframe { height: 84px !important; }
-.tv-host.is-ready .tv-skel { opacity: 0; animation: none; transition: opacity 240ms ease-out; }
-@keyframes tv-pulse { from { opacity: 0.5; } to { opacity: 1; } }
-.tradingview-widget-container { width: 100%; }
-.tradingview-widget-container__widget { overflow: hidden; }
-.tv-host iframe { display: block; width: 100% !important; max-width: 100%; border: 0; }
-.tradingview-widget-copyright {
-  height: 32px;
-  margin: 0;
-  overflow: hidden;
-  text-align: center;
-  color: #5c675f;
-  font-family: var(--fw-sans) !important;
-  font-size: 12px !important;
-  line-height: 32px !important;
-}
-.tradingview-widget-copyright a { color: var(--fw-forest); text-decoration: none; }
-.hf-market, .is-home .hf-market { min-height: 351px; overflow: hidden; }
-@media (min-width: 1100px) {
-  .tv-mini .tv-skel, .tv-mini .tradingview-widget-container__widget { height: 468px; }
-  .tv-mini iframe { height: 468px !important; }
-  .hf-market, .is-home .hf-market { min-height: 531px; }
-}
+.hf-source { font-size: 10px; margin: 0; }

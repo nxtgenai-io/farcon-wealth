@@ -1,5 +1,6 @@
 import { allowLead, forwardLead, sanitiseLead, verifyTurnstile } from '../src/lib/api/sheetLead.ts';
 import { liveNavResponse } from '../src/lib/api/liveNav.ts';
+import { marketResponse } from '../src/lib/api/market.ts';
 import {
   AI_FALLBACK_TEXT,
   AI_MAX_INPUT,
@@ -206,6 +207,11 @@ async function handleRequest(request: Request, env: Env): Promise<Response> {
       } catch {
         return json({ ok: false, funds: [] }, 503);
       }
+    }
+
+    if (url.pathname === '/api/market') {
+      if (request.method !== 'GET') return json({ ok: false }, 405);
+      return marketResponse(request.url);
     }
 
     return env.ASSETS.fetch(request);
