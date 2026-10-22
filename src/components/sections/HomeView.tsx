@@ -328,14 +328,17 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               <span className="hf-eye">Interactive goal planning calculator</span>
               <h2>Your Goals.<br /><em>Our Planning.</em></h2>
               <p className="hf-lede">See how small, consistent steps today can create a brighter tomorrow.</p>
-              <svg className="hf-plant" viewBox="0 0 220 260" aria-hidden="true">
-                <ellipse cx="110" cy="236" rx="46" ry="12" fill="#E4F2E8" />
-                <path d="M110 230 V92" stroke="#1F7A45" strokeWidth="4" strokeLinecap="round" />
-                <path d="M110 168 C62 150 28 112 46 72 C78 96 98 140 110 168" fill="#1F9D55" />
-                <path d="M110 150 C158 128 196 86 176 48 C142 74 122 118 110 150" fill="#0F3D2E" />
-                <path d="M110 118 C70 104 48 74 62 46 C86 64 102 92 110 118" fill="#3CB371" />
-                <path d="M110 104 C146 88 172 58 160 32 C136 50 120 78 110 104" fill="#146C43" />
-                <circle cx="110" cy="78" r="7" fill="#C9A24A" />
+              <svg className="hf-plant" viewBox="0 0 280 360" aria-hidden="true">
+                <ellipse cx="140" cy="332" rx="78" ry="16" fill="#E3F3E8" />
+                <path d="M140 328 V150" stroke="#17693A" strokeWidth="7" strokeLinecap="round" />
+                <path d="M140 250 C70 230 18 170 48 108 C92 142 124 200 140 250" fill="#1F9D55" />
+                <path d="M140 228 C214 200 268 140 236 78 C188 118 156 176 140 228" fill="#0E3D2C" />
+                <path d="M140 196 C78 176 40 128 62 82 C98 108 122 156 140 196" fill="#3CB371" />
+                <path d="M140 172 C198 150 236 108 214 68 C176 96 152 136 140 172" fill="#146C43" />
+                <path d="M140 150 C96 128 70 92 86 58 C112 78 128 116 140 150" fill="#8FCB6A" />
+                <path d="M140 138 C182 116 210 82 196 50 C166 72 148 108 140 138" fill="#1B7A45" />
+                <ellipse cx="140" cy="96" rx="16" ry="22" fill="#C9A24A" transform="rotate(-18 140 96)" />
+                <ellipse cx="128" cy="88" rx="7" ry="12" fill="#E2C56A" transform="rotate(-30 128 88)" />
               </svg>
             </div>
             <div className="hf-plan-panel">
@@ -384,20 +387,21 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
       </section>
 
       <section className="hf-section">
-        <div className="hf-wrap">
-          <span className="hf-eye">Featured mutual funds</span>
-          <h2>Explore top funds for your <em>goals.</em></h2>
-          <p className="hf-lede">Handpicked schemes across categories to help you build a stronger tomorrow.</p>
-          <button type="button" className="hf-textlink" onClick={() => navigate('/mutual-funds')}>Explore All Mutual Funds →</button>
-          <div className="hf-pills" style={{ marginTop: 16 }}>
+        <div className="hf-wrap hf-split">
+          <div>
+            <span className="hf-eye">Featured mutual funds</span>
+            <h2>Explore top funds for your <em>goals.</em></h2>
+            <p className="hf-lede">Handpicked schemes across categories to help you build a stronger tomorrow.</p>
+            <button type="button" className="hf-textlink" onClick={() => navigate('/mutual-funds')}>Explore All Mutual Funds →</button>
+          </div>
+          <div>
+          <div className="hf-pills">
             {['Equity Funds', 'Hybrid Funds', 'Debt Funds', 'Tax Saving (ELSS)'].map((tab) => (
               <button key={tab} type="button" className={fundTab === tab ? 'is-on' : ''} onClick={() => setFundTab(tab)}>{tab}</button>
             ))}
             <button type="button" className="hf-textlink" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
           </div>
           <p className="hf-note">Figures are illustrative, not live NAVs, and not a recommendation.</p>
-        </div>
-        <div className="hf-wrap">
           <div className="hf-fund-row">
             {funds.map((fund) => (
               <article key={fund.name} className="hf-fund">
@@ -425,6 +429,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               </article>
             )}
           </div>
+          </div>
         </div>
       </section>
 
@@ -435,11 +440,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           <path d="M1112 28 v92" stroke="#F3D48A" strokeWidth="3" />
           <path d="M1112 28 h52 l-12 16 12 16 h-52 z" fill="#F3D48A" />
         </svg>
-        <div className="hf-why-inner">
-          <span className="hf-eye">Why Farcon Wealth</span>
-          <h2>A disciplined approach to wealth creation.</h2>
-          <p className="hf-why-lead">We combine research, technology and a goal-based approach to help you invest with confidence.</p>
-          <button type="button" className="hf-btn hf-btn-white" onClick={() => navigate('/about')}>Know More About Us <ArrowRight size={16} /></button>
+        <div className="hf-why-inner hf-split">
+          <div>
+            <span className="hf-eye">Why Farcon Wealth</span>
+            <h2>A disciplined approach to wealth creation.</h2>
+            <p className="hf-why-lead">We combine research, technology and a goal-based approach to help you invest with confidence.</p>
+            <button type="button" className="hf-btn hf-btn-white" onClick={() => navigate('/about')}>Know More About Us <ArrowRight size={16} /></button>
+          </div>
           <div className="hf-cols">
             <article>
               <div className="hf-num">01</div>
@@ -464,12 +471,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
       </section>
 
       <section className="hf-section hf-tools-section">
-        <div className="hf-wrap">
-          <span className="hf-eye">Powerful tools for every stage</span>
-          <h2>Calculators & Planners</h2>
-          <p className="hf-lede">Make better decisions with our easy-to-use financial tools.</p>
-          <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/calculators')}>Explore All Calculators <ArrowRight size={16} /></button>
-          <div className="hf-tools" style={{ marginTop: 18 }}>
+        <div className="hf-wrap hf-split">
+          <div>
+            <span className="hf-eye">Powerful tools for every stage</span>
+            <h2>Calculators &amp; Planners</h2>
+            <p className="hf-lede">Make better decisions with our easy-to-use financial tools.</p>
+            <button type="button" className="hf-textlink" onClick={() => navigate('/calculators')}>Explore All Calculators →</button>
+          </div>
+          <div className="hf-tools">
             {TOOLS.map((tool) => (
               <button key={tool.title} type="button" className="hf-tool" onClick={() => navigate(tool.href)}>
                 <span className="hf-pastel" style={{ background: tool.tint }}>{tool.icon}</span>
@@ -482,10 +491,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
       </section>
 
       <section className="hf-section">
-        <div className="hf-wrap">
-          <span className="hf-eye">Investor stories</span>
-          <h2>What our investors say</h2>
-          <p className="hf-lede">Real experiences, real journeys, a shared belief in long-term wealth creation.</p>
+        <div className="hf-wrap hf-split">
+          <div>
+            <span className="hf-eye">Investor stories</span>
+            <h2>What our investors say</h2>
+            <p className="hf-lede">Real experiences, real journeys, a shared belief in long-term wealth creation.</p>
+          </div>
+          <div>
           <div className="hf-carousel">
             <button type="button" className="hf-side" onClick={() => scrollStories(-1)} aria-label="Previous stories">‹</button>
           <div
@@ -521,15 +533,18 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               </button>
             ))}
           </div>
+          </div>
         </div>
       </section>
 
       <section className="hf-section">
-        <div className="hf-wrap">
-          <span className="hf-eye">Investor education</span>
-          <h2>Learn, Plan & Grow</h2>
-          <p className="hf-lede">Simplified insights to help you make informed decisions.</p>
-          <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/education')}>Explore All Articles <ArrowRight size={16} /></button>
+        <div className="hf-wrap hf-split">
+          <div>
+            <span className="hf-eye">Investor education</span>
+            <h2>Learn, Plan &amp; Grow</h2>
+            <p className="hf-lede">Simplified insights to help you make informed decisions.</p>
+            <button type="button" className="hf-textlink" onClick={() => navigate('/education')}>Explore All Articles →</button>
+          </div>
           <div className="hf-articles">
             {[
               ['/images/home/article-funds.webp', 'Mutual Funds 101', 'A beginner\'s guide to investing in mutual funds'],
