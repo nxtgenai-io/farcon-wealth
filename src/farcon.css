@@ -153,7 +153,9 @@
   font-size: 13px;
   font-weight: 600;
   gap: 6px;
+  white-space: nowrap;
 }
+.fw-book-short { display: none; }
 .fw-search {
   border-top: 1px solid var(--fw-line);
   background: white;
@@ -864,8 +866,11 @@ html, body { overflow-x: clip; }
   .is-home .fw-lockup img { width: 42px; height: 50px; }
   .is-home .fw-lockup strong { font-size: 15px; }
   .is-home .fw-lockup small { font-size: 8px; max-width: none; white-space: nowrap; }
-  .is-home .fw-nav button { font-size: 14px; padding: 0 8px; min-height: 40px; }
-  .is-home .fw-login, .is-home .fw-book { height: 40px; min-height: 40px; font-size: 14px; padding: 0 14px; white-space: nowrap; }
+  .is-home .fw-header-bar { gap: 8px; }
+  .is-home .fw-nav { gap: 0; margin-left: 4px; min-width: 0; }
+  .is-home .fw-nav button { font-size: 13px; padding: 0 5px; min-height: 40px; }
+  .is-home .fw-actions { gap: 6px; flex: none; }
+  .is-home .fw-login, .is-home .fw-book { height: 40px; min-height: 40px; font-size: 13px; padding: 0 12px; white-space: nowrap; }
   .is-home .fw-icon-btn { width: 40px; height: 40px; min-width: 40px; min-height: 40px; }
   .is-home .fw-footer { padding: 48px 24px 32px; min-height: 0; box-sizing: border-box; }
   .is-home .fw-footer h2 { font-size: 13px; letter-spacing: 0.04em; text-transform: none; margin-bottom: 8px; }
@@ -1092,8 +1097,14 @@ html, body { overflow-x: clip; }
 }
 
 @media (min-width: 1100px) and (max-width: 1279px) {
-  .is-home .fw-nav button { font-size: 12px; padding: 0 5px; }
+  .is-home .fw-header-bar { gap: 6px; padding: 0 16px; }
+  .is-home .fw-nav button { font-size: 12px; padding: 0 4px; }
+  .is-home .fw-nav-later { display: none; }
+  .is-home .fw-actions { gap: 4px; }
   .is-home .fw-login, .is-home .fw-book { font-size: 12px; padding: 0 10px; }
+  .is-home .fw-book-full { display: none; }
+  .is-home .fw-book-short { display: inline; }
+  .is-home .fw-menu-btn { display: inline-flex; width: 36px; height: 36px; min-width: 36px; min-height: 36px; }
   .is-home .fw-lockup strong { font-size: 13px; letter-spacing: 0.04em; }
   .is-home .fw-lockup small { font-size: 8px; max-width: none; }
   .is-home .hf-goals { gap: 12px; }

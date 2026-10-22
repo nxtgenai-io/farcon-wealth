@@ -105,7 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
               <button
                 key={item.href}
                 type="button"
-                className={currentPath === item.href ? 'is-active' : ''}
+                className={`${currentPath === item.href ? 'is-active' : ''}${item.later ? ' fw-nav-later' : ''}`}
                 onClick={() => go(item.href)}
               >
                 {item.short}
@@ -121,7 +121,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
             Investor Login
           </button>
           <button type="button" className="fw-book" onClick={onOpenConsultation}>
-            Book a Consultation
+            <span className="fw-book-full">Book a Consultation</span>
+            <span className="fw-book-short">Book a Call</span>
           </button>
           <button type="button" className="fw-menu-btn" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen((v) => !v)}>
             {open ? <X size={20} /> : <Menu size={20} />}

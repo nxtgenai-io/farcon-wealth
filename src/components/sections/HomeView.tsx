@@ -467,7 +467,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           <div className="hf-goals">
             {GOALS.map((goal, index) => (
               <button key={goal.title} type="button" className="hf-goal" style={{ animationDelay: `${index * 70}ms` }} onClick={() => navigate(goal.href)}>
-                <img {...cardSrc(goal.image)} sizes="(min-width: 1100px) 180px, 80vw" alt={goal.alt} width={1600} height={1100} loading="eager" fetchPriority="low" decoding="async" />
+                <img {...cardSrc(goal.image)} sizes="(min-width: 1100px) 180px, 80vw" alt={goal.alt} width={1600} height={1100} loading="eager" fetchPriority="high" decoding="sync" />
                 <span>
                   <h2>{goal.title}</h2>
                   <p>{goal.text}</p>
