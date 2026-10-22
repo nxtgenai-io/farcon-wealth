@@ -261,7 +261,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
   return (
     <div className="hf">
       <section className="hf-hero" data-section="hero">
-        <img className="hf-hero-photo" src="/images/home/hero.webp?v=7" alt="A family sitting together, looking toward misty green mountains" width={1618} height={580} fetchPriority="high" />
+        <img className="hf-hero-photo" src="/images/home/hero.webp?v=12" alt="A family sitting together, looking toward misty green mountains" width={1618} height={580} fetchPriority="high" />
         <div className="hf-hero-scrim" />
         <div className="hf-hero-inner">
           <div className="hf-hero-copy">
@@ -572,7 +572,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
       </section>
 
       <section className="hf-cta" data-section="cta">
-        <img className="bg" src="/images/home/cta-sunset.webp?v=7" alt="A person sitting on a rock above a mountain valley in warm evening light" width={1618} height={492} />
+        <img className="bg" src="/images/home/cta-sunset.webp?v=12" alt="A person sitting on a rock above a mountain valley in warm evening light" width={1618} height={492} />
         <div className="hf-cta-scrim" />
         <div className="hf-cta-inner">
           <div>
