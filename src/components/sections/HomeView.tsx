@@ -605,10 +605,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           fetchPriority="low"
           decoding="async"
         />
-        <svg className="hf-flag" viewBox="0 0 1200 640" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
-          <path d="M760 560 C 820 470, 780 390, 900 330 S 860 180, 1020 120 S 980 40, 1120 28" fill="none" stroke="rgba(255,255,255,0.78)" strokeWidth="2.5" strokeDasharray="1.5 8" strokeLinecap="round" />
-          <path d="M1112 28 v92" stroke="#F3D48A" strokeWidth="3" />
-          <path d="M1112 28 h52 l-12 16 12 16 h-52 z" fill="#F3D48A" />
+        <svg className="hf-flag" viewBox="0 0 72 120" aria-hidden="true">
+          <path d="M16 116 V6" stroke="#F3D48A" strokeWidth="3" strokeLinecap="round" />
+          <path d="M16 8 h46 l-12 16 12 16 H16 z" fill="#F3D48A" />
         </svg>
         <div className="hf-why-inner hf-split">
           <div>

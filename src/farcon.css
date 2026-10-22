@@ -1130,27 +1130,37 @@ html { scroll-behavior: smooth; }
 @media (min-width: 1100px) {
   .hf-hero-photo, .is-home .hf-hero-photo {
     position: absolute;
-    inset: 0;
+    left: 40%;
+    right: auto;
+    top: 0;
+    bottom: 0;
     z-index: 0;
-    width: 100%;
+    width: 20%;
     height: 100%;
     margin: 0;
     border-radius: 0;
-    object-position: 52% 68%;
-    transform: translate3d(0, var(--hero-shift, 0px), 0) scale(1.03);
-    transform-origin: center center;
+    object-fit: cover;
+    object-position: 52% 58%;
+    transform: none;
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%),
+      linear-gradient(180deg, #000 0%, #000 72%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%),
+      linear-gradient(180deg, #000 0%, #000 72%, transparent 100%);
+    mask-composite: intersect;
   }
   .hf-hero-scrim, .is-home .hf-hero-scrim {
     display: block;
     position: absolute;
     inset: 0;
     z-index: 1;
-    background:
-      linear-gradient(180deg, transparent 0%, transparent 62%, rgba(247, 244, 236, 0.55) 86%, #F7F4EC 100%),
-      linear-gradient(90deg, #F7F4EC 0%, #F7F4EC 45%, rgba(247, 244, 236, 0.97) 52%, rgba(247, 244, 236, 0.45) 62%, rgba(247, 244, 236, 0) 74%);
+    pointer-events: none;
+    background: linear-gradient(180deg, transparent 0%, transparent 78%, rgba(247, 244, 236, 0.55) 92%, #F7F4EC 100%);
   }
-  .hf-hero-inner { position: relative; z-index: 2; }
-  .hf-hero-copy { max-width: min(560px, 44vw); }
+  .hf-hero-inner, .is-home .hf-hero-inner { position: relative; z-index: 2; }
+  .hf-hero-copy, .is-home .hf-hero-copy { max-width: 460px; }
 }
 @media (max-width: 1099px) {
   .hf-hero, .is-home .hf-hero { display: flex; flex-direction: column; background: #F7F4EC; min-height: 0; }
@@ -1178,6 +1188,19 @@ html { scroll-behavior: smooth; }
 .hf-why-photo { object-position: 78% 62%; opacity: 1; }
 .hf-why::after, .is-home .hf-why::after {
   background: linear-gradient(90deg, rgba(6, 28, 26, 0.9) 0%, rgba(8, 36, 32, 0.72) 34%, rgba(8, 32, 28, 0.28) 62%, rgba(6, 24, 22, 0.08) 100%);
+}
+@media (min-width: 1100px) {
+  .hf-why-photo, .is-home .hf-why-photo { object-position: 100% 52%; opacity: 1; }
+  .hf-why::after, .is-home .hf-why::after {
+    background: linear-gradient(90deg, rgba(6, 22, 20, 0.94) 0%, rgba(6, 24, 22, 0.88) 58%, rgba(6, 28, 26, 0.5) 76%, rgba(8, 36, 32, 0.16) 90%, rgba(8, 36, 32, 0.02) 100%);
+  }
+  .hf-flag, .is-home .hf-flag {
+    display: block;
+    width: 64px;
+    height: 108px;
+    top: 28px;
+    right: 22px;
+  }
 }
 .hf-indicative {
   display: inline-block;
