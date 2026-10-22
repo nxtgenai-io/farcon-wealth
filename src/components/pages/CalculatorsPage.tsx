@@ -20,10 +20,10 @@ function Chart({ invested, value }: { invested: number[]; value: number[] }) {
   const path = (series: number[]) => series.map((v, i) => `${i === 0 ? 'M' : 'L'}${x(i, series.length).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
   const area = `${path(value)} L${x(value.length - 1, value.length).toFixed(1)} ${y(0)} L${x(0, value.length).toFixed(1)} ${y(0)} Z`;
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} role="img" aria-label="Projected value and amount invested">
+    <svg className="hf-draw" viewBox={`0 0 ${w} ${h}`} role="img" aria-label="Projected value and amount invested">
       <path d={area} fill="rgba(31,157,85,0.15)" />
-      <path d={path(value)} fill="none" stroke="#1F9D55" strokeWidth="2.5" />
-      <path d={path(invested)} fill="none" stroke="#C9A24A" strokeWidth="2" />
+      <path className="hf-line" d={path(value)} fill="none" stroke="#1F9D55" strokeWidth="2.5" />
+      <path className="hf-line" d={path(invested)} fill="none" stroke="#C9A24A" strokeWidth="2" />
     </svg>
   );
 }
@@ -49,9 +49,20 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
   const [lump, setLump] = useState(500000);
   const [lumpRate, setLumpRate] = useState(12);
   const [lumpYears, setLumpYears] = useState(10);
-  const [goal, setGoal] = useState(10000000);
-  const [goalRate, setGoalRate] = useState(12);
-  const [goalYears, setGoalYears] = useState(15);
+  const goalQuery = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    const target = Number(params.get('target'));
+    const years = Number(params.get('years'));
+    const rate = Number(params.get('rate'));
+    return {
+      target: target >= 500000 ? target : 10000000,
+      years: years >= 1 ? years : 15,
+      rate: rate >= 6 ? rate : 12,
+    };
+  }, []);
+  const [goal, setGoal] = useState(goalQuery.target);
+  const [goalRate, setGoalRate] = useState(goalQuery.rate);
+  const [goalYears, setGoalYears] = useState(goalQuery.years);
   const [age, setAge] = useState(32);
   const [retireAge, setRetireAge] = useState(60);
   const [expense, setExpense] = useState(50000);

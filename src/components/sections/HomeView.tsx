@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { RoutePath } from '@/types';
 import { formatINR } from '@/lib/formatting/currency';
 import { formatPlanCompact, formatSip, formatTargetLabel, planIllustration } from '@/components/sections/home/planGoal';
@@ -7,6 +7,8 @@ import {
   ArrowRight,
   Calculator,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   LineChart,
   Shield,
   Sprout,
@@ -15,6 +17,7 @@ import {
   User,
   Wallet,
 } from 'lucide-react';
+import { Reveal } from '@/components/ui/Reveal';
 
 interface HomeViewProps {
   navigate: (path: RoutePath) => void;
@@ -49,11 +52,103 @@ const PATHS: Record<Period, { nifty: number[]; sensex: number[] }> = {
 };
 
 const GOALS = [
-  { title: 'Retirement', text: 'Live your next chapter with confidence', image: '/images/home/goal-retirement.webp', href: '/goals/retirement' as RoutePath },
-  { title: 'Child Education', text: 'Turn their dreams into reality', image: '/images/home/goal-education.webp', href: '/goals/child-education' as RoutePath },
-  { title: 'Wealth Creation', text: 'Build long-term financial freedom', image: '/images/home/goal-wealth.webp', href: '/goals/wealth-creation' as RoutePath },
-  { title: 'Tax Saving', text: 'Invest smart. Save more.', image: '/images/home/goal-tax.webp', href: '/goals/tax-saving' as RoutePath },
+  { title: 'Retirement', text: 'Live your next chapter with confidence', image: 'goal-retirement', alt: 'A beach chair facing the ocean at sunset', href: '/goals/retirement' as RoutePath },
+  { title: 'Child Education', text: 'Turn their dreams into reality', image: 'goal-education', alt: 'A child walking to school with a backpack', href: '/goals/child-education' as RoutePath },
+  { title: 'Wealth Creation', text: 'Build long-term financial freedom', image: 'goal-wealth', alt: 'A green plant growing from a jar of coins', href: '/goals/wealth-creation' as RoutePath },
+  { title: 'Tax Saving', text: 'Invest smart. Save more.', image: 'goal-tax', alt: 'A calculator resting on tax forms and coins', href: '/goals/tax-saving' as RoutePath },
 ];
+
+const PLAN_PRESETS: Record<string, { target: number; years: number; rate: number }> = {
+  Retirement: { target: 35_000_000, years: 20, rate: 12 },
+  'Child Education': { target: 10_000_000, years: 15, rate: 12 },
+  'Wealth Creation': { target: 20_000_000, years: 12, rate: 12 },
+  'Tax Saving': { target: 5_000_000, years: 5, rate: 12 },
+};
+
+const RISK_NOTE: Record<string, string> = {
+  'Very High Risk': 'Very high risk: returns can swing sharply. Suitable only when the goal is many years away.',
+  'High Risk': 'High risk: equity-oriented. Values can fall in the short term.',
+  'Moderate Risk': 'Moderate risk: a mix of growth and stability. Still subject to market movement.',
+  'Low Risk': 'Low risk: relatively steadier, with lower expected growth. Not risk-free.',
+};
+
+function cardSrc(name: string) {
+  return {
+    src: `/images/home/${name}-800.webp`,
+    srcSet: `/images/home/${name}-800.webp 800w, /images/home/${name}-1600.webp 1600w`,
+  };
+}
+
+function bleedSrc(name: string) {
+  return {
+    src: `/images/home/${name}-800.webp`,
+    srcSet: `/images/home/${name}-800.webp 800w, /images/home/${name}-1440.webp 1440w, /images/home/${name}-2880.webp 2880w`,
+  };
+}
+
+function prefersReducedMotion() {
+  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function CountUp({ value, decimals = 2 }: { value: number; decimals?: number }) {
+  const [shown, setShown] = useState(value);
+  useEffect(() => {
+    if (prefersReducedMotion()) {
+      setShown(value);
+      return;
+    }
+    const from = 0;
+    const start = performance.now();
+    let frame = 0;
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - start) / 900);
+      const eased = 1 - (1 - progress) ** 3;
+      setShown(from + (value - from) * eased);
+      if (progress < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [value]);
+  return <>{shown.toLocaleString('en-IN', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}</>;
+}
+
+function SyncedField({
+  value, min, max, step, label, display, onChange,
+}: { value: number; min: number; max: number; step: number; label: string; display: (n: number) => string; onChange: (n: number) => void }) {
+  const [draft, setDraft] = useState<string | null>(null);
+  return (
+    <input
+      className="hf-select"
+      aria-label={label}
+      inputMode="decimal"
+      value={draft ?? display(value)}
+      onFocus={() => setDraft(String(value))}
+      onBlur={() => setDraft(null)}
+      onChange={(event) => {
+        const next = event.target.value;
+        setDraft(next);
+        const parsed = Number(next.replace(/[^\d.]/g, ''));
+        if (!Number.isFinite(parsed)) return;
+        const snapped = Math.round(parsed / step) * step;
+        onChange(Math.min(max, Math.max(min, snapped)));
+      }}
+    />
+  );
+}
+
+function PlanningPlant() {
+  return (
+    <svg className="hf-plant" viewBox="0 0 380 150" width="380" height="150" role="img" aria-label="A leafy plant illustration">
+      <path d="M70 142c40-8 90-6 150-2 50 3 100 2 140-6" fill="none" stroke="#c5b59a" strokeWidth="3" strokeLinecap="round" />
+      <path d="M168 138c2-28 4-52 8-74" fill="none" stroke="#2f6b45" strokeWidth="3.2" strokeLinecap="round" />
+      <path d="M176 108c18-8 34-8 52-2-16 10-32 12-52 8z" fill="#7BA238" />
+      <path d="M174 92c-20-6-36-2-48 8 16 6 32 6 48-2z" fill="#5f8f32" />
+      <path d="M178 74c16-14 36-16 54-6-18 8-34 12-54 12z" fill="#8fb84a" />
+      <path d="M172 64c-18-12-38-10-50 2 18 4 34 6 50 4z" fill="#6ea03a" />
+      <ellipse cx="176" cy="48" rx="16" ry="10" fill="#9bc85a" transform="rotate(-18 176 48)" />
+    </svg>
+  );
+}
 
 const PLAN_TABS = ['Retirement', 'Child Education', 'Wealth Creation', 'Tax Saving'] as const;
 
@@ -159,7 +254,7 @@ function NiftyChart({ values }: { values: number[] }) {
         <text key={label} x={left + (i / (times.length - 1)) * (w - left - right)} y={h - 2} fontSize="9" fill="#5c675f" textAnchor={i === 0 ? 'start' : i === times.length - 1 ? 'end' : 'middle'}>{label}</text>
       ))}
       <path d={area} fill="rgba(31,157,85,0.18)" />
-      <path d={d} fill="none" stroke="#1F9D55" strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" />
+      <path className="hf-line" d={d} fill="none" stroke="#1F9D55" strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
 }
@@ -176,7 +271,7 @@ function SensexSpark({ values }: { values: number[] }) {
   });
   return (
     <svg viewBox={`0 0 ${w} ${h}`} width="92" height="28" aria-hidden="true">
-      <path d={smoothLine(pts)} fill="none" stroke="#1F9D55" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+      <path className="hf-line" d={smoothLine(pts)} fill="none" stroke="#1F9D55" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
 }
@@ -216,8 +311,8 @@ function AreaChart({
           <text key={label} x={left + (label / 20) * (w - left - right)} y={h - 4} fontSize="11" fill="#6a736c" textAnchor="middle">{label}</text>
         ))}
         <path d={area} fill="rgba(31,157,85,0.16)" />
-        <path d={line('estimated')} fill="none" stroke="#1F9D55" strokeWidth="2.5" />
-        <path d={line('invested')} fill="none" stroke="#C9A24A" strokeWidth="2" />
+        <path className="hf-line" d={line('estimated')} fill="none" stroke="#1F9D55" strokeWidth="2.5" />
+        <path className="hf-line" d={line('invested')} fill="none" stroke="#C9A24A" strokeWidth="2" />
         {point && <circle cx={x(active)} cy={y(point.estimated)} r="4" fill="#0F3D2E" />}
       </svg>
       <div className="hf-year-badge">
@@ -243,25 +338,70 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
   const [rate, setRate] = useState(12);
   const [fundTab, setFundTab] = useState('Equity Funds');
   const storyRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
   const [storyDot, setStoryDot] = useState(0);
+  const [storyStart, setStoryStart] = useState(0);
+  const [storiesPaused, setStoriesPaused] = useState(false);
   const plan = useMemo(() => planIllustration(target, years, rate), [target, years, rate]);
   const funds = fundTab === 'Equity Funds'
     ? FUNDS.filter((fund) => fund.group !== 'Debt Funds')
     : FUNDS.filter((fund) => fund.group === fundTab);
   const whatsapp = `https://wa.me/${FARCON_CONFIG.whatsappNumber}`;
 
+  const orderedStories = useMemo(
+    () => STORIES.map((_, index) => STORIES[(index + storyStart) % STORIES.length]),
+    [storyStart],
+  );
+
   const scrollStories = (dir: number) => {
     const el = storyRef.current;
-    if (!el) return;
-    const card = el.querySelector('article');
-    const width = card ? card.getBoundingClientRect().width + 14 : el.clientWidth;
-    el.scrollBy({ left: dir * width, behavior: 'smooth' });
+    if (el && el.scrollWidth > el.clientWidth + 12) {
+      const card = el.querySelector('article');
+      const width = card ? card.getBoundingClientRect().width + 14 : el.clientWidth;
+      const max = el.scrollWidth - el.clientWidth;
+      if (dir > 0 && el.scrollLeft + width >= max - 6) el.scrollTo({ left: 0, behavior: 'smooth' });
+      else if (dir < 0 && el.scrollLeft <= 6) el.scrollTo({ left: max, behavior: 'smooth' });
+      else el.scrollBy({ left: dir * width, behavior: 'smooth' });
+      return;
+    }
+    setStoryStart((current) => (current + dir + STORIES.length) % STORIES.length);
+    setStoryDot((current) => (current + dir + STORIES.length) % STORIES.length);
   };
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return undefined;
+    const onScroll = () => {
+      const shift = Math.min(48, window.scrollY * 0.08);
+      heroRef.current?.style.setProperty('--hero-shift', `${shift}px`);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const scrollStoriesRef = useRef(scrollStories);
+  scrollStoriesRef.current = scrollStories;
+
+  useEffect(() => {
+    if (prefersReducedMotion() || storiesPaused) return undefined;
+    const timer = window.setInterval(() => scrollStoriesRef.current(1), 6500);
+    return () => window.clearInterval(timer);
+  }, [storiesPaused]);
 
   return (
     <div className="hf">
-      <section className="hf-hero" data-section="hero">
-        <img className="hf-hero-photo" src="/images/home/hero.webp?v=13" alt="A family sitting together, looking toward misty green mountains" width={1618} height={580} fetchPriority="high" />
+      <section className="hf-hero" data-section="hero" ref={heroRef}>
+        <img
+          className="hf-hero-photo"
+          src={bleedSrc('hero').src}
+          srcSet={bleedSrc('hero').srcSet}
+          sizes="100vw"
+          alt="A couple seen from behind, sitting on a hill above a lake and misty mountains"
+          width={2880}
+          height={1620}
+          fetchPriority="high"
+          decoding="async"
+        />
         <div className="hf-hero-scrim" />
         <div className="hf-hero-inner">
           <div className="hf-hero-copy">
@@ -304,28 +444,30 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               </div>
             </div>
             <p className="hf-index-name">NIFTY 50</p>
-            <p className="hf-level">{MARKET.nifty.value} <span className="hf-up">{MARKET.nifty.change} {MARKET.nifty.pct}</span></p>
-            <p className="hf-note">As of 12 Mar 2025, 03:30 PM IST</p>
-            <NiftyChart values={PATHS[period].nifty} />
+            <p className="hf-level"><CountUp value={24612.35} /> <span className="hf-up">{MARKET.nifty.change} {MARKET.nifty.pct}</span></p>
+            <p className="hf-note">As of 12 Mar 2025, 03:30 PM IST <span className="hf-indicative">Indicative</span></p>
+            <div key={period} className="hf-draw">
+              <NiftyChart values={PATHS[period].nifty} />
+            </div>
             <div className="hf-sensex">
               <div>
                 <b>SENSEX</b>
-                <strong>{MARKET.sensex.value}</strong>
+                <strong><CountUp value={81050.62} /></strong>
                 <span className="hf-up">{MARKET.sensex.change} {MARKET.sensex.pct}</span>
               </div>
-              <SensexSpark values={PATHS[period].sensex} />
+              <span key={period} className="hf-draw"><SensexSpark values={PATHS[period].sensex} /></span>
               <ChevronDown size={14} aria-hidden="true" />
             </div>
           </article>
         </div>
       </section>
 
-      <section className="hf-section" id="goals" data-section="goals">
+      <Reveal as="section" className="hf-section" id="goals" data-section="goals">
         <div className="hf-wrap">
           <div className="hf-goals">
-            {GOALS.map((goal) => (
-              <button key={goal.title} type="button" className="hf-goal" onClick={() => navigate(goal.href)}>
-                <img src={goal.image} alt="" width={720} height={480} loading="lazy" />
+            {GOALS.map((goal, index) => (
+              <button key={goal.title} type="button" className="hf-goal" style={{ animationDelay: `${index * 70}ms` }} onClick={() => navigate(goal.href)}>
+                <img {...cardSrc(goal.image)} sizes="(min-width: 1100px) 180px, 80vw" alt={goal.alt} width={1600} height={1100} loading="lazy" decoding="async" />
                 <span>
                   <h2>{goal.title}</h2>
                   <p>{goal.text}</p>
@@ -335,66 +477,74 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             ))}
           </div>
         </div>
-      </section>
+      </Reveal>
 
-      <section className="hf-section" id="planner" data-section="planner">
+      <Reveal as="section" className="hf-section" id="planner" data-section="planner">
         <div className="hf-wrap">
           <div className="hf-plan">
             <div className="hf-plan-copy">
               <span className="hf-eye">Interactive goal planning calculator</span>
               <h2>Your Goals.<br /><em>Our Planning.</em></h2>
               <p className="hf-lede">See how small, consistent steps today can create a brighter tomorrow.</p>
-              <img className="hf-plant" src="/images/home/calc-plant.webp" alt="" width={450} height={150} />
+              <PlanningPlant />
             </div>
             <div className="hf-plan-panel">
               <div className="hf-tabs">
                 {PLAN_TABS.map((tab) => (
-                  <button key={tab} type="button" className={planTab === tab ? 'is-on' : ''} onClick={() => setPlanTab(tab)}>{tab}</button>
+                  <button key={tab} type="button" className={planTab === tab ? 'is-on' : ''} onClick={() => {
+                    const preset = PLAN_PRESETS[tab];
+                    setPlanTab(tab);
+                    setTarget(preset.target);
+                    setYears(preset.years);
+                    setRate(preset.rate);
+                  }}>{tab}</button>
                 ))}
               </div>
               <div className="hf-plan-grid">
               <div className="hf-controls">
               <label className="hf-slider">
                 <span className="hf-slider-top"><span>Target Corpus</span></span>
-                <span className="hf-select">{formatINR(target)} <ChevronDown size={14} /></span>
+                <SyncedField label="Target corpus in rupees" value={target} min={5_000_000} max={100_000_000} step={500_000} display={(n) => formatINR(n)} onChange={setTarget} />
                 <input type="range" min={5_000_000} max={100_000_000} step={500_000} value={target} style={{ ['--pct' as string]: `${((target - 5_000_000) / 95_000_000) * 100}%` }} onChange={(e) => setTarget(Number(e.target.value))} />
                 <span className="hf-scale"><span>₹50 L</span><span>₹10 Cr</span></span>
               </label>
               <label className="hf-slider">
                 <span className="hf-slider-top"><span>Time Horizon</span></span>
-                <span className="hf-select">{years} Years <ChevronDown size={14} /></span>
+                <SyncedField label="Time horizon in years" value={years} min={3} max={30} step={1} display={(n) => `${n} Years`} onChange={setYears} />
                 <input type="range" min={3} max={30} step={1} value={years} style={{ ['--pct' as string]: `${((years - 3) / 27) * 100}%` }} onChange={(e) => setYears(Number(e.target.value))} />
                 <span className="hf-scale"><span>3 Yrs</span><span>30 Yrs</span></span>
               </label>
               <label className="hf-slider hf-return">
                 <span className="hf-slider-top"><span>Expected Return (p.a.)</span></span>
-                <span className="hf-select">{rate}% <ChevronDown size={14} /></span>
+                <SyncedField label="Expected annual return percent" value={rate} min={6} max={18} step={1} display={(n) => `${n}%`} onChange={setRate} />
                 <input type="range" min={6} max={18} step={1} value={rate} style={{ ['--pct' as string]: `${((rate - 6) / 12) * 100}%` }} onChange={(e) => setRate(Number(e.target.value))} />
                 <span className="hf-scale"><span>6%</span><span>18%</span></span>
               </label>
               </div>
               <div className="hf-result" aria-live="polite">
                 <span>Required Monthly SIP</span>
-                <strong>{formatSip(plan.requiredMonthlySIP)}</strong>
+                <strong key={plan.requiredMonthlySIP}>{formatSip(plan.requiredMonthlySIP)}</strong>
                 <dl>
                   <div><dt>Total Investment</dt><dd>{formatPlanCompact(plan.totalInvestment)}</dd></div>
                   <div><dt>Estimated Growth</dt><dd>{formatPlanCompact(plan.estimatedGrowth)}</dd></div>
                 </dl>
-                <button type="button" className="hf-btn hf-btn-green" onClick={() => navigate('/calculators/goal')}>
+                <button type="button" className="hf-btn hf-btn-green" onClick={() => navigate(`/calculators/goal?target=${target}&years=${years}&rate=${rate}` as RoutePath)}>
                   View Detailed Plan <ArrowRight size={16} />
                 </button>
               </div>
               <div>
-                <AreaChart series={plan.series} />
+                <div key={`${target}-${years}-${rate}`} className="hf-draw">
+                  <AreaChart series={plan.series} />
+                </div>
                 <p className="hf-note">This is an estimate based on the returns assumed. Actual results may vary.</p>
               </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </Reveal>
 
-      <section className="hf-section" data-section="funds">
+      <Reveal as="section" className="hf-section" data-section="funds">
         <div className="hf-wrap hf-split">
           <div>
             <span className="hf-eye">Featured mutual funds</span>
@@ -409,7 +559,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             ))}
             <button type="button" className="hf-textlink" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
           </div>
-          <div className="hf-fund-row">
+          <div className="hf-fund-row" key={fundTab}>
             {funds.map((fund) => (
               <article key={fund.name} className="hf-fund">
                 <div className="hf-amc">
@@ -425,7 +575,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                   <span>NAV<b>{fund.nav}</b></span>
                 </div>
                 <Spark values={fund.spark} color={fund.tone} />
-                <span className="hf-pill" style={{ background: fund.tone }}>{fund.risk}</span>
+                <span className="hf-pill" tabIndex={0} style={{ background: fund.tone }}>
+                  {fund.risk}
+                  <span className="hf-tip" role="tooltip">{RISK_NOTE[fund.risk]}</span>
+                </span>
               </article>
             ))}
             {funds.length === 0 && (
@@ -438,10 +591,19 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           </div>
           </div>
         </div>
-      </section>
+      </Reveal>
 
       <section className="hf-why" data-section="why">
-        <img className="hf-why-photo" src="/images/home/why-mountains.webp?v=7" alt="" width={1618} height={444} />
+        <img
+          className="hf-why-photo"
+          {...bleedSrc('why-mountains')}
+          sizes="100vw"
+          alt="A mountain ridge at sunset with a small flag on the right-hand peak"
+          width={2880}
+          height={1400}
+          loading="lazy"
+          decoding="async"
+        />
         <svg className="hf-flag" viewBox="0 0 1200 640" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
           <path d="M760 560 C 820 470, 780 390, 900 330 S 860 180, 1020 120 S 980 40, 1120 28" fill="none" stroke="rgba(255,255,255,0.78)" strokeWidth="2.5" strokeDasharray="1.5 8" strokeLinecap="round" />
           <path d="M1112 28 v92" stroke="#F3D48A" strokeWidth="3" />
@@ -477,7 +639,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </section>
 
-      <section className="hf-section hf-tools-section" data-section="tools">
+      <Reveal as="section" className="hf-section hf-tools-section" data-section="tools">
         <div className="hf-wrap hf-split">
           <div>
             <span className="hf-eye">Powerful tools for every stage</span>
@@ -495,9 +657,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             ))}
           </div>
         </div>
-      </section>
+      </Reveal>
 
-      <section className="hf-section" data-section="stories">
+      <Reveal as="section" className="hf-section" data-section="stories">
         <div className="hf-wrap hf-split">
           <div>
             <span className="hf-eye">Investor stories</span>
@@ -505,19 +667,26 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             <p className="hf-lede">Real experiences, real journeys, a shared belief in long-term wealth creation.</p>
           </div>
           <div>
-          <div className="hf-carousel">
-            <button type="button" className="hf-side" onClick={() => scrollStories(-1)} aria-label="Previous stories">‹</button>
+          <div
+            className="hf-carousel"
+            onMouseEnter={() => setStoriesPaused(true)}
+            onMouseLeave={() => setStoriesPaused(false)}
+            onFocus={() => setStoriesPaused(true)}
+            onBlur={() => setStoriesPaused(false)}
+          >
+            <button type="button" className="hf-side" onClick={() => scrollStories(-1)} aria-label="Previous stories"><ChevronLeft size={18} /></button>
           <div
             className="hf-stories"
             ref={storyRef}
             onScroll={(event) => {
               const el = event.currentTarget;
+              if (el.scrollWidth <= el.clientWidth + 12) return;
               const card = el.querySelector('article');
               const width = card ? card.getBoundingClientRect().width + 14 : 1;
-              setStoryDot(Math.round(el.scrollLeft / width));
+              setStoryDot(Math.round(el.scrollLeft / width) % STORIES.length);
             }}
           >
-            {STORIES.map((story) => (
+            {orderedStories.map((story) => (
               <article key={story.initials} className="hf-story">
                 <div className="hf-quote">“</div>
                 <p>“{story.quote}”</p>
@@ -531,7 +700,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               </article>
             ))}
           </div>
-            <button type="button" className="hf-side" onClick={() => scrollStories(1)} aria-label="Next stories">›</button>
+            <button type="button" className="hf-side" onClick={() => scrollStories(1)} aria-label="Next stories"><ChevronRight size={18} /></button>
           </div>
           <div className="hf-dots">
             {STORIES.map((story, index) => (
@@ -542,9 +711,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           </div>
           </div>
         </div>
-      </section>
+      </Reveal>
 
-      <section className="hf-section" data-section="articles">
+      <Reveal as="section" className="hf-section" data-section="articles">
         <div className="hf-wrap hf-split">
           <div>
             <span className="hf-eye">Investor education</span>
@@ -554,12 +723,12 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           </div>
           <div className="hf-articles">
             {[
-              ['/images/home/article-funds.webp', 'Mutual Funds 101', 'A beginner\'s guide to investing in mutual funds'],
-              ['/images/home/article-sip.webp', 'SIP vs Lumpsum', 'Which strategy is right for you?'],
-              ['/images/home/article-elss.webp', 'Tax Saving with ELSS', 'Save tax while building wealth'],
-            ].map(([src, title, text]) => (
+              ['article-funds', 'Coin stacks with a small plant', 'Mutual Funds 101', 'A beginner\'s guide to investing in mutual funds'],
+              ['article-sip', 'A pink piggy bank', 'SIP vs Lumpsum', 'Which strategy is right for you?'],
+              ['article-elss', 'A calculator on tax paperwork', 'Tax Saving with ELSS', 'Save tax while building wealth'],
+            ].map(([name, alt, title, text]) => (
               <a key={title} className="hf-article" href="/education" onClick={(event) => { event.preventDefault(); navigate('/education'); }}>
-                <img src={src} alt="" width={640} height={480} />
+                <img {...cardSrc(name)} sizes="96px" alt={alt} width={1600} height={1100} loading="lazy" decoding="async" />
                 <div>
                   <h2>{title}</h2>
                   <p>{text}</p>
@@ -569,10 +738,19 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             ))}
           </div>
         </div>
-      </section>
+      </Reveal>
 
       <section className="hf-cta" data-section="cta">
-        <img className="bg" src="/images/home/cta-sunset.webp?v=12" alt="A person sitting on a rock above a mountain valley in warm evening light" width={1618} height={492} />
+        <img
+          className="bg"
+          {...bleedSrc('cta-sunset')}
+          sizes="100vw"
+          alt="A hiker sitting on a rock above a forested mountain valley"
+          width={2880}
+          height={1620}
+          loading="lazy"
+          decoding="async"
+        />
         <div className="hf-cta-scrim" />
         <div className="hf-cta-inner">
           <div>

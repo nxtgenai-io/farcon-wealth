@@ -6,7 +6,17 @@ export const PageCta: React.FC<{ onBook: () => void }> = ({ onBook }) => {
   const whatsapp = `https://wa.me/${FARCON_CONFIG.whatsappNumber}`;
   return (
     <section className="hf-cta">
-      <img className="bg" src="/images/home/cta-sunset.webp" alt="" width={1600} height={900} />
+      <img
+        className="bg"
+        src="/images/home/cta-sunset-800.webp"
+        srcSet="/images/home/cta-sunset-800.webp 800w, /images/home/cta-sunset-1440.webp 1440w, /images/home/cta-sunset-2880.webp 2880w"
+        sizes="100vw"
+        alt="A hiker sitting on a rock above a forested mountain valley"
+        width={2880}
+        height={1620}
+        loading="lazy"
+        decoding="async"
+      />
       <div className="hf-cta-scrim" />
       <div className="hf-cta-inner">
         <div>

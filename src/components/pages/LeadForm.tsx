@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { leadService } from '@/lib/api/leadService';
+import { isIndianMobile } from '@/lib/phone';
 
 export interface LeadFormValues {
   name: string;
@@ -40,6 +41,7 @@ export const LeadForm: React.FC<LeadFormProps> = ({ form, submitLabel, requireMe
   const [values, setValues] = useState<LeadFormValues>(empty);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState('');
+  const [statusKind, setStatusKind] = useState<'idle' | 'ok' | 'err'>('idle');
   const [busy, setBusy] = useState(false);
 
   const set = (key: keyof LeadFormValues) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -51,15 +53,26 @@ export const LeadForm: React.FC<LeadFormProps> = ({ form, submitLabel, requireMe
     const next: Record<string, string> = {};
     if (values.name.trim().length < 2) next.name = 'Enter your name.';
     if (!/^\S+@\S+\.\S+$/.test(values.email.trim())) next.email = 'Enter a valid email.';
-    if (values.phone.replace(/\D/g, '').length < 10) next.phone = 'Enter a valid phone number.';
+    if (!isIndianMobile(values.phone)) next.phone = 'Enter a 10-digit Indian mobile number.';
     if (values.city.trim().length < 2) next.city = 'Enter your city.';
     if (requireMessage && values.message.trim().length < 8) next.message = 'Tell us a little more.';
     if (showPreferences && !values.goal) next.goal = 'Choose a goal.';
     setErrors(next);
-    if (Object.keys(next).length) return;
+    if (Object.keys(next).length) {
+      setStatusKind('err');
+      setStatus('Please correct the highlighted fields.');
+      return;
+    }
+    if (values.companyWebsite.trim()) {
+      setStatusKind('ok');
+      setStatus('Thank you. We have your note.');
+      setValues(empty);
+      return;
+    }
 
     setBusy(true);
     setStatus('');
+    setStatusKind('idle');
     try {
       const result = await leadService.submitSheetLead({
         form,
@@ -77,13 +90,16 @@ export const LeadForm: React.FC<LeadFormProps> = ({ form, submitLabel, requireMe
         companyWebsite: values.companyWebsite,
       });
       if (!result.success) {
+        setStatusKind('err');
         setStatus(result.message);
         return;
       }
+      setStatusKind('ok');
       setStatus(result.message);
       setValues(empty);
     } catch {
-      setStatus('We could not send this just now. Please call or use WhatsApp.');
+      setStatusKind('err');
+      setStatus('We could not send this just now. Please try again or use WhatsApp.');
     } finally {
       setBusy(false);
     }
@@ -91,7 +107,7 @@ export const LeadForm: React.FC<LeadFormProps> = ({ form, submitLabel, requireMe
 
   return (
     <form className="form-card" onSubmit={onSubmit} noValidate>
-      <label className="hp">
+      <label className="hp" aria-hidden="true">
         Website
         <input tabIndex={-1} autoComplete="off" value={values.companyWebsite} onChange={set('companyWebsite')} />
       </label>
@@ -139,8 +155,8 @@ export const LeadForm: React.FC<LeadFormProps> = ({ form, submitLabel, requireMe
         </>
       )}
       <label className="field">Message<textarea value={values.message} onChange={set('message')} />{errors.message && <span className="err">{errors.message}</span>}</label>
-      <button className="hf-btn hf-btn-green" type="submit" disabled={busy}>{busy ? 'Sending…' : submitLabel}</button>
-      {status && <p className="hf-note">{status}</p>}
+      <button className="hf-btn hf-btn-green" type="submit" disabled={busy} aria-busy={busy}>{busy ? 'Sending…' : submitLabel}</button>
+      {status && <p className="hf-note" role={statusKind === 'err' ? 'alert' : 'status'}>{status}</p>}
     </form>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { RoutePath } from '@/types';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -7,20 +7,106 @@ import { ConsultationModal } from '@/components/ui/ConsultationModal';
 import { AIChatDrawer } from '@/features/farcon-ai/AIChatDrawer';
 import { HomeView } from '@/components/sections/HomeView';
 import { PageCta } from '@/components/sections/home/PageCta';
-import { ServicesView } from '@/components/sections/ServicesView';
-import { GoalsView } from '@/components/sections/GoalsView';
-import { CalculatorsPage } from '@/components/pages/CalculatorsPage';
-import { InvestorQuizView } from '@/features/investor-quiz/InvestorQuizView';
-import { WealthPlannerView } from '@/features/wealth-planner/WealthPlannerView';
-import {
-  AboutPage,
-  ContactPage,
-  DisclosuresPage,
-  EducationPage,
-  FundsPage,
-  LoginPage,
-  PortfolioPage,
-} from '@/components/pages/SitePages';
+import { NotFound } from '@/components/pages/NotFound';
+
+const ServicesView = lazy(() => import('@/components/sections/ServicesView').then((m) => ({ default: m.ServicesView })));
+const GoalsView = lazy(() => import('@/components/sections/GoalsView').then((m) => ({ default: m.GoalsView })));
+const CalculatorsPage = lazy(() => import('@/components/pages/CalculatorsPage').then((m) => ({ default: m.CalculatorsPage })));
+const InvestorQuizView = lazy(() => import('@/features/investor-quiz/InvestorQuizView').then((m) => ({ default: m.InvestorQuizView })));
+const WealthPlannerView = lazy(() => import('@/features/wealth-planner/WealthPlannerView').then((m) => ({ default: m.WealthPlannerView })));
+const AboutPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.AboutPage })));
+const ContactPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.ContactPage })));
+const DisclosuresPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.DisclosuresPage })));
+const EducationPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.EducationPage })));
+const FundsPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.FundsPage })));
+const LoginPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.LoginPage })));
+const PortfolioPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.PortfolioPage })));
+
+const PAGE_META: Record<string, { title: string; description: string }> = {
+  '/': {
+    title: 'Farcon Wealth | Investing, Without The Noise',
+    description: 'AMFI-registered mutual fund distributor. Goal-based SIP planning, retirement, tax-saving and portfolio guidance. ARN 329006.',
+  },
+  '/about': {
+    title: 'About Farcon Wealth | ARN 329006',
+    description: 'Farcon Wealth is an AMFI-registered mutual fund distributor helping families invest with clarity, discipline and purpose.',
+  },
+  '/services': {
+    title: 'Services | Farcon Wealth',
+    description: 'Goal-based SIP planning, portfolio review, ELSS, retirement, child education and SWP guidance.',
+  },
+  '/goals': {
+    title: 'Goals | Farcon Wealth',
+    description: 'Plan for retirement, child education, wealth creation and tax saving with a goal-based mutual fund approach.',
+  },
+  '/calculators': {
+    title: 'Calculators | Farcon Wealth',
+    description: 'SIP, lumpsum, goal and retirement calculators. Illustrative estimates, not a promise of returns.',
+  },
+  '/investor-quiz': {
+    title: 'Investor Quiz | Farcon Wealth',
+    description: 'A short quiz to understand the kind of mutual fund approach that may fit your horizon and comfort with risk.',
+  },
+  '/wealth-planner': {
+    title: 'Wealth Planner | Farcon Wealth',
+    description: 'Sketch a goal, a timeline and an illustrative monthly investment with Farcon’s planner.',
+  },
+  '/mutual-funds': {
+    title: 'Mutual Funds | Farcon Wealth',
+    description: 'Explore mutual fund categories. Scheme selection is illustrative and subject to suitability.',
+  },
+  '/portfolio-review': {
+    title: 'Portfolio Review | Farcon Wealth',
+    description: 'Request a calm review of mutual fund holdings held in your own name.',
+  },
+  '/investor-login': {
+    title: 'Investor Login | Farcon Wealth',
+    description: 'Investor login for Farcon Wealth clients.',
+  },
+  '/education': {
+    title: 'Investor Education | Farcon Wealth',
+    description: 'Short explanations of SIPs, lumpsum investing, ELSS and goal-based mutual fund planning.',
+  },
+  '/blogs': {
+    title: 'Notes | Farcon Wealth',
+    description: 'Notes on goal-based mutual fund investing from Farcon Wealth.',
+  },
+  '/faq': {
+    title: 'FAQs | Farcon Wealth',
+    description: 'Answers to common questions about Farcon Wealth, SIPs and mutual fund distribution.',
+  },
+  '/contact': {
+    title: 'Contact | Farcon Wealth',
+    description: 'Book a conversation or message Farcon Wealth on WhatsApp. ARN 329006.',
+  },
+  '/privacy': {
+    title: 'Privacy Policy | Farcon Wealth',
+    description: 'How Farcon Wealth handles personal information.',
+  },
+  '/terms': {
+    title: 'Terms of Use | Farcon Wealth',
+    description: 'Terms for using the Farcon Wealth website.',
+  },
+  '/disclosures': {
+    title: 'Disclosures | Farcon Wealth',
+    description: 'AMFI registration, ARN 329006 and mutual fund risk disclosures.',
+  },
+  '/grievance': {
+    title: 'Grievance Redressal | Farcon Wealth',
+    description: 'How to raise a concern with Farcon Wealth.',
+  },
+};
+
+function metaFor(path: string) {
+  if (PAGE_META[path]) return PAGE_META[path];
+  if (path.startsWith('/goals')) return PAGE_META['/goals'];
+  if (path.startsWith('/services')) return PAGE_META['/services'];
+  if (path.startsWith('/calculators')) return PAGE_META['/calculators'];
+  return {
+    title: 'Page not found | Farcon Wealth',
+    description: 'This page is not on the Farcon Wealth site.',
+  };
+}
 
 export function App() {
   const [currentPath, setCurrentPath] = useState<RoutePath>(() => {
@@ -34,6 +120,7 @@ export function App() {
   const [consultationOpen, setConsultationOpen] = useState(false);
   const [consultationSubject, setConsultationSubject] = useState<string>('Goal-Based Planning');
   const [aiOpen, setAiOpen] = useState(false);
+  const [showTop, setShowTop] = useState(false);
 
   // Sync browser back/forward buttons
   useEffect(() => {
@@ -45,14 +132,40 @@ export function App() {
   }, []);
 
   const navigate = (path: RoutePath) => {
+    const raw = String(path);
+    const pathname = (raw.split('?')[0] || '/') as RoutePath;
     if (typeof window !== 'undefined') {
-      if (window.location.pathname !== path) {
-        window.history.pushState({}, '', path);
+      if (`${window.location.pathname}${window.location.search}` !== raw) {
+        window.history.pushState({}, '', raw);
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    setCurrentPath(path);
+    setCurrentPath(pathname);
   };
+
+  useEffect(() => {
+    const meta = metaFor(currentPath);
+    document.title = meta.title;
+    const description = document.querySelector('meta[name="description"]');
+    if (description) description.setAttribute('content', meta.description);
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    const twitter = document.querySelector('meta[name="twitter:title"]');
+    const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+    ogTitle?.setAttribute('content', meta.title);
+    ogDescription?.setAttribute('content', meta.description);
+    twitter?.setAttribute('content', meta.title);
+    twitterDescription?.setAttribute('content', meta.description);
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.setAttribute('href', `https://farconwealth.com${currentPath === '/' ? '/' : currentPath}`);
+  }, [currentPath]);
+
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > 640);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const handleOpenConsultation = (subject?: string) => {
     if (subject) setConsultationSubject(subject);
@@ -164,20 +277,13 @@ export function App() {
     if (currentPath === '/privacy') return <DisclosuresPage section="privacy" />;
     if (currentPath === '/terms') return <DisclosuresPage section="terms" />;
 
-    // Fallback: Home
-    return (
-      <HomeView
-        navigate={navigate}
-        onOpenConsultation={handleOpenConsultation}
-        onOpenAI={() => setAiOpen(true)}
-      />
-    );
+    return <NotFound navigate={navigate} />;
   };
 
   const home = currentPath === '/';
   return (
     <div className={`min-h-screen flex flex-col bg-[#F7F4EC] text-[#1A241C] antialiased selection:bg-[#C9A24A]/30 selection:text-[#0F3D2E] ${home ? 'is-home' : ''}`}>
-      {/* Top Navigation */}
+      <a className="skip-link" href="#main">Skip to content</a>
       <Navbar
         currentPath={currentPath}
         navigate={navigate}
@@ -185,10 +291,22 @@ export function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 fw-skin">
-        {renderView()}
-        {currentPath !== '/' && <PageCta onBook={() => handleOpenConsultation('Book a Free 15-Minute Call')} />}
+      <main id="main" className="flex-1 fw-skin">
+        <Suspense fallback={<div className="pg"><div className="pg-wrap"><p className="lede">Loading…</p></div></div>}>
+          {renderView()}
+          {currentPath !== '/' && !metaFor(currentPath).title.startsWith('Page not found') && (
+            <PageCta onBook={() => handleOpenConsultation('Book a Free 15-Minute Call')} />
+          )}
+        </Suspense>
       </main>
+      <button
+        type="button"
+        className={`fw-top${showTop ? ' is-on' : ''}`}
+        aria-label="Back to top"
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      >
+        Top
+      </button>
 
       {/* Footer */}
       <Footer navigate={navigate} />

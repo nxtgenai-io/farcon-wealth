@@ -11,7 +11,7 @@ interface RevealProps {
   as?: React.ElementType;
 }
 
-export const Reveal: React.FC<RevealProps> = ({
+export const Reveal: React.FC<RevealProps & React.HTMLAttributes<HTMLElement>> = ({
   children,
   delayMs = 0,
   durationMs = 700,
@@ -20,6 +20,7 @@ export const Reveal: React.FC<RevealProps> = ({
   distance = 24,
   threshold = 0.15,
   as: Component = 'div',
+  ...rest
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const elementRef = useRef<HTMLElement>(null);
@@ -73,6 +74,7 @@ export const Reveal: React.FC<RevealProps> = ({
   return (
     <Component
       ref={elementRef}
+      {...rest}
       className={className}
       style={{
         opacity: isVisible ? 1 : 0,

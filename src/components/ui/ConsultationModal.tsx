@@ -4,6 +4,7 @@ import { LeadContext } from '@/types';
 import { planningContextService } from '@/lib/planningContext';
 import { analytics } from '@/lib/analytics';
 import { X, CheckCircle2, ShieldCheck, ArrowRight } from 'lucide-react';
+import { isIndianMobile } from '@/lib/phone';
 
 interface ConsultationModalProps {
   isOpen: boolean;
@@ -25,6 +26,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     monthlySavings: '₹10,000 – ₹25,000',
     notes: '',
     consent: true,
+    companyWebsite: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -39,9 +41,8 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     if (!formData.name.trim()) {
       newErrors.name = 'Please provide your full name.';
     }
-    const cleanPhone = formData.phone.replace(/[^0-9]/g, '');
-    if (cleanPhone.length < 10) {
-      newErrors.phone = 'Please enter a valid 10-digit mobile number.';
+    if (!isIndianMobile(formData.phone)) {
+      newErrors.phone = 'Enter a 10-digit Indian mobile number starting with 6, 7, 8 or 9.';
     }
     if (formData.email.trim() && !/^\S+@\S+\.\S+$/.test(formData.email.trim())) {
       newErrors.email = 'Please provide a valid email address.';
@@ -56,6 +57,10 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
+    if (formData.companyWebsite.trim()) {
+      setSubmitted(true);
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -150,7 +155,11 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+              <label className="hp" aria-hidden="true">
+                Website
+                <input tabIndex={-1} autoComplete="off" value={formData.companyWebsite} onChange={(event) => setFormData((current) => ({ ...current, companyWebsite: event.target.value }))} />
+              </label>
               {errors.form && (
                 <div className="p-3 text-xs bg-red-50 text-red-700 rounded-md border border-red-200">
                   {errors.form}
