@@ -1,12 +1,12 @@
 # Image credits
 
-Homepage photographs replace the earlier reference-screenshot crops. Each file is stored under `public/images/home/` as WebP. Full-bleed photos are 800, 1440 and 2880 pixels wide, except the hero, which is 800, the native 1280, and a sharpened 1920 upscale. Card photos are 800 and 1600. Pexels photos are free to use under the [Pexels License](https://www.pexels.com/license/), including commercial use, without attribution. Attribution is listed here anyway.
+Homepage photographs replace the earlier reference-screenshot crops. Each file is stored under `public/images/home/` as WebP. Full-bleed photos are 800, 1440 and 2880 pixels wide, except the hero, which is 800, 1024, and a sharpened 1600 upscale. Card photos are 800 and 1600. Pexels photos are free to use under the [Pexels License](https://www.pexels.com/license/), including commercial use, without attribution. Attribution is listed here anyway.
 
 The Farcon stag mark is the project file `public/brand-mark.svg`. The “Your Goals. Our Planning.” plant is an original SVG in `HomeView.tsx`, not a photograph. The small gold flag on the Why ridge is a separate SVG overlay in the page, not painted into the mountain photograph.
 
 | File | Scene | Source | Author | License |
 | --- | --- | --- | --- | --- |
-| `hero-800.webp`, `hero-1280.webp`, `hero-1920.webp` | Grandfather, grandmother, father, mother, a girl, and a boy on a picnic blanket at golden hour | Custom image created for Farcon Wealth | — | No attribution required |
+| `hero-800.webp`, `hero-1024.webp`, `hero-1600.webp` | Grandfather, grandmother, father, mother, a girl, and a boy together in a sunlit living room | Custom image created for Farcon Wealth | — | No attribution required |
 | `goal-retirement-800.webp`, `goal-retirement-1600.webp` | Beach chair at sunset | [Pexels 30184102](https://www.pexels.com/photo/cozy-adirondack-chair-at-pismo-beach-sunset-30184102/) | James Collington | Pexels License |
 | `goal-education-800.webp`, `goal-education-1600.webp` | Child walking with a school backpack | [Pexels 29765590](https://www.pexels.com/photo/child-walking-to-school-with-colorful-backpack-29765590/) | Sergei Starostin | Pexels License |
 | `goal-wealth-800.webp`, `goal-wealth-1600.webp` | Plant growing from a jar of coins | [Pexels 9755390](https://www.pexels.com/photo/close-up-shot-of-a-jar-with-coins-9755390/) | Towfiqu barbhuiya | Pexels License |
