@@ -27,9 +27,25 @@ const ARTICLE_COVERS: Record<string, string> = {
   'portfolio-consolidation-trimming-the-foliage': '/images/home/svc-wealth-800.webp',
 };
 
+const ARTICLE_SIZE = [
+  { width: 800, height: 550 },
+  { width: 800, height: 550 },
+  { width: 800, height: 550 },
+  { width: 800, height: 389 },
+];
+
+const COVER_SIZE: Record<string, { width: number; height: number }> = {
+  'the-mathematics-of-staying-calm': { width: 800, height: 389 },
+  'why-sip-beats-market-timing': { width: 800, height: 550 },
+  'demystifying-elss-tax-saving-beyond-80c': { width: 800, height: 450 },
+  'the-hidden-enemy-inflation-in-retirement': { width: 800, height: 550 },
+  'portfolio-consolidation-trimming-the-foliage': { width: 800, height: 450 },
+};
+
 import fundBook from '@/content/funds/schemes.json';
 import { FARCON_SERVICES } from '@/content/services/servicesData';
 import { ServiceShowcase } from '@/components/sections/ServiceShowcase';
+import { RETURNS_LABEL, type LiveQuote } from '@/lib/api/liveNav';
 
 function VideoFacade({ id, title }: { id: string; title: string }) {
   const [play, setPlay] = useState(false);
@@ -48,6 +64,8 @@ function VideoFacade({ id, title }: { id: string; title: string }) {
       <img
         src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
         alt=""
+        width={480}
+        height={360}
         onError={(event) => { (event.currentTarget as HTMLImageElement).src = '/images/home/article-funds-800.webp'; }}
       />
       <span aria-hidden="true">Play</span>
@@ -66,7 +84,7 @@ export const AboutPage: React.FC<PageProps> = ({ onOpenConsultation, navigate })
             {FARCON_CONFIG.legalName} is an AMFI-registered mutual fund distributor, ARN {FARCON_CONFIG.arn}. We help families in and beyond Patna decide what the money is for, then use mutual funds only where they fit.
           </p>
         </div>
-        <img src="/images/home/why-mountains-1440.webp" alt="A mountain ridge at sunset" width={1440} height={800} />
+        <img src="/images/home/why-mountains-1440.webp" alt="A mountain ridge at sunset" width={1440} height={700} />
       </div>
       <h2>Why Farcon</h2>
       <div className="pg-grid cards three">
@@ -123,8 +141,9 @@ export const ServicesPage: React.FC<PageProps> = ({ onOpenConsultation }) => (
   </div>
 );
 
-type FundScheme = (typeof fundBook.categories)[number]['schemes'][number];
-type LiveQuote = { code: number; nav: number; date: string; change: number; spark: number[]; cagr3y: number | null };
+function pct(value: number | null | undefined) {
+  return value == null ? '—' : `${value}%`;
+}
 
 function useLiveNav() {
   const [quotes, setQuotes] = useState<Record<number, LiveQuote>>({});
@@ -209,7 +228,10 @@ export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; category
   }, [categorySlug, schemeSlug, query, amc]);
   if (categorySlug && !category) return null;
   if (schemeSlug && category && !scheme) return null;
-  const live = (fund: { code?: number }) => (fund.code ? quotes[fund.code] : undefined);
+  const live = (fund: { code?: number }) => {
+    const quote = fund.code ? quotes[fund.code] : undefined;
+    return quote && quote.date && Number.isFinite(Number(quote.nav)) ? quote : undefined;
+  };
   const listed = category ? category.schemes : fundBook.categories.flatMap((item) => item.schemes.map((fund) => ({ ...fund, categoryName: item.name, categorySlug: item.slug })));
   const amcs = ['All', ...Array.from(new Set(listed.map((fund) => fund.amc)))];
   const needle = query.trim().toLowerCase();
@@ -230,23 +252,26 @@ export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; category
           <p className="lede">{scheme.amc}. {scheme.plan}. Educational only. Not a recommendation.</p>
           <article className={`pg-card nav-card nav-grid${risen ? ' is-in' : ''}`} style={{ marginTop: 16 }}>
             <div className="hf-amc">
-              <img className="hf-logo" src={scheme.logo} alt="" />
+              <img className="hf-logo" src={scheme.logo} alt={`${scheme.amc} mark`} width={28} height={28} />
               <div>
                 <h2>{scheme.subCategory}</h2>
                 <div className="hf-sub">Riskometer label: {scheme.risk}</div>
               </div>
             </div>
             <div className="nav-figure">
-              <span>{live(scheme) ? 'NAV' : 'Illustrative NAV'}</span>
-              <strong>₹<CountUp value={Number(live(scheme)?.nav || scheme.nav)} /></strong>
-              {live(scheme) && <em className={live(scheme)!.change >= 0 ? 'is-up' : 'is-down'}>{live(scheme)!.change >= 0 ? '+' : ''}{live(scheme)!.change.toFixed(2)}%</em>}
+              <span>{live(scheme) ? 'NAV · AMFI' : 'NAV'}</span>
+              <strong>₹<CountUp value={Number(live(scheme)?.nav ?? scheme.nav)} /></strong>
               <Spark values={live(scheme)?.spark || []} />
             </div>
-            <div className="hf-metrics">
-              <span>{live(scheme)?.cagr3y != null ? '3Y from NAV history' : 'Illustrative 3Y'}<b>{live(scheme)?.cagr3y != null ? `${live(scheme)!.cagr3y}%` : scheme.cagr3y}</b></span>
-              <span>Horizon fit<b>{scheme.horizon}</b></span>
-            </div>
-            <p className="hf-note">{live(scheme) ? `As of ${live(scheme)!.date}. AMFI scheme NAV history via mfapi.in.` : `As of ${fundBook.asOf}. ${fundBook.source}`}</p>
+            <p className="hf-note">{live(scheme)?.date ? `as of ${live(scheme)!.date}` : `Last updated ${fundBook.asOf}`}</p>
+            {live(scheme)?.returns ? (
+              <div className="hf-metrics">
+                <span>1Y<b>{pct(live(scheme)!.returns['1Y'])}</b></span>
+                <span>3Y<b>{pct(live(scheme)!.returns['3Y'])}</b></span>
+                <span>5Y<b>{pct(live(scheme)!.returns['5Y'])}</b></span>
+              </div>
+            ) : null}
+            <p className="hf-note">{live(scheme) ? RETURNS_LABEL : fundBook.source}</p>
             <p className="hf-note">{fundBook.disclaimer}</p>
           </article>
           <div className="hf-cta-row" style={{ marginTop: 16 }}>
@@ -264,7 +289,7 @@ export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; category
       <div className="pg-wrap">
         <span className="hf-eye">Mutual Funds</span>
         <h1>{category ? category.name : 'Explore mutual funds'}</h1>
-        <p className="lede">{category ? category.summary : 'Category pages for a teaching set. Open a scheme to see the illustrative figures and the risk line.'}</p>
+        <p className="lede">{category ? category.summary : 'Open a scheme for the latest AMFI NAV and point-to-point returns.'}</p>
         <span className="horizon">NAV where shown live is the latest published scheme NAV. Not a recommendation.</span>
         <div className="hf-pills" style={{ margin: '18px 0' }}>
           <button type="button" className={!category ? 'is-on' : ''} onClick={() => navigate('/mutual-funds')}>All</button>
@@ -272,7 +297,7 @@ export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; category
             <button key={item.slug} type="button" className={category?.slug === item.slug ? 'is-on' : ''} onClick={() => navigate(`/mutual-funds/${item.slug}` as RoutePath)}>{item.name}</button>
           ))}
         </div>
-        <label className="field">Search this teaching set
+        <label className="field">Search schemes
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Scheme, AMC, or category" />
         </label>
         <div className="hf-pills" style={{ margin: '0 0 18px' }}>
@@ -284,7 +309,7 @@ export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; category
           {shown.length === 0 && (
             <article className="pg-card">
               <h2>No scheme in this filter</h2>
-              <p>Try another AMC, or clear the search. This set is illustrative.</p>
+              <p>Try another AMC, or clear the search.</p>
             </article>
           )}
           {shown.map((fund) => {
@@ -293,7 +318,7 @@ export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; category
             return (
               <button key={fund.slug} type="button" className="hf-fund nav-card" onClick={() => navigate(`/mutual-funds/${catSlug}/${fund.slug}` as RoutePath)}>
                 <div className="hf-amc">
-                  <img className="hf-logo" src={fund.logo} alt="" />
+                  <img className="hf-logo" src={fund.logo} alt={`${fund.amc} mark`} width={28} height={28} />
                   <div>
                     <h2>{fund.name}</h2>
                     <div className="hf-sub">{fund.plan}</div>
@@ -301,16 +326,24 @@ export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; category
                 </div>
                 <div className="hf-tags"><span>{fund.subCategory}</span><span>{fund.risk}</span></div>
                 <div className="nav-figure">
-                  <span>{quote ? `NAV · ${quote.date}` : 'Illustrative NAV'}</span>
-                  <strong>₹<CountUp value={Number(quote?.nav || fund.nav)} /></strong>
-                  {quote && <em className={quote.change >= 0 ? 'is-up' : 'is-down'}>{quote.change >= 0 ? '+' : ''}{quote.change.toFixed(2)}%</em>}
+                  <span>{quote ? 'NAV · AMFI' : 'NAV'}</span>
+                  <strong>₹<CountUp value={Number(quote?.nav ?? fund.nav)} /></strong>
                   <Spark values={quote?.spark || []} />
                 </div>
+                <span className="hf-note">{quote ? `as of ${quote.date}` : `Last updated ${fundBook.asOf}`}</span>
+                {quote?.returns ? (
+                  <div className="hf-metrics">
+                    <span>1Y<b>{pct(quote.returns['1Y'])}</b></span>
+                    <span>3Y<b>{pct(quote.returns['3Y'])}</b></span>
+                    <span>5Y<b>{pct(quote.returns['5Y'])}</b></span>
+                  </div>
+                ) : null}
               </button>
             );
           })}
         </div>
-        <p className="hf-note" style={{ marginTop: 16 }}>{fundBook.source} {fundBook.disclaimer}</p>
+        <p className="hf-note" style={{ marginTop: 16 }}>{shown.some((fund) => live(fund)) ? RETURNS_LABEL : `Last updated ${fundBook.asOf}. ${fundBook.source}`}</p>
+        <p className="hf-note">{fundBook.disclaimer}</p>
         <div className="hf-cta-row" style={{ marginTop: 12 }}>
           <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/calculators/sip')}>SIP calculator</button>
           <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/calculators/lumpsum')}>Lumpsum calculator</button>
@@ -337,7 +370,7 @@ export const ArticlePage: React.FC<PageProps & { slug: string }> = ({ navigate, 
         </div>
         <span className="hf-eye">{post.category} · {post.readTime} · {post.publishedDate}</span>
         <h1>{post.title}</h1>
-        <img className="article-cover" src={ARTICLE_COVERS[post.slug] || ARTICLE_IMAGES[0]} alt="" width={1600} height={900} loading="lazy" decoding="async" />
+        <img className="article-cover" src={ARTICLE_COVERS[post.slug] || ARTICLE_IMAGES[0]} alt={post.title} width={(COVER_SIZE[post.slug] || ARTICLE_SIZE[0]).width} height={(COVER_SIZE[post.slug] || ARTICLE_SIZE[0]).height} loading="lazy" decoding="async" />
         <p className="lede">{post.excerpt}</p>
         <div className="article-prose">
           {post.content.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
@@ -483,7 +516,7 @@ export const EducationPage: React.FC<PageProps & { focus?: 'education' | 'blogs'
             </div>
             {posts[0] && (
               <button type="button" className="pg-card feature-article" onClick={() => navigate(`/blogs/${posts[0].slug}` as RoutePath)}>
-                <img src={ARTICLE_IMAGES[0]} alt={posts[0].title} />
+                <img src={ARTICLE_IMAGES[0]} alt={posts[0].title} width={ARTICLE_SIZE[0].width} height={ARTICLE_SIZE[0].height} />
                 <div>
                   <span className="hf-eye">{posts[0].category} · {posts[0].readTime}</span>
                   <h2>{posts[0].title}</h2>
@@ -494,7 +527,7 @@ export const EducationPage: React.FC<PageProps & { focus?: 'education' | 'blogs'
             <div className="pg-grid articles-rest" style={{ marginTop: 16 }}>
               {posts.slice(1).map((post, index) => (
                 <button key={post.id} type="button" className="pg-card article-card" onClick={() => navigate(`/blogs/${post.slug}` as RoutePath)}>
-                  <img src={ARTICLE_IMAGES[(index + 1) % ARTICLE_IMAGES.length]} alt={post.title} />
+                  <img src={ARTICLE_IMAGES[(index + 1) % ARTICLE_IMAGES.length]} alt={post.title} width={ARTICLE_SIZE[(index + 1) % ARTICLE_SIZE.length].width} height={ARTICLE_SIZE[(index + 1) % ARTICLE_SIZE.length].height} />
                   <span className="hf-eye">{post.category} · {post.readTime}</span>
                   <h2>{post.title}</h2>
                   <p>{post.excerpt}</p>

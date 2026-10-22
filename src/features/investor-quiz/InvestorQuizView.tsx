@@ -501,9 +501,9 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
             {/* Assessment Breakdown */}
             <div className="space-y-6">
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2 font-mono">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2 font-mono">
                   What This Profile Indicates
-                </h3>
+                </h2>
                 <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
                   {result.profile.description}
                 </p>
@@ -533,9 +533,9 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
               </div>
 
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3 font-mono">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3 font-mono">
                   Contributing Factors from Your Diagnostic
-                </h3>
+                </h2>
                 <ul className="space-y-2.5 text-xs text-slate-700">
                   {result.profile.keyCharacteristics.map((char, i) => (
                     <li key={i} className="flex items-start gap-2.5">
@@ -584,9 +584,9 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
           {/* Quick Consultation Request Form (Groww-inspired clean white card) */}
           {!leadCaptured ? (
             <div className="bg-white rounded-2xl border border-[#DCE4EE] shadow-xs p-7 sm:p-9">
-              <h3 className="text-lg font-semibold text-slate-900 mb-1">
+              <h2 className="text-lg font-semibold text-slate-900 mb-1">
                 Save Your Profile & Request a 15-Minute Strategy Call
-              </h3>
+              </h2>
               <p className="text-xs text-slate-600 mb-6">
                 Receive an institutional review from Farcon Wealth with zero sales push.
               </p>

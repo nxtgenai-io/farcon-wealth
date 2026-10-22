@@ -2,7 +2,8 @@ import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { RoutePath } from '@/types';
 import { BLOG_POSTS } from '@/content/blogs/blogData';
 import fundBook from '@/content/funds/schemes.json';
-import { metaFor } from '@/content/seo/meta';
+import { metaFor, ogImagePath } from '@/content/seo/meta';
+import { SITE_URL } from '@/content/site/config';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { FloatingContactActions } from '@/components/layout/FloatingContactActions';
@@ -98,9 +99,12 @@ export function App() {
     twitter?.setAttribute('content', meta.title);
     twitterDescription?.setAttribute('content', meta.description);
     const canonical = document.querySelector('link[rel="canonical"]');
-    const href = `https://farconwealth.com${currentPath === '/' ? '/' : currentPath}`;
+    const href = `${SITE_URL}${currentPath === '/' ? '/' : currentPath}`;
     if (canonical) canonical.setAttribute('href', href);
     document.querySelector('meta[property="og:url"]')?.setAttribute('content', href);
+    const image = `${SITE_URL}${ogImagePath(currentPath)}`;
+    document.querySelector('meta[property="og:image"]')?.setAttribute('content', image);
+    document.querySelector('meta[name="twitter:image"]')?.setAttribute('content', image);
   }, [currentPath]);
 
   useEffect(() => {

@@ -1286,6 +1286,8 @@ html { scroll-behavior: smooth; }
 .hf-goal:hover img, .hf-goal:focus-visible img { transform: scale(1.07); }
 .hf-goal:hover .hf-arrow, .hf-goal:focus-visible .hf-arrow { transform: translateX(4px); }
 .hf-fund-row { animation: hf-fade .35s ease; }
+.nav-card .hf-note { display: block; }
+.nav-card .hf-metrics { flex-wrap: wrap; gap: 8px 12px; }
 .nav-figure { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; margin-top: 4px; }
 .nav-figure span { font: 600 11px/1.3 var(--fw-sans); color: var(--fw-muted); letter-spacing: .02em; }
 .nav-figure strong { font: 650 22px/1 var(--fw-serif); color: var(--fw-forest); letter-spacing: -0.03em; }

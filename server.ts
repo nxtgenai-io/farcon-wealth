@@ -130,7 +130,7 @@ app.post('/api/ai', async (req, res) => {
 
 app.get('/api/nav', async (_req, res) => {
   const { liveNavResponse } = await import('./src/lib/api/liveNav.ts');
-  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.setHeader('Cache-Control', 'public, max-age=21600');
   res.json(await liveNavResponse());
 });
 

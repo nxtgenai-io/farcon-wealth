@@ -33,29 +33,33 @@ const CALC_LABEL: Record<string, string> = {
   retirement: 'Retirement',
 };
 
-const IMAGES: Record<string, { src: string; srcSet: string; alt: string }> = {
-  'sip-planning': card('/images/home/article-sip', 'A pink piggy bank'),
-  'portfolio-review': card('/images/home/article-funds', 'Coin stacks with a seedling'),
-  elss: card('/images/home/goal-tax', 'A calculator on paperwork'),
-  retirement: card('/images/home/goal-retirement', 'A beach chair at sunset'),
-  'child-education': card('/images/home/goal-education', 'A child walking to school'),
+const IMAGES: Record<string, { src: string; srcSet: string; alt: string; width: number; height: number }> = {
+  'sip-planning': card('/images/home/article-sip', 'A pink piggy bank', 550),
+  'portfolio-review': card('/images/home/article-funds', 'Coin stacks with a seedling', 550),
+  elss: card('/images/home/goal-tax', 'A calculator on paperwork', 550),
+  retirement: card('/images/home/goal-retirement', 'A beach chair at sunset', 550),
+  'child-education': card('/images/home/goal-education', 'A child walking to school', 550),
   swp: {
     src: '/images/home/why-mountains-800.webp',
     srcSet: '/images/home/why-mountains-800.webp 800w, /images/home/why-mountains-1440.webp 1440w',
     alt: 'A mountain ridge at sunset',
+    width: 800,
+    height: 389,
   },
-  'mutual-fund-distribution': card('/images/home/svc-distribution', 'An Indian couple reviewing a folder with an advisor'),
-  lumpsum: card('/images/home/svc-lumpsum', 'A sealed envelope beside a plant in a brass bowl'),
-  'goal-based-planning': card('/images/home/svc-planning', 'A notebook, calendar and cup of tea on a wooden desk'),
-  'wealth-creation': card('/images/home/svc-wealth', 'A plant growing from a jar of coins'),
-  'investment-solutions': card('/images/home/svc-solutions', 'Three potted plants in a row on a wooden ledge'),
+  'mutual-fund-distribution': card('/images/home/svc-distribution', 'An Indian couple reviewing a folder with an advisor', 450),
+  lumpsum: card('/images/home/svc-lumpsum', 'A sealed envelope beside a plant in a brass bowl', 450),
+  'goal-based-planning': card('/images/home/svc-planning', 'A notebook, calendar and cup of tea on a wooden desk', 450),
+  'wealth-creation': card('/images/home/svc-wealth', 'A plant growing from a jar of coins', 450),
+  'investment-solutions': card('/images/home/svc-solutions', 'Three potted plants in a row on a wooden ledge', 450),
 };
 
-function card(base: string, alt: string) {
+function card(base: string, alt: string, height: number) {
   return {
     src: `${base}-800.webp`,
     srcSet: `${base}-800.webp 800w, ${base}-1600.webp 1600w`,
     alt,
+    width: 800,
+    height,
   };
 }
 
@@ -99,7 +103,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ activeSlug, navigate
                 <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/contact')}>Contact</button>
               </div>
             </div>
-            <img {...IMAGES[service.slug]} width={800} height={450} loading="lazy" decoding="async" sizes="(min-width: 900px) 560px, 100vw" />
+            <img {...IMAGES[service.slug]} loading="lazy" decoding="async" sizes="(min-width: 900px) 560px, 100vw" />
           </div>
           <div className="pg-grid cards">
             <article className="pg-card">

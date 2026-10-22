@@ -16,7 +16,7 @@ export default defineConfig(() => {
             try {
               const { liveNavResponse } = await server.ssrLoadModule('/src/lib/api/liveNav.ts') as { liveNavResponse: () => Promise<unknown> };
               res.setHeader('Content-Type', 'application/json');
-              res.setHeader('Cache-Control', 'public, max-age=3600');
+              res.setHeader('Cache-Control', 'public, max-age=21600');
               res.end(JSON.stringify(await liveNavResponse()));
             } catch {
               res.statusCode = 503;

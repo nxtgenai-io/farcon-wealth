@@ -165,10 +165,10 @@ const FUNDS = [
   { name: 'HDFC Flexi Cap Fund', group: 'Equity Funds', tags: ['Equity', 'Flexi Cap'], cagr: '21.8%', nav: '₹712.35', risk: 'High Risk', tone: RISK.high, logo: '/images/amc/hdfc-mark.svg', spark: [11, 13, 14, 16, 17, 18, 20, 21, 22] },
   { name: 'ICICI Prudential Balanced Advantage Fund', group: 'Hybrid Funds', tags: ['Hybrid', 'Dynamic'], cagr: '14.6%', nav: '₹348.12', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/icici-mark.png', spark: [12, 12.4, 13, 13.6, 14.2, 14.8, 15.4, 16.2, 17] },
   { name: 'Axis ELSS Tax Saver Fund', group: 'Tax Saving (ELSS)', tags: ['Equity', 'ELSS'], cagr: '18.2%', nav: '₹112.46', risk: 'High Risk', tone: RISK.high, logo: '/images/amc/axis-mark.svg', spark: [10, 11, 12.5, 13.5, 15, 16, 17.2, 18.2, 19] },
-  { name: 'HDFC Short Term Debt Fund', group: 'Debt Funds', tags: ['Debt', 'Short Duration'], cagr: '7.4%', nav: '₹28.16', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/hdfc-mark.svg', spark: [12, 12.2, 12.4, 12.7, 13, 13.2, 13.5, 13.8, 14] },
-  { name: 'SBI Magnum Gilt Fund', group: 'Debt Funds', tags: ['Debt', 'Gilt'], cagr: '7.1%', nav: '₹58.40', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/sbi.svg', spark: [11, 11.4, 11.2, 11.8, 12.1, 12.4, 12.2, 12.8, 13.1] },
+  { name: 'HDFC Short Term Fund', group: 'Debt Funds', tags: ['Debt', 'Short Duration'], cagr: '7.4%', nav: '₹28.16', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/hdfc-mark.svg', spark: [12, 12.2, 12.4, 12.7, 13, 13.2, 13.5, 13.8, 14] },
+  { name: 'SBI Gilt Fund', group: 'Debt Funds', tags: ['Debt', 'Gilt'], cagr: '7.1%', nav: '₹58.40', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/sbi.svg', spark: [11, 11.4, 11.2, 11.8, 12.1, 12.4, 12.2, 12.8, 13.1] },
   { name: 'ICICI Prudential Corporate Bond Fund', group: 'Debt Funds', tags: ['Debt', 'Corporate'], cagr: '7.6%', nav: '₹26.90', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/icici-mark.png', spark: [10, 10.4, 10.8, 11.1, 11.4, 11.8, 12.1, 12.5, 12.8] },
-  { name: 'Axis Treasury Advantage Fund', group: 'Debt Funds', tags: ['Debt', 'Money Market'], cagr: '6.8%', nav: '₹2,746', risk: 'Low Risk', tone: RISK.moderate, logo: '/images/amc/axis-mark.svg', spark: [9, 9.2, 9.4, 9.5, 9.7, 9.9, 10.1, 10.3, 10.5] },
+  { name: 'Axis Money Market Fund', group: 'Debt Funds', tags: ['Debt', 'Money Market'], cagr: '6.8%', nav: '₹2,746', risk: 'Low Risk', tone: RISK.moderate, logo: '/images/amc/axis-mark.svg', spark: [9, 9.2, 9.4, 9.5, 9.7, 9.9, 10.1, 10.3, 10.5] },
 ];
 
 const TOOLS: { title: string; text: string; href: RoutePath; tint: string; icon: React.ReactNode }[] = [
@@ -593,7 +593,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             {funds.map((fund) => (
               <article key={fund.name} className="hf-fund">
                 <div className="hf-amc">
-                  <img className="hf-logo" src={fund.logo} alt="" />
+                  <img className="hf-logo" src={fund.logo} alt={`${fund.name} mark`} width={28} height={28} />
                   <div>
                     <h2>{fund.name}</h2>
                     <div className="hf-sub">Direct Growth</div>
@@ -602,7 +602,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                 <div className="hf-tags">{fund.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
                 <div className="hf-metrics">
                   <span>3Y CAGR<b>{fund.cagr}</b></span>
-                  <span>NAV<b>{fund.nav}</b></span>
+                  <span>NAV · {FARCON_CONFIG.illustrativeMarketAsOf}<b>{fund.nav}</b></span>
                 </div>
                 <Spark values={fund.spark} color={fund.tone} />
                 <span className="hf-pill" tabIndex={0} style={{ background: fund.tone }}>
@@ -614,7 +614,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             {funds.length === 0 && (
               <article className="hf-fund">
                 <h2>Debt funds</h2>
-                <p>Illustrative debt schemes are listed in the fund explorer.</p>
+                <p>Debt schemes are listed in the fund explorer. The figures on this shelf are a sample, as of {FARCON_CONFIG.illustrativeMarketAsOf}.</p>
                 <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
               </article>
             )}

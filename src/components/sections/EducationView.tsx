@@ -68,7 +68,7 @@ export const EducationView: React.FC<EducationViewProps> = ({
         {/* Next step CTA */}
         <div className="mt-12 p-6 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <h4 className="text-sm font-semibold text-slate-900">Have questions about this topic?</h4>
+            <h2 className="text-sm font-semibold text-slate-900">Have questions about this topic?</h2>
             <p className="text-xs text-slate-600 mt-0.5">Message the Farcon team. We are a mutual fund distributor.</p>
           </div>
           <button

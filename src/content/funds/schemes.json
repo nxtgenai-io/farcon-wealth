@@ -1,7 +1,7 @@
 {
-  "asOf": "30 September 2026",
-  "source": "Illustrative teaching set compiled by Farcon Wealth for education. Figures are not live NAV and are not a scheme recommendation.",
-  "disclaimer": "Mutual fund investments are subject to market risks. Read all scheme related documents carefully. Past performance is not indicative of future returns. The figures on this page are illustrative and dated. They are not a live NAV feed.",
+  "asOf": "22 October 2026",
+  "source": "Static copy of the AMFI NAV for these schemes, used when the live feed is unavailable.",
+  "disclaimer": "Mutual fund investments are subject to market risks. Read all scheme related documents carefully. Past performance is not indicative of future returns.",
   "categories": [
     {
       "slug": "equity",
@@ -15,7 +15,7 @@
           "plan": "Direct Growth",
           "subCategory": "Small Cap",
           "risk": "Very High",
-          "nav": "164.72",
+          "nav": "197.6896",
           "cagr3y": "26.4%",
           "horizon": "7 years or more",
           "logo": "/images/amc/sbi.svg",
@@ -28,7 +28,7 @@
           "plan": "Direct Growth",
           "subCategory": "Flexi Cap",
           "risk": "High",
-          "nav": "712.35",
+          "nav": "2134.177",
           "cagr3y": "21.8%",
           "horizon": "5 years or more",
           "logo": "/images/amc/hdfc-mark.svg",
@@ -36,12 +36,12 @@
         },
         {
           "slug": "nippon-india-growth",
-          "name": "Nippon India Growth Fund",
+          "name": "Nippon India Growth Mid Cap Fund",
           "amc": "Nippon India Mutual Fund",
           "plan": "Direct Growth",
           "subCategory": "Mid Cap",
           "risk": "Very High",
-          "nav": "3842",
+          "nav": "4591.9139",
           "cagr3y": "22.1%",
           "horizon": "7 years or more",
           "logo": "/images/amc/nippon.png",
@@ -54,7 +54,7 @@
           "plan": "Direct Growth",
           "subCategory": "Large Cap",
           "risk": "High",
-          "nav": "98.20",
+          "nav": "119.820",
           "cagr3y": "16.4%",
           "horizon": "5 years or more",
           "logo": "/images/amc/mirae-mark.svg",
@@ -74,7 +74,7 @@
           "plan": "Direct Growth",
           "subCategory": "Dynamic Asset Allocation",
           "risk": "Moderate",
-          "nav": "348.12",
+          "nav": "84.75",
           "cagr3y": "14.6%",
           "horizon": "3 years or more",
           "logo": "/images/amc/icici-mark.png",
@@ -89,29 +89,29 @@
       "schemes": [
         {
           "slug": "hdfc-short-term-debt",
-          "name": "HDFC Short Term Debt Fund",
+          "name": "HDFC Short Term Fund",
           "amc": "HDFC Mutual Fund",
           "plan": "Direct Growth",
           "subCategory": "Short Duration",
           "risk": "Moderate",
-          "nav": "28.16",
+          "nav": "35.2598",
           "cagr3y": "7.4%",
           "horizon": "1 to 3 years",
           "logo": "/images/amc/hdfc-mark.svg",
-          "code": 0
+          "code": 119016
         },
         {
           "slug": "sbi-magnum-gilt",
-          "name": "SBI Magnum Gilt Fund",
+          "name": "SBI Gilt Fund",
           "amc": "SBI Mutual Fund",
           "plan": "Direct Growth",
           "subCategory": "Gilt",
           "risk": "Moderate",
-          "nav": "58.40",
+          "nav": "72.3463",
           "cagr3y": "7.1%",
           "horizon": "3 years or more",
           "logo": "/images/amc/sbi.svg",
-          "code": 0
+          "code": 119707
         },
         {
           "slug": "icici-prudential-corporate-bond",
@@ -120,7 +120,7 @@
           "plan": "Direct Growth",
           "subCategory": "Corporate Bond",
           "risk": "Moderate",
-          "nav": "26.90",
+          "nav": "33.3133",
           "cagr3y": "7.6%",
           "horizon": "3 years or more",
           "logo": "/images/amc/icici-mark.png",
@@ -128,16 +128,16 @@
         },
         {
           "slug": "axis-treasury-advantage",
-          "name": "Axis Treasury Advantage Fund",
+          "name": "Axis Money Market Fund",
           "amc": "Axis Mutual Fund",
           "plan": "Direct Growth",
           "subCategory": "Money Market",
           "risk": "Low",
-          "nav": "2746",
+          "nav": "1569.9723",
           "cagr3y": "6.8%",
           "horizon": "Up to 1 year",
           "logo": "/images/amc/axis-mark.svg",
-          "code": 0
+          "code": 147567
         }
       ]
     },
@@ -153,7 +153,7 @@
           "plan": "Direct Growth",
           "subCategory": "ELSS",
           "risk": "High",
-          "nav": "112.46",
+          "nav": "104.4836",
           "cagr3y": "18.2%",
           "horizon": "5 years or more, with a 3-year lock-in",
           "logo": "/images/amc/axis-mark.svg",

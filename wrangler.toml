@@ -27,3 +27,7 @@ binding = "AI"
 [previews]
 [previews.ai]
 binding = "AI"
+
+# Preview uploads are not the public site.
+[previews.vars]
+NOINDEX = "1"

@@ -1,4 +1,7 @@
+export const SITE_URL = 'https://farconwealth.com';
+
 export const FARCON_CONFIG = {
+  siteUrl: SITE_URL,
   brandName: 'FARCON WEALTH',
   legalName: 'Farcon Wealth Private Limited',
   registrationType: 'AMFI Registered Mutual Fund Distributor',

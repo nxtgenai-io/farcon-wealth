@@ -135,9 +135,9 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4.5 border-b border-[#DCE4EE] bg-[#FAFBFC]">
           <div>
-            <h3 id="consultation-modal-title" className="text-base font-semibold text-slate-900">
+            <h2 id="consultation-modal-title" className="text-base font-semibold text-slate-900">
               Book a Free Financial Consultation
-            </h3>
+            </h2>
             <p className="text-xs text-slate-500 mt-0.5">
               A calm conversation with Farcon’s AMFI-registered distributor team.
             </p>
@@ -158,9 +158,9 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               <div className="w-12 h-12 bg-[#78A832]/10 text-[#78A832] rounded-full flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h4 className="text-lg font-semibold text-slate-900">
+              <h2 className="text-lg font-semibold text-slate-900">
                 Consultation Request Confirmed
-              </h4>
+              </h2>
               <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
                 Thank you, <strong>{formData.name}</strong>. The Farcon team will look at {formData.goal} and reply on <strong>{formData.phone}</strong>.
               </p>

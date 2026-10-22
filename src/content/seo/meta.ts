@@ -3,8 +3,9 @@ import { BLOG_POSTS } from '@/content/blogs/blogData';
 import { FARCON_GOALS } from '@/content/goals/goalsData';
 import { FAQ_ITEMS } from '@/content/faq/faqData';
 import fundBook from '@/content/funds/schemes.json';
+import { SITE_URL } from '@/content/site/config';
 
-const SITE = 'https://farconwealth.com';
+const SITE = SITE_URL;
 
 export const PAGE_META: Record<string, { title: string; description: string }> = {
   '/': {
@@ -140,6 +141,50 @@ export function metaFor(path: string) {
   return NOT_FOUND_META;
 }
 
+export function pageH1(path: string): string {
+  const fixed: Record<string, string> = {
+    '/': 'Investing, without the noise.',
+    '/about': 'A distributor with a planning desk.',
+    '/goals': 'Your money has a purpose.',
+    '/calculators': 'SIP calculator',
+    '/services': 'Distribution, planned around a goal.',
+    '/calculators/sip': 'SIP calculator',
+    '/calculators/lumpsum': 'Lumpsum calculator',
+    '/calculators/goal': 'Goal calculator',
+    '/calculators/retirement': 'Retirement calculator',
+    '/investor-quiz': 'Investor Fit Assessment',
+    '/wealth-planner': 'See the monthly amount.',
+    '/mutual-funds': 'Explore mutual funds',
+    '/portfolio-review': 'Tell us the goal before the scheme.',
+    '/investor-login': 'Online portfolio access is coming soon.',
+    '/education': 'Learn, plan, and grow.',
+    '/blogs': 'Notes on staying invested.',
+    '/faq': 'Common questions.',
+    '/contact': 'A conversation, not a pitch.',
+    '/start-investing': 'Tell us the goal, then the amount.',
+    '/privacy': 'Privacy Policy',
+    '/terms': 'Terms of Use',
+    '/disclosures': 'Regulatory Disclosures',
+    '/grievance': 'Grievance Redressal',
+  };
+  if (fixed[path]) return fixed[path];
+  if (path.startsWith('/goals/')) return FARCON_GOALS.find((item) => item.slug === path.slice('/goals/'.length))?.title || 'Goals';
+  if (path.startsWith('/services/')) return FARCON_SERVICES.find((item) => item.slug === path.slice('/services/'.length))?.title || 'Services';
+  if (path.startsWith('/blogs/')) return BLOG_POSTS.find((item) => item.slug === path.slice('/blogs/'.length))?.title || 'Notes';
+  if (path.startsWith('/mutual-funds/')) {
+    const [categorySlug, schemeSlug] = path.slice('/mutual-funds/'.length).split('/');
+    const category = fundBook.categories.find((item) => item.slug === categorySlug);
+    const scheme = schemeSlug ? category?.schemes.find((item) => item.slug === schemeSlug) : undefined;
+    return scheme?.name || category?.name || 'Mutual funds';
+  }
+  return metaFor(path).title.replace(/ \| Farcon Wealth.*$/, '');
+}
+
+export function ogImagePath(path: string): string {
+  const slug = path === '/' ? 'home' : path.slice(1).replace(/\//g, '-');
+  return `/og/${slug}.jpg`;
+}
+
 function crumbs(path: string) {
   const parts = path.split('/').filter(Boolean);
   const items = [{ name: 'Home', item: `${SITE}/` }];
@@ -160,17 +205,41 @@ function crumbs(path: string) {
   };
 }
 
+function faqEntries(path: string): { question: string; answer: string }[] {
+  if (path === '/faq' || path === '/education') return FAQ_ITEMS.map((item) => ({ question: item.question, answer: item.answer }));
+  if (path === '/services') {
+    return FARCON_SERVICES.flatMap((service) => service.faqs.slice(0, 1));
+  }
+  if (path.startsWith('/services/')) {
+    return FARCON_SERVICES.find((item) => item.slug === path.slice('/services/'.length))?.faqs || [];
+  }
+  return [];
+}
+
+const ORG = {
+  name: 'Farcon Wealth',
+  legalName: 'Farcon Wealth Private Limited',
+  url: `${SITE}/`,
+  logo: `${SITE}/brand/farcon-lockup-2x.png`,
+  email: 'hello@farconwealth.com',
+  identifier: 'ARN 329006',
+};
+
 export function jsonLdFor(path: string) {
   const meta = metaFor(path);
   const url = `${SITE}${path === '/' ? '/' : path}`;
   const graph: object[] = [
+    { '@type': 'Organization', ...ORG },
+    { '@type': 'FinancialService', ...ORG, description: meta.description },
+    { '@type': 'WebSite', name: 'Farcon Wealth', url: `${SITE}/` },
     { '@type': 'WebPage', name: meta.title, description: meta.description, url },
     crumbs(path),
   ];
-  if (path === '/faq') {
+  const faqs = faqEntries(path);
+  if (faqs.length) {
     graph.push({
       '@type': 'FAQPage',
-      mainEntity: FAQ_ITEMS.map((item) => ({
+      mainEntity: faqs.map((item) => ({
         '@type': 'Question',
         name: item.question,
         acceptedAnswer: { '@type': 'Answer', text: item.answer },
@@ -183,8 +252,10 @@ export function jsonLdFor(path: string) {
       '@type': 'Article',
       headline: post.title,
       description: post.seoDescription,
+      datePublished: post.publishedDate,
+      image: `${SITE}${ogImagePath(path)}`,
       author: { '@type': 'Organization', name: 'Farcon Wealth' },
-      publisher: { '@type': 'Organization', name: 'Farcon Wealth' },
+      publisher: { '@type': 'Organization', name: 'Farcon Wealth', logo: ORG.logo },
     });
   }
   return { '@context': 'https://schema.org', '@graph': graph };
@@ -206,6 +277,8 @@ export function seoEntries() {
       title: meta.title,
       description: meta.description,
       url: `${SITE}${path === '/' ? '/' : path}`,
+      h1: pageH1(path),
+      image: `${SITE}${ogImagePath(path)}`,
       jsonLd: jsonLdFor(path),
     };
   });

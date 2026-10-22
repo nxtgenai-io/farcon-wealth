@@ -22,6 +22,7 @@ interface Env {
   AI?: {
     run: (model: string, input: Record<string, unknown>) => Promise<ReadableStream | { response?: string } | Response>;
   };
+  NOINDEX?: string;
   ASSETS: { fetch: (request: Request) => Promise<Response> };
 }
 
@@ -157,8 +158,7 @@ async function handleAi(request: Request, env: Env): Promise<Response> {
   }
 }
 
-export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+async function handleRequest(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
     if (url.pathname === '/api/leads') {
@@ -201,7 +201,7 @@ export default {
       if (request.method !== 'GET') return json({ ok: false }, 405);
       try {
         return new Response(JSON.stringify(await liveNavResponse()), {
-          headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=3600' },
+          headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=21600' },
         });
       } catch {
         return json({ ok: false, funds: [] }, 503);
@@ -209,5 +209,14 @@ export default {
     }
 
     return env.ASSETS.fetch(request);
+}
+
+export default {
+  async fetch(request: Request, env: Env): Promise<Response> {
+    const response = await handleRequest(request, env);
+    if (!env.NOINDEX) return response;
+    const headers = new Headers(response.headers);
+    headers.set('X-Robots-Tag', 'noindex, nofollow');
+    return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
   },
 };

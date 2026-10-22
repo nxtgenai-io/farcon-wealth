@@ -4,7 +4,7 @@ import { RoutePath } from '@/types';
 export const NotFound: React.FC<{ navigate: (path: RoutePath) => void }> = ({ navigate }) => (
   <div className="pg">
     <div className="pg-wrap" style={{ maxWidth: 760 }}>
-      <img className="nf-stag" src="/brand/farcon-stag.png" alt="" width={96} height={96} />
+      <img className="nf-stag" src="/brand/farcon-stag.png" alt="Farcon Wealth stag" width={96} height={96} />
       <span className="hf-eye">Page not found</span>
       <h1>This path doesn’t lead anywhere.</h1>
       <p className="lede">The page may have moved. Pick a place to start again.</p>

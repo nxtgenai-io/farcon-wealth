@@ -1,29 +1,60 @@
+import { spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { seoEntries } from '../src/content/seo/meta.ts';
 
-const dist = join(process.cwd(), 'dist');
+const root = process.cwd();
+const dist = join(root, 'dist');
 const shell = readFileSync(join(dist, 'index.html'), 'utf8');
+const noindex = process.env.NOINDEX === '1';
 
 function attr(value: string) {
   return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 }
 
-for (const entry of seoEntries()) {
+function text(value: string) {
+  return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+const entries = seoEntries();
+const manifest: { file: string; title: string }[] = [];
+
+for (const entry of entries) {
   let html = shell;
+  html = html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>\s*/g, '');
   html = html.replace(/<title>[^<]*<\/title>/, `<title>${attr(entry.title)}</title>`);
   html = html.replace(/(name="description" content=")[^"]*/, `$1${attr(entry.description)}`);
   html = html.replace(/(property="og:title" content=")[^"]*/, `$1${attr(entry.title)}`);
   html = html.replace(/(property="og:description" content=")[^"]*/, `$1${attr(entry.description)}`);
   html = html.replace(/(property="og:url" content=")[^"]*/, `$1${attr(entry.url)}`);
+  html = html.replace(/(property="og:image" content=")[^"]*/, `$1${attr(entry.image)}`);
+  html = html.replace(/(name="twitter:image" content=")[^"]*/, `$1${attr(entry.image)}`);
   html = html.replace(/(name="twitter:title" content=")[^"]*/, `$1${attr(entry.title)}`);
   html = html.replace(/(name="twitter:description" content=")[^"]*/, `$1${attr(entry.description)}`);
   html = html.replace(/(rel="canonical" href=")[^"]*/, `$1${attr(entry.url)}`);
-  const ld = `<script type="application/ld+json">${JSON.stringify(entry.jsonLd)}</script>`;
-  html = html.replace('</head>', `    ${ld}\n  </head>`);
+  const ld = `<script type="application/ld+json">${JSON.stringify(entry.jsonLd).replace(/</g, '\\u003c')}</script>`;
+  const robots = noindex ? '    <meta name="robots" content="noindex, nofollow">\n' : '';
+  html = html.replace('</head>', `    ${ld}\n${robots}  </head>`);
+  html = html.replace('<div id="root"></div>', `<div id="root"><h1>${text(entry.h1)}</h1></div>`);
   const file = entry.path === '/' ? join(dist, 'index.html') : join(dist, entry.path.slice(1), 'index.html');
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, html);
+  const slug = entry.path === '/' ? 'home' : entry.path.slice(1).replace(/\//g, '-');
+  manifest.push({ file: join(dist, 'og', `${slug}.jpg`), title: entry.h1 });
 }
 
-console.log(`Prerendered ${seoEntries().length} routes.`);
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${entries.map((entry) => `  <url><loc>${entry.url}</loc><changefreq>${entry.path === '/' ? 'weekly' : 'monthly'}</changefreq><priority>${entry.path === '/' ? '1.0' : '0.7'}</priority></url>`).join('\n')}
+</urlset>
+`;
+writeFileSync(join(dist, 'sitemap.xml'), sitemap);
+writeFileSync(join(root, 'public', 'sitemap.xml'), sitemap);
+
+mkdirSync(join(dist, 'og'), { recursive: true });
+const manifestPath = join(dist, 'og', 'manifest.json');
+writeFileSync(manifestPath, JSON.stringify(manifest));
+const drawn = spawnSync('python3', [join(root, 'scripts', 'og.py'), manifestPath], { stdio: 'inherit' });
+if (drawn.status !== 0) process.exit(drawn.status || 1);
+
+console.log(`Prerendered ${entries.length} routes.`);

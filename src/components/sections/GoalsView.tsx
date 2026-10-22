@@ -48,7 +48,7 @@ export const GoalsView: React.FC<GoalsViewProps> = ({ activeSlug, navigate, onOp
                 </button>
               </div>
             </div>
-            <img src={IMAGES[goal.slug]} alt="" />
+            <img src={IMAGES[goal.slug]} alt={goal.title} width={1600} height={1100} />
           </div>
           <div className="pg-grid cards">
             <article className="pg-card">
@@ -83,7 +83,7 @@ export const GoalsView: React.FC<GoalsViewProps> = ({ activeSlug, navigate, onOp
         <div className="pg-grid goals">
           {FARCON_GOALS.map((goal) => (
             <button key={goal.id} type="button" className="pg-card goal-card" onClick={() => navigate(`/goals/${goal.slug}` as RoutePath)}>
-              <img src={IMAGES[goal.slug]} alt="" />
+              <img src={IMAGES[goal.slug]} alt={goal.title} width={1600} height={1100} />
               <div>
                 <span className="horizon">{goal.typicalHorizon}</span>
                 <h2>{goal.title}</h2>
