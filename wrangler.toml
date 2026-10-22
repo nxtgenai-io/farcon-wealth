@@ -11,3 +11,6 @@ not_found_handling = "single-page-application"
 
 # Production secret (do not commit the URL):
 #   npx wrangler secret put LEADS_WEBHOOK_URL
+
+# Required by `wrangler preview`. Empty so previews use the top-level Worker settings.
+[previews]
