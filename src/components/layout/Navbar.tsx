@@ -18,6 +18,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [menuServices, setMenuServices] = useState(false);
   const [compact, setCompact] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -26,6 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
     setOpen(false);
     setSearchOpen(false);
     setServicesOpen(false);
+    setMoreOpen(false);
     setMenuServices(false);
   }, [currentPath]);
 
@@ -132,6 +134,34 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, onOpenCon
               </button>
             ),
           )}
+          <div
+            className="fw-nav-more"
+            onMouseEnter={() => setMoreOpen(true)}
+            onMouseLeave={() => setMoreOpen(false)}
+          >
+            <button
+              type="button"
+              className={PRIMARY_NAV.some((item) => item.later && currentPath === item.href) ? 'is-active' : ''}
+              aria-expanded={moreOpen}
+              onClick={() => setMoreOpen((value) => !value)}
+            >
+              More <ChevronDown size={14} aria-hidden="true" />
+            </button>
+            {moreOpen && (
+              <div className="fw-nav-panel">
+                {PRIMARY_NAV.filter((item) => item.later).map((item) => (
+                  <button
+                    key={item.href}
+                    type="button"
+                    className={currentPath === item.href ? 'is-active' : ''}
+                    onClick={() => go(item.href)}
+                  >
+                    {item.short}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </nav>
         <div className="fw-actions">
           <button type="button" className="fw-icon-btn" aria-label="Search pages" onClick={() => setSearchOpen((v) => !v)}>
