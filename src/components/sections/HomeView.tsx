@@ -161,11 +161,11 @@ const RISK = {
 const FUNDS = [
   { name: 'SBI Small Cap Fund', group: 'Equity Funds', tags: ['Equity', 'Small Cap'], cagr: '26.4%', nav: '₹164.72', risk: 'Very High Risk', tone: RISK.veryHigh, logo: '/images/amc/sbi.svg', spark: [12, 13, 15, 16, 18, 20, 22, 24, 26] },
   { name: 'HDFC Flexi Cap Fund', group: 'Equity Funds', tags: ['Equity', 'Flexi Cap'], cagr: '21.8%', nav: '₹712.35', risk: 'High Risk', tone: RISK.high, logo: '/images/amc/hdfc.svg', spark: [11, 13, 14, 16, 17, 18, 20, 21, 22] },
-  { name: 'ICICI Prudential Balanced Advantage Fund', group: 'Hybrid Funds', tags: ['Hybrid', 'Dynamic'], cagr: '14.6%', nav: '₹348.12', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/icici.svg', spark: [12, 12.4, 13, 13.6, 14.2, 14.8, 15.4, 16.2, 17] },
+  { name: 'ICICI Prudential Balanced Advantage Fund', group: 'Hybrid Funds', tags: ['Hybrid', 'Dynamic'], cagr: '14.6%', nav: '₹348.12', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/icici.webp', spark: [12, 12.4, 13, 13.6, 14.2, 14.8, 15.4, 16.2, 17] },
   { name: 'Axis ELSS Tax Saver Fund', group: 'Tax Saving (ELSS)', tags: ['Equity', 'ELSS'], cagr: '18.2%', nav: '₹112.46', risk: 'High Risk', tone: RISK.high, logo: '/images/amc/axis.svg', spark: [10, 11, 12.5, 13.5, 15, 16, 17.2, 18.2, 19] },
   { name: 'HDFC Short Term Debt Fund', group: 'Debt Funds', tags: ['Debt', 'Short Duration'], cagr: '7.4%', nav: '₹28.16', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/hdfc.svg', spark: [12, 12.2, 12.4, 12.7, 13, 13.2, 13.5, 13.8, 14] },
   { name: 'SBI Magnum Gilt Fund', group: 'Debt Funds', tags: ['Debt', 'Gilt'], cagr: '7.1%', nav: '₹58.40', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/sbi.svg', spark: [11, 11.4, 11.2, 11.8, 12.1, 12.4, 12.2, 12.8, 13.1] },
-  { name: 'ICICI Prudential Corporate Bond Fund', group: 'Debt Funds', tags: ['Debt', 'Corporate'], cagr: '7.6%', nav: '₹26.90', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/icici.svg', spark: [10, 10.4, 10.8, 11.1, 11.4, 11.8, 12.1, 12.5, 12.8] },
+  { name: 'ICICI Prudential Corporate Bond Fund', group: 'Debt Funds', tags: ['Debt', 'Corporate'], cagr: '7.6%', nav: '₹26.90', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/icici.webp', spark: [10, 10.4, 10.8, 11.1, 11.4, 11.8, 12.1, 12.5, 12.8] },
   { name: 'Axis Treasury Advantage Fund', group: 'Debt Funds', tags: ['Debt', 'Money Market'], cagr: '6.8%', nav: '₹2,746', risk: 'Low Risk', tone: RISK.moderate, logo: '/images/amc/axis.svg', spark: [9, 9.2, 9.4, 9.5, 9.7, 9.9, 10.1, 10.3, 10.5] },
 ];
 
@@ -396,13 +396,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           src={bleedSrc('hero').src}
           srcSet={bleedSrc('hero').srcSet}
           sizes="100vw"
-          alt="A couple seen from behind, sitting on a hill above a lake and misty mountains"
+          alt="A couple seen from behind, sitting on a hill above misty mountains at sunrise"
           width={2880}
           height={1620}
           fetchPriority="high"
           decoding="async"
         />
-        <div className="hf-hero-scrim" />
+        <div className="hf-hero-scrim" aria-hidden="true" />
         <div className="hf-hero-inner">
           <div className="hf-hero-copy">
             <span className="hf-eye">Goal-based wealth guidance</span>
@@ -467,7 +467,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           <div className="hf-goals">
             {GOALS.map((goal, index) => (
               <button key={goal.title} type="button" className="hf-goal" style={{ animationDelay: `${index * 70}ms` }} onClick={() => navigate(goal.href)}>
-                <img {...cardSrc(goal.image)} sizes="(min-width: 1100px) 180px, 80vw" alt={goal.alt} width={1600} height={1100} loading="lazy" decoding="async" />
+                <img {...cardSrc(goal.image)} sizes="(min-width: 1100px) 180px, 80vw" alt={goal.alt} width={1600} height={1100} loading="eager" fetchPriority="low" decoding="async" />
                 <span>
                   <h2>{goal.title}</h2>
                   <p>{goal.text}</p>
@@ -601,7 +601,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           alt="A mountain ridge at sunset with a small flag on the right-hand peak"
           width={2880}
           height={1400}
-          loading="lazy"
+          loading="eager"
+          fetchPriority="low"
           decoding="async"
         />
         <svg className="hf-flag" viewBox="0 0 1200 640" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
@@ -728,7 +729,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               ['article-elss', 'A calculator on tax paperwork', 'Tax Saving with ELSS', 'Save tax while building wealth'],
             ].map(([name, alt, title, text]) => (
               <a key={title} className="hf-article" href="/education" onClick={(event) => { event.preventDefault(); navigate('/education'); }}>
-                <img {...cardSrc(name)} sizes="96px" alt={alt} width={1600} height={1100} loading="lazy" decoding="async" />
+                <img {...cardSrc(name)} sizes="96px" alt={alt} width={1600} height={1100} loading="eager" fetchPriority="low" decoding="async" />
                 <div>
                   <h2>{title}</h2>
                   <p>{text}</p>
@@ -748,7 +749,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           alt="A hiker sitting on a rock above a forested mountain valley"
           width={2880}
           height={1620}
-          loading="lazy"
+          loading="eager"
+          fetchPriority="low"
           decoding="async"
         />
         <div className="hf-cta-scrim" />

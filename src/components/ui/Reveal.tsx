@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 interface RevealProps {
   children: React.ReactNode;
@@ -25,34 +25,47 @@ export const Reveal: React.FC<RevealProps & React.HTMLAttributes<HTMLElement>> =
   const [isVisible, setIsVisible] = useState(false);
   const elementRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    // Check prefers-reduced-motion
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setIsVisible(true);
-      return;
-    }
+  const showIfNear = () => {
+    const el = elementRef.current;
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    const viewHeight = window.innerHeight || document.documentElement.clientHeight;
+    return rect.top < viewHeight + 120 && rect.bottom > -40;
+  };
 
+  useLayoutEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || showIfNear()) {
+      setIsVisible(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isVisible) {
+      elementRef.current?.querySelectorAll('img').forEach((img) => {
+        if (img.loading === 'lazy') img.loading = 'eager';
+      });
+      return undefined;
+    }
+    if (typeof window === 'undefined') return undefined;
+    const el = elementRef.current;
+    if (!el) return undefined;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          if (elementRef.current) {
-            observer.unobserve(elementRef.current);
-          }
+          observer.disconnect();
         }
       },
-      {
-        threshold,
-        rootMargin: '0px 0px -40px 0px',
-      }
+      { threshold: Math.min(threshold, 0.08), rootMargin: '120px 0px 120px 0px' }
     );
-
-    if (elementRef.current) {
-      observer.observe(elementRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [threshold]);
+    observer.observe(el);
+    const fallback = window.setTimeout(() => setIsVisible(true), 800);
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(fallback);
+    };
+  }, [isVisible, threshold]);
 
   const getTransform = () => {
     if (isVisible) return 'translate3d(0, 0, 0)';

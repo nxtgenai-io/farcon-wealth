@@ -6,7 +6,7 @@ The Farcon stag mark is the project file `public/brand-mark.svg`. The “Your Go
 
 | File | Scene | Source | Author | License |
 | --- | --- | --- | --- | --- |
-| `hero-800.webp`, `hero-1440.webp`, `hero-2880.webp` | Couple seen from behind on a hill above a lake and mountains | [Pexels 18207672](https://www.pexels.com/photo/couple-sitting-on-hilltop-over-lake-garda-in-italy-18207672/) | Joshua Plattner | Pexels License |
+| `hero-800.webp`, `hero-1440.webp`, `hero-2880.webp` | Couple seen from behind on a hill, misty mountain layers, golden sky | [Pexels 18329090](https://www.pexels.com/photo/friends-sitting-on-a-hill-outside-the-city-at-dusk-18329090/) | Iqbal farooz | Pexels License |
 | `goal-retirement-800.webp`, `goal-retirement-1600.webp` | Beach chair at sunset | [Pexels 30184102](https://www.pexels.com/photo/cozy-adirondack-chair-at-pismo-beach-sunset-30184102/) | James Collington | Pexels License |
 | `goal-education-800.webp`, `goal-education-1600.webp` | Child walking with a school backpack | [Pexels 29765590](https://www.pexels.com/photo/child-walking-to-school-with-colorful-backpack-29765590/) | Sergei Starostin | Pexels License |
 | `goal-wealth-800.webp`, `goal-wealth-1600.webp` | Plant growing from a jar of coins | [Pexels 9755390](https://www.pexels.com/photo/close-up-shot-of-a-jar-with-coins-9755390/) | Towfiqu barbhuiya | Pexels License |
