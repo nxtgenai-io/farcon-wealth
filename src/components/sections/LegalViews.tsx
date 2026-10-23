@@ -27,27 +27,27 @@ export const LegalViews: React.FC<LegalViewProps> = ({ type, navigate }) => {
             </div>
 
             <div className="space-y-4 text-xs text-slate-700 leading-relaxed border-t border-slate-100 pt-6">
-              <h3 className="text-sm font-semibold text-slate-900">1. Registration Status</h3>
+              <h2 className="text-sm font-semibold text-slate-900">1. Registration Status</h2>
               <p>
                 {FARCON_CONFIG.legalName} is an AMFI-registered Mutual Fund Distributor with registration number <strong>ARN: {FARCON_CONFIG.arn}</strong>.
               </p>
 
-              <h3 className="text-sm font-semibold text-slate-900">2. Nature of Service</h3>
+              <h2 className="text-sm font-semibold text-slate-900">2. Nature of Service</h2>
               <p>
                 Farcon acts as a mutual fund distributor. We provide information, category guidance, and execution facilitation in regular mutual fund schemes. Farcon does not offer Portfolio Management Services (PMS), Alternative Investment Funds (AIF), or direct equity brokerage.
               </p>
 
-              <h3 className="text-sm font-semibold text-slate-900">3. Commission Disclosures</h3>
+              <h2 className="text-sm font-semibold text-slate-900">3. Commission Disclosures</h2>
               <p>
                 In accordance with SEBI circulars, Farcon receives standard distributor trail commissions from Asset Management Companies (AMCs) for mutual fund transactions executed through ARN: {FARCON_CONFIG.arn}. Commissions are paid directly by AMCs from the scheme expense ratios and are not separately billed to investors. Complete commission schedules for all schemes are available to clients upon request.
               </p>
 
-              <h3 className="text-sm font-semibold text-slate-900">4. Risk Factor</h3>
+              <h2 className="text-sm font-semibold text-slate-900">4. Risk Factor</h2>
               <p className="p-3 bg-amber-50 rounded-md border border-amber-200 text-amber-900">
                 <strong>Statutory Notice:</strong> Mutual fund investments are subject to market risks. Please read all scheme-related documents (Scheme Information Document, Statement of Additional Information, and Key Information Memorandum) carefully before investing. Past performance is not indicative of future returns.
               </p>
 
-              <h3 className="text-sm font-semibold text-slate-900">5. Investor Funds Custody</h3>
+              <h2 className="text-sm font-semibold text-slate-900">5. Investor Funds Custody</h2>
               <p>
                 Farcon Wealth does not hold custody of your investment funds. Investments are made through official channels in the investor’s name. All subscription and redemption funds move directly between the investor's verified bank account and the respective Asset Management Company.
               </p>
@@ -74,7 +74,7 @@ export const LegalViews: React.FC<LegalViewProps> = ({ type, navigate }) => {
                 At Farcon Wealth, client satisfaction and fair dealing are our highest priorities. If you have any grievance or service inquiry regarding your mutual fund investments, please follow the escalation matrix below:
               </p>
 
-              <h3 className="text-sm font-semibold text-slate-900">Level 1: Farcon Client Support</h3>
+              <h2 className="text-sm font-semibold text-slate-900">Level 1: Farcon Client Support</h2>
               <p>
                 You may write to our dedicated support desk with your folio details and description of the issue:
                 <br />
@@ -85,12 +85,12 @@ export const LegalViews: React.FC<LegalViewProps> = ({ type, navigate }) => {
                 Turnaround Time: We acknowledge all complaints within 24 business hours and aim to resolve them within 5 business days.
               </p>
 
-              <h3 className="text-sm font-semibold text-slate-900">Level 2: Respective Asset Management Company (AMC) / Registrar</h3>
+              <h2 className="text-sm font-semibold text-slate-900">Level 2: Respective Asset Management Company (AMC) / Registrar</h2>
               <p>
                 For technical folio issues, KYC updates, or bank mandate verifications, you may also directly contact the investor service centers of CAMS, KFintech, or the specific AMC managing your scheme.
               </p>
 
-              <h3 className="text-sm font-semibold text-slate-900">Level 3: Regulatory Escalation (SEBI SCORES)</h3>
+              <h2 className="text-sm font-semibold text-slate-900">Level 3: Regulatory Escalation (SEBI SCORES)</h2>
               <p>
                 If your grievance remains unaddressed or you are dissatisfied with the response, you may lodge a complaint with SEBI through the SCORES portal at <strong>scores.gov.in</strong> or through the SEBI ODR portal.
               </p>
@@ -116,11 +116,11 @@ export const LegalViews: React.FC<LegalViewProps> = ({ type, navigate }) => {
               <p>
                 Farcon Wealth Private Limited is committed to maintaining strict confidentiality of personal and financial information provided by visitors and clients.
               </p>
-              <h3 className="text-sm font-semibold text-slate-900">Data Collection</h3>
+              <h2 className="text-sm font-semibold text-slate-900">Data Collection</h2>
               <p>
                 We only collect information voluntarily submitted through consultation requests, calculators, or portfolio review forms (such as name, phone number, email, and stated investment goals).
               </p>
-              <h3 className="text-sm font-semibold text-slate-900">Usage & Zero-Spam Policy</h3>
+              <h2 className="text-sm font-semibold text-slate-900">Usage & Zero-Spam Policy</h2>
               <p>
                 Your contact details are used exclusively to provide requested mutual fund guidance, schedule strategy calls, or process portfolio diagnostics. We never sell, rent, or lease client data to third-party telemarketers or credit agencies.
               </p>

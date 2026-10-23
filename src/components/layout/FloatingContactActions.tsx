@@ -1,65 +1,53 @@
-import React, { useState } from 'react';
-import { MessageSquare, Phone } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Sparkles } from 'lucide-react';
 import { FARCON_CONFIG } from '@/content/site/config';
 
-interface FloatingContactActionsProps {
-  onOpenAI: () => void;
-}
-
-export const FloatingContactActions: React.FC<FloatingContactActionsProps> = ({ onOpenAI }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
+export const FloatingContactActions: React.FC<{ onOpenAI?: () => void }> = ({ onOpenAI }) => {
+  const [show, setShow] = useState(false);
   const whatsappUrl = `https://wa.me/${FARCON_CONFIG.whatsappNumber}?text=${encodeURIComponent(
     'Hello Farcon Wealth. I would like to learn more about your goal-based mutual fund guidance.'
   )}`;
 
-  return (
-    <aside
-      className="fixed bottom-6 right-6 z-30 flex flex-col items-end gap-3 pointer-events-auto"
-      aria-label="Quick contact and AI guidance"
-    >
-      {/* Quiet Farcon AI Floating Trigger (✦ with subtle hover expansion) */}
-      <button
-        onClick={onOpenAI}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        className="flex items-center gap-2 bg-[#101A2C] hover:bg-[#15243B] text-white p-3 sm:px-3.5 sm:py-2.5 rounded-full shadow-2xl border border-slate-700/80 transition-all duration-300 group cursor-pointer active:scale-95"
-        aria-label="Ask Farcon AI"
-        title="Ask Farcon AI"
-      >
-        <span className="text-[#78A832] font-bold text-sm leading-none transition-transform group-hover:scale-110">
-          ✦
-        </span>
-        <span
-          className={`text-xs font-semibold tracking-wide whitespace-nowrap overflow-hidden transition-all duration-300 ${
-            isHovered ? 'max-w-28 opacity-100 pr-1' : 'max-w-0 opacity-0 sm:max-w-28 sm:opacity-100 sm:pr-1'
-          }`}
-        >
-          Ask Farcon AI
-        </span>
-      </button>
+  useEffect(() => {
+    const onScroll = () => {
+      const pastHero = window.scrollY > 480;
+      const footer = document.querySelector('.fw-footer');
+      const footerTop = footer?.getBoundingClientRect().top ?? Number.POSITIVE_INFINITY;
+      const footerClear = footerTop > window.innerHeight - 8;
+      setShow(pastHero && footerClear);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
 
-      {/* WhatsApp Quick Action */}
+  return (
+    <div className={`fw-float${show ? ' has-wa' : ''}`}>
+      <button type="button" className="fw-ai-launch" onClick={onOpenAI}>
+        <Sparkles size={16} aria-hidden="true" />
+        <span>Ask Farcon AI</span>
+      </button>
       <a
+        className={`fw-wa${show ? ' is-on' : ''}`}
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-center w-10 h-10 bg-[#25D366] hover:bg-[#20BD5A] text-white rounded-full shadow-lg transition-all hover:scale-105 active:scale-95"
-        aria-label="Connect via WhatsApp"
-        title="Chat on WhatsApp"
+        aria-label="Chat with Farcon on WhatsApp"
+        tabIndex={show ? 0 : -1}
+        aria-hidden={show ? undefined : true}
       >
-        <MessageSquare className="w-4 h-4 fill-current" />
+        <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true" focusable="false">
+          <path
+            fill="currentColor"
+            d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.86 9.86 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.91-7.02zm-7.01 15.24h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.22-8.23 8.22zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.87.85-.87 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.24 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.1-.23-.16-.48-.28z"
+          />
+        </svg>
+        <span className="fw-wa-tip">Chat on WhatsApp</span>
       </a>
-
-      {/* Call Direct Action */}
-      <a
-        href={`tel:${FARCON_CONFIG.phoneNumber}`}
-        className="flex items-center justify-center w-10 h-10 bg-white hover:bg-slate-50 text-slate-800 border border-slate-200/90 rounded-full shadow-md transition-all hover:scale-105 active:scale-95"
-        aria-label="Call Farcon Wealth"
-        title={`Call ${FARCON_CONFIG.phoneNumber}`}
-      >
-        <Phone className="w-3.5 h-3.5 text-[#101A2C]" />
-      </a>
-    </aside>
+    </div>
   );
 };

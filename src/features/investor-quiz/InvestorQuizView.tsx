@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { QUIZ_QUESTIONS, scoreQuiz, DIAGNOSTIC_DIMENSIONS, DiagnosticDimension } from './quizConfig';
 import { RoutePath, LeadContext } from '@/types';
-import { leadService } from '@/lib/api/leadService';
+import { leadErrorLine, leadService } from '@/lib/api/leadService';
+import { FARCON_CONFIG } from '@/content/site/config';
 import { COMPLIANCE_REGISTRY } from '@/lib/compliance';
 import { planningContextService } from '@/lib/planningContext';
 import { analytics } from '@/lib/analytics';
@@ -34,6 +35,11 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [transitionDirection, setTransitionDirection] = useState<'next' | 'prev'>('next');
   const [leadCaptured, setLeadCaptured] = useState(false);
+  const [leadError, setLeadError] = useState('');
+  const leadAlertRef = useRef<HTMLParagraphElement>(null);
+  const [quizConsent, setQuizConsent] = useState(false);
+  const [quizPreference, setQuizPreference] = useState('');
+  const [quizStartedAt] = useState(() => Date.now());
   const [leadPhone, setLeadPhone] = useState('');
   const [leadName, setLeadName] = useState('');
   const [savingLead, setSavingLead] = useState(false);
@@ -114,6 +120,12 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentStep, submitted, isTransitioning, currentQ]);
 
+  useEffect(() => {
+    if (!leadError) return;
+    leadAlertRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    leadAlertRef.current?.focus();
+  }, [leadError]);
+
   const result = scoreQuiz(answers);
 
   // Personalized CTA determination based on quiz inputs
@@ -156,8 +168,13 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
   const handleSaveResultWithConsultation = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!leadName.trim() || leadPhone.replace(/[^0-9]/g, '').length < 10) return;
+    if (!quizConsent || !quizPreference) {
+      setLeadError('Choose how we should reply, and tick consent, before sending.');
+      return;
+    }
 
     setSavingLead(true);
+    setLeadError('');
     try {
       const payload: LeadContext = {
         name: leadName.trim(),
@@ -166,12 +183,18 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
         quizProfile: result.profile.title,
         quizScore: result.totalScore,
         source: 'Investor Fit Diagnostic Result',
-        consent: true,
+        consent: quizConsent,
+        contactPreference: quizPreference,
+        formStartedAt: quizStartedAt,
       };
-      await leadService.submitLead(payload);
+      const res = await leadService.submitLead(payload);
+      if (!res.success) {
+        setLeadError(leadErrorLine(res.message));
+        return;
+      }
       setLeadCaptured(true);
     } catch {
-      // Continue gracefully
+      setLeadError('We could not send this. Please message us on WhatsApp.');
     } finally {
       setSavingLead(false);
     }
@@ -180,27 +203,20 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
   const progressPercent = Math.round(((currentStep + 1) / totalQuestions) * 100);
 
   return (
-    <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-10 lg:py-16">
+    <div className="pg quiz-page">
+      <div className="pg-wrap">
+      {!submitted && (
+        <div className="quiz-page-title">
+          <span className="hf-eye">Suitability diagnostic</span>
+          <h1>Investor Fit Assessment</h1>
+        </div>
+      )}
       {!submitted ? (
-        /* EDITORIAL SPLIT LAYOUT (LEFT: Context Journey Rail, RIGHT: Question Interface) */
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
-          {/* LEFT CONTEXT JOURNEY RAIL (Sticky on Desktop, Pale Blue-Grey Panel) */}
-          <div className="lg:col-span-5 bg-[#F2F6FB] text-[#17243A] p-7 sm:p-9 rounded-2xl border border-[#DCE4EE] shadow-xs space-y-6 lg:sticky lg:top-24">
-            {/* Header & Assessment Context */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#78A832]" />
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#78A832]">
-                  Suitability Diagnostic
-                </span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-poppins font-semibold tracking-tight text-slate-900 leading-tight">
-                Investor Fit Assessment
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                Determine your objective risk capacity and optimal investment horizon before deploying capital.
-              </p>
-            </div>
+        <div className="quiz-layout">
+          <div className="quiz-rail pg-card">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+              Determine your objective risk capacity and optimal investment horizon before deploying capital.
+            </p>
 
             {/* Diagnostic Metrics: Estimated Time & Overall Progress */}
             <div className="p-4 bg-white rounded-xl border border-[#DCE4EE] space-y-3 shadow-2xs">
@@ -224,7 +240,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
             </div>
 
             {/* Assessment Dimensions Rail (Configurable Dimensions) */}
-            <div className="space-y-2.5 pt-1">
+            <div className="space-y-2.5 pt-1 quiz-dims">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-slate-700">
                   Evaluation Framework
@@ -322,24 +338,14 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
           </div>
 
           {/* RIGHT CURRENT QUESTION INTERFACE */}
-          <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200/90 shadow-xl p-7 sm:p-12 lg:p-14 space-y-8 min-h-[660px] flex flex-col justify-between">
+          <div className="quiz-q pg-card">
             <div>
               {/* Question Header & Micro Stepper */}
               <div className="space-y-4 pb-6 border-b border-slate-100">
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold tracking-wider text-[#315FCE] uppercase text-xs">
-                      QUESTION 0{currentStep + 1} / 0{totalQuestions}
-                    </span>
-                    <span className="text-slate-300">·</span>
-                    <span className="font-mono font-semibold text-[#78A832] uppercase text-[11px]">
-                      DIMENSION: {activeDimension.label.toUpperCase()}
-                    </span>
-                  </div>
-
-                  <span className="font-mono text-slate-400 text-xs">
-                    {progressPercent}% Complete
-                  </span>
+                <div>
+                  <span className="hf-eye">{activeDimension.label}</span>
+                  <p className="quiz-progress-label">Question {currentStep + 1} of {totalQuestions}</p>
+                  <div className="quiz-bar" aria-hidden="true"><i style={{ width: `${progressPercent}%` }} /></div>
                 </div>
 
                 {/* Subtle Dots & Line Stepper */}
@@ -495,9 +501,9 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
             {/* Assessment Breakdown */}
             <div className="space-y-6">
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2 font-mono">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2 font-mono">
                   What This Profile Indicates
-                </h3>
+                </h2>
                 <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
                   {result.profile.description}
                 </p>
@@ -527,9 +533,9 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
               </div>
 
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3 font-mono">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3 font-mono">
                   Contributing Factors from Your Diagnostic
-                </h3>
+                </h2>
                 <ul className="space-y-2.5 text-xs text-slate-700">
                   {result.profile.keyCharacteristics.map((char, i) => (
                     <li key={i} className="flex items-start gap-2.5">
@@ -578,9 +584,9 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
           {/* Quick Consultation Request Form (Groww-inspired clean white card) */}
           {!leadCaptured ? (
             <div className="bg-white rounded-2xl border border-[#DCE4EE] shadow-xs p-7 sm:p-9">
-              <h3 className="text-lg font-semibold text-slate-900 mb-1">
+              <h2 className="text-lg font-semibold text-slate-900 mb-1">
                 Save Your Profile & Request a 15-Minute Strategy Call
-              </h3>
+              </h2>
               <p className="text-xs text-slate-600 mb-6">
                 Receive an institutional review from Farcon Wealth with zero sales push.
               </p>
@@ -602,20 +608,36 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                   className="px-4 py-2.5 text-xs rounded-lg border border-[#DCE4EE] focus:border-slate-900 focus:outline-hidden bg-[#FAFBFC]"
                   required
                 />
+                <select value={quizPreference} onChange={(e) => setQuizPreference(e.target.value)} className="px-4 py-2.5 text-xs rounded-lg border border-[#DCE4EE] bg-white" required>
+                  <option value="">How should we reply?</option>
+                  <option>WhatsApp</option>
+                  <option>Email</option>
+                  <option>Call</option>
+                </select>
+                <label className="sm:col-span-3 flex items-start gap-2 text-[11px] text-slate-600">
+                  <input type="checkbox" checked={quizConsent} onChange={(e) => setQuizConsent(e.target.checked)} />
+                  <span>I agree Farcon may store this quiz result and reply about it. Read the <a href="/privacy">privacy policy</a>.</span>
+                </label>
                 <button
                   type="submit"
                   disabled={savingLead}
                   className="py-2.5 px-5 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-lg transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
                 >
-                  {savingLead ? 'Saving...' : 'Connect With Advisor'}
+                  {savingLead ? 'Sending...' : 'Send to the Farcon team'}
                 </button>
+                {leadError && (
+                  <>
+                    <p ref={leadAlertRef} className="sm:col-span-3 text-[11px] text-red-700" tabIndex={-1} role="alert" aria-live="assertive">{leadError}</p>
+                    <a className="hf-btn hf-btn-outline sm:col-span-3" href={`https://wa.me/${FARCON_CONFIG.whatsappNumber}`} target="_blank" rel="noreferrer">Message us on WhatsApp</a>
+                  </>
+                )}
               </form>
             </div>
           ) : (
             <div className="p-5 bg-[#E8F5E9] rounded-2xl border border-[#C8E6C9] text-xs text-[#17243A] flex items-center gap-2.5 shadow-2xs">
               <CheckCircle2 className="w-5 h-5 text-[#78A832] shrink-0" />
               <span>
-                Your investor profile has been securely saved. A Farcon advisor will reach out to you calmly on {leadPhone}.
+                Your note is with the Farcon team. We will reply on {leadPhone}.
               </span>
             </div>
           )}
@@ -643,6 +665,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

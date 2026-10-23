@@ -1,4 +1,7 @@
+export const SITE_URL = 'https://farconwealth.com';
+
 export const FARCON_CONFIG = {
+  siteUrl: SITE_URL,
   brandName: 'FARCON WEALTH',
   legalName: 'Farcon Wealth Private Limited',
   registrationType: 'AMFI Registered Mutual Fund Distributor',
@@ -7,9 +10,17 @@ export const FARCON_CONFIG = {
   subTagline: 'Clarity over complexity. Suitability before returns. Transparent process.',
   email: 'hello@farconwealth.com',
   registeredAddress: 'A-160, P.C. Colony, Kankarbagh, Patna, Bihar, India – 800020',
-  whatsappNumber: '918000000000', // Configurable via environment
-  phoneNumber: '+91 80000 00000',
-  investorLoginUrl: 'https://farconwealth.com/investor-login',
+  whatsappNumber: '917673008502',
+  /** Blank on purpose: the site must not publish a phone number or tel: link. */
+  phoneNumber: '',
+  /** Leave empty until Ankit shares the real investor-platform URL. The login page hides the link while this is blank. */
+  investorLoginUrl: '',
+  /** Leave empty until the real profiles exist. The footer hides each icon while its URL is blank. */
+  social: { linkedin: '', youtube: '', instagram: '' },
+  /** Leave empty to hide the Turnstile widget. The worker checks TURNSTILE_SECRET only when that secret is set. */
+  turnstileSiteKey: '',
+  /** Sample index levels are not a live feed. Do not stamp them with today's date. */
+  illustrativeMarketAsOf: '30 Sep 2026',
   hours: 'Mon – Sat: 9:30 AM – 6:30 PM IST',
   regulatoryNotice:
     'Farcon Wealth Private Limited is an AMFI-registered Mutual Fund Distributor (ARN: 329006). Mutual fund investments are subject to market risks, read all scheme related documents carefully before investing. Past performance is not indicative of future returns. Farcon Wealth does not hold custody of your investment funds. Investments are made through official channels in the investor’s name.',
@@ -36,6 +47,11 @@ export const SERVICE_NAV_ITEMS = [
   { label: 'Retirement Planning', href: '/services/retirement' },
   { label: 'Child Education Planning', href: '/services/child-education' },
   { label: 'Systematic Withdrawal (SWP)', href: '/services/swp' },
+  { label: 'Mutual Fund Distribution', href: '/services/mutual-fund-distribution' },
+  { label: 'Lump-Sum Investing', href: '/services/lumpsum' },
+  { label: 'Goal-Based Planning', href: '/services/goal-based-planning' },
+  { label: 'Wealth Creation', href: '/services/wealth-creation' },
+  { label: 'Investment Solutions', href: '/services/investment-solutions' },
 ];
 
 export const GOAL_NAV_ITEMS = [

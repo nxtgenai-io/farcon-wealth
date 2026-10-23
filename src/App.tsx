@@ -1,22 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React, { lazy, Suspense, useEffect, useLayoutEffect, useState } from 'react';
 import { RoutePath } from '@/types';
+import { BLOG_POSTS } from '@/content/blogs/blogData';
+import fundBook from '@/content/funds/schemes.json';
+import { metaFor, ogImagePath } from '@/content/seo/meta';
+import { SITE_URL } from '@/content/site/config';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { FloatingContactActions } from '@/components/layout/FloatingContactActions';
 import { ConsultationModal } from '@/components/ui/ConsultationModal';
 import { AIChatDrawer } from '@/features/farcon-ai/AIChatDrawer';
 import { HomeView } from '@/components/sections/HomeView';
-import { AboutView } from '@/components/sections/AboutView';
-import { ServicesView } from '@/components/sections/ServicesView';
-import { GoalsView } from '@/components/sections/GoalsView';
-import { CalculatorsHub } from '@/features/calculators/CalculatorsHub';
-import { InvestorQuizView } from '@/features/investor-quiz/InvestorQuizView';
-import { WealthPlannerView } from '@/features/wealth-planner/WealthPlannerView';
-import { MutualFundExplorerView } from '@/features/mutual-funds/MutualFundExplorerView';
-import { PortfolioReviewView } from '@/features/portfolio-review/PortfolioReviewView';
-import { InvestorLoginView } from '@/features/investor-login/InvestorLoginView';
-import { EducationView } from '@/components/sections/EducationView';
-import { LegalViews } from '@/components/sections/LegalViews';
+import { PageCta } from '@/components/sections/home/PageCta';
+import { NotFound } from '@/components/pages/NotFound';
+
+const ServicesView = lazy(() => import('@/components/sections/ServicesView').then((m) => ({ default: m.ServicesView })));
+const GoalsView = lazy(() => import('@/components/sections/GoalsView').then((m) => ({ default: m.GoalsView })));
+const CalculatorsPage = lazy(() => import('@/components/pages/CalculatorsPage').then((m) => ({ default: m.CalculatorsPage })));
+const InvestorQuizView = lazy(() => import('@/features/investor-quiz/InvestorQuizView').then((m) => ({ default: m.InvestorQuizView })));
+const WealthPlannerView = lazy(() => import('@/features/wealth-planner/WealthPlannerView').then((m) => ({ default: m.WealthPlannerView })));
+const AboutPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.AboutPage })));
+const ContactPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.ContactPage })));
+const DisclosuresPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.DisclosuresPage })));
+const EducationPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.EducationPage })));
+const FundsPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.FundsPage })));
+const ArticlePage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.ArticlePage })));
+const StartInvestingPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.StartInvestingPage })));
+const LoginPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.LoginPage })));
+const PortfolioPage = lazy(() => import('@/components/pages/SitePages').then((m) => ({ default: m.PortfolioPage })));
+
+const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'] as const;
+
+function captureUtm() {
+  if (typeof window === 'undefined') return;
+  const params = new URLSearchParams(window.location.search);
+  const next: Record<string, string> = {};
+  UTM_KEYS.forEach((key) => {
+    const value = params.get(key);
+    if (value) next[key] = value.slice(0, 120);
+  });
+  if (!Object.keys(next).length) return;
+  try {
+    const prev = JSON.parse(sessionStorage.getItem('farcon_utm') || '{}') as Record<string, string>;
+    sessionStorage.setItem('farcon_utm', JSON.stringify({ ...prev, ...next }));
+  } catch {
+    sessionStorage.setItem('farcon_utm', JSON.stringify(next));
+  }
+}
 
 export function App() {
   const [currentPath, setCurrentPath] = useState<RoutePath>(() => {
@@ -30,25 +59,120 @@ export function App() {
   const [consultationOpen, setConsultationOpen] = useState(false);
   const [consultationSubject, setConsultationSubject] = useState<string>('Goal-Based Planning');
   const [aiOpen, setAiOpen] = useState(false);
+  const [showTop, setShowTop] = useState(false);
 
   // Sync browser back/forward buttons
   useEffect(() => {
+    captureUtm();
     const handlePopState = () => {
+      captureUtm();
       setCurrentPath((window.location.pathname as RoutePath) || '/');
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  useLayoutEffect(() => {
+    const main = document.getElementById('main');
+    if (!main) return undefined;
+    main.classList.remove('is-route');
+    void main.offsetWidth;
+    main.classList.add('is-route');
+    return undefined;
+  }, [currentPath]);
+
+  useLayoutEffect(() => {
+    const main = document.getElementById('main');
+    if (!main) return undefined;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const selector = '.pg-grid, .steps, .videos, .svc-grid, .legal-read, .related-notes, .pg-wrap > .pg-card, .quiz-layout, .planner-split';
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-in');
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '40px 0px' });
+    const arm = () => {
+      main.querySelectorAll(selector).forEach((el) => {
+        if (el.classList.contains('rise') || el.closest('.rise-host') || el.classList.contains('nav-grid')) return;
+        el.classList.add('rise');
+        if (reduce) {
+          el.classList.add('is-in');
+          return;
+        }
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.98 && rect.bottom > 0) el.classList.add('is-in');
+        else io.observe(el);
+      });
+    };
+    arm();
+    const mo = new MutationObserver(arm);
+    mo.observe(main, { childList: true, subtree: true });
+    return () => {
+      mo.disconnect();
+      io.disconnect();
+    };
+  }, [currentPath]);
+
+  useEffect(() => {
+    const onClick = (event: MouseEvent) => {
+      const summary = (event.target as HTMLElement | null)?.closest('summary');
+      const details = summary?.parentElement;
+      if (!summary || !details || !(details instanceof HTMLDetailsElement) || !details.classList.contains('acc') || !details.open || details.classList.contains('is-closing')) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      event.preventDefault();
+      details.classList.add('is-closing');
+      window.setTimeout(() => {
+        details.open = false;
+        details.classList.remove('is-closing');
+      }, 260);
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, []);
+
   const navigate = (path: RoutePath) => {
+    const raw = String(path);
+    const pathname = (raw.split('?')[0] || '/') as RoutePath;
     if (typeof window !== 'undefined') {
-      if (window.location.pathname !== path) {
-        window.history.pushState({}, '', path);
+      if (`${window.location.pathname}${window.location.search}` !== raw) {
+        window.history.pushState({}, '', raw);
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      captureUtm();
     }
-    setCurrentPath(path);
+    setCurrentPath(pathname);
   };
+
+  useEffect(() => {
+    const meta = metaFor(currentPath);
+    document.title = meta.title;
+    const description = document.querySelector('meta[name="description"]');
+    if (description) description.setAttribute('content', meta.description);
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    const twitter = document.querySelector('meta[name="twitter:title"]');
+    const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+    ogTitle?.setAttribute('content', meta.title);
+    ogDescription?.setAttribute('content', meta.description);
+    twitter?.setAttribute('content', meta.title);
+    twitterDescription?.setAttribute('content', meta.description);
+    const canonical = document.querySelector('link[rel="canonical"]');
+    const href = `${SITE_URL}${currentPath === '/' ? '/' : currentPath}`;
+    if (canonical) canonical.setAttribute('href', href);
+    document.querySelector('meta[property="og:url"]')?.setAttribute('content', href);
+    const image = `${SITE_URL}${ogImagePath(currentPath)}`;
+    document.querySelector('meta[property="og:image"]')?.setAttribute('content', image);
+    document.querySelector('meta[name="twitter:image"]')?.setAttribute('content', image);
+  }, [currentPath]);
+
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > 640);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const handleOpenConsultation = (subject?: string) => {
     if (subject) setConsultationSubject(subject);
@@ -70,21 +194,14 @@ export function App() {
 
     // 2. About
     if (currentPath === '/about') {
-      return (
-        <AboutView
-          navigate={navigate}
-          onOpenConsultation={() => handleOpenConsultation('About Farcon Inquiry')}
-        />
-      );
+      return <AboutPage navigate={navigate} onOpenConsultation={handleOpenConsultation} />;
     }
 
-    // 3. Services Overview & Detail Routes
     if (currentPath.startsWith('/services')) {
-      const slug = currentPath.replace('/services/', '');
-      const activeSlug = slug !== '/services' && slug !== '' ? slug : undefined;
+      const slug = currentPath === '/services' ? undefined : currentPath.slice('/services/'.length);
       return (
         <ServicesView
-          activeSlug={activeSlug}
+          activeSlug={slug}
           navigate={navigate}
           onOpenConsultation={handleOpenConsultation}
         />
@@ -112,7 +229,7 @@ export function App() {
       else if (currentPath.includes('/retirement')) calcType = 'retirement';
 
       return (
-        <CalculatorsHub
+        <CalculatorsPage
           initialType={calcType}
           navigate={navigate}
           onOpenConsultation={handleOpenConsultation}
@@ -141,97 +258,58 @@ export function App() {
     }
 
     // 8. Mutual Fund Explorer
-    if (currentPath === '/mutual-funds') {
-      return (
-        <MutualFundExplorerView
-          navigate={navigate}
-          onOpenConsultation={handleOpenConsultation}
-        />
-      );
+    if (currentPath === '/start-investing') {
+      return <StartInvestingPage />;
     }
 
-    // 9. Portfolio Review
+    if (currentPath === '/mutual-funds' || currentPath.startsWith('/mutual-funds/')) {
+      const rest = currentPath === '/mutual-funds' ? '' : currentPath.slice('/mutual-funds/'.length);
+      const parts = rest.split('/').filter(Boolean);
+      const [categorySlug, schemeSlug, extra] = parts;
+      const category = categorySlug ? fundBook.categories.find((item) => item.slug === categorySlug) : undefined;
+      const scheme = category && schemeSlug ? category.schemes.find((item) => item.slug === schemeSlug) : undefined;
+      if (extra || (categorySlug && !category) || (schemeSlug && !scheme)) {
+        return <NotFound navigate={navigate} />;
+      }
+      return <FundsPage navigate={navigate} categorySlug={categorySlug} schemeSlug={schemeSlug} />;
+    }
+
+    if (currentPath.startsWith('/blogs/') && currentPath !== '/blogs') {
+      const slug = currentPath.slice('/blogs/'.length);
+      if (!BLOG_POSTS.some((item) => item.slug === slug)) return <NotFound navigate={navigate} />;
+      return <ArticlePage navigate={navigate} onOpenConsultation={handleOpenConsultation} slug={slug} />;
+    }
+
     if (currentPath === '/portfolio-review') {
-      return <PortfolioReviewView navigate={navigate} />;
+      return <PortfolioPage />;
     }
 
-    // 10. Investor Login
     if (currentPath === '/investor-login') {
-      return (
-        <InvestorLoginView
-          navigate={navigate}
-          onOpenConsultation={() => handleOpenConsultation('Investor Login Assistance')}
-        />
-      );
+      return <LoginPage navigate={navigate} onOpenConsultation={handleOpenConsultation} />;
     }
 
-    // 11. Education & Blogs & FAQ
     if (currentPath === '/education' || currentPath === '/blogs' || currentPath === '/faq') {
-      return (
-        <EducationView
-          navigate={navigate}
-          onOpenConsultation={() => handleOpenConsultation('Educational Discussion')}
-        />
-      );
+      const focus = currentPath === '/blogs' ? 'blogs' : currentPath === '/faq' ? 'faq' : 'education';
+      return <EducationPage navigate={navigate} onOpenConsultation={handleOpenConsultation} focus={focus} />;
     }
 
     // 12. Contact / Direct Consultation Booking
     if (currentPath === '/contact') {
-      return (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center max-w-xl mx-auto mb-10">
-            <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
-              Direct Advisory Desk
-            </span>
-            <h1 className="mt-2 text-3xl font-poppins font-medium text-slate-900">
-              Connect With Farcon Wealth
-            </h1>
-            <p className="mt-2 text-xs sm:text-sm text-slate-600">
-              Schedule a quiet, confidential conversation with our AMFI-registered team.
-            </p>
-          </div>
-          <div className="bg-white rounded-xl border border-[#DCE4EE] p-8 shadow-xs max-w-xl mx-auto text-center space-y-6">
-            <p className="text-xs text-slate-600 leading-relaxed">
-              We respond to all investor inquiries promptly with zero sales push.
-            </p>
-            <button
-              onClick={() => handleOpenConsultation('Contact Page Request')}
-              className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] rounded-md hover:bg-[#15243B] transition-colors shadow-xs"
-            >
-              Open Consultation Form
-            </button>
-          </div>
-        </div>
-      );
+      return <ContactPage />;
     }
 
-    // 13. Legal & Regulatory
-    if (currentPath === '/disclosures') {
-      return <LegalViews type="disclosures" navigate={navigate} />;
-    }
-    if (currentPath === '/grievance') {
-      return <LegalViews type="grievance" navigate={navigate} />;
-    }
-    if (currentPath === '/privacy') {
-      return <LegalViews type="privacy" navigate={navigate} />;
-    }
-    if (currentPath === '/terms') {
-      return <LegalViews type="terms" navigate={navigate} />;
-    }
+    if (currentPath === '/disclosures') return <DisclosuresPage section="disclosures" />;
+    if (currentPath === '/grievance') return <DisclosuresPage section="grievance" />;
+    if (currentPath === '/privacy') return <DisclosuresPage section="privacy" />;
+    if (currentPath === '/terms') return <DisclosuresPage section="terms" />;
 
-    // Fallback: Home
-    return (
-      <HomeView
-        navigate={navigate}
-        onOpenConsultation={handleOpenConsultation}
-        onOpenAI={() => setAiOpen(true)}
-      />
-    );
+    return <NotFound navigate={navigate} />;
   };
 
+  const home = currentPath === '/';
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAFBFC] text-[#17243A] antialiased selection:bg-[#78A832]/20 selection:text-[#101A2C]">
-      {/* Top Navigation */}
+    <div className={`min-h-screen flex flex-col bg-[#F7F4EC] text-[#1A241C] antialiased selection:bg-[#C9A24A]/30 selection:text-[#0F3D2E] ${home ? 'is-home' : ''}`}>
+      <a className="skip-link" href="#main">Skip to content</a>
       <Navbar
         currentPath={currentPath}
         navigate={navigate}
@@ -239,9 +317,22 @@ export function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1">
-        {renderView()}
+      <main id="main" className="flex-1 fw-skin is-route">
+        <Suspense fallback={<div className="pg"><div className="pg-wrap"><p className="lede">Loading…</p></div></div>}>
+          {renderView()}
+          {currentPath !== '/' && !metaFor(currentPath).title.startsWith('Page not found') && (
+            <PageCta onBook={() => handleOpenConsultation('Book a Free 15-Minute Call')} />
+          )}
+        </Suspense>
       </main>
+      <button
+        type="button"
+        className={`fw-top${showTop ? ' is-on' : ''}`}
+        aria-label="Back to top"
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      >
+        Top
+      </button>
 
       {/* Footer */}
       <Footer navigate={navigate} />

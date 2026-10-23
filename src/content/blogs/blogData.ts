@@ -8,7 +8,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Basics',
     readTime: '4 min read',
     publishedDate: 'March 2026',
-    author: 'Farcon Research & Advisory',
+    author: 'Farcon Wealth',
     excerpt:
       'Compounding requires staying in the game. When investors panic during temporary corrections, they turn temporary paper volatility into permanent capital loss.',
     content: [
@@ -27,7 +27,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'SIP',
     readTime: '5 min read',
     publishedDate: 'February 2026',
-    author: 'Farcon Research & Advisory',
+    author: 'Farcon Wealth',
     excerpt:
       'Attempting to predict market tops and bottoms is an exhausting and mathematically futile exercise. Here is why systematic rupee-cost averaging wins.',
     content: [
@@ -46,7 +46,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Tax Planning',
     readTime: '4 min read',
     publishedDate: 'January 2026',
-    author: 'Farcon Advisory Team',
+    author: 'Farcon Wealth',
     excerpt:
       'Why treating Equity Linked Savings Schemes as a 3-year sprint misses their true compounding potential over 5–7 years.',
     content: [
@@ -65,7 +65,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Retirement',
     readTime: '6 min read',
     publishedDate: 'December 2025',
-    author: 'Farcon Wealth Advisory',
+    author: 'Farcon Wealth',
     excerpt:
       'A ₹50,000 monthly expense today will require significantly higher purchasing power in 20 years. Here is how to factor inflation into your retirement model.',
     content: [
@@ -84,7 +84,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Mutual Funds',
     readTime: '5 min read',
     publishedDate: 'November 2025',
-    author: 'Farcon Advisory Team',
+    author: 'Farcon Wealth',
     excerpt:
       'Over-diversification creates an expensive index fund with excessive tracking drag. Why 4–6 purposeful schemes are all you need.',
     content: [

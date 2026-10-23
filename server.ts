@@ -42,9 +42,6 @@ Response format:
 Provide a clear, educational, calm answer. At the end, if appropriate, mention a relevant Farcon tool (e.g. SIP Calculator, Investor Quiz, Wealth Planner, or Consultation).
 `;
 
-// In-memory leads storage for development/prototype
-const leadsStore: any[] = [];
-
 // API: AI Assistant
 app.post('/api/ai', async (req, res) => {
   const { message, history } = req.body;
@@ -131,27 +128,36 @@ app.post('/api/ai', async (req, res) => {
   return res.json({ state, text });
 });
 
-// API: Lead Capture
-app.post('/api/leads', (req, res) => {
-  const leadData = req.body;
-  if (!leadData || !leadData.name || !leadData.phone) {
-    return res.status(400).json({ error: 'Name and phone number are required.' });
+app.get('/api/nav', async (_req, res) => {
+  const { liveNavResponse } = await import('./src/lib/api/liveNav.ts');
+  res.setHeader('Cache-Control', 'public, max-age=21600');
+  res.json(await liveNavResponse());
+});
+
+app.get('/api/market', async (req, res) => {
+  const { marketResponse } = await import('./src/lib/api/market.ts');
+  const upstream = await marketResponse(`http://127.0.0.1${req.originalUrl}`);
+  res.status(upstream.status);
+  upstream.headers.forEach((value, key) => res.setHeader(key, value));
+  res.send(Buffer.from(await upstream.arrayBuffer()));
+});
+
+// API: Lead Capture — validates, then forwards to LEADS_WEBHOOK_URL when set.
+app.post('/api/leads', async (req, res) => {
+  const { sanitiseLead, forwardLead, allowLead, verifyTurnstile } = await import('./src/lib/api/sheetLead.ts');
+  const ip = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown');
+  if (!(await allowLead(ip))) {
+    return res.status(429).json({ ok: false, success: false, message: 'Too many attempts. Please message us on WhatsApp.', error: 'Rate limit.' });
   }
-
-  const enrichedLead = {
-    ...leadData,
-    id: `LEAD-${Date.now().toString(36).toUpperCase()}-${Math.floor(100 + Math.random() * 900)}`,
-    receivedAt: new Date().toISOString(),
-  };
-
-  leadsStore.unshift(enrichedLead);
-  console.log(`[Farcon Leads] New submission from ${enrichedLead.name} (${enrichedLead.phone}) for goal: ${enrichedLead.goal || 'General'}`);
-
-  return res.json({
-    success: true,
-    leadId: enrichedLead.id,
-    message: 'Lead captured successfully.',
-  });
+  const sanitised = sanitiseLead(req.body);
+  if (!sanitised.ok) {
+    return res.status(400).json({ ok: false, success: false, error: sanitised.error, message: sanitised.error });
+  }
+  if (!(await verifyTurnstile(process.env.TURNSTILE_SECRET, sanitised.lead.turnstileToken, ip))) {
+    return res.status(400).json({ ok: false, success: false, error: 'Please confirm you are not a robot.', message: 'Please confirm you are not a robot.' });
+  }
+  const result = await forwardLead(process.env.LEADS_WEBHOOK_URL, sanitised.lead, process.env.LEADS_SECRET);
+  return res.status(result.status).json(result.body);
 });
 
 // Serve frontend

@@ -1,7 +1,10 @@
 import React from 'react';
 import { FARCON_SERVICES } from '@/content/services/servicesData';
+import { BLOG_POSTS } from '@/content/blogs/blogData';
 import { RoutePath } from '@/types';
-import { ArrowRight, CheckCircle2, HelpCircle, Shield, ArrowUpRight } from 'lucide-react';
+import { FARCON_CONFIG } from '@/content/site/config';
+import { NotFound } from '@/components/pages/NotFound';
+import { ServiceShowcase } from '@/components/sections/ServiceShowcase';
 
 interface ServicesViewProps {
   activeSlug?: string;
@@ -9,208 +12,170 @@ interface ServicesViewProps {
   onOpenConsultation: (serviceName?: string) => void;
 }
 
-export const ServicesView: React.FC<ServicesViewProps> = ({
-  activeSlug,
-  navigate,
-  onOpenConsultation,
-}) => {
-  // If a specific service slug is selected, show detail view
+const RELATED: Record<string, string> = {
+  'sip-planning': 'why-sip-beats-market-timing',
+  elss: 'demystifying-elss-tax-saving-beyond-80c',
+  retirement: 'the-hidden-enemy-inflation-in-retirement',
+  swp: 'the-hidden-enemy-inflation-in-retirement',
+  'portfolio-review': 'portfolio-consolidation-trimming-the-foliage',
+  'mutual-fund-distribution': 'the-mathematics-of-staying-calm',
+  lumpsum: 'why-sip-beats-market-timing',
+  'goal-based-planning': 'the-mathematics-of-staying-calm',
+  'wealth-creation': 'why-sip-beats-market-timing',
+  'investment-solutions': 'portfolio-consolidation-trimming-the-foliage',
+  'child-education': 'the-mathematics-of-staying-calm',
+};
+
+const CALC_LABEL: Record<string, string> = {
+  sip: 'SIP',
+  lumpsum: 'Lumpsum',
+  goal: 'Goal',
+  retirement: 'Retirement',
+};
+
+const IMAGES: Record<string, { src: string; srcSet: string; alt: string; width: number; height: number }> = {
+  'sip-planning': card('/images/home/article-sip', 'A pink piggy bank', 550),
+  'portfolio-review': card('/images/home/article-funds', 'Coin stacks with a seedling', 550),
+  elss: card('/images/home/goal-tax', 'A calculator on paperwork', 550),
+  retirement: card('/images/home/goal-retirement', 'A beach chair at sunset', 550),
+  'child-education': card('/images/home/goal-education', 'A child walking to school', 550),
+  swp: {
+    src: '/images/home/why-mountains-800.webp',
+    srcSet: '/images/home/why-mountains-800.webp 800w, /images/home/why-mountains-1440.webp 1440w',
+    alt: 'A mountain ridge at sunset',
+    width: 800,
+    height: 389,
+  },
+  'mutual-fund-distribution': card('/images/home/svc-distribution', 'An Indian couple reviewing a folder with an advisor', 450),
+  lumpsum: card('/images/home/svc-lumpsum', 'A sealed envelope beside a plant in a brass bowl', 450),
+  'goal-based-planning': card('/images/home/svc-planning', 'A notebook, calendar and cup of tea on a wooden desk', 450),
+  'wealth-creation': card('/images/home/svc-wealth', 'A plant growing from a jar of coins', 450),
+  'investment-solutions': card('/images/home/svc-solutions', 'Three potted plants in a row on a wooden ledge', 450),
+};
+
+function card(base: string, alt: string, height: number) {
+  return {
+    src: `${base}-800.webp`,
+    srcSet: `${base}-800.webp 800w, ${base}-1600.webp 1600w`,
+    alt,
+    width: 800,
+    height,
+  };
+}
+
+export const ServicesView: React.FC<ServicesViewProps> = ({ activeSlug, navigate, onOpenConsultation }) => {
   if (activeSlug) {
-    const service = FARCON_SERVICES.find((s) => s.slug === activeSlug) || FARCON_SERVICES[0];
-
+    const service = FARCON_SERVICES.find((item) => item.slug === activeSlug);
+    if (!service) return <NotFound navigate={navigate} />;
+    const article = BLOG_POSTS.find((post) => post.slug === RELATED[service.slug]);
     return (
-      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-16 space-y-16">
-        {/* Service Hero */}
-        <div className="border-b border-slate-200 pb-10">
-          <div className="flex items-center gap-2 text-xs text-slate-500 mb-3">
-            <button onClick={() => navigate('/services')} className="hover:text-slate-900">
-              Services
-            </button>
-            <span>/</span>
-            <span className="text-slate-900 font-medium">{service.title}</span>
+      <div className="pg">
+        <div className="pg-wrap">
+          <div className="breadcrumbs">
+            <button type="button" onClick={() => navigate('/services')}>Services</button>
+            <span aria-hidden="true">/</span>
+            <span>{service.title}</span>
           </div>
-
-          <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
-            Farcon Service Architecture
-          </span>
-          <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
-            {service.title}
-          </h1>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed">
-            {service.tagline}
-          </p>
-
-          <p className="mt-4 text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
-            {service.summary}
-          </p>
-
-          <div className="mt-8 flex flex-wrap gap-4">
-            <button
-              onClick={() => onOpenConsultation(service.title)}
-              className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors shadow-xs"
-            >
-              Book a Free Consultation
-            </button>
-            <button
-              onClick={() => navigate(`/calculators/${service.calculatorType}` as RoutePath)}
-              className="px-5 py-3 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors"
-            >
-              Use {service.calculatorType.toUpperCase()} Calculator
-            </button>
-          </div>
-        </div>
-
-        {/* What it is & Who it is for */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="bg-white p-6 sm:p-8 rounded-xl border border-[#DCE4EE] shadow-xs">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 mb-4">
-              What It Encompasses
-            </h2>
-            <ul className="space-y-3 text-xs text-slate-600">
-              {service.whatItIs.map((item, idx) => (
-                <li key={idx} className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#78A832] shrink-0 mt-0.5" />
-                  <span className="leading-relaxed">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="bg-white p-6 sm:p-8 rounded-xl border border-[#DCE4EE] shadow-xs">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 mb-4">
-              Who It Is Designed For
-            </h2>
-            <ul className="space-y-3 text-xs text-slate-600">
-              {service.whoItIsFor.map((item, idx) => (
-                <li key={idx} className="flex items-start gap-2.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#315FCE] shrink-0 mt-1.5" />
-                  <span className="leading-relaxed">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* How Farcon Approaches It: 4-Step Editorial Timeline */}
-        <div>
-          <div className="max-w-2xl mb-8">
-            <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
-              Methodology
-            </span>
-            <h2 className="text-2xl font-poppins font-medium text-slate-900 mt-1">
-              How Farcon Executes This Service
-            </h2>
-            <p className="text-xs text-slate-600 mt-1">
-              A structured roadmap from goal quantification to continuous review.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {service.howFarconApproaches.map((step) => (
-              <div
-                key={step.step}
-                className="bg-white p-6 rounded-xl border border-[#DCE4EE] shadow-xs flex flex-col justify-between"
-              >
-                <div>
-                  <span className="text-2xl font-bold font-mono text-[#78A832] block mb-3">
-                    {step.step}
-                  </span>
-                  <h3 className="text-sm font-semibold text-slate-900 mb-2 leading-snug">
-                    {step.title}
-                  </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    {step.description}
-                  </p>
-                </div>
+          <div className="page-hero split-hero">
+            <div>
+              <span className="hf-eye">Farcon service</span>
+              <h1>{service.title}</h1>
+              <p className="lede">{service.tagline}</p>
+              <p>{service.summary}</p>
+              <div className="hf-cta-row" style={{ marginTop: 16 }}>
+                <button type="button" className="hf-btn hf-btn-green" onClick={() => navigate('/start-investing')}>Start investing</button>
+                <button type="button" className="hf-btn hf-btn-outline" onClick={() => onOpenConsultation(service.title)}>Book a consultation</button>
+                {service.slug !== 'portfolio-review' && (
+                  <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/portfolio-review')}>Portfolio review</button>
+                )}
+                <button
+                  type="button"
+                  className="hf-btn hf-btn-outline"
+                  onClick={() => {
+                    const path: RoutePath = service.slug === 'portfolio-review'
+                      ? '/portfolio-review'
+                      : `/calculators/${service.calculatorType}` as RoutePath;
+                    navigate(path);
+                  }}
+                >
+                  {service.slug === 'portfolio-review' ? 'Open the review form' : `Open the ${CALC_LABEL[service.calculatorType] || 'SIP'} calculator`}
+                </button>
+                <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/contact')}>Contact</button>
               </div>
+            </div>
+            <img {...IMAGES[service.slug]} loading="lazy" decoding="async" sizes="(min-width: 900px) 560px, 100vw" />
+          </div>
+          <div className="pg-grid cards">
+            <article className="pg-card">
+              <h2>What it covers</h2>
+              <ul className="tick">{service.whatItIs.map((item) => <li key={item}><i>✓</i><span>{item}</span></li>)}</ul>
+            </article>
+            <article className="pg-card">
+              <h2>Who it is for</h2>
+              <ul className="tick">{service.whoItIsFor.map((item) => <li key={item}><i>✓</i><span>{item}</span></li>)}</ul>
+            </article>
+          </div>
+          <h2 style={{ marginTop: 36 }}>How Farcon approaches it</h2>
+          <div className="steps four">
+            {service.howFarconApproaches.map((step) => (
+              <article key={step.step} className="pg-card">
+                <span className="step-num">{step.step}</span>
+                <h2>{step.title}</h2>
+                <p>{step.description}</p>
+              </article>
             ))}
           </div>
-        </div>
-
-        {/* Service FAQs */}
-        {service.faqs.length > 0 && (
-          <div className="bg-slate-50 p-6 sm:p-8 rounded-xl border border-slate-200">
-            <h3 className="text-base font-poppins font-medium text-slate-900 mb-4">
-              Frequently Clarified Questions
-            </h3>
-            <div className="space-y-4">
-              {service.faqs.map((faq, idx) => (
-                <div key={idx} className="bg-white p-4 rounded-lg border border-slate-200/80">
-                  <h4 className="text-xs font-semibold text-slate-900 mb-1">{faq.question}</h4>
-                  <p className="text-xs text-slate-600 leading-relaxed">{faq.answer}</p>
-                </div>
+          {service.faqs.length > 0 && (
+            <div style={{ marginTop: 28 }}>
+              <h2>Common questions</h2>
+              {service.faqs.map((faq) => (
+                <details key={faq.question} className="acc">
+                  <summary>{faq.question}</summary>
+                  <p>{faq.answer}</p>
+                </details>
               ))}
             </div>
-          </div>
-        )}
-
-        {/* Bottom CTA Block */}
-        <div className="bg-[#F2F6FB] text-[#17243A] p-8 sm:p-10 rounded-2xl border border-[#DCE4EE] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
-          <div>
-            <h3 className="text-xl font-poppins font-medium text-[#17243A]">
-              Ready to Structure Your {service.title}?
-            </h3>
-            <p className="text-xs text-[#52647D] mt-1">
-              Connect with an AMFI-registered advisor with zero sales push.
+          )}
+          {article && (
+            <p className="hf-note" style={{ marginTop: 20 }}>
+              Related note: <button type="button" className="hf-textlink" onClick={() => navigate(`/blogs/${article.slug}` as RoutePath)}>{article.title}</button>
             </p>
-          </div>
-          <button
-            onClick={() => onOpenConsultation(service.title)}
-            className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors shrink-0 shadow-xs"
-          >
-            Book Free Consultation
-          </button>
+          )}
+          <p className="hf-note" style={{ marginTop: 12 }}>
+            Related goal: <button type="button" className="hf-textlink" onClick={() => navigate(`/goals/${service.primaryGoalSlug}` as RoutePath)}>See the goal</button>
+            {' '}· <button type="button" className="hf-textlink" onClick={() => navigate('/contact')}>Contact</button>
+            {' '}· ARN {FARCON_CONFIG.arn}
+          </p>
         </div>
       </div>
     );
   }
 
-  // Services Overview Grid
   return (
-    <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-16">
-      <div className="text-center max-w-3xl mx-auto mb-12">
-        <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
-          Published Capabilities
-        </span>
-        <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
-          Goal-Based Mutual Fund Guidance
-        </h1>
-        <p className="mt-4 text-sm text-slate-600 leading-relaxed">
-          Farcon Wealth is an AMFI-registered Mutual Fund Distributor (ARN: 329006). We focus strictly on transparent, long-term mutual fund architectures—with zero unnecessary products or hidden agendas.
-        </p>
-      </div>
-
-      {/* Premium Editorial Service List (NO 2x3 card grid) */}
-      <div className="border-t border-slate-200 divide-y divide-slate-200">
-        {FARCON_SERVICES.map((service, idx) => (
-          <div
-            key={service.id}
-            onClick={() => navigate(`/services/${service.slug}` as RoutePath)}
-            className="py-8 sm:py-10 transition-all duration-300 cursor-pointer group flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-slate-50/80 px-4 sm:px-6 -mx-4 sm:-mx-6 rounded-2xl"
-          >
-            <div className="flex items-start sm:items-center gap-6 sm:gap-8 md:w-5/12">
-              <span className="text-xl sm:text-2xl font-mono text-slate-400 group-hover:text-[#78A832] transition-colors">
-                0{idx + 1}
-              </span>
-              <div>
-                <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900 group-hover:text-[#78A832] transition-colors leading-snug">
-                  {service.title}
-                </h2>
-                <span className="text-xs text-slate-500 block mt-1">
-                  {service.tagline}
-                </span>
-              </div>
-            </div>
-
-            <div className="md:w-5/12 text-xs sm:text-sm text-slate-600 leading-relaxed">
-              <p>{service.summary}</p>
-            </div>
-
-            <div className="md:w-2/12 flex items-center md:justify-end gap-3 text-xs font-semibold text-slate-900 group-hover:text-[#78A832] transition-colors">
-              <span className="hidden sm:inline">Details</span>
-              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5" />
-            </div>
-          </div>
+    <div className="pg">
+      <section className="svc-band">
+        <div className="pg-wrap svc-page-wrap">
+          <ServiceShowcase navigate={navigate} heading="h1" />
+        </div>
+      </section>
+      <div className="pg-wrap">
+        <h2 style={{ marginTop: 8 }}>How a conversation goes</h2>
+        <div className="steps four">
+          {[
+            ['01', 'The goal', 'What the money is for, and when you need it.'],
+            ['02', 'The surplus', 'What can stay invested through a full cycle.'],
+            ['03', 'The mix', 'Categories that fit the horizon. Not a product shelf.'],
+            ['04', 'The review', 'A check when life or the market changes the plan.'],
+          ].map(([n, title, text]) => (
+            <article key={n} className="pg-card"><span className="step-num">{n}</span><h2>{title}</h2><p>{text}</p></article>
+          ))}
+        </div>
+        <h2 style={{ marginTop: 36 }}>Common questions</h2>
+        {FARCON_SERVICES.flatMap((service) => service.faqs.slice(0, 1)).map((faq) => (
+          <details key={faq.question} className="acc">
+            <summary>{faq.question}</summary>
+            <p>{faq.answer}</p>
+          </details>
         ))}
       </div>
     </div>

@@ -25,7 +25,7 @@ export const FAQ_ITEMS: FAQItem[] = [
     category: 'Safety & Transparency',
     question: 'What are the charges for Farcon’s services?',
     answer:
-      'There are zero upfront advisory fees or hidden charges billed to investors. As an AMFI-registered distributor, Farcon earns standard distributor commissions paid directly by Asset Management Companies (AMCs) out of the regular scheme expense ratio. We believe in total fee transparency with no unexpected bills.',
+      'Farcon does not bill an upfront fee. As an AMFI-registered distributor, Farcon earns standard distributor commissions paid by the asset management companies out of the regular scheme expense ratio.',
   },
   {
     id: 'faq-4',

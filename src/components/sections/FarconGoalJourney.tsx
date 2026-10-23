@@ -552,9 +552,9 @@ export const FarconGoalJourney: React.FC<FarconGoalJourneyProps> = ({
                 Stage {stage.stageNumber} · {stage.stageLabel}
               </span>
             </div>
-            <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-[#17243A] tracking-tight">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-[#17243A] tracking-tight">
               {stage.title}
-            </h3>
+            </h2>
             <p className="text-xs sm:text-sm text-[#52647D] mt-1 max-w-2xl leading-relaxed">
               {stage.subtitle}
             </p>

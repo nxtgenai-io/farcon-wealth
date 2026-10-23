@@ -1,6 +1,7 @@
 node_modules/
 build/
 dist/
+public/og/manifest.json
 coverage/
 .DS_Store
 *.log

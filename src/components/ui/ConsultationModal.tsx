@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { leadService } from '@/lib/api/leadService';
+import React, { useEffect, useRef, useState } from 'react';
+import { leadErrorLine, leadService } from '@/lib/api/leadService';
 import { LeadContext } from '@/types';
 import { planningContextService } from '@/lib/planningContext';
 import { analytics } from '@/lib/analytics';
+import { FARCON_CONFIG } from '@/content/site/config';
 import { X, CheckCircle2, ShieldCheck, ArrowRight } from 'lucide-react';
+import { isIndianMobile } from '@/lib/phone';
 
 interface ConsultationModalProps {
   isOpen: boolean;
@@ -24,10 +26,22 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     investmentHorizon: '5–10 Years',
     monthlySavings: '₹10,000 – ₹25,000',
     notes: '',
-    consent: true,
+    consent: false,
+    contactPreference: '',
+    companyWebsite: '',
   });
+  const [startedAt, setStartedAt] = useState(() => Date.now());
+  useEffect(() => {
+    if (isOpen) setStartedAt(Date.now());
+  }, [isOpen]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const formAlertRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!errors.form) return;
+    formAlertRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    formAlertRef.current?.focus();
+  }, [errors.form]);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [assignedLeadId, setAssignedLeadId] = useState('');
@@ -39,15 +53,17 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     if (!formData.name.trim()) {
       newErrors.name = 'Please provide your full name.';
     }
-    const cleanPhone = formData.phone.replace(/[^0-9]/g, '');
-    if (cleanPhone.length < 10) {
-      newErrors.phone = 'Please enter a valid 10-digit mobile number.';
+    if (!isIndianMobile(formData.phone)) {
+      newErrors.phone = 'Enter a 10-digit Indian mobile number starting with 6, 7, 8 or 9.';
     }
     if (formData.email.trim() && !/^\S+@\S+\.\S+$/.test(formData.email.trim())) {
       newErrors.email = 'Please provide a valid email address.';
     }
+    if (!formData.contactPreference) {
+      newErrors.contactPreference = 'Choose WhatsApp, email or a call.';
+    }
     if (!formData.consent) {
-      newErrors.consent = 'Consent is required to contact you regarding your investments.';
+      newErrors.consent = 'Tick the box so we may store this enquiry.';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -56,6 +72,10 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
+    if (formData.companyWebsite.trim()) {
+      setErrors({ form: 'Unable to accept this submission.' });
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -75,9 +95,16 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
           : undefined,
         source: 'Consultation Modal',
         consent: formData.consent,
+        contactPreference: formData.contactPreference,
+        formStartedAt: startedAt,
+        companyWebsite: formData.companyWebsite,
       };
 
       const res = await leadService.submitLead(payload);
+      if (!res.success) {
+        setErrors({ form: leadErrorLine(res.message) });
+        return;
+      }
       setAssignedLeadId(res.leadId);
       setSubmitted(true);
       analytics.track('consultation_submitted', {
@@ -99,7 +126,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200"
+      className="fw-skin fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       aria-labelledby="consultation-modal-title"
@@ -108,11 +135,11 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4.5 border-b border-[#DCE4EE] bg-[#FAFBFC]">
           <div>
-            <h3 id="consultation-modal-title" className="text-base font-semibold text-slate-900">
+            <h2 id="consultation-modal-title" className="text-base font-semibold text-slate-900">
               Book a Free Financial Consultation
-            </h3>
+            </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              Calm, confidential discussion with Farcon’s AMFI-registered advisory team.
+              A calm conversation with Farcon’s AMFI-registered distributor team.
             </p>
           </div>
           <button
@@ -131,11 +158,11 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               <div className="w-12 h-12 bg-[#78A832]/10 text-[#78A832] rounded-full flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h4 className="text-lg font-semibold text-slate-900">
+              <h2 className="text-lg font-semibold text-slate-900">
                 Consultation Request Confirmed
-              </h4>
+              </h2>
               <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-                Thank you, <strong>{formData.name}</strong>. A dedicated Farcon Wealth advisor will review your requested focus ({formData.goal}) and reach out calmly on <strong>{formData.phone}</strong>.
+                Thank you, <strong>{formData.name}</strong>. The Farcon team will look at {formData.goal} and reply on <strong>{formData.phone}</strong>.
               </p>
               <div className="inline-block px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-md text-[11px] text-slate-500 font-mono">
                 Reference ID: {assignedLeadId}
@@ -150,9 +177,13 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+              <label className="hp" aria-hidden="true">
+                Website
+                <input tabIndex={-1} autoComplete="off" value={formData.companyWebsite} onChange={(event) => setFormData((current) => ({ ...current, companyWebsite: event.target.value }))} />
+              </label>
               {errors.form && (
-                <div className="p-3 text-xs bg-red-50 text-red-700 rounded-md border border-red-200">
+                <div ref={formAlertRef} tabIndex={-1} className="p-3 text-xs bg-red-50 text-red-700 rounded-md border border-red-200" role="alert" aria-live="assertive">
                   {errors.form}
                 </div>
               )}
@@ -265,6 +296,22 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 </p>
               </div>
 
+              <div>
+                <label className="block text-xs font-medium text-slate-700 mb-1">How should we reply? <span className="text-red-500">*</span></label>
+                <select value={formData.contactPreference} onChange={(e) => setFormData({ ...formData, contactPreference: e.target.value })} className="w-full px-3 py-2 text-xs rounded-md border border-slate-300 bg-white">
+                  <option value="">Select</option>
+                  <option>WhatsApp</option>
+                  <option>Email</option>
+                  <option>Call</option>
+                </select>
+                {errors.contactPreference && <p className="text-[11px] text-red-600 mt-1">{errors.contactPreference}</p>}
+              </div>
+              <label className="flex items-start gap-2 text-[11px] text-slate-600">
+                <input type="checkbox" checked={formData.consent} onChange={(e) => setFormData({ ...formData, consent: e.target.checked })} />
+                <span>I agree Farcon Wealth may store this enquiry and reply about it. Read the <a href="/privacy">privacy policy</a>.</span>
+              </label>
+              {errors.consent && <p className="text-[11px] text-red-600">{errors.consent}</p>}
+              {errors.form && <a className="hf-btn hf-btn-outline" href={`https://wa.me/${FARCON_CONFIG.whatsappNumber}`} target="_blank" rel="noreferrer">Message us on WhatsApp</a>}
               <div className="pt-2">
                 <button
                   type="submit"

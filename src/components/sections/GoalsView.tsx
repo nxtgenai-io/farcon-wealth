@@ -1,7 +1,6 @@
 import React from 'react';
 import { FARCON_GOALS } from '@/content/goals/goalsData';
 import { RoutePath } from '@/types';
-import { ArrowRight, CheckCircle2, ShieldCheck, Target } from 'lucide-react';
 
 interface GoalsViewProps {
   activeSlug?: string;
@@ -9,153 +8,91 @@ interface GoalsViewProps {
   onOpenConsultation: (goalName?: string) => void;
 }
 
-export const GoalsView: React.FC<GoalsViewProps> = ({
-  activeSlug,
-  navigate,
-  onOpenConsultation,
-}) => {
-  // If specific goal detail requested
+const IMAGES: Record<string, string> = {
+  retirement: '/images/home/goal-retirement-1600.webp',
+  'child-education': '/images/home/goal-education-1600.webp',
+  'wealth-creation': '/images/home/goal-wealth-1600.webp',
+  'tax-saving': '/images/home/goal-tax-1600.webp',
+};
+
+const RELATED: Record<string, { label: string; href: RoutePath }> = {
+  retirement: { label: 'Retirement planning', href: '/services/retirement' },
+  'child-education': { label: 'Child education', href: '/services/child-education' },
+  'wealth-creation': { label: 'SIP planning', href: '/services/sip-planning' },
+  'tax-saving': { label: 'ELSS / tax-saving', href: '/services/elss' },
+};
+
+export const GoalsView: React.FC<GoalsViewProps> = ({ activeSlug, navigate, onOpenConsultation }) => {
   if (activeSlug) {
-    const goal = FARCON_GOALS.find((g) => g.slug === activeSlug) || FARCON_GOALS[0];
-
+    const goal = FARCON_GOALS.find((item) => item.slug === activeSlug) || FARCON_GOALS[0];
+    const related = RELATED[goal.slug];
     return (
-      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-16 space-y-16">
-        <div className="border-b border-slate-200 pb-10">
-          <div className="flex items-center gap-2 text-xs text-slate-500 mb-3">
-            <button onClick={() => navigate('/goals')} className="hover:text-slate-900">
-              Goals
-            </button>
-            <span>/</span>
-            <span className="text-slate-900 font-medium">{goal.title}</span>
+      <div className="pg">
+        <div className="pg-wrap">
+          <div className="breadcrumbs">
+            <button type="button" onClick={() => navigate('/goals')}>Goals</button>
+            <span aria-hidden="true">/</span>
+            <span>{goal.title}</span>
           </div>
-
-          <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
-            Purpose-Driven Capital
-          </span>
-          <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
-            {goal.title}
-          </h1>
-          <p className="mt-3 text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed">
-            {goal.heroHeadline}
-          </p>
-          <p className="mt-4 text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
-            {goal.description}
-          </p>
-
-          <div className="mt-8 flex flex-wrap gap-4">
-            <button
-              onClick={() => onOpenConsultation(goal.title)}
-              className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors shadow-xs"
-            >
-              Start {goal.title} Planning
-            </button>
-            <button
-              onClick={() => navigate(`/calculators/${goal.recommendedCalculator}` as RoutePath)}
-              className="px-5 py-3 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors"
-            >
-              Open Goal Calculator
-            </button>
+          <div className="page-hero split-hero">
+            <div>
+              <span className="hf-eye">Goal</span>
+              <h1>{goal.title}</h1>
+              <p className="lede">{goal.heroHeadline}</p>
+              <p>{goal.description}</p>
+              <p style={{ marginTop: 12 }}><span className="horizon">Horizon · {goal.typicalHorizon}</span></p>
+              <div className="hf-cta-row" style={{ marginTop: 16 }}>
+                <button type="button" className="hf-btn hf-btn-green" onClick={() => onOpenConsultation(goal.title)}>Talk about this goal</button>
+                <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate(`/calculators/${goal.recommendedCalculator}` as RoutePath)}>
+                  Open the calculator
+                </button>
+              </div>
+            </div>
+            <img src={IMAGES[goal.slug]} alt={goal.title} width={1600} height={1100} />
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="bg-white p-6 sm:p-8 rounded-xl border border-[#DCE4EE] shadow-xs">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-900 mb-4">
-              Critical Considerations & Risks
-            </h3>
-            <ul className="space-y-3 text-xs text-slate-600">
-              {goal.coreConsiderations.map((c, i) => (
-                <li key={i} className="flex items-start gap-2.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0 mt-1.5" />
-                  <span className="leading-relaxed">{c}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="pg-grid cards">
+            <article className="pg-card">
+              <h2>Risks to keep in view</h2>
+              <ul className="tick">{goal.coreConsiderations.map((item) => <li key={item}><i>✓</i><span>{item}</span></li>)}</ul>
+            </article>
+            <article className="pg-card">
+              <h2>How Farcon approaches it</h2>
+              <ul className="tick">{goal.farconApproach.map((item) => <li key={item}><i>✓</i><span>{item}</span></li>)}</ul>
+            </article>
           </div>
-
-          <div className="bg-white p-6 sm:p-8 rounded-xl border border-[#DCE4EE] shadow-xs">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-900 mb-4">
-              The Farcon Suitability Approach
-            </h3>
-            <ul className="space-y-3 text-xs text-slate-600">
-              {goal.farconApproach.map((a, i) => (
-                <li key={i} className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#78A832] shrink-0 mt-0.5" />
-                  <span className="leading-relaxed">{a}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* Action card */}
-        <div className="bg-[#F2F6FB] text-[#17243A] p-8 rounded-2xl border border-[#DCE4EE] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
-          <div>
-            <h3 className="text-xl font-poppins font-medium text-[#17243A]">
-              Typical Horizon: {goal.typicalHorizon}
-            </h3>
-            <p className="text-xs text-[#52647D] mt-1">
-              Begin by mapping your monthly cash flow with zero commitment.
+          <article className="pg-card" style={{ marginTop: 18 }}>
+            <span className="hf-eye">A short example</span>
+            <p>
+              A family with a {goal.typicalHorizon.toLowerCase()} horizon names the amount in today’s rupees, then looks at an illustrative monthly SIP. The calculator on this site uses stated assumptions. It is not a promise of what the market will do.
             </p>
-          </div>
-          <button
-            onClick={() => onOpenConsultation(goal.title)}
-            className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors shadow-xs"
-          >
-            Book Free Consultation
-          </button>
+            {related && (
+              <button type="button" className="hf-textlink" onClick={() => navigate(related.href)}>Related service: {related.label} →</button>
+            )}
+          </article>
         </div>
       </div>
     );
   }
 
-  // Goals Hub Overview
   return (
-    <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-16">
-      <div className="text-center max-w-3xl mx-auto mb-12">
-        <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
-          Goal-Based Architecture
-        </span>
-        <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
-          Your Money Has a Purpose. Your Investment Plan Should Too.
-        </h1>
-        <p className="mt-4 text-sm text-slate-600 leading-relaxed">
-          Investing without a defined goal is merely chasing market noise. Farcon roots every folio in a real-world destination.
-        </p>
-      </div>
-
-      {/* Editorial Horizontal Goal List */}
-      <div className="border-t border-[#DCE4EE] divide-y divide-[#DCE4EE]">
-        {FARCON_GOALS.map((goal, idx) => (
-          <div
-            key={goal.id}
-            onClick={() => navigate(`/goals/${goal.slug}` as RoutePath)}
-            className="py-8 sm:py-10 transition-all duration-300 cursor-pointer group flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-slate-50/80 px-4 sm:px-6 -mx-4 sm:-mx-6 rounded-2xl"
-          >
-            <div className="flex items-start sm:items-center gap-6 sm:gap-8 md:w-5/12">
-              <span className="text-xl sm:text-2xl font-mono text-slate-400 group-hover:text-[#78A832] transition-colors">
-                0{idx + 1}
-              </span>
+    <div className="pg">
+      <div className="pg-wrap">
+        <span className="hf-eye">Goals</span>
+        <h1>Your money has a purpose.</h1>
+        <p className="lede">Four destinations. Each one has a horizon, a conversation, and a calculator you can open before you book a call.</p>
+        <div className="pg-grid goals">
+          {FARCON_GOALS.map((goal) => (
+            <button key={goal.id} type="button" className="pg-card goal-card" onClick={() => navigate(`/goals/${goal.slug}` as RoutePath)}>
+              <img src={IMAGES[goal.slug]} alt={goal.title} width={1600} height={1100} />
               <div>
-                <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900 group-hover:text-[#78A832] transition-colors leading-snug">
-                  {goal.title}
-                </h2>
-                <span className="text-xs font-mono text-slate-400 block mt-1">
-                  Horizon: {goal.typicalHorizon}
-                </span>
+                <span className="horizon">{goal.typicalHorizon}</span>
+                <h2>{goal.title}</h2>
+                <p>{goal.description}</p>
+                <span className="hf-textlink">Explore →</span>
               </div>
-            </div>
-
-            <div className="md:w-5/12 text-xs sm:text-sm text-slate-600 leading-relaxed">
-              <p>{goal.description}</p>
-            </div>
-
-            <div className="md:w-2/12 flex items-center md:justify-end gap-3 text-xs font-semibold text-slate-900 group-hover:text-[#78A832] transition-colors">
-              <span className="hidden sm:inline">Explore</span>
-              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5" />
-            </div>
-          </div>
-        ))}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

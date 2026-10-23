@@ -1,19 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { RoutePath } from '@/types';
-import { FARCON_SERVICES } from '@/content/services/servicesData';
-import { FARCON_GOALS } from '@/content/goals/goalsData';
-import { BLOG_POSTS } from '@/content/blogs/blogData';
-import { Reveal } from '@/components/ui/Reveal';
-import { FarconHorizon } from '@/components/sections/FarconHorizon';
 import { formatINR } from '@/lib/formatting/currency';
-import { calculateSIP, calculateLumpsum, calculateGoalSIP, calculateRetirement } from '@/lib/calculations/financial';
-import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
+import { formatPlanCompact, formatTargetLabel, planIllustration } from '@/components/sections/home/planGoal';
+import { FARCON_CONFIG } from '@/content/site/config';
+import { ServiceShowcase } from '@/components/sections/ServiceShowcase';
+import { FAQ_ITEMS } from '@/content/faq/faqData';
 import {
   ArrowRight,
+  Calculator,
   ChevronDown,
-  ChevronUp,
-  Bot,
+  ChevronLeft,
+  ChevronRight,
+  LineChart,
+  Shield,
+  Sprout,
+  Target,
+  TrendingUp,
+  User,
+  Wallet,
 } from 'lucide-react';
+import { Reveal } from '@/components/ui/Reveal';
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 
 interface HomeViewProps {
   navigate: (path: RoutePath) => void;
@@ -21,958 +28,956 @@ interface HomeViewProps {
   onOpenAI: () => void;
 }
 
-export const HomeView: React.FC<HomeViewProps> = ({
-  navigate,
-  onOpenConsultation,
-  onOpenAI,
-}) => {
-  // Goals hover state
-  const [hoveredGoalIndex, setHoveredGoalIndex] = useState<number | null>(null);
+const PERIODS = ['1D', '1W', '1M', '1Y', '5Y'] as const;
+type Period = (typeof PERIODS)[number];
+type IndexKey = 'nifty' | 'sensex';
 
-  // Services hover state
-  const [hoveredServiceIndex, setHoveredServiceIndex] = useState<number | null>(null);
+const SAMPLE = {
+  nifty: { name: 'NIFTY 50', price: 24612.35, change: 185.7, changePct: 0.76 },
+  sensex: { name: 'SENSEX', price: 81050.62, change: 618.91, changePct: 0.77 },
+};
 
-  // Financial Studio State
-  const [studioTab, setStudioTab] = useState<'sip' | 'lumpsum' | 'goal' | 'retirement'>('sip');
-  const [studioAmount, setStudioAmount] = useState<number>(25000);
-  const [studioRate, setStudioRate] = useState<number>(12);
-  const [studioTenure, setStudioTenure] = useState<number>(15);
-  const [showStudioAssumptions, setShowStudioAssumptions] = useState<boolean>(false);
+type LiveQuote = {
+  symbol: IndexKey;
+  price: number;
+  change: number;
+  changePct: number;
+  points: [number, number][];
+  marketTime: number;
+};
 
-  // Financial Studio Calculations (deterministic, preserved formulas)
-  const sipResult = calculateSIP(studioAmount, studioRate, studioTenure);
-  const lumpResult = calculateLumpsum(studioAmount * 10, studioRate, studioTenure);
-  const goalResult = calculateGoalSIP(10000000, studioRate, studioTenure, 6);
-  const retResult = calculateRetirement(32, 60, 85, studioAmount * 2, 6, studioRate, 8);
+function smoothSeries(start: number, end: number, points = 24): number[] {
+  return Array.from({ length: points }, (_, i) => {
+    const t = i / (points - 1);
+    const eased = t * t * (3 - 2 * t);
+    const lift = Math.sin(t * Math.PI) * (end - start) * 0.035;
+    const value = start + (end - start) * eased + lift;
+    return i === points - 1 ? end : Math.round(value);
+  });
+}
 
-  const activeStudioResult =
-    studioTab === 'sip'
-      ? {
-          headlineLabel: 'Projected Value',
-          headlineValue: sipResult.projectedValue,
-          investedLabel: 'Total Capital Invested',
-          investedValue: sipResult.investedAmount,
-          gainLabel: 'Estimated Gain',
-          gainValue: sipResult.estimatedGain,
-        }
-      : studioTab === 'lumpsum'
-      ? {
-          headlineLabel: 'Projected Value',
-          headlineValue: lumpResult.projectedValue,
-          investedLabel: 'Initial Investment',
-          investedValue: lumpResult.investedAmount,
-          gainLabel: 'Estimated Gain',
-          gainValue: lumpResult.estimatedGain,
-        }
-      : studioTab === 'goal'
-      ? {
-          headlineLabel: 'Required Monthly SIP',
-          headlineValue: goalResult.requiredMonthlySIP,
-          investedLabel: 'Target Inflation-Adjusted Corpus',
-          investedValue: goalResult.futureInflationAdjustedGoal,
-          gainLabel: 'Illustrative Return',
-          gainValue: studioRate,
-          isRate: true,
-        }
-      : {
-          headlineLabel: 'Your Target Corpus (Illustrative)',
-          headlineValue: retResult.requiredRetirementCorpus,
-          investedLabel: 'Required Monthly SIP',
-          investedValue: retResult.requiredMonthlySIP,
-          gainLabel: 'Monthly Expense at Retirement',
-          gainValue: retResult.monthlyExpenseAtRetirement,
-        };
+const PATHS: Record<Period, Record<IndexKey, number[]>> = {
+  '1D': { nifty: [24230, 24270, 24360, 24320, 24410, 24500, 24460, 24540, 24510, 24580, 24550, 24600, 24612], sensex: smoothSeries(80420, 81051) },
+  '1W': { nifty: smoothSeries(24110, 24612), sensex: smoothSeries(79200, 81051) },
+  '1M': { nifty: smoothSeries(23680, 24612), sensex: smoothSeries(77600, 81051) },
+  '1Y': { nifty: smoothSeries(21840, 24612), sensex: smoothSeries(72400, 81051) },
+  '5Y': { nifty: smoothSeries(14200, 24612), sensex: smoothSeries(48200, 81051) },
+};
+
+function smoothLine(pts: Array<readonly [number, number]>): string {
+  if (pts.length === 0) return '';
+  let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i += 1) {
+    const p0 = pts[i - 1] ?? pts[i];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[i + 2] ?? p2;
+    const c1x = p1[0] + (p2[0] - p0[0]) / 6;
+    const c1y = p1[1] + (p2[1] - p0[1]) / 6;
+    const c2x = p2[0] - (p3[0] - p1[0]) / 6;
+    const c2y = p2[1] - (p3[1] - p1[1]) / 6;
+    d += ` C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+  }
+  return d;
+}
+
+function istParts(unix: number) {
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Kolkata',
+    weekday: 'short',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(new Date(unix * 1000));
+}
+
+function part(parts: Intl.DateTimeFormatPart[], type: string) {
+  return parts.find((item) => item.type === type)?.value ?? '';
+}
+
+function marketOpen(now = Date.now()) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Kolkata',
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(new Date(now));
+  const day = part(parts, 'weekday');
+  if (day === 'Sat' || day === 'Sun') return false;
+  const minutes = Number(part(parts, 'hour')) * 60 + Number(part(parts, 'minute'));
+  return minutes >= 9 * 60 + 15 && minutes <= 15 * 60 + 30;
+}
+
+function axisLabels(points: [number, number][], period: Period): string[] {
+  const picks = [0, 0.33, 0.66, 1].map((ratio) => points[Math.min(points.length - 1, Math.round(ratio * (points.length - 1)))][0]);
+  return picks.map((unix) => {
+    const parts = istParts(unix);
+    if (period === '1D') return `${part(parts, 'hour')}:${part(parts, 'minute')}`;
+    if (period === '5Y') return `${part(parts, 'month')} ${part(parts, 'year').slice(2)}`;
+    return `${part(parts, 'day')} ${part(parts, 'month')}`;
+  });
+}
+
+function moveText(change: number, pct: number) {
+  const sign = change > 0 ? '+' : '';
+  return `${sign}${change.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${sign}${pct.toFixed(2)}%)`;
+}
+
+function CountUp({ value }: { value: number }) {
+  const [shown, setShown] = useState(value);
+  const ref = useRef<HTMLSpanElement>(null);
+  const shownRef = useRef(value);
+  shownRef.current = shown;
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    let frame = 0;
+    let observer: IntersectionObserver | undefined;
+    const play = (from: number) => {
+      cancelAnimationFrame(frame);
+      const start = performance.now();
+      const tick = (now: number) => {
+        const progress = Math.min(1, (now - start) / 520);
+        const eased = 1 - (1 - progress) ** 3;
+        setShown(from + (value - from) * eased);
+        if (progress < 1) frame = requestAnimationFrame(tick);
+      };
+      frame = requestAnimationFrame(tick);
+    };
+    if (prefersReducedMotion()) {
+      setShown(value);
+      return undefined;
+    }
+    const arm = () => {
+      const from = el.dataset.played === '1' ? shownRef.current : 0;
+      el.dataset.played = '1';
+      setShown(from);
+      play(from);
+    };
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) arm();
+    else {
+      observer = new IntersectionObserver(([entry]) => {
+        if (!entry?.isIntersecting) return;
+        observer?.disconnect();
+        arm();
+      }, { threshold: 0.4 });
+      observer.observe(el);
+    }
+    return () => {
+      cancelAnimationFrame(frame);
+      observer?.disconnect();
+    };
+  }, [value]);
+  const finalText = value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const shownText = shown.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return (
+    <span className="count-up" ref={ref}>
+      <span className="count-up-sizer" aria-hidden="true">{finalText}</span>
+      <span>{shownText}</span>
+    </span>
+  );
+}
+
+function NiftyChart({ values, labels, name }: { values: number[]; labels: string[]; name: string }) {
+  const w = 340;
+  const h = 108;
+  const left = 8;
+  const right = 54;
+  const top = 8;
+  const bottom = 18;
+  const low = Math.min(...values);
+  const high = Math.max(...values);
+  const pad = (high - low) * 0.08 || Math.abs(high) * 0.002 || 1;
+  const min = low - pad;
+  const max = high + pad;
+  const span = max - min || 1;
+  const pts = values.map((v, i) => {
+    const x = left + (i / Math.max(1, values.length - 1)) * (w - left - right);
+    const y = top + (1 - (v - min) / span) * (h - top - bottom);
+    return [x, y] as const;
+  });
+  const d = smoothLine(pts);
+  const area = `${d} L${pts[pts.length - 1][0].toFixed(1)} ${h - bottom} L${pts[0][0].toFixed(1)} ${h - bottom} Z`;
+  const ticks = [0, 1, 2, 3].map((i) => max - (span * i) / 3);
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} role="img" aria-label={`${name} chart`}>
+      {ticks.map((tick) => {
+        const y = top + (1 - (tick - min) / span) * (h - top - bottom);
+        return (
+          <g key={tick}>
+            <line x1={left} x2={w - right} y1={y} y2={y} stroke="#e7efe9" strokeWidth="1" />
+            <text x={w - 4} y={y + 3} fontSize="9" fill="#5c675f" textAnchor="end">{Math.round(tick).toLocaleString('en-IN')}</text>
+          </g>
+        );
+      })}
+      {labels.map((label, i) => (
+        <text key={`${label}-${i}`} x={left + (i / Math.max(1, labels.length - 1)) * (w - left - right)} y={h - 2} fontSize="9" fill="#5c675f" textAnchor={i === 0 ? 'start' : i === labels.length - 1 ? 'end' : 'middle'}>{label}</text>
+      ))}
+      <path d={area} fill="rgba(31,157,85,0.18)" />
+      <path className="hf-line" d={d} fill="none" stroke="#1F9D55" strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function SensexSpark({ values }: { values: number[] }) {
+  const w = 92;
+  const h = 28;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const pts = values.map((v, i) => {
+    const x = (i / Math.max(1, values.length - 1)) * w;
+    const y = 4 + (1 - (v - min) / (max - min || 1)) * (h - 8);
+    return [x, y] as const;
+  });
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} width="92" height="28" aria-hidden="true">
+      <path className="hf-line" d={smoothLine(pts)} fill="none" stroke="#1F9D55" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+const GOALS = [
+  { title: 'Retirement', text: 'Live your next chapter with confidence', image: 'goal-retirement', alt: 'A beach chair facing the ocean at sunset', href: '/goals/retirement' as RoutePath },
+  { title: 'Child Education', text: 'Turn their dreams into reality', image: 'goal-education', alt: 'A child walking to school with a backpack', href: '/goals/child-education' as RoutePath },
+  { title: 'Wealth Creation', text: 'Build long-term financial freedom', image: 'goal-wealth', alt: 'A green plant growing from a jar of coins', href: '/goals/wealth-creation' as RoutePath },
+  { title: 'Tax Saving', text: 'Invest smart. Save more.', image: 'goal-tax', alt: 'A calculator resting on tax forms and coins', href: '/goals/tax-saving' as RoutePath },
+];
+
+const PLAN_PRESETS: Record<string, { target: number; years: number; rate: number }> = {
+  Retirement: { target: 35_000_000, years: 20, rate: 12 },
+  'Child Education': { target: 10_000_000, years: 15, rate: 12 },
+  'Wealth Creation': { target: 20_000_000, years: 12, rate: 12 },
+  'Tax Saving': { target: 5_000_000, years: 5, rate: 12 },
+};
+
+const RISK_NOTE: Record<string, string> = {
+  'Very High Risk': 'Very high risk: returns can swing sharply. Suitable only when the goal is many years away.',
+  'High Risk': 'High risk: equity-oriented. Values can fall in the short term.',
+  'Moderate Risk': 'Moderate risk: a mix of growth and stability. Still subject to market movement.',
+  'Low Risk': 'Low risk: relatively steadier, with lower expected growth. Not risk-free.',
+};
+
+function cardSrc(name: string) {
+  return {
+    src: `/images/home/${name}-800.webp`,
+    srcSet: `/images/home/${name}-800.webp 800w, /images/home/${name}-1600.webp 1600w`,
+  };
+}
+
+function bleedSrc(name: string) {
+  return {
+    src: `/images/home/${name}-800.webp`,
+    srcSet: `/images/home/${name}-800.webp 800w, /images/home/${name}-1440.webp 1440w, /images/home/${name}-2880.webp 2880w`,
+  };
+}
+
+function prefersReducedMotion() {
+  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function SyncedField({
+  value, min, max, step, label, display, onChange,
+}: { value: number; min: number; max: number; step: number; label: string; display: (n: number) => string; onChange: (n: number) => void }) {
+  const [draft, setDraft] = useState<string | null>(null);
+  return (
+    <input
+      className="hf-select"
+      aria-label={label}
+      inputMode="decimal"
+      value={draft ?? display(value)}
+      onFocus={() => setDraft(String(value))}
+      onBlur={() => setDraft(null)}
+      onChange={(event) => {
+        const next = event.target.value;
+        setDraft(next);
+        const parsed = Number(next.replace(/[^\d.]/g, ''));
+        if (!Number.isFinite(parsed)) return;
+        const snapped = Math.round(parsed / step) * step;
+        onChange(Math.min(max, Math.max(min, snapped)));
+      }}
+    />
+  );
+}
+
+function PlanningPlant() {
+  return (
+    <svg className="hf-plant" viewBox="0 0 380 150" width="380" height="150" role="img" aria-label="A leafy plant illustration">
+      <path d="M70 142c40-8 90-6 150-2 50 3 100 2 140-6" fill="none" stroke="#c5b59a" strokeWidth="3" strokeLinecap="round" />
+      <path d="M168 138c2-28 4-52 8-74" fill="none" stroke="#2f6b45" strokeWidth="3.2" strokeLinecap="round" />
+      <path d="M176 108c18-8 34-8 52-2-16 10-32 12-52 8z" fill="#7BA238" />
+      <path d="M174 92c-20-6-36-2-48 8 16 6 32 6 48-2z" fill="#5f8f32" />
+      <path d="M178 74c16-14 36-16 54-6-18 8-34 12-54 12z" fill="#8fb84a" />
+      <path d="M172 64c-18-12-38-10-50 2 18 4 34 6 50 4z" fill="#6ea03a" />
+      <ellipse cx="176" cy="48" rx="16" ry="10" fill="#9bc85a" transform="rotate(-18 176 48)" />
+    </svg>
+  );
+}
+
+const PLAN_TABS = ['Retirement', 'Child Education', 'Wealth Creation', 'Tax Saving'] as const;
+
+const RISK = {
+  veryHigh: '#0E6B38',
+  high: '#9B2C2C',
+  moderate: '#9A5410',
+} as const;
+
+const FUNDS = [
+  { name: 'SBI Small Cap Fund', group: 'Equity Funds', tags: ['Equity', 'Small Cap'], cagr: '26.4%', nav: '₹164.72', risk: 'Very High Risk', tone: RISK.veryHigh, logo: '/images/amc/sbi.svg', spark: [12, 13, 15, 16, 18, 20, 22, 24, 26] },
+  { name: 'HDFC Flexi Cap Fund', group: 'Equity Funds', tags: ['Equity', 'Flexi Cap'], cagr: '21.8%', nav: '₹712.35', risk: 'High Risk', tone: RISK.high, logo: '/images/amc/hdfc-mark.svg', spark: [11, 13, 14, 16, 17, 18, 20, 21, 22] },
+  { name: 'ICICI Prudential Balanced Advantage Fund', group: 'Hybrid Funds', tags: ['Hybrid', 'Dynamic'], cagr: '14.6%', nav: '₹348.12', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/icici-mark.png', spark: [12, 12.4, 13, 13.6, 14.2, 14.8, 15.4, 16.2, 17] },
+  { name: 'Axis ELSS Tax Saver Fund', group: 'Tax Saving (ELSS)', tags: ['Equity', 'ELSS'], cagr: '18.2%', nav: '₹112.46', risk: 'High Risk', tone: RISK.high, logo: '/images/amc/axis-mark.svg', spark: [10, 11, 12.5, 13.5, 15, 16, 17.2, 18.2, 19] },
+  { name: 'HDFC Short Term Fund', group: 'Debt Funds', tags: ['Debt', 'Short Duration'], cagr: '7.4%', nav: '₹28.16', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/hdfc-mark.svg', spark: [12, 12.2, 12.4, 12.7, 13, 13.2, 13.5, 13.8, 14] },
+  { name: 'SBI Gilt Fund', group: 'Debt Funds', tags: ['Debt', 'Gilt'], cagr: '7.1%', nav: '₹58.40', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/sbi.svg', spark: [11, 11.4, 11.2, 11.8, 12.1, 12.4, 12.2, 12.8, 13.1] },
+  { name: 'ICICI Prudential Corporate Bond Fund', group: 'Debt Funds', tags: ['Debt', 'Corporate'], cagr: '7.6%', nav: '₹26.90', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/icici-mark.png', spark: [10, 10.4, 10.8, 11.1, 11.4, 11.8, 12.1, 12.5, 12.8] },
+  { name: 'Axis Money Market Fund', group: 'Debt Funds', tags: ['Debt', 'Money Market'], cagr: '6.8%', nav: '₹2,746', risk: 'Low Risk', tone: RISK.moderate, logo: '/images/amc/axis-mark.svg', spark: [9, 9.2, 9.4, 9.5, 9.7, 9.9, 10.1, 10.3, 10.5] },
+];
+
+const TOOLS: { title: string; text: string; href: RoutePath; tint: string; icon: React.ReactNode }[] = [
+  { title: 'SIP Calculator', text: 'Build wealth regularly', href: '/calculators/sip', tint: '#E5F6EA', icon: <TrendingUp size={16} color="#1F9D55" /> },
+  { title: 'Lumpsum Calculator', text: 'Grow your investments', href: '/calculators/lumpsum', tint: '#E7F0FB', icon: <Wallet size={16} color="#3B82C4" /> },
+  { title: 'Goal Planner', text: 'Plan for your dreams', href: '/calculators/goal', tint: '#FDE8D0', icon: <Target size={16} color="#E07A2F" /> },
+  { title: 'Retirement Planner', text: 'Secure your future', href: '/calculators/retirement', tint: '#E5F2FB', icon: <User size={16} color="#3B82C4" /> },
+  { title: 'Historical Returns', text: 'Analyse past performance', href: '/mutual-funds', tint: '#FDE8EA', icon: <LineChart size={16} color="#D4535A" /> },
+  { title: 'Risk Analysis', text: 'Understand your risk', href: '/investor-quiz', tint: '#F3E8FB', icon: <Shield size={16} color="#8A4FB3" /> },
+];
+
+const STORIES = [
+  { initials: 'A.S.', role: 'Retired Professional', quote: 'Farcon helped me plan my retirement in a very simple and clear way. I finally feel confident about my financial future.' },
+  { initials: 'R.K.', role: 'Parent', quote: 'The goal planning process made it easy for me to invest for my child\'s education. Very supportive team.' },
+  { initials: 'M.P.', role: 'Business Owner', quote: 'A clear process and a very disciplined approach. I appreciate the focus on long-term investing.' },
+];
+
+function Spark({ values, color }: { values: number[]; color: string }) {
+  const w = 180;
+  const h = 84;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const pts = values.map((v, i) => {
+    const x = (i / (values.length - 1)) * w;
+    const y = h - 8 - ((v - min) / (max - min || 1)) * (h - 16);
+    return [x, y] as const;
+  });
+  const d = smoothLine(pts);
+  const area = `${d} L${w} ${h} L0 ${h} Z`;
+  return (
+    <svg className="hf-spark" viewBox={`0 0 ${w} ${h}`} width="100%" height="84" aria-hidden="true">
+      <path d={area} fill={color} opacity="0.14" />
+      <path d={d} fill="none" stroke={color} strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function AreaChart({
+  series,
+}: {
+  series: { year: number; estimated: number; invested: number }[];
+}) {
+  const [active, setActive] = useState(Math.max(0, series.length - 1));
+  const w = 640;
+  const h = 220;
+  const left = 16;
+  const right = 12;
+  const top = 28;
+  const bottom = 24;
+  const max = Math.max(...series.map((p) => Math.max(p.estimated, p.invested)), 1);
+  const x = (i: number) => left + (i / Math.max(1, series.length - 1)) * (w - left - right);
+  const y = (v: number) => top + (1 - v / max) * (h - top - bottom);
+  const line = (key: 'estimated' | 'invested') =>
+    series.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)} ${y(p[key]).toFixed(1)}`).join(' ');
+  const area = `${line('estimated')} L${x(series.length - 1).toFixed(1)} ${y(0)} L${x(0).toFixed(1)} ${y(0)} Z`;
+  const point = series[Math.min(active, series.length - 1)];
 
   return (
-    <div className="space-y-24 sm:space-y-32 lg:space-y-40 pb-28 overflow-hidden font-inter">
-      {/* =========================================================================
-          SECTION 1 — SIGNATURE EDITORIAL HERO & FARCON HORIZON
-          Desktop split: ~45% left / ~55% right. Low profile visual (360-430px).
-          ========================================================================= */}
-      <section className="relative pt-6 sm:pt-10 lg:pt-14">
-        {/* Full-width subtle horizon curves background (3–5% opacity) */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.035] overflow-hidden" aria-hidden="true">
-          <svg className="w-full h-full" viewBox="0 0 1600 900" fill="none">
-            <path d="M-100 800 C 400 750, 900 500, 1700 200" stroke="#101A2C" strokeWidth="2" />
-            <path d="M-100 850 C 450 800, 950 550, 1700 280" stroke="#78A832" strokeWidth="1.5" />
-            <path d="M-100 720 C 350 670, 850 420, 1700 130" stroke="#315FCE" strokeWidth="1" strokeDasharray="5 5" />
-          </svg>
+    <div className="hf-chart">
+      <svg
+        viewBox={`0 0 ${w} ${h}`}
+        onPointerMove={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+          const ratio = (event.clientX - rect.left) / rect.width;
+          const index = Math.round(Math.min(1, Math.max(0, ratio)) * (series.length - 1));
+          setActive(index);
+        }}
+      >
+        {[0, 5, 10, 15, 20].map((label) => (
+          <text key={label} x={left + (label / 20) * (w - left - right)} y={h - 4} fontSize="11" fill="#6a736c" textAnchor="middle">{label}</text>
+        ))}
+        <path d={area} fill="rgba(31,157,85,0.16)" />
+        <path className="hf-line" d={line('estimated')} fill="none" stroke="#1F9D55" strokeWidth="2.5" />
+        <path className="hf-line" d={line('invested')} fill="none" stroke="#C9A24A" strokeWidth="2" />
+        {point && <circle cx={x(active)} cy={y(point.estimated)} r="4" fill="#0F3D2E" />}
+      </svg>
+      <div className="hf-year-badge">
+        Year {series[series.length - 1]?.year} {formatTargetLabel(series[series.length - 1]?.estimated ?? 0)}
+      </div>
+      <div className="hf-axis" aria-hidden="true">
+        <span>3 Cr</span><span>2 Cr</span><span>1 Cr</span><span>0</span>
+      </div>
+      <div className="hf-legend">
+        <span><i style={{ background: '#1F9D55' }} />Estimated Value</span>
+        <span><i style={{ background: '#C9A24A' }} />Invested Amount</span>
+      </div>
+    </div>
+  );
+}
+
+function MarketReadout({ focus, period, quote, other }: { focus: IndexKey; period: Period; quote?: LiveQuote; other?: LiveQuote }) {
+  const primary = quote ?? { ...SAMPLE[focus], points: PATHS[period][focus].map((close, i) => [i, close] as [number, number]), marketTime: 0 };
+  const secondaryKey: IndexKey = focus === 'nifty' ? 'sensex' : 'nifty';
+  const mini = other ?? { ...SAMPLE[secondaryKey], points: PATHS[period][secondaryKey].map((close, i) => [i, close] as [number, number]), marketTime: 0 };
+  const live = Boolean(quote);
+  const open = marketOpen();
+  const labels = live && quote ? axisLabels(quote.points, period) : ['09:15', '11:00', '13:00', '15:30'];
+  const stamp = quote ? istParts(quote.marketTime) : [];
+  const tone = (change: number) => (change < 0 ? { color: '#8a5a2a' } : undefined);
+  return (
+    <>
+      <p className="hf-index-name">{SAMPLE[focus].name}</p>
+      <p className="hf-level">
+        <CountUp value={primary.price} /> <span className="hf-up" style={tone(primary.change)}>{moveText(primary.change, primary.changePct)}</span>
+      </p>
+      <p className="hf-note">
+        {live && open && (
+          <>
+            <span aria-hidden="true" style={{ display: 'inline-block', width: 6, height: 6, marginRight: 6, borderRadius: 999, background: '#1f9d55', verticalAlign: 'middle' }} />
+            Live · updated {part(stamp, 'hour')}:{part(stamp, 'minute')} IST
+          </>
+        )}
+        {live && !open && <>Last close · {part(stamp, 'day')} {part(stamp, 'month')} {part(stamp, 'year')}</>}
+        {!live && <>Sample levels as of {FARCON_CONFIG.illustrativeMarketAsOf}. <span className="hf-indicative">Illustrative</span></>}
+      </p>
+      <div key={`${focus}-${period}`} className="hf-draw">
+        <NiftyChart values={primary.points.map((point) => point[1])} labels={labels} name={SAMPLE[focus].name} />
+      </div>
+      <div className="hf-sensex">
+        <div>
+          <b>{SAMPLE[secondaryKey].name}</b>
+          <strong><CountUp value={mini.price} /></strong>
+          <span className="hf-up" style={tone(mini.change)}>{moveText(mini.change, mini.changePct)}</span>
         </div>
+        <span key={`${secondaryKey}-${period}`} className="hf-draw"><SensexSpark values={mini.points.map((point) => point[1])} /></span>
+        <ChevronDown size={14} aria-hidden="true" />
+      </div>
+      {live && <p className="hf-note hf-source">Data: Yahoo Finance, may be delayed</p>}
+    </>
+  );
+}
 
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16 items-center">
-            {/* LEFT COLUMN: ~45% Editorial Authority */}
-            <div className="lg:col-span-5 xl:col-span-5 space-y-6 sm:space-y-7">
-              {/* Eyebrow: Clean unboxed typography */}
-              <div className="text-[11px] sm:text-xs font-mono font-medium uppercase tracking-[0.2em] text-[#78A832]">
-                GOAL-BASED WEALTH GUIDANCE
-              </div>
+export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation }) => {
+  const [planTab, setPlanTab] = useState<(typeof PLAN_TABS)[number]>('Retirement');
+  const [target, setTarget] = useState(35_000_000);
+  const [years, setYears] = useState(20);
+  const [rate, setRate] = useState(12);
+  const [fundTab, setFundTab] = useState('Equity Funds');
+  const storyRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const [storyDot, setStoryDot] = useState(0);
+  const [storyStart, setStoryStart] = useState(0);
+  const [storiesPaused, setStoriesPaused] = useState(false);
+  const [period, setPeriod] = useState<Period>('1D');
+  const [indexFocus, setIndexFocus] = useState<IndexKey>('nifty');
+  const [quotes, setQuotes] = useState<Partial<Record<string, LiveQuote>>>({});
+  const rangeKey = period.toLowerCase();
+  const plan = useMemo(() => planIllustration(target, years, rate), [target, years, rate]);
+  const funds = fundTab === 'Equity Funds'
+    ? FUNDS.filter((fund) => fund.group !== 'Debt Funds')
+    : FUNDS.filter((fund) => fund.group === fundTab);
+  const whatsapp = `https://wa.me/${FARCON_CONFIG.whatsappNumber}`;
 
-              {/* Master Headline: Centralized type-hero token (Poppins 500, clamp 40px-84px) */}
-              <h1 className="type-hero text-slate-900">
-                Investing,
-                <br />
-                without the noise.
-              </h1>
+  const orderedStories = useMemo(
+    () => STORIES.map((_, index) => STORIES[(index + storyStart) % STORIES.length]),
+    [storyStart],
+  );
 
-              {/* Calm, concise supporting copy */}
-              <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-lg font-normal">
-                Your goals are personal. Your investment journey should be too. Farcon helps you approach mutual fund investing with clarity, discipline and purpose.
-              </p>
+  const scrollStories = (dir: number) => {
+    const el = storyRef.current;
+    if (el && el.scrollWidth > el.clientWidth + 12) {
+      const card = el.querySelector('article');
+      const width = card ? card.getBoundingClientRect().width + 14 : el.clientWidth;
+      const max = el.scrollWidth - el.clientWidth;
+      if (dir > 0 && el.scrollLeft + width >= max - 6) el.scrollTo({ left: 0, behavior: 'smooth' });
+      else if (dir < 0 && el.scrollLeft <= 6) el.scrollTo({ left: max, behavior: 'smooth' });
+      else el.scrollBy({ left: dir * width, behavior: 'smooth' });
+      return;
+    }
+    setStoryStart((current) => (current + dir + STORIES.length) % STORIES.length);
+    setStoryDot((current) => (current + dir + STORIES.length) % STORIES.length);
+  };
 
-              {/* Primary & Secondary Actions */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                <button
-                  onClick={() => {
-                    const el = document.getElementById('purpose-goals-section');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                    else navigate('/goals');
-                  }}
-                  className="px-6 sm:px-7 py-3.5 text-xs font-medium text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors shadow-xs inline-flex items-center gap-2 group cursor-pointer active:scale-[0.98]"
-                >
-                  <span>Start with a Goal</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#78A832] transition-transform group-hover:translate-x-1" />
-                </button>
+  useEffect(() => {
+    let stop = false;
+    const load = () => {
+      Promise.all((['nifty', 'sensex'] as const).map(async (symbol) => {
+        const response = await fetch(`/api/market?symbol=${symbol}&range=${rangeKey}`);
+        if (!response.ok) throw new Error('market');
+        return response.json() as Promise<LiveQuote>;
+      })).then((rows) => {
+        if (stop) return;
+        setQuotes((current) => {
+          const next = { ...current };
+          for (const row of rows) next[`${row.symbol}:${rangeKey}`] = row;
+          return next;
+        });
+      }).catch(() => undefined);
+    };
+    load();
+    if (period !== '1D') return () => { stop = true; };
+    let timer = 0;
+    const arm = () => {
+      window.clearInterval(timer);
+      if (document.visibilityState === 'visible' && marketOpen()) timer = window.setInterval(load, 60_000);
+    };
+    document.addEventListener('visibilitychange', arm);
+    arm();
+    return () => {
+      stop = true;
+      document.removeEventListener('visibilitychange', arm);
+      window.clearInterval(timer);
+    };
+  }, [period, rangeKey]);
 
-                <button
-                  onClick={() => onOpenConsultation('Hero Section Consultation')}
-                  className="px-6 py-3.5 text-xs font-medium text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 rounded-md transition-colors shadow-2xs cursor-pointer active:scale-[0.98]"
-                >
-                  Book a Free 15-Minute Call
-                </button>
-              </div>
+  useEffect(() => {
+    if (prefersReducedMotion()) return undefined;
+    const onScroll = () => {
+      const shift = Math.min(48, window.scrollY * 0.08);
+      heroRef.current?.style.setProperty('--hero-shift', `${shift}px`);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-              {/* Clean Supporting Trust Line: Goal-based · Transparent · In your name */}
-              <div className="pt-2 flex items-center gap-2.5 text-xs text-slate-500 font-medium">
-                <span className="text-slate-800 font-medium">Goal-based</span>
-                <span aria-hidden="true" className="text-slate-300">·</span>
-                <span className="text-slate-800 font-medium">Transparent</span>
-                <span aria-hidden="true" className="text-slate-300">·</span>
-                <span className="text-slate-800 font-medium">In your name</span>
-              </div>
-            </div>
+  const scrollStoriesRef = useRef(scrollStories);
+  scrollStoriesRef.current = scrollStories;
 
-            {/* RIGHT COLUMN: ~55% WIDE LOW-PROFILE FARCON HORIZON */}
-            <div className="lg:col-span-7 xl:col-span-7">
-              <FarconHorizon
-                navigate={navigate}
-                onOpenConsultation={(g) => onOpenConsultation(g || 'Farcon Horizon Consultation')}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+  useEffect(() => {
+    if (prefersReducedMotion() || storiesPaused) return undefined;
+    const timer = window.setInterval(() => scrollStoriesRef.current(1), 6500);
+    return () => window.clearInterval(timer);
+  }, [storiesPaused]);
 
-      {/* =========================================================================
-          SECTION 2 — INSTITUTIONAL TRUST STRIP (NO CARDS, HAIRLINE SEPARATORS)
-          ========================================================================= */}
-      <section className="border-y border-slate-200/90 bg-[#F8FAFC] py-8 sm:py-10">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <Reveal>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
-              <div className="pt-3 lg:pt-0 lg:pr-6 space-y-1">
-                <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[#78A832] block">
-                  REGULATORY REGISTRATION
-                </span>
-                <span className="text-sm sm:text-base font-poppins font-medium text-slate-900 block">
-                  AMFI Registered Distributor
-                </span>
-                <span className="text-xs text-slate-500 font-mono block">ARN: 329006</span>
-              </div>
-
-              <div className="pt-3 lg:pt-0 lg:px-6 space-y-1">
-                <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-[#315FCE] block">
-                  PLANNING FOCUS
-                </span>
-                <span className="text-sm sm:text-base font-poppins font-medium text-slate-900 block">
-                  Goal-Based Approach
-                </span>
-                <span className="text-xs text-slate-500 block">Life milestones guide fund selection</span>
-              </div>
-
-              <div className="pt-3 lg:pt-0 lg:px-6 space-y-1">
-                <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-slate-500 block">
-                  TRANSPARENCY
-                </span>
-                <span className="text-sm sm:text-base font-poppins font-medium text-slate-900 block">
-                  Transparent Process
-                </span>
-                <span className="text-xs text-slate-500 block">Zero hidden fees or exit surprises</span>
-              </div>
-
-              <div className="pt-3 lg:pt-0 lg:pl-6 space-y-1">
-                <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-slate-500 block">
-                  SECURITY & TITLE
-                </span>
-                <span className="text-sm sm:text-base font-poppins font-medium text-slate-900 block">
-                  In Your Name
-                </span>
-                <span className="text-xs text-slate-500 block">Farcon does not hold investor funds</span>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          SECTION 3 — PURPOSE STATEMENT & GOALS (EDITORIAL ROWS, NOT CARDS)
-          ========================================================================= */}
-      <section id="purpose-goals-section" className="relative">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          {/* Major Editorial Brand Statement (Visually Large, NOT in a card) */}
-          <Reveal className="max-w-3xl mb-12 sm:mb-16">
-            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#78A832] block mb-2">
-              PURPOSE-DRIVEN WEALTH
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
-              Your money has a purpose.
-              <br />
-              Your investment plan should too.
-            </h2>
-            <p className="mt-3.5 text-base text-slate-600 leading-relaxed font-normal">
-              Investing without a milestone is merely reacting to daily headlines. We ground your capital around tangible destinations.
+  return (
+    <div className="hf">
+      <section className="hf-hero" data-section="hero" ref={heroRef}>
+        <img
+          className="hf-hero-photo"
+          src="/images/home/hero-1024.webp"
+          srcSet="/images/home/hero-800.webp 800w, /images/home/hero-1024.webp 1024w, /images/home/hero-1600.webp 1600w"
+          sizes="100vw"
+          alt="An Indian family of six in a sunlit living room: grandfather, grandmother, father, mother, a girl, and a boy"
+          width={1600}
+          height={900}
+          fetchPriority="high"
+          decoding="async"
+        />
+        <div className="hf-hero-scrim" aria-hidden="true" />
+        <div className="hf-hero-inner">
+          <div className="hf-hero-copy">
+            <span className="hf-eye">Goal-based wealth guidance</span>
+            <p className="hf-script">
+              A more secure
+              <br />tomorrow, together.
+              <svg className="hf-script-arrow" viewBox="0 0 140 36" aria-hidden="true">
+                <path d="M120 6 C 80 10, 48 22, 18 30" fill="none" stroke="#2c3a34" strokeWidth="1.2" />
+                <path d="M18 30 l10 -2 M18 30 l3 8" fill="none" stroke="#2c3a34" strokeWidth="1.2" strokeLinecap="round" />
+              </svg>
             </p>
-          </Reveal>
-
-          {/* Editorial Goal List (Hairline dividers, NO CARD BORDER, NO SHADOW) */}
-          <div className="border-t border-slate-200 divide-y divide-slate-200">
-            {FARCON_GOALS.map((goal, idx) => {
-              const isHovered = hoveredGoalIndex === idx;
-              return (
-                <div
-                  key={goal.id}
-                  onMouseEnter={() => setHoveredGoalIndex(idx)}
-                  onMouseLeave={() => setHoveredGoalIndex(null)}
-                  onClick={() => navigate(`/goals/${goal.slug}` as RoutePath)}
-                  className={`py-8 sm:py-10 transition-all duration-200 cursor-pointer group flex flex-col md:flex-row md:items-center justify-between gap-6 ${
-                    isHovered ? 'bg-slate-50/70 px-4 sm:px-6 -mx-4 sm:-mx-6 rounded-xl' : ''
-                  }`}
-                >
-                  {/* Left: Number + Goal Title */}
-                  <div className="flex items-start sm:items-center gap-6 sm:gap-10 md:w-5/12">
-                    <span className="text-xl sm:text-2xl font-mono font-medium text-slate-400 group-hover:text-[#78A832] transition-colors">
-                      0{idx + 1}
-                    </span>
-                    <div>
-                      <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-slate-900 group-hover:text-[#78A832] transition-colors tracking-tight">
-                        {goal.title}
-                      </h3>
-                      <span className="text-xs font-mono text-slate-400 block mt-1">
-                        Timeline: {goal.typicalHorizon}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Center: Curated Description */}
-                  <div className="md:w-5/12 text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    <p>{goal.description}</p>
-                  </div>
-
-                  {/* Right: Subdued Arrow Affordance */}
-                  <div className="md:w-2/12 flex items-center md:justify-end gap-2 text-xs font-medium text-slate-900 group-hover:text-[#78A832] transition-colors">
-                    <span className="hidden sm:inline">Explore Journey</span>
-                    <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          SECTION 4 — HOW FARCON WORKS (VERTICAL EDITORIAL TIMELINE, NO BOXES)
-          ========================================================================= */}
-      <section className="bg-[#F2F6FB] py-20 sm:py-28 border-y border-[#DCE4EE]">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <Reveal className="max-w-2xl mb-16 sm:mb-20">
-            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#78A832] block mb-2">
-              DISCIPLINED PROCESS
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
-              How Farcon Works
-            </h2>
-            <p className="mt-3.5 text-base text-slate-600 leading-relaxed">
-              A clear, repeatable three-step advisory discipline to replace speculative confusion with quiet compounding.
-            </p>
-          </Reveal>
-
-          {/* Vertical Editorial Timeline (No rounded boxes around steps) */}
-          <div className="relative pl-8 sm:pl-16 border-l-2 border-slate-200 space-y-16 sm:space-y-24">
-            {/* Step 01 */}
-            <Reveal delayMs={0}>
-              <div className="relative group">
-                <div className="absolute -left-[41px] sm:-left-[73px] top-1.5 w-5 h-5 rounded-full bg-white border-4 border-[#78A832]" />
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-baseline">
-                  <div className="lg:col-span-4">
-                    <span className="text-4xl sm:text-5xl lg:text-6xl font-mono font-medium text-slate-300 block mb-2 group-hover:text-[#315FCE] transition-colors">
-                      01
-                    </span>
-                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-slate-900 tracking-tight">
-                      Understand your goals
-                    </h3>
-                  </div>
-                  <div className="lg:col-span-8 space-y-2.5">
-                    <p className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
-                      Before recommending any mutual fund scheme or asset category, we quantify your target milestones, time horizons, cash flow surplus, and psychological comfort with market drawdowns.
-                    </p>
-                    <span className="text-xs font-mono text-slate-500 block">
-                      Phase 1: Milestone Quantification & Suitability Profiling
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-
-            {/* Step 02 */}
-            <Reveal delayMs={100}>
-              <div className="relative group">
-                <div className="absolute -left-[41px] sm:-left-[73px] top-1.5 w-5 h-5 rounded-full bg-white border-4 border-[#315FCE]" />
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-baseline">
-                  <div className="lg:col-span-4">
-                    <span className="text-4xl sm:text-5xl lg:text-6xl font-mono font-medium text-slate-300 block mb-2 group-hover:text-[#78A832] transition-colors">
-                      02
-                    </span>
-                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-slate-900 tracking-tight">
-                      Build a clear plan
-                    </h3>
-                  </div>
-                  <div className="lg:col-span-8 space-y-2.5">
-                    <p className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
-                      We design an asset allocation blueprint across suitable mutual fund categories and activate automated SIP mandates routed directly in your own name through official channels.
-                    </p>
-                    <span className="text-xs font-mono text-slate-500 block">
-                      Phase 2: Asset Allocation Architecture & Direct Mandate Execution
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-
-            {/* Step 03 */}
-            <Reveal delayMs={200}>
-              <div className="relative group">
-                <div className="absolute -left-[41px] sm:-left-[73px] top-1.5 w-5 h-5 rounded-full bg-white border-4 border-slate-900" />
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-baseline">
-                  <div className="lg:col-span-4">
-                    <span className="text-4xl sm:text-5xl lg:text-6xl font-mono font-medium text-slate-300 block mb-2 group-hover:text-slate-900 transition-colors">
-                      03
-                    </span>
-                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-poppins font-medium text-slate-900 tracking-tight">
-                      Review and stay on track
-                    </h3>
-                  </div>
-                  <div className="lg:col-span-8 space-y-2.5">
-                    <p className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
-                      We review your portfolio trajectory periodically, rebalancing asset allocations calmly so you remain focused on your destination without succumbing to daily market noise.
-                    </p>
-                    <span className="text-xs font-mono text-slate-500 block">
-                      Phase 3: Periodic Rebalancing & Trajectory Governance
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          SECTION 5 — SERVICES (HORIZONTAL EDITORIAL LIST, NO 2x3 CARD GRID)
-          ========================================================================= */}
-      <section className="relative">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          {/* Header */}
-          <Reveal className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6">
-            <div>
-              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#78A832] block mb-2">
-                PUBLISHED SERVICES
-              </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
-                Our Core Services
-              </h2>
-              <p className="mt-3 text-base text-slate-600 max-w-xl">
-                Ground-level mutual fund distributor services executed with institutional clarity and transparency.
-              </p>
+            <h1>Investing,<br /><em>without the noise.</em></h1>
+            <p className="hf-lede">Your goals are personal. Your investment journey should be too.</p>
+            <p className="hf-lede">Farcon helps you approach mutual fund investing with clarity, discipline and purpose.</p>
+            <div className="hf-cta-row">
+              <button type="button" className="hf-btn hf-btn-green" onClick={() => document.getElementById('goals')?.scrollIntoView({ behavior: 'smooth' })}>
+                Start with a Goal <ArrowRight size={14} />
+              </button>
+              <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/start-investing')}>
+                Start investing
+              </button>
+              <button type="button" className="hf-btn hf-btn-outline" onClick={() => onOpenConsultation('Book a Free 15-Minute Call')}>
+                Book a Free 15-Minute Call
+              </button>
             </div>
-
-            <button
-              onClick={() => navigate('/services')}
-              className="text-xs font-medium text-slate-900 hover:text-[#78A832] inline-flex items-center gap-2 self-start md:self-end group cursor-pointer"
-            >
-              <span>View All 6 Services</span>
-              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-            </button>
-          </Reveal>
-
-          {/* Horizontal Editorial Rows */}
-          <div className="border-t border-slate-200 divide-y divide-slate-200">
-            {FARCON_SERVICES.slice(0, 6).map((service, idx) => {
-              const isHovered = hoveredServiceIndex === idx;
-              return (
-                <div
-                  key={service.id}
-                  onMouseEnter={() => setHoveredServiceIndex(idx)}
-                  onMouseLeave={() => setHoveredServiceIndex(null)}
-                  onClick={() => navigate(`/services/${service.slug}` as RoutePath)}
-                  className={`py-7 sm:py-9 transition-all duration-200 cursor-pointer group flex flex-col md:flex-row md:items-center justify-between gap-4 ${
-                    isHovered ? 'bg-slate-50/70 px-4 sm:px-6 -mx-4 sm:-mx-6 rounded-xl' : ''
-                  }`}
-                >
-                  <div className="flex items-start sm:items-center gap-6 md:w-5/12">
-                    <span className="text-lg sm:text-xl font-mono font-medium text-slate-400 group-hover:text-[#78A832] transition-colors">
-                      0{idx + 1}
-                    </span>
-                    <div>
-                      <h3 className="text-lg sm:text-xl font-poppins font-medium text-slate-900 group-hover:text-[#78A832] transition-colors">
-                        {service.title}
-                      </h3>
-                      <span className="text-xs text-slate-500 block mt-0.5">
-                        {service.tagline}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="md:w-5/12 text-xs text-slate-600 leading-relaxed">
-                    <p className="line-clamp-2">{service.summary}</p>
-                  </div>
-
-                  <div className="md:w-2/12 flex items-center md:justify-end gap-2 text-xs font-medium text-slate-900 group-hover:text-[#78A832] transition-colors">
-                    <span className="hidden sm:inline">Details</span>
-                    <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          SECTION 6 — FINANCIAL STUDIO (LIGHT-FIRST COMPACT WORKSPACE)
-          ========================================================================= */}
-      <section className="bg-[#F2F6FB] text-[#17243A] py-20 sm:py-28 border-y border-[#DCE4EE]">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          {/* Header */}
-          <Reveal className="max-w-2xl mb-12 sm:mb-16">
-            <span className="text-[11px] font-mono font-semibold tracking-[0.2em] uppercase text-[#78A832] block mb-2">
-              FINANCIAL STUDIO
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
-              Explore the numbers.
-            </h2>
-            <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
-              Compounding projections to ground your financial aspirations in clarity and disciplined milestones.
-            </p>
-          </Reveal>
-
-          {/* Single Surface Financial Studio: Left Selector + Right Interactive Workspace */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
-            {/* Left Column: 4 Calculator Selector Cards */}
-            <div className="lg:col-span-4 space-y-2.5">
-              {[
-                { id: 'sip', num: '01', title: 'SIP Compounding', desc: 'Monthly investment compounding over time' },
-                { id: 'lumpsum', num: '02', title: 'Lumpsum Growth', desc: 'One-time capital deployed across cycles' },
-                { id: 'goal', num: '03', title: 'Goal Target SIP', desc: 'Required monthly savings for future corpus' },
-                { id: 'retirement', num: '04', title: 'Retirement Corpus', desc: 'Inflation-adjusted multi-decade security' },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setStudioTab(tab.id as any)}
-                  className={`w-full text-left p-4 sm:p-4.5 rounded-xl transition-all cursor-pointer border ${
-                    studioTab === tab.id
-                      ? 'bg-white border-[#78A832] shadow-sm ring-1 ring-[#78A832]/30 text-slate-900'
-                      : 'bg-white/80 border-[#DCE4EE] hover:bg-white hover:border-slate-300 text-slate-600 hover:text-slate-900 shadow-2xs'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-mono font-bold text-[#78A832]">{tab.num}</span>
-                    <span className="text-[10px] font-mono text-slate-400 uppercase">Deterministic</span>
-                  </div>
-                  <h3 className="text-base font-poppins font-medium text-slate-900 mb-0.5">
-                    {tab.title}
-                  </h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    {tab.desc}
-                  </p>
-                </button>
-              ))}
-            </div>
-
-            {/* Right Column: White Interactive Workspace */}
-            <div className="lg:col-span-8 bg-white p-6 sm:p-9 rounded-2xl border border-[#DCE4EE] shadow-xs space-y-7">
-              {/* Sliders Area */}
-              <div className="space-y-6">
-                {/* Input 1: Amount */}
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center text-xs">
-                    <label className="text-slate-700 font-medium">
-                      {studioTab === 'sip'
-                        ? 'Monthly Investment (SIP)'
-                        : studioTab === 'lumpsum'
-                        ? 'One-Time Investment'
-                        : studioTab === 'goal'
-                        ? 'Target Goal Amount'
-                        : 'Current Monthly Living Expense'}
-                    </label>
-                    <span className="text-base font-mono font-semibold text-slate-900">
-                      {formatINR(studioAmount)}
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min={5000}
-                    max={200000}
-                    step={2500}
-                    value={studioAmount}
-                    onChange={(e) => setStudioAmount(Number(e.target.value))}
-                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
-                  />
-                </div>
-
-                {/* Input 2: Rate & Tenure */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center text-xs">
-                      <label className="text-slate-700 font-medium">Illustrative Annual Return</label>
-                      <span className="text-base font-mono font-semibold text-[#78A832]">
-                        {studioRate}% p.a.
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min={6}
-                      max={16}
-                      step={0.5}
-                      value={studioRate}
-                      onChange={(e) => setStudioRate(Number(e.target.value))}
-                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center text-xs">
-                      <label className="text-slate-700 font-medium">Tenure Horizon</label>
-                      <span className="text-base font-mono font-semibold text-slate-900">
-                        {studioTenure} Years
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min={3}
-                      max={30}
-                      step={1}
-                      value={studioTenure}
-                      onChange={(e) => setStudioTenure(Number(e.target.value))}
-                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Minimal SVG Growth Curve on Pale Surface */}
-              <div className="h-16 w-full bg-[#F8FAFC] rounded-xl p-2.5 border border-[#E2E8F0]">
-                <svg viewBox="0 0 400 50" fill="none" className="w-full h-full">
-                  <path
-                    d="M 10 44 C 120 42, 240 30, 390 8"
-                    stroke="#78A832"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                  />
-                  <circle cx="390" cy="8" r="4.5" fill="#78A832" />
-                  <path
-                    d="M 10 44 L 390 8 L 390 50 L 10 50 Z"
-                    fill="url(#studio-curve-fill)"
-                    opacity="0.15"
-                  />
-                  <defs>
-                    <linearGradient id="studio-curve-fill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#78A832" />
-                      <stop offset="100%" stopColor="#78A832" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </div>
-
-              {/* Large Numbers Typography on Light Card */}
-              <div className="pt-4 border-t border-[#DCE4EE] grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div>
-                  <span className="text-xs text-slate-500 font-medium block mb-1">
-                    {activeStudioResult.headlineLabel}
-                  </span>
-                  <div className="text-3xl sm:text-4xl font-poppins font-semibold text-[#78A832] tracking-tight">
-                    <AnimatedNumber value={activeStudioResult.headlineValue} />
-                  </div>
-                </div>
-
-                <div>
-                  <span className="text-xs text-slate-500 font-medium block mb-1">
-                    {activeStudioResult.investedLabel}
-                  </span>
-                  <div className="text-xl sm:text-2xl font-poppins font-semibold text-slate-900 font-mono">
-                    {formatINR(activeStudioResult.investedValue, { compact: true })}
-                  </div>
-                </div>
-
-                <div>
-                  <span className="text-xs text-slate-500 font-medium block mb-1">
-                    {activeStudioResult.gainLabel}
-                  </span>
-                  <div className="text-xl sm:text-2xl font-poppins font-semibold text-[#315FCE] font-mono">
-                    {activeStudioResult.isRate ? `${activeStudioResult.gainValue}%` : `+${formatINR(activeStudioResult.gainValue, { compact: true })}`}
-                  </div>
-                </div>
-              </div>
-
-              {/* Calculation Assumptions Drawer */}
-              <div className="pt-2 border-t border-[#DCE4EE]">
-                <button
-                  onClick={() => setShowStudioAssumptions(!showStudioAssumptions)}
-                  className="w-full flex items-center justify-between text-xs text-slate-600 hover:text-slate-900 transition-colors cursor-pointer py-1.5 font-medium"
-                >
-                  <span>View Calculation Assumptions</span>
-                  {showStudioAssumptions ? <ChevronUp className="w-4 h-4 text-slate-700" /> : <ChevronDown className="w-4 h-4 text-slate-700" />}
-                </button>
-
-                {showStudioAssumptions && (
-                  <div className="mt-3 p-4 bg-[#F8FAFC] rounded-xl border border-[#DCE4EE] space-y-2 text-xs font-mono text-slate-600">
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Compounding Frequency:</span>
-                      <span className="text-slate-900 font-medium">Monthly</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Contribution Timing:</span>
-                      <span className="text-slate-900 font-medium">Beginning of Month</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Inflation Assumption:</span>
-                      <span className="text-slate-900 font-medium">6.0% p.a. (where applicable)</span>
-                    </div>
-                    <p className="pt-2 text-[11px] text-slate-500 leading-relaxed border-t border-slate-200">
-                      Illustrative calculation only. Actual investment outcomes may differ across market cycles and scheme categories.
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-4 pt-1">
-                <button
-                  onClick={() => onOpenConsultation(`${studioTab.toUpperCase()} Planning Discussion`)}
-                  className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors inline-flex items-center gap-2 cursor-pointer shadow-xs active:scale-[0.98]"
-                >
-                  <span>Structure This Plan With Farcon</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#78A832]" />
-                </button>
-                <button
-                  onClick={() => navigate(`/calculators/${studioTab}` as RoutePath)}
-                  className="px-4 py-3 text-xs font-medium text-slate-600 hover:text-slate-950 transition-colors cursor-pointer"
-                >
-                  Open Full Dedicated Calculator
-                </button>
-              </div>
+            <div className="hf-trust">
+              <span><Target size={14} /> Goal-based</span>
+              <span><Shield size={14} /> Transparent</span>
+              <span><User size={14} /> In your name</span>
             </div>
           </div>
+          <article className="hf-market" aria-label="Market snapshot">
+            <div className="hf-market-tabs">
+              <div className="hf-tabs" role="group" aria-label="Index">
+                <button type="button" className={indexFocus === 'nifty' ? 'is-on' : ''} onClick={() => setIndexFocus('nifty')}>NIFTY 50</button>
+                <button type="button" className={indexFocus === 'sensex' ? 'is-on' : ''} onClick={() => setIndexFocus('sensex')}>SENSEX</button>
+              </div>
+              <div className="hf-tabs" role="group" aria-label="Period">
+                {PERIODS.map((item) => (
+                  <button key={item} type="button" className={period === item ? 'is-on' : ''} onClick={() => setPeriod(item)}>{item}</button>
+                ))}
+              </div>
+            </div>
+            <MarketReadout focus={indexFocus} period={period} quote={quotes[`${indexFocus}:${rangeKey}`]} other={quotes[`${indexFocus === 'nifty' ? 'sensex' : 'nifty'}:${rangeKey}`]} />
+          </article>
         </div>
       </section>
 
-      {/* =========================================================================
-          SECTION 7 — INVESTOR FIT EDITORIAL DIAGNOSTIC PREVIEW
-          ========================================================================= */}
-      <section className="relative">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="border border-[#DCE4EE] rounded-2xl p-8 sm:p-12 lg:p-14 bg-[#F2F6FB] grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            {/* Left: Editorial Proposition */}
-            <div className="lg:col-span-7 space-y-6">
-              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#78A832] block">
-                DIAGNOSTIC ASSESSMENT
-              </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
-                Know where you stand before deciding where to invest.
-              </h2>
-              <p className="text-base text-slate-600 leading-relaxed max-w-xl">
-                The Investor Fit assessment evaluates your personal risk comfort, time horizon, and behavioral reaction to market dips—grounding your plan in emotional suitability before any scheme is discussed.
-              </p>
-
-              {/* 5 Assessment Dimensions Rendered as Clean Unboxed Typography */}
-              <div className="pt-2">
-                <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-3">
-                  5 Diagnostic Dimensions
+      <Reveal as="section" className="hf-section" id="goals" data-section="goals">
+        <div className="hf-wrap">
+          <div className="hf-goals">
+            {GOALS.map((goal, index) => (
+              <button key={goal.title} type="button" className="hf-goal" style={{ animationDelay: `${index * 70}ms` }} onClick={() => navigate(goal.href)}>
+                <img {...cardSrc(goal.image)} sizes="(min-width: 1100px) 180px, 80vw" alt={goal.alt} width={1600} height={1100} loading="eager" fetchPriority="high" decoding="sync" />
+                <span>
+                  <h2>{goal.title}</h2>
+                  <p>{goal.text}</p>
                 </span>
-                <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs font-medium text-slate-700">
-                  <span>01. Experience</span>
-                  <span aria-hidden="true" className="text-slate-300">·</span>
-                  <span>02. Time Horizon</span>
-                  <span aria-hidden="true" className="text-slate-300">·</span>
-                  <span>03. Risk Comfort</span>
-                  <span aria-hidden="true" className="text-slate-300">·</span>
-                  <span>04. Goal</span>
-                  <span aria-hidden="true" className="text-slate-300">·</span>
-                  <span>05. Financial Awareness</span>
-                </div>
-              </div>
+                <span className="hf-arrow" aria-hidden="true"><ArrowRight size={16} /></span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </Reveal>
 
-              {/* CTAs */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                <button
-                  onClick={() => navigate('/investor-quiz')}
-                  className="px-7 py-3.5 text-xs font-medium text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors inline-flex items-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
-                >
-                  <span>Take the Investor Fit</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#78A832]" />
-                </button>
-                <button
-                  onClick={() => navigate('/investor-quiz')}
-                  className="px-4 py-3.5 text-xs font-medium text-slate-700 hover:text-slate-950 transition-colors cursor-pointer"
-                >
-                  See how it works
-                </button>
-              </div>
+      <Reveal as="section" className="hf-section svc-band" id="services" data-section="services">
+        <div className="hf-wrap">
+          <ServiceShowcase navigate={navigate} />
+        </div>
+      </Reveal>
+
+      <Reveal as="section" className="hf-section" id="planner" data-section="planner">
+        <div className="hf-wrap">
+          <div className="hf-plan">
+            <div className="hf-plan-copy">
+              <span className="hf-eye">Interactive goal planning calculator</span>
+              <h2>Your Goals.<br /><em>Our Planning.</em></h2>
+              <p className="hf-lede">See how small, consistent steps today can create a brighter tomorrow.</p>
+              <ol className="hf-how">
+                <li>
+                  <span><Target size={16} /></span>
+                  <div><strong>Pick a goal</strong><p>Retirement, a child, wealth, or tax.</p></div>
+                </li>
+                <li>
+                  <span><Wallet size={16} /></span>
+                  <div><strong>Set amount & time</strong><p>A corpus, a horizon, and a rate you can live with.</p></div>
+                </li>
+                <li>
+                  <span><LineChart size={16} /></span>
+                  <div><strong>See your monthly SIP</strong><p>The figure updates as you move the sliders.</p></div>
+                </li>
+              </ol>
+              <ul className="hf-truststrip">
+                <li>AMFI-registered · ARN {FARCON_CONFIG.arn}</li>
+                <li>Investments in your name</li>
+                <li><button type="button" onClick={() => navigate('/disclosures')}>Regular plans · Commission disclosed</button></li>
+              </ul>
+              <p className="hf-note hf-plan-note">The monthly figure is an illustration from the rate you choose. It is not a promise of returns.</p>
+              <a className="hf-btn hf-btn-outline hf-expert" href={whatsapp} target="_blank" rel="noreferrer">Talk to an expert</a>
+              <PlanningPlant />
             </div>
-
-            {/* Right: Question 01 / 08 Interactive Sample */}
-            <div className="lg:col-span-5 bg-white p-6 sm:p-7 rounded-xl border border-[#DCE4EE] space-y-4 shadow-xs">
-              <div className="flex items-center justify-between text-xs font-mono pb-2.5 border-b border-slate-100 text-slate-500">
-                <span className="text-[#78A832] font-medium">01 / 08</span>
-                <span>Experience Dimension</span>
+            <div className="hf-plan-panel">
+              <div className="hf-tabs">
+                {PLAN_TABS.map((tab) => (
+                  <button key={tab} type="button" className={planTab === tab ? 'is-on' : ''} onClick={() => {
+                    const preset = PLAN_PRESETS[tab];
+                    setPlanTab(tab);
+                    setTarget(preset.target);
+                    setYears(preset.years);
+                    setRate(preset.rate);
+                  }}>{tab}</button>
+                ))}
               </div>
-              <h3 className="text-base sm:text-lg font-poppins font-medium text-slate-900 leading-snug">
-                How would you describe your familiarity with equity mutual funds?
-              </h3>
-              <div className="space-y-2 text-xs">
-                <div className="p-3 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 font-normal flex items-center justify-between">
-                  <span>A. First-time investor exploring options</span>
-                  <div className="w-2 h-2 rounded-full bg-slate-300" />
-                </div>
-                <div className="p-3 rounded-lg border border-slate-900 bg-slate-50 text-slate-900 font-medium flex items-center justify-between">
-                  <span>B. Running 1–3 SIPs currently</span>
-                  <div className="w-2 h-2 rounded-full bg-[#78A832]" />
-                </div>
-                <div className="p-3 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 font-normal flex items-center justify-between">
-                  <span>C. Experienced across market cycles</span>
-                  <div className="w-2 h-2 rounded-full bg-slate-300" />
-                </div>
+              <div className="hf-plan-grid">
+              <div className="hf-controls">
+              <label className="hf-slider">
+                <span className="hf-slider-top"><span>Target Corpus</span></span>
+                <SyncedField label="Target corpus in rupees" value={target} min={5_000_000} max={100_000_000} step={500_000} display={(n) => formatINR(n)} onChange={setTarget} />
+                <input type="range" min={5_000_000} max={100_000_000} step={500_000} value={target} style={{ ['--pct' as string]: `${((target - 5_000_000) / 95_000_000) * 100}%` }} onChange={(e) => setTarget(Number(e.target.value))} />
+                <span className="hf-scale"><span>₹50 L</span><span>₹10 Cr</span></span>
+              </label>
+              <label className="hf-slider">
+                <span className="hf-slider-top"><span>Time Horizon</span></span>
+                <SyncedField label="Time horizon in years" value={years} min={3} max={30} step={1} display={(n) => `${n} Years`} onChange={setYears} />
+                <input type="range" min={3} max={30} step={1} value={years} style={{ ['--pct' as string]: `${((years - 3) / 27) * 100}%` }} onChange={(e) => setYears(Number(e.target.value))} />
+                <span className="hf-scale"><span>3 Yrs</span><span>30 Yrs</span></span>
+              </label>
+              <label className="hf-slider hf-return">
+                <span className="hf-slider-top"><span>Expected Return (p.a.)</span></span>
+                <SyncedField label="Expected annual return percent" value={rate} min={6} max={18} step={1} display={(n) => `${n}%`} onChange={setRate} />
+                <input type="range" min={6} max={18} step={1} value={rate} style={{ ['--pct' as string]: `${((rate - 6) / 12) * 100}%` }} onChange={(e) => setRate(Number(e.target.value))} />
+                <span className="hf-scale"><span>6%</span><span>18%</span></span>
+              </label>
               </div>
-              <div className="pt-1 text-[11px] text-slate-400 font-mono flex items-center justify-between">
-                <span>Takes ~3 minutes</span>
-                <span>Zero sales push</span>
+              <div className="hf-result" aria-live="polite">
+                <span>Required Monthly SIP</span>
+                <strong><AnimatedNumber value={plan.requiredMonthlySIP} durationMs={480} /></strong>
+                <dl>
+                  <div><dt>Total Investment</dt><dd>{formatPlanCompact(plan.totalInvestment)}</dd></div>
+                  <div><dt>Estimated Growth</dt><dd>{formatPlanCompact(plan.estimatedGrowth)}</dd></div>
+                </dl>
+                <button type="button" className="hf-btn hf-btn-green" onClick={() => navigate(`/calculators/goal?target=${target}&years=${years}&rate=${rate}` as RoutePath)}>
+                  View Detailed Plan <ArrowRight size={16} />
+                </button>
+              </div>
+              <div>
+                <div className="hf-draw">
+                  <AreaChart series={plan.series} />
+                </div>
+                <p className="hf-note">This is an estimate based on the returns assumed. Actual results may vary.</p>
+              </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </Reveal>
 
-      {/* =========================================================================
-          SECTION 8 — PORTFOLIO REVIEW SPLIT LAYOUT
-          ========================================================================= */}
-      <section className="relative">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            {/* Left: Atmospheric Architectural Quote */}
-            <div className="lg:col-span-5 bg-[#F2F6FB] text-[#17243A] p-8 sm:p-12 rounded-2xl border border-[#DCE4EE] space-y-6 shadow-2xs">
-              <span className="text-[11px] font-mono font-semibold tracking-[0.2em] uppercase text-[#78A832] block">
-                PORTFOLIO CONSOLIDATION
-              </span>
-              <blockquote className="text-xl sm:text-2xl font-poppins font-medium text-slate-800 leading-relaxed italic">
-                “True portfolio resilience comes not from collecting twenty different funds, but from eliminating redundancy, expense drag, and emotional churn.”
-              </blockquote>
-              <div className="pt-4 border-t border-[#DCE4EE] text-xs font-mono text-slate-500">
-                Farcon Wealth Portfolio Governance Principle
-              </div>
-            </div>
+      <Reveal as="section" className="hf-section" data-section="funds">
+        <div className="hf-wrap hf-split">
+          <div>
+            <span className="hf-eye">Featured mutual funds</span>
+            <h2>Explore top funds for your <em>goals.</em></h2>
+            <p className="hf-lede">A teaching set, as of {FARCON_CONFIG.illustrativeMarketAsOf}. These figures are not live NAV and not a recommendation.</p>
+          </div>
+          <div>
+          <div className="hf-pills">
+            {['Equity Funds', 'Hybrid Funds', 'Debt Funds', 'Tax Saving (ELSS)'].map((tab) => (
+              <button key={tab} type="button" className={fundTab === tab ? 'is-on' : ''} onClick={() => setFundTab(tab)}>{tab}</button>
+            ))}
+          </div>
+          <div className="hf-fund-row" key={fundTab}>
+            {funds.map((fund) => (
+              <article key={fund.name} className="hf-fund">
+                <div className="hf-amc">
+                  <img className="hf-logo" src={fund.logo} alt={`${fund.name} mark`} width={28} height={28} />
+                  <div>
+                    <h2>{fund.name}</h2>
+                    <div className="hf-sub">Direct Growth</div>
+                  </div>
+                </div>
+                <div className="hf-tags">{fund.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+                <div className="hf-metrics">
+                  <span>3Y CAGR<b>{fund.cagr}</b></span>
+                  <span>NAV · {FARCON_CONFIG.illustrativeMarketAsOf}<b>{fund.nav}</b></span>
+                </div>
+                <Spark values={fund.spark} color={fund.tone} />
+                <span className="hf-pill" tabIndex={0} style={{ background: fund.tone }}>
+                  {fund.risk}
+                  <span className="hf-tip" role="tooltip">{RISK_NOTE[fund.risk]}</span>
+                </span>
+              </article>
+            ))}
+            {funds.length === 0 && (
+              <article className="hf-fund">
+                <h2>Debt funds</h2>
+                <p>Debt schemes are listed in the fund explorer. The figures on this shelf are a sample, as of {FARCON_CONFIG.illustrativeMarketAsOf}.</p>
+                <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
+              </article>
+            )}
+          </div>
+          <button type="button" className="hf-textlink hf-fund-more" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
+          </div>
+        </div>
+      </Reveal>
 
-            {/* Right: Concrete Proposition */}
-            <div className="lg:col-span-7 space-y-6">
-              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#315FCE] block">
-                ALREADY INVESTING?
-              </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
-                Make sure your portfolio still fits your goals.
-              </h2>
-              <p className="text-base text-slate-600 leading-relaxed font-normal">
-                If you have accumulated mutual funds across multiple apps over the years, we perform a confidential overlap review to identify duplicate stock holdings, category imbalances, and expense drag.
-              </p>
-              <div className="pt-2">
-                <button
-                  onClick={() => navigate('/portfolio-review')}
-                  className="px-7 py-3.5 text-xs font-medium text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors inline-flex items-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
-                >
-                  <span>Request a Portfolio Review</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#78A832]" />
-                </button>
-              </div>
-            </div>
+      <section className="hf-why" data-section="why">
+        <img
+          className="hf-why-photo"
+          {...bleedSrc('why-mountains')}
+          sizes="100vw"
+          alt="A mountain ridge at sunset with a small flag on the right-hand peak"
+          width={2880}
+          height={1400}
+          loading="eager"
+          fetchPriority="low"
+          decoding="async"
+        />
+        <svg className="hf-flag" viewBox="0 0 72 120" aria-hidden="true">
+          <path d="M16 116 V6" stroke="#F3D48A" strokeWidth="3" strokeLinecap="round" />
+          <path d="M16 8 h46 l-12 16 12 16 H16 z" fill="#F3D48A" />
+        </svg>
+        <div className="hf-why-inner hf-split">
+          <div>
+            <span className="hf-eye">Why Farcon Wealth</span>
+            <h2>A disciplined approach to wealth creation.</h2>
+            <p className="hf-why-lead">We combine research, technology and a goal-based approach to help you invest with confidence.</p>
+            <button type="button" className="hf-btn hf-btn-white" onClick={() => navigate('/about')}>Know More About Us <ArrowRight size={16} /></button>
+          </div>
+          <div className="hf-cols">
+            <article>
+              <div className="hf-num">01</div>
+              <div className="hf-icon-tile"><Target size={18} /></div>
+              <h3>Goal-Based Planning</h3>
+              <p>Your investments are aligned to what matters most — your goals, your timelines, your life events.</p>
+            </article>
+            <article>
+              <div className="hf-num">02</div>
+              <div className="hf-icon-tile"><LineChart size={18} /></div>
+              <h3>Research-Backed Recommendations</h3>
+              <p>We use a structured research process to shortlist quality mutual funds across categories.</p>
+            </article>
+            <article>
+              <div className="hf-num">03</div>
+              <div className="hf-icon-tile"><Shield size={18} /></div>
+              <h3>Transparent & Client-First</h3>
+              <p>No hidden charges. No pressure. Just clear guidance, in your best interest.</p>
+            </article>
           </div>
         </div>
       </section>
 
-      {/* =========================================================================
-          SECTION 9 — FARCON AI ASSISTANT (QUIET, UNOBTRUSIVE)
-          ========================================================================= */}
-      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="bg-[#F2F6FB] rounded-2xl border border-[#DCE4EE] p-8 sm:p-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
-          <div className="max-w-xl space-y-2.5">
-            <div className="flex items-center gap-2">
-              <Bot className="w-4 h-4 text-[#78A832]" />
-              <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-slate-500">
-                FARCON AI GUIDANCE
-              </span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-poppins font-medium text-slate-900 leading-snug">
-              Ask. Understand. Plan.
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-              Have questions about SIP rupee-cost averaging, ELSS tax savings, or SWP monthly cash flows? Our knowledge assistant explains financial concepts without sales pressure.
-            </p>
+      <Reveal as="section" className="hf-section hf-tools-section" data-section="tools">
+        <div className="hf-wrap hf-split">
+          <div>
+            <span className="hf-eye">Powerful tools for every stage</span>
+            <h2>Calculators &amp; Planners</h2>
+            <p className="hf-lede">Make better decisions with our easy-to-use financial tools.</p>
+            <button type="button" className="hf-textlink" onClick={() => navigate('/calculators')}>Explore All Calculators →</button>
           </div>
+          <div className="hf-tools">
+            {TOOLS.map((tool) => (
+              <button key={tool.title} type="button" className="hf-tool" onClick={() => navigate(tool.href)}>
+                <span className="hf-pastel" style={{ background: tool.tint }}>{tool.icon}</span>
+                <h2>{tool.title}</h2>
+                <p>{tool.text}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      </Reveal>
 
-          <button
-            onClick={onOpenAI}
-            className="px-6 py-3.5 text-xs font-medium text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors shrink-0 flex items-center gap-2 shadow-xs cursor-pointer active:scale-[0.98]"
+      <Reveal as="section" className="hf-section" data-section="stories">
+        <div className="hf-wrap hf-split">
+          <div>
+            <span className="hf-eye">Sample investor conversations</span>
+            <h2>Sample investor conversations</h2>
+            <p className="hf-lede">Sample wording for how a planning conversation sounds. These are not testimonials and not client endorsements.</p>
+          </div>
+          <div>
+          <div
+            className="hf-carousel"
+            onMouseEnter={() => setStoriesPaused(true)}
+            onMouseLeave={() => setStoriesPaused(false)}
+            onFocus={() => setStoriesPaused(true)}
+            onBlur={() => setStoriesPaused(false)}
           >
-            <span>✦ Ask Farcon AI</span>
-          </button>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          SECTION 10 — EDUCATION / INSIGHTS (MAGAZINE COMPOSITION, NO 3-CARD CLONES)
-          ========================================================================= */}
-      <section className="relative">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          {/* Header */}
-          <Reveal className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6">
-            <div>
-              <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#78A832] block mb-2">
-                EDITORIAL ESSAYS
-              </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-[-0.03em] leading-[1.12]">
-                Investor Education
-              </h2>
-              <p className="mt-3 text-base text-slate-600 max-w-xl">
-                First-principles thinking on market cycles, compounding, and behavioral sanity.
-              </p>
-            </div>
-
-            <button
-              onClick={() => navigate('/education')}
-              className="text-xs font-medium text-slate-900 hover:text-[#78A832] inline-flex items-center gap-2 self-start md:self-end group cursor-pointer"
-            >
-              <span>View All Essays</span>
-              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-            </button>
-          </Reveal>
-
-          {/* Magazine Composition: 1 Large Feature Story + 2 Smaller Supporting Stories */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-            {/* Dominant Featured Story (7 cols) */}
-            {BLOG_POSTS[0] && (
-              <article
-                onClick={() => navigate('/education')}
-                className="lg:col-span-7 bg-[#F2F6FB] p-8 sm:p-11 rounded-2xl border border-[#DCE4EE] flex flex-col justify-between cursor-pointer group hover:border-slate-300 transition-colors"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
-                    <span className="text-[#78A832] font-medium uppercase">{BLOG_POSTS[0].category}</span>
-                    <span>·</span>
-                    <span>{BLOG_POSTS[0].readTime}</span>
-                    <span>·</span>
-                    <span>{BLOG_POSTS[0].publishedDate}</span>
-                  </div>
-
-                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-poppins font-medium text-slate-900 group-hover:text-[#78A832] transition-colors leading-[1.15]">
-                    {BLOG_POSTS[0].title}
-                  </h3>
-
-                  <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
-                    {BLOG_POSTS[0].excerpt}
-                  </p>
-                </div>
-
-                <div className="pt-8 mt-8 border-t border-slate-200 flex items-center justify-between text-xs">
-                  <span className="text-slate-500 font-mono">By {BLOG_POSTS[0].author}</span>
-                  <span className="font-medium text-slate-900 group-hover:text-[#78A832] inline-flex items-center gap-1.5">
-                    Read Complete Essay <ArrowRight className="w-3.5 h-3.5" />
+            <button type="button" className="hf-side" onClick={() => scrollStories(-1)} aria-label="Previous stories"><ChevronLeft size={18} /></button>
+          <div
+            className="hf-stories"
+            ref={storyRef}
+            onScroll={(event) => {
+              const el = event.currentTarget;
+              if (el.scrollWidth <= el.clientWidth + 12) return;
+              const card = el.querySelector('article');
+              const width = card ? card.getBoundingClientRect().width + 14 : 1;
+              setStoryDot(Math.round(el.scrollLeft / width) % STORIES.length);
+            }}
+          >
+            {orderedStories.map((story) => (
+              <article key={story.initials} className="hf-story">
+                <div className="hf-quote">“</div>
+                <p>“{story.quote}”</p>
+                <div className="hf-who">
+                  <span className="hf-initials" data-who={story.initials[0]} aria-hidden="true">{story.initials[0]}</span>
+                  <span className="hf-who-text">
+                    <b>{story.initials}</b>
+                    <small>{story.role}</small>
                   </span>
                 </div>
               </article>
-            )}
-
-            {/* 2 Supporting Stories (5 cols) */}
-            <div className="lg:col-span-5 space-y-6">
-              {BLOG_POSTS.slice(1, 3).map((post) => (
-                <article
-                  key={post.id}
-                  onClick={() => navigate('/education')}
-                  className="bg-white p-6 sm:p-7 rounded-xl border border-[#DCE4EE] flex flex-col justify-between cursor-pointer group hover:border-slate-300 transition-colors"
-                >
-                  <div className="space-y-2.5">
-                    <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
-                      <span className="text-[#315FCE] font-medium">{post.category}</span>
-                      <span>·</span>
-                      <span>{post.readTime}</span>
-                    </div>
-
-                    <h3 className="text-lg sm:text-xl font-poppins font-medium text-slate-900 group-hover:text-[#78A832] transition-colors leading-snug">
-                      {post.title}
-                    </h3>
-
-                    <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
-                      {post.excerpt}
-                    </p>
-                  </div>
-
-                  <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-                    <span className="text-slate-400 font-mono text-[11px]">{post.publishedDate}</span>
-                    <span className="font-medium text-slate-900 group-hover:text-[#78A832] inline-flex items-center gap-1">
-                      Read <ArrowRight className="w-3 h-3" />
-                    </span>
-                  </div>
-                </article>
-              ))}
-            </div>
+            ))}
+          </div>
+            <button type="button" className="hf-side" onClick={() => scrollStories(1)} aria-label="Next stories"><ChevronRight size={18} /></button>
+          </div>
+          <div className="hf-dots">
+            {STORIES.map((story, index) => (
+              <button key={story.initials} type="button" className={storyDot === index ? 'is-on' : ''} aria-label={`Story ${index + 1}`} onClick={() => scrollStories(index - storyDot)}>
+                <i />
+              </button>
+            ))}
+          </div>
           </div>
         </div>
-      </section>
+      </Reveal>
 
-      {/* =========================================================================
-          SECTION 11 — FULL-WIDTH DARK PREMIUM FINAL CTA
-          ========================================================================= */}
-      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-        <Reveal>
-          <div className="bg-[#101A2C] text-white rounded-2xl p-10 sm:p-16 lg:p-20 border border-[#20314F] text-center space-y-7">
-            <span className="text-[11px] font-mono font-medium tracking-[0.2em] uppercase text-[#78A832] block">
-              BEGIN YOUR QUIET COMPOUNDING JOURNEY
-            </span>
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-poppins font-medium max-w-3xl mx-auto tracking-[-0.03em] leading-[1.08]">
-              Ready for a calmer investing approach?
-            </h2>
-            <p className="text-sm sm:text-base text-slate-400 max-w-xl mx-auto leading-relaxed font-normal">
-              Eliminate speculative noise. Align your savings with purpose, suitability, and transparent AMFI-registered execution.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-              <button
-                onClick={() => onOpenConsultation('Homepage Final CTA')}
-                className="px-7 py-3.5 text-xs font-medium text-[#101A2C] bg-[#78A832] hover:bg-[#8EB942] rounded-md transition-colors shadow-xs cursor-pointer active:scale-[0.98]"
-              >
-                Book a Free 15-Minute Call
+      <Reveal as="section" className="hf-section" data-section="articles">
+        <div className="hf-wrap hf-split">
+          <div>
+            <span className="hf-eye">Investor education</span>
+            <h2>Learn, Plan &amp; Grow</h2>
+            <p className="hf-lede">Simplified insights to help you make informed decisions.</p>
+            <button type="button" className="hf-textlink" onClick={() => navigate('/education')}>Explore All Articles →</button>
+          </div>
+          <div className="hf-articles">
+            {[
+              ['article-funds', 'Coin stacks with a small plant', 'Mutual Funds 101', 'A beginner\'s guide to investing in mutual funds'],
+              ['article-sip', 'A pink piggy bank', 'SIP vs Lumpsum', 'Which strategy is right for you?'],
+              ['article-elss', 'A calculator on tax paperwork', 'Tax Saving with ELSS', 'Save tax while building wealth'],
+            ].map(([name, alt, title, text]) => (
+              <a key={title} className="hf-article" href="/education" onClick={(event) => { event.preventDefault(); navigate('/education'); }}>
+                <img {...cardSrc(name)} sizes="96px" alt={alt} width={1600} height={1100} loading="eager" fetchPriority="low" decoding="async" />
+                <div>
+                  <h2>{title}</h2>
+                  <p>{text}</p>
+                  <span className="hf-read">Read Article →</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </Reveal>
+
+      <Reveal as="section" className="hf-section" id="faqs" data-section="faqs">
+        <div className="hf-wrap hf-split">
+          <div>
+            <span className="hf-eye">Common questions</span>
+            <h2>Before you write in</h2>
+            <p className="hf-lede">A short set. The full list is on the FAQ page.</p>
+            <button type="button" className="hf-textlink" onClick={() => navigate('/faq')}>Read all FAQs →</button>
+          </div>
+          <div>
+            {FAQ_ITEMS.slice(0, 4).map((item) => (
+              <details key={item.id} className="acc">
+                <summary>{item.question}</summary>
+                <p>{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </Reveal>
+
+      <section className="hf-cta" data-section="cta">
+        <img
+          className="bg"
+          {...bleedSrc('cta-sunset')}
+          sizes="100vw"
+          alt="A hiker sitting on a rock above a forested mountain valley"
+          width={2880}
+          height={1620}
+          loading="eager"
+          fetchPriority="low"
+          decoding="async"
+        />
+        <div className="hf-cta-scrim" />
+        <div className="hf-cta-inner">
+          <div>
+            <span className="hf-eye">Ready to take the next step?</span>
+            <h2>Let&apos;s build your financial future, together.</h2>
+            <p>Get personalised guidance from our experts. No pressure, just a conversation about your goals.</p>
+            <div className="hf-cta-row">
+              <button type="button" className="hf-btn hf-btn-gold" onClick={() => onOpenConsultation('Book a Free 15-Minute Call')}>
+                Book a Free 15-Minute Call <ArrowRight size={16} />
               </button>
-              <button
-                onClick={() => {
-                  const el = document.getElementById('purpose-goals-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  else navigate('/goals');
-                }}
-                className="px-7 py-3.5 text-xs font-medium text-white bg-slate-800 hover:bg-slate-700 rounded-md transition-colors cursor-pointer"
-              >
-                Start with a Goal
-              </button>
+              <button type="button" className="hf-btn hf-btn-white" onClick={() => navigate('/portfolio-review')}>Request a portfolio review</button>
+              <a className="hf-btn hf-btn-white" href={whatsapp} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
             </div>
           </div>
-        </Reveal>
+          <ol className="hf-path">
+            <li><span><Target size={16} /></span> Your Goals</li>
+            <li><span><User size={16} /></span> Our Guidance</li>
+            <li><span><Sprout size={16} /></span> A Brighter Tomorrow</li>
+          </ol>
+        </div>
       </section>
     </div>
   );

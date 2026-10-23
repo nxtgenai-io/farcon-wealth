@@ -16,7 +16,7 @@ export const PortfolioReviewView: React.FC<PortfolioReviewViewProps> = ({ naviga
     estimatedFundCount: '8 – 15 Funds',
     primaryConcern: 'Too many duplicate funds & portfolio overlap',
     investorNotes: '',
-    consent: true,
+    consent: false,
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -41,10 +41,11 @@ export const PortfolioReviewView: React.FC<PortfolioReviewViewProps> = ({ naviga
       };
 
       const res = await leadService.submitLead(payload);
+      if (!res.success) return;
       setLeadId(res.leadId);
       setSubmitted(true);
     } catch {
-      // Continue gracefully
+      setSubmitted(false);
     } finally {
       setSubmitting(false);
     }
@@ -69,9 +70,9 @@ export const PortfolioReviewView: React.FC<PortfolioReviewViewProps> = ({ naviga
         {/* Left Editorial Guidance (Pale Blue-Grey Diagnostic Panel) */}
         <div className="lg:col-span-5 bg-[#F2F6FB] text-[#17243A] p-7 sm:p-9 rounded-2xl border border-[#DCE4EE] space-y-7 shadow-xs">
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#315FCE]">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-[#315FCE]">
               The Farcon Diagnostic Process
-            </h3>
+            </h2>
             <p className="text-xs text-[#52647D] mt-1.5 leading-relaxed">
               We evaluate your Consolidated Account Statement (CAS) with institutional rigor.
             </p>
@@ -122,9 +123,9 @@ export const PortfolioReviewView: React.FC<PortfolioReviewViewProps> = ({ naviga
               <div className="w-12 h-12 bg-[#78A832]/10 text-[#78A832] rounded-full flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-semibold text-slate-900">
+              <h2 className="text-lg font-semibold text-slate-900">
                 Portfolio Review Request Received
-              </h3>
+              </h2>
               <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
                 Thank you, <strong>{formData.name}</strong>. Our senior distributor team will contact you on <strong>{formData.phone}</strong> to guide you through securely sharing your CAMS/KFintech Consolidated Statement.
               </p>

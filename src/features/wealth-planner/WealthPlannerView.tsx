@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { RoutePath } from '@/types';
 import { calculateGoalSIP } from '@/lib/calculations/financial';
 import { formatINR } from '@/lib/formatting/currency';
-import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { ArrowRight, ArrowLeft, RotateCcw, CheckCircle, ShieldCheck, Check } from 'lucide-react';
 
 interface WealthPlannerViewProps {
@@ -49,30 +49,27 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
     'Planning Assumptions',
     'Planning Blueprint',
   ];
+  const track = (value: number, min: number, max: number) => ({ ['--pct' as string]: `${((value - min) / (max - min)) * 100}%` });
 
   return (
-    <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-12 py-12 lg:py-16">
-      {/* Header */}
-      <div className="text-center max-w-3xl mx-auto mb-12">
-        <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832]">
-          Guided Diagnostic Experience
-        </span>
-        <h1 className="mt-2.5 text-3xl sm:text-4xl lg:text-5xl font-poppins font-medium text-slate-900 tracking-tight">
-          Farcon Wealth Planner Lite
-        </h1>
-        <p className="mt-3.5 text-sm sm:text-base text-slate-600 leading-relaxed">
-          Structure your financial goals across 6 clear milestones. Eliminate emotional guesswork and see the exact monthly discipline required.
-        </p>
-      </div>
+    <div className="pg planner-page">
+      <div className="pg-wrap">
+      <span className="hf-eye">Wealth planner</span>
+      <h1>See the monthly amount.</h1>
+      <p className="lede">Six short steps. The figure <span className="planner-right">on the right</span><span className="planner-below">below</span> updates as you go. It is an illustration, not a promise.</p>
+      <div className="planner-split">
+      <div>
 
       {/* Progress Stepper Bar */}
       <div className="max-w-3xl mx-auto mb-10">
+        <div className="planner-chips" aria-label="Planner steps">
+          {stepLabels.map((label, index) => (
+            <span key={label} className={index + 1 === step ? 'is-on' : index + 1 < step ? 'is-done' : ''}>{index + 1}. {label}</span>
+          ))}
+        </div>
         <div className="flex items-center justify-between text-xs text-slate-500 mb-3 font-medium">
           <span className="font-semibold text-slate-900">
             Step {step} of 6: {stepLabels[step - 1]}
-          </span>
-          <span className="font-mono text-[#78A832] font-bold">
-            {Math.round((step / 6) * 100)}%
           </span>
         </div>
 
@@ -90,9 +87,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 1 && (
           <div className="space-y-7 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono text-[#315FCE] font-semibold block mb-1">
-                STEP 01
-              </span>
+              <span className="hf-eye">Step 1</span>
               <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900">
                 Tell Us About Yourself
               </h2>
@@ -142,7 +137,8 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                 step={5000}
                 value={plannerData.monthlySurplus}
                 onChange={(e) => setPlannerData({ ...plannerData, monthlySurplus: Number(e.target.value) })}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
+                className="planner-range"
+                style={track(plannerData.monthlySurplus, 5000, 300000)}
               />
             </div>
           </div>
@@ -152,9 +148,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 2 && (
           <div className="space-y-7 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono text-[#315FCE] font-semibold block mb-1">
-                STEP 02
-              </span>
+              <span className="hf-eye">Step 2</span>
               <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900">
                 Choose Your Primary Goal
               </h2>
@@ -197,7 +191,8 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                 step={500000}
                 value={plannerData.goalAmount}
                 onChange={(e) => setPlannerData({ ...plannerData, goalAmount: Number(e.target.value) })}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
+                className="planner-range"
+                style={track(plannerData.goalAmount, 1000000, 50000000)}
               />
             </div>
           </div>
@@ -207,9 +202,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 3 && (
           <div className="space-y-7 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono text-[#315FCE] font-semibold block mb-1">
-                STEP 03
-              </span>
+              <span className="hf-eye">Step 3</span>
               <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900">
                 When Do You Need This Money?
               </h2>
@@ -230,7 +223,8 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                 step={1}
                 value={plannerData.horizonYears}
                 onChange={(e) => setPlannerData({ ...plannerData, horizonYears: Number(e.target.value) })}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
+                className="planner-range"
+                style={track(plannerData.horizonYears, 3, 30)}
               />
               <div className="flex justify-between text-[11px] text-slate-400 mt-1.5 font-mono">
                 <span>3 Years</span>
@@ -249,9 +243,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 4 && (
           <div className="space-y-7 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono text-[#315FCE] font-semibold block mb-1">
-                STEP 04
-              </span>
+              <span className="hf-eye">Step 4</span>
               <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900">
                 Existing Capital Earmarked
               </h2>
@@ -272,7 +264,8 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                 step={50000}
                 value={plannerData.existingSavings}
                 onChange={(e) => setPlannerData({ ...plannerData, existingSavings: Number(e.target.value) })}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
+                className="planner-range"
+                style={track(plannerData.existingSavings, 0, 5000000)}
               />
               <div className="flex justify-between text-[11px] text-slate-400 mt-1.5 font-mono">
                 <span>₹0 (Starting Fresh)</span>
@@ -287,9 +280,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 5 && (
           <div className="space-y-7 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono text-[#315FCE] font-semibold block mb-1">
-                STEP 05
-              </span>
+              <span className="hf-eye">Step 5</span>
               <h2 className="text-xl sm:text-2xl font-poppins font-medium text-slate-900">
                 Realistic Economic Assumptions
               </h2>
@@ -310,7 +301,8 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                   step={0.5}
                   value={plannerData.assumedInflation}
                   onChange={(e) => setPlannerData({ ...plannerData, assumedInflation: Number(e.target.value) })}
-                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
+                  className="planner-range"
+                  style={track(plannerData.assumedInflation, 4, 9)}
                 />
                 <span className="text-[10px] text-slate-400 block mt-1">Indian long-term baseline ~6%</span>
               </div>
@@ -326,7 +318,8 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                   step={0.5}
                   value={plannerData.assumedReturn}
                   onChange={(e) => setPlannerData({ ...plannerData, assumedReturn: Number(e.target.value) })}
-                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#78A832]"
+                  className="planner-range"
+                  style={track(plannerData.assumedReturn, 8, 15)}
                 />
                 <span className="text-[10px] text-slate-400 block mt-1">Diversified equity benchmark ~12%</span>
               </div>
@@ -338,9 +331,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {step === 6 && (
           <div className="space-y-8 animate-in fade-in duration-300">
             <div>
-              <span className="text-xs font-semibold tracking-wider uppercase text-[#78A832] font-mono">
-                PLANNING BLUEPRINT
-              </span>
+              <span className="hf-eye">Step 6</span>
               <h2 className="text-2xl sm:text-3xl font-poppins font-medium text-slate-900 mt-1">
                 {plannerData.goal} Plan Summary
               </h2>
@@ -371,28 +362,40 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                   <span className="font-mono font-medium text-[#17243A]">{plannerData.horizonYears} Years</span>
                 </div>
                 <div>
-                  <span className="text-[#52647D] block text-[11px]">Status</span>
-                  <span className="font-mono font-medium text-[#78A832]">
-                    {goalCalculation.requiredMonthlySIP <= plannerData.monthlySurplus
-                      ? 'Within Surplus'
-                      : 'Requires Step-up'}
-                  </span>
+                  <span className="text-[#52647D] block text-[11px]">Shortfall</span>
+                  <span className="font-mono font-medium text-[#17243A]">{formatINR(goalCalculation.shortfall, { compact: true })}</span>
                 </div>
+              </div>
+              <p className="text-xs text-[#52647D]">
+                Savings of {formatINR(plannerData.existingSavings, { compact: true })} are assumed to grow to {formatINR(goalCalculation.existingFutureValue, { compact: true })}.
+                {goalCalculation.surplus > 0
+                  ? ` That is a surplus of ${formatINR(goalCalculation.surplus, { compact: true })} against the future target.`
+                  : ` The gap still to fund is ${formatINR(goalCalculation.shortfall, { compact: true })}.`}
+                {' '}Monthly surplus {formatINR(plannerData.monthlySurplus)} covers {Math.min(100, Math.round((plannerData.monthlySurplus / Math.max(1, goalCalculation.requiredMonthlySIP)) * 100))}% of the required SIP.
+              </p>
+              <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden" aria-label="Progress of monthly surplus against the required SIP">
+                <div className="h-full bg-[#0F3D2E]" style={{ width: `${Math.min(100, Math.round((plannerData.monthlySurplus / Math.max(1, goalCalculation.requiredMonthlySIP)) * 100))}%` }} />
               </div>
             </div>
 
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 leading-relaxed">
               <p>
-                <strong>Next Suggested Action:</strong> Book a free consultation with Farcon Wealth. We will help you select the exact category blend (Flexi-Cap, Large-Cap, or Hybrid) and register the automated mandate directly in your own name.
+                <strong>Action plan:</strong> {goalCalculation.requiredMonthlySIP <= plannerData.monthlySurplus
+                  ? 'The required SIP fits the surplus you entered. Open the matching calculator, then start an investing enquiry or ask for a portfolio review if you already hold funds.'
+                  : `The required SIP is ${formatINR(goalCalculation.requiredMonthlySIP - plannerData.monthlySurplus)} a month above the surplus you entered. Raise the SIP later, lengthen the horizon, or lower the target, then send the plan to the Farcon team.`}
+                {' '}Farcon is a mutual fund distributor. This is an illustration, not a scheme recommendation.
               </p>
             </div>
 
             <div className="flex flex-wrap gap-4 pt-2">
+              <button type="button" className="hf-btn hf-btn-green" onClick={() => navigate(plannerData.goal.toLowerCase().includes('education') ? '/calculators/goal' : plannerData.goal.toLowerCase().includes('retirement') ? '/calculators/retirement' : '/calculators/goal')}>Open the matching calculator</button>
+              <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/portfolio-review')}>Request a portfolio review</button>
+              <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/start-investing')}>Start investing</button>
               <button
                 onClick={() => onOpenConsultation(`${plannerData.goal} Blueprint Execution`)}
                 className="px-6 py-3 text-xs font-semibold text-white bg-[#101A2C] hover:bg-slate-800 rounded-md transition-colors shadow-xs"
               >
-                Book Free Consultation to Execute
+                Book a consultation
               </button>
               <button
                 onClick={() => setStep(1)}
@@ -408,24 +411,36 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         {/* Bottom Nav Buttons */}
         {step < 6 && (
           <div className="flex items-center justify-between pt-8 border-t border-slate-100 mt-6">
+            {step > 1 ? (
             <button
               onClick={prevStep}
-              disabled={step === 1}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-950 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+              className="hf-btn hf-btn-outline"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back</span>
             </button>
+            ) : <span />}
 
             <button
               onClick={nextStep}
-              className="inline-flex items-center gap-1.5 px-6 py-2.5 text-xs font-semibold text-white bg-[#101A2C] hover:bg-slate-800 rounded-md transition-colors shadow-xs"
+              className="hf-btn hf-btn-green"
             >
               <span>{step === 5 ? 'Review Blueprint' : 'Continue'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         )}
+      </div>
+      </div>
+      <aside className="pg-card planner-live">
+        <span className="hf-eye">What you’ll get</span>
+        <p>Indicative monthly SIP</p>
+        <strong><AnimatedNumber value={goalCalculation.requiredMonthlySIP} durationMs={480} /></strong>
+        <p>{plannerData.goal}</p>
+        <p>{plannerData.horizonYears} years · future target {formatINR(goalCalculation.futureInflationAdjustedGoal)}</p>
+        <p className="hf-note">Estimate only. Mutual fund investments are subject to market risks.</p>
+      </aside>
+      </div>
       </div>
     </div>
   );

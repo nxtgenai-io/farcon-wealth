@@ -110,9 +110,9 @@ export const MutualFundExplorerView: React.FC<MutualFundExplorerViewProps> = ({
                 <span className="text-slate-500 text-[11px]">SEBI Riskometer: {fund.riskometer}</span>
               </div>
 
-              <h3 className="text-base sm:text-lg font-semibold text-slate-900 mb-2 leading-snug group-hover:text-[#78A832] transition-colors">
+              <h2 className="text-base sm:text-lg font-semibold text-slate-900 mb-2 leading-snug group-hover:text-[#78A832] transition-colors">
                 {fund.name}
-              </h3>
+              </h2>
 
               <p className="text-xs text-slate-600 leading-relaxed mb-5">
                 {fund.description}
