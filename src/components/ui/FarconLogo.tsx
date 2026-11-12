@@ -57,16 +57,12 @@ export const FarconLogo: React.FC<FarconLogoProps> = ({
   return (
     <div className={`inline-flex flex-col items-center justify-center text-center select-none ${heightClasses} ${className}`}>
       <img
-        src="/brand/farcon-stag.png"
-        alt=""
-        className="h-3/5 w-auto object-contain block select-none pointer-events-none"
-        width={397}
-        height={348}
+        src="/brand/farcon-official-stacked.png"
+        alt="Farcon Wealth"
+        className="h-full w-auto object-contain block select-none pointer-events-none"
+        width={459}
+        height={613}
       />
-      <span className="inline-flex items-center gap-1 font-sans font-extrabold text-[11px] tracking-[0.14em] uppercase leading-none mt-1">
-        <span className={isDark ? 'text-white' : 'text-[#0F3D2E]'}>FARCON</span>
-        <span className="text-[#1F9D55]">WEALTH</span>
-      </span>
     </div>
   );
 };
