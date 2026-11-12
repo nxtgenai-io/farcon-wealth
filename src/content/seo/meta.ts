@@ -50,7 +50,7 @@ export const PAGE_META: Record<string, { title: string; description: string }> =
   },
   '/wealth-planner': {
     title: 'Wealth Planner | Farcon Wealth',
-    description: 'Sketch a goal, a timeline and an illustrative monthly investment with Farcon’s planner.',
+    description: 'Sketch a goal, a timeline and an illustrative monthly investment with Farcon Wealth’s planner.',
   },
   '/mutual-funds': {
     title: 'Mutual Funds | Farcon Wealth',
@@ -62,7 +62,7 @@ export const PAGE_META: Record<string, { title: string; description: string }> =
   },
   '/investor-login': {
     title: 'Investor Login | Farcon Wealth',
-    description: 'Online portfolio access is coming soon. Message Farcon on WhatsApp or request a statement.',
+    description: 'Online portfolio access is coming soon. Message Farcon Wealth on WhatsApp or request a statement.',
   },
   '/education': {
     title: 'Investor Education | Farcon Wealth',
@@ -82,7 +82,7 @@ export const PAGE_META: Record<string, { title: string; description: string }> =
   },
   '/start-investing': {
     title: 'Start Investing | Farcon Wealth',
-    description: 'A mutual fund distribution enquiry: goal, amount or SIP, horizon, risk and how you would like Farcon to reply.',
+    description: 'A mutual fund distribution enquiry: goal, amount or SIP, horizon, risk and how you would like Farcon Wealth to reply.',
   },
   '/privacy': {
     title: 'Privacy Policy | Farcon Wealth',

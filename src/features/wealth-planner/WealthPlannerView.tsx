@@ -285,7 +285,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
                 Realistic Economic Assumptions
               </h2>
               <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Farcon adheres to conservative, realistic modeling rather than unrealistic return promises.
+                Farcon Wealth adheres to conservative, realistic modeling rather than unrealistic return promises.
               </p>
             </div>
 
@@ -382,8 +382,8 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
               <p>
                 <strong>Action plan:</strong> {goalCalculation.requiredMonthlySIP <= plannerData.monthlySurplus
                   ? 'The required SIP fits the surplus you entered. Open the matching calculator, then start an investing enquiry or ask for a portfolio review if you already hold funds.'
-                  : `The required SIP is ${formatINR(goalCalculation.requiredMonthlySIP - plannerData.monthlySurplus)} a month above the surplus you entered. Raise the SIP later, lengthen the horizon, or lower the target, then send the plan to the Farcon team.`}
-                {' '}Farcon is a mutual fund distributor. This is an illustration, not a scheme recommendation.
+                  : `The required SIP is ${formatINR(goalCalculation.requiredMonthlySIP - plannerData.monthlySurplus)} a month above the surplus you entered. Raise the SIP later, lengthen the horizon, or lower the target, then send the plan to the Farcon Wealth team.`}
+                {' '}Farcon Wealth is a mutual fund distributor. This is an illustration, not a scheme recommendation.
               </p>
             </div>
 

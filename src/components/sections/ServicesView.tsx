@@ -78,7 +78,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ activeSlug, navigate
           </div>
           <div className="page-hero split-hero">
             <div>
-              <span className="hf-eye">Farcon service</span>
+              <span className="hf-eye">Farcon Wealth Service</span>
               <h1>{service.title}</h1>
               <p className="lede">{service.tagline}</p>
               <p>{service.summary}</p>
@@ -115,7 +115,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ activeSlug, navigate
               <ul className="tick">{service.whoItIsFor.map((item) => <li key={item}><i>✓</i><span>{item}</span></li>)}</ul>
             </article>
           </div>
-          <h2 style={{ marginTop: 36 }}>How Farcon approaches it</h2>
+          <h2 style={{ marginTop: 36 }}>How Farcon Wealth Approaches It</h2>
           <div className="steps four">
             {service.howFarconApproaches.map((step) => (
               <article key={step.step} className="pg-card">

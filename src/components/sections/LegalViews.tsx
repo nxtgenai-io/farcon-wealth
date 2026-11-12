@@ -34,12 +34,12 @@ export const LegalViews: React.FC<LegalViewProps> = ({ type, navigate }) => {
 
               <h2 className="text-sm font-semibold text-slate-900">2. Nature of Service</h2>
               <p>
-                Farcon acts as a mutual fund distributor. We provide information, category guidance, and execution facilitation in regular mutual fund schemes. Farcon does not offer Portfolio Management Services (PMS), Alternative Investment Funds (AIF), or direct equity brokerage.
+                Farcon Wealth acts as a mutual fund distributor. We provide information, category guidance, and execution facilitation in regular mutual fund schemes. Farcon Wealth does not offer Portfolio Management Services (PMS), Alternative Investment Funds (AIF), or direct equity brokerage.
               </p>
 
               <h2 className="text-sm font-semibold text-slate-900">3. Commission Disclosures</h2>
               <p>
-                In accordance with SEBI circulars, Farcon receives standard distributor trail commissions from Asset Management Companies (AMCs) for mutual fund transactions executed through ARN: {FARCON_CONFIG.arn}. Commissions are paid directly by AMCs from the scheme expense ratios and are not separately billed to investors. Complete commission schedules for all schemes are available to clients upon request.
+                In accordance with SEBI circulars, Farcon Wealth receives standard distributor trail commissions from Asset Management Companies (AMCs) for mutual fund transactions executed through ARN: {FARCON_CONFIG.arn}. Commissions are paid directly by AMCs from the scheme expense ratios and are not separately billed to investors. Complete commission schedules for all schemes are available to clients upon request.
               </p>
 
               <h2 className="text-sm font-semibold text-slate-900">4. Risk Factor</h2>
@@ -74,7 +74,7 @@ export const LegalViews: React.FC<LegalViewProps> = ({ type, navigate }) => {
                 At Farcon Wealth, client satisfaction and fair dealing are our highest priorities. If you have any grievance or service inquiry regarding your mutual fund investments, please follow the escalation matrix below:
               </p>
 
-              <h2 className="text-sm font-semibold text-slate-900">Level 1: Farcon Client Support</h2>
+              <h2 className="text-sm font-semibold text-slate-900">Level 1: Farcon Wealth Client Support</h2>
               <p>
                 You may write to our dedicated support desk with your folio details and description of the issue:
                 <br />

@@ -7,23 +7,38 @@ interface BrandLockupProps {
   onClick?: () => void;
 }
 
-export const BrandLockup: React.FC<BrandLockupProps> = ({ tone = 'dark', size = 'header', onClick }) => {
+export const BrandLockup: React.FC<BrandLockupProps> = ({
+  tone = 'dark',
+  size = 'header',
+  onClick,
+}) => {
+  const isFooter = size === 'footer';
   const sub = tone === 'light' ? 'rgba(247,244,236,0.92)' : '#3d4a40';
+
   return (
-    <button type="button" className={`fw-lockup ${size === 'footer' ? 'is-footer' : ''}`} onClick={onClick}>
-      <picture>
-        <source type="image/webp" srcSet="/brand/farcon-lockup-1x.webp 1x, /brand/farcon-lockup-2x.webp 2x" />
+    <button
+      type="button"
+      className={`fw-lockup ${isFooter ? 'is-footer' : 'is-header'}`}
+      onClick={onClick}
+      aria-label="Farcon Wealth"
+    >
+      <span className="fw-lockup-unit">
         <img
-          src="/brand/farcon-lockup-1x.png"
-          srcSet="/brand/farcon-lockup-1x.png 1x, /brand/farcon-lockup-2x.png 2x"
-          alt="Farcon Wealth"
-          width={163}
-          height={64}
+          src="/brand/farcon-stag.png"
+          alt=""
+          className="fw-lockup-icon"
+          width={512}
+          height={512}
+          loading="eager"
+          decoding="sync"
         />
-      </picture>
-      <small style={{ color: sub }}>
-        AMFI REGISTERED MUTUAL FUND DISTRIBUTOR | ARN: {FARCON_CONFIG.arn}
-      </small>
+        <span className="fw-lockup-wordmark">Farcon Wealth</span>
+      </span>
+      {isFooter && (
+        <small style={{ color: sub }}>
+          AMFI REGISTERED MUTUAL FUND DISTRIBUTOR | ARN: {FARCON_CONFIG.arn}
+        </small>
+      )}
     </button>
   );
 };

@@ -86,11 +86,11 @@ export const AboutPage: React.FC<PageProps> = ({ onOpenConsultation, navigate })
         </div>
         <img src="/images/home/why-mountains-1440.webp" alt="A mountain ridge at sunset" width={1440} height={700} />
       </div>
-      <h2>Why Farcon</h2>
+      <h2>Why Farcon Wealth</h2>
       <div className="pg-grid cards three">
         <article className="pg-card"><span className="hf-eye">Goals first</span><h2>The date before the scheme</h2><p>A goal, a horizon and a surplus come before any fund name.</p></article>
         <article className="pg-card"><span className="hf-eye">In your name</span><h2>We do not hold the money</h2><p>Purchases sit with the AMC, the exchange and the registrar.</p></article>
-        <article className="pg-card"><span className="hf-eye">ARN {FARCON_CONFIG.arn}</span><h2>A registered distributor</h2><p>Farcon is not a portfolio manager and does not promise returns.</p></article>
+        <article className="pg-card"><span className="hf-eye">ARN {FARCON_CONFIG.arn}</span><h2>A registered distributor</h2><p>Farcon Wealth is not a portfolio manager and does not promise returns.</p></article>
       </div>
       <div className="svc-about">
         <ServiceShowcase variant="cards" navigate={navigate} />
@@ -100,7 +100,7 @@ export const AboutPage: React.FC<PageProps> = ({ onOpenConsultation, navigate })
         {[
           ['01', 'Listen', 'The goal, the date and what you can leave invested.'],
           ['02', 'Fit', 'A category mix that matches the horizon, not the headline.'],
-          ['03', 'In your name', 'The folio is yours. Farcon does not keep the money.'],
+          ['03', 'In your name', 'The folio is yours. Farcon Wealth does not keep the money.'],
           ['04', 'Review', 'A calm look when the goal or the surplus changes.'],
         ].map(([n, title, text]) => (
           <article key={n} className="pg-card">
@@ -123,7 +123,7 @@ export const AboutPage: React.FC<PageProps> = ({ onOpenConsultation, navigate })
           <span className="hf-eye">Mission</span>
           <h2>Investing, without the noise.</h2>
           <p>We would rather a smaller, suitable plan that you can stay with than a larger one you abandon in a bad year.</p>
-          <button type="button" className="hf-btn hf-btn-green" onClick={() => onOpenConsultation('About Farcon')}>Book a Consultation</button>
+          <button type="button" className="hf-btn hf-btn-green" onClick={() => onOpenConsultation('About Farcon Wealth')}>Book a Consultation</button>
         </article>
       </div>
     </div>
@@ -463,7 +463,7 @@ export const PortfolioPage: React.FC = () => (
           <ul className="tick">
             <li><i>✓</i><span>A category mix that matches the horizon, not the headline.</span></li>
             <li><i>✓</i><span>A plain note on what to keep, pause or add.</span></li>
-            <li><i>✓</i><span>The folio stays in your name. Farcon does not hold the money.</span></li>
+            <li><i>✓</i><span>The folio stays in your name. Farcon Wealth does not hold the money.</span></li>
           </ul>
           <h3>What we need</h3>
           <p>The goal, the date, and a rough picture of what you already hold. No password, and no CAS upload on this form.</p>
@@ -481,7 +481,7 @@ export const LoginPage: React.FC<PageProps> = ({ onOpenConsultation }) => (
       <span className="hf-eye">Investor access</span>
       <h1>Online portfolio access is coming soon.</h1>
       <p className="lede">
-        Farcon does not keep a password for your folios. Holdings stay with the mutual fund, the exchange or the registrar, in your name. Until portfolio access is available here, message us or ask for a statement.
+        Farcon Wealth does not keep a password for your folios. Holdings stay with the mutual fund, the exchange or the registrar, in your name. Until portfolio access is available here, message us or ask for a statement.
       </p>
         <div className="hf-cta-row">
         <a className="hf-btn hf-btn-green" href={whatsappHref} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
@@ -587,7 +587,7 @@ export const EducationPage: React.FC<PageProps & { focus?: 'education' | 'blogs'
         {showRest && (
           <>
             <h2 id="videos" style={{ marginTop: 36 }}>Educational videos</h2>
-            <p className="hf-note">Third-party films for general context. They are not Farcon advice and not scheme recommendations. Press play to load the film.</p>
+            <p className="hf-note">Third-party films for general context. They are not Farcon Wealth advice and not scheme recommendations. Press play to load the film.</p>
             <div className="videos">
               <VideoFacade id="PHe0bXAIuk0" title="How The Economic Machine Works by Ray Dalio" />
               <VideoFacade id="fTTGALaRZoc" title="Banking Explained – Money and Credit" />
@@ -680,7 +680,7 @@ export const DisclosuresPage: React.FC<{ section?: 'privacy' | 'terms' | 'grieva
       id: 'registration',
       title: 'Registration',
       show: section === 'disclosures',
-      body: `${FARCON_CONFIG.legalName} is an AMFI-registered mutual fund distributor. ARN: ${FARCON_CONFIG.arn}. Registered office: ${FARCON_CONFIG.registeredAddress}. Email ${FARCON_CONFIG.email}. Farcon does not bill an upfront fee. On regular plans, the asset management company may pay Farcon a distributor commission from the scheme expense ratio. That commission is disclosed before you invest. Message us on WhatsApp from the button on this page.`,
+      body: `${FARCON_CONFIG.legalName} is an AMFI-registered mutual fund distributor. ARN: ${FARCON_CONFIG.arn}. Registered office: ${FARCON_CONFIG.registeredAddress}. Email ${FARCON_CONFIG.email}. Farcon Wealth does not bill an upfront fee. On regular plans, the asset management company may pay Farcon Wealth a distributor commission from the scheme expense ratio. That commission is disclosed before you invest. Message us on WhatsApp from the button on this page.`,
     },
     {
       id: 'risk',
@@ -692,13 +692,13 @@ export const DisclosuresPage: React.FC<{ section?: 'privacy' | 'terms' | 'grieva
       id: 'grievance',
       title: 'Grievance redressal',
       show: section === 'disclosures' || section === 'grievance',
-      body: `Write to ${FARCON_CONFIG.email} with your name, folio or PAN reference, and what went wrong. If you are not satisfied, you can approach AMFI or the SCORES portal of SEBI. Farcon will acknowledge a written complaint and share the next step.`,
+      body: `Write to ${FARCON_CONFIG.email} with your name, folio or PAN reference, and what went wrong. If you are not satisfied, you can approach AMFI or the SCORES portal of SEBI. Farcon Wealth will acknowledge a written complaint and share the next step.`,
     },
     {
       id: 'privacy',
       title: 'Privacy policy and DPDP',
       show: section === 'disclosures' || section === 'privacy',
-      body: `Enquiry forms collect your name, contact details, city and the goal you describe so we can reply. We do not ask this website to store account passwords. Leads may be appended to a Google Sheet controlled by Farcon when a webhook is configured. You can ask us to correct or delete an enquiry by emailing ${FARCON_CONFIG.email}.`,
+      body: `Enquiry forms collect your name, contact details, city and the goal you describe so we can reply. We do not ask this website to store account passwords. Leads may be appended to a Google Sheet controlled by Farcon Wealth when a webhook is configured. You can ask us to correct or delete an enquiry by emailing ${FARCON_CONFIG.email}.`,
     },
     {
       id: 'terms',

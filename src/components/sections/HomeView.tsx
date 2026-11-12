@@ -9,8 +9,6 @@ import {
   ArrowRight,
   Calculator,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
   LineChart,
   Shield,
   Sprout,
@@ -185,11 +183,11 @@ function CountUp({ value }: { value: number }) {
 
 function NiftyChart({ values, labels, name }: { values: number[]; labels: string[]; name: string }) {
   const w = 340;
-  const h = 108;
-  const left = 8;
-  const right = 54;
-  const top = 8;
-  const bottom = 18;
+  const h = 76;
+  const left = 6;
+  const right = 46;
+  const top = 6;
+  const bottom = 14;
   const low = Math.min(...values);
   const high = Math.max(...values);
   const pad = (high - low) * 0.08 || Math.abs(high) * 0.002 || 1;
@@ -203,7 +201,7 @@ function NiftyChart({ values, labels, name }: { values: number[]; labels: string
   });
   const d = smoothLine(pts);
   const area = `${d} L${pts[pts.length - 1][0].toFixed(1)} ${h - bottom} L${pts[0][0].toFixed(1)} ${h - bottom} Z`;
-  const ticks = [0, 1, 2, 3].map((i) => max - (span * i) / 3);
+  const ticks = [0, 1, 2].map((i) => max - (span * i) / 2);
   return (
     <svg viewBox={`0 0 ${w} ${h}`} role="img" aria-label={`${name} chart`}>
       {ticks.map((tick) => {
@@ -211,32 +209,32 @@ function NiftyChart({ values, labels, name }: { values: number[]; labels: string
         return (
           <g key={tick}>
             <line x1={left} x2={w - right} y1={y} y2={y} stroke="#e7efe9" strokeWidth="1" />
-            <text x={w - 4} y={y + 3} fontSize="9" fill="#5c675f" textAnchor="end">{Math.round(tick).toLocaleString('en-IN')}</text>
+            <text x={w - 2} y={y + 3} fontSize="8" fill="#5c675f" textAnchor="end">{Math.round(tick).toLocaleString('en-IN')}</text>
           </g>
         );
       })}
       {labels.map((label, i) => (
-        <text key={`${label}-${i}`} x={left + (i / Math.max(1, labels.length - 1)) * (w - left - right)} y={h - 2} fontSize="9" fill="#5c675f" textAnchor={i === 0 ? 'start' : i === labels.length - 1 ? 'end' : 'middle'}>{label}</text>
+        <text key={`${label}-${i}`} x={left + (i / Math.max(1, labels.length - 1)) * (w - left - right)} y={h - 1} fontSize="8" fill="#5c675f" textAnchor={i === 0 ? 'start' : i === labels.length - 1 ? 'end' : 'middle'}>{label}</text>
       ))}
-      <path d={area} fill="rgba(31,157,85,0.18)" />
-      <path className="hf-line" d={d} fill="none" stroke="#1F9D55" strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" />
+      <path d={area} fill="rgba(31,157,85,0.14)" />
+      <path className="hf-line" d={d} fill="none" stroke="#1F9D55" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
 }
 
 function SensexSpark({ values }: { values: number[] }) {
-  const w = 92;
-  const h = 28;
+  const w = 76;
+  const h = 20;
   const min = Math.min(...values);
   const max = Math.max(...values);
   const pts = values.map((v, i) => {
     const x = (i / Math.max(1, values.length - 1)) * w;
-    const y = 4 + (1 - (v - min) / (max - min || 1)) * (h - 8);
+    const y = 2 + (1 - (v - min) / (max - min || 1)) * (h - 4);
     return [x, y] as const;
   });
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} width="92" height="28" aria-hidden="true">
-      <path className="hf-line" d={smoothLine(pts)} fill="none" stroke="#1F9D55" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+    <svg viewBox={`0 0 ${w} ${h}`} width="76" height="20" aria-hidden="true">
+      <path className="hf-line" d={smoothLine(pts)} fill="none" stroke="#1F9D55" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
 }
@@ -346,12 +344,6 @@ const TOOLS: { title: string; text: string; href: RoutePath; tint: string; icon:
   { title: 'Risk Analysis', text: 'Understand your risk', href: '/investor-quiz', tint: '#F3E8FB', icon: <Shield size={16} color="#8A4FB3" /> },
 ];
 
-const STORIES = [
-  { initials: 'A.S.', role: 'Retired Professional', quote: 'Farcon helped me plan my retirement in a very simple and clear way. I finally feel confident about my financial future.' },
-  { initials: 'R.K.', role: 'Parent', quote: 'The goal planning process made it easy for me to invest for my child\'s education. Very supportive team.' },
-  { initials: 'M.P.', role: 'Business Owner', quote: 'A clear process and a very disciplined approach. I appreciate the focus on long-term investing.' },
-];
-
 function Spark({ values, color }: { values: number[]; color: string }) {
   const w = 180;
   const h = 84;
@@ -435,35 +427,41 @@ function MarketReadout({ focus, period, quote, other }: { focus: IndexKey; perio
   const stamp = quote ? istParts(quote.marketTime) : [];
   const tone = (change: number) => (change < 0 ? { color: '#8a5a2a' } : undefined);
   return (
-    <>
-      <p className="hf-index-name">{SAMPLE[focus].name}</p>
-      <p className="hf-level">
-        <CountUp value={primary.price} /> <span className="hf-up" style={tone(primary.change)}>{moveText(primary.change, primary.changePct)}</span>
-      </p>
-      <p className="hf-note">
-        {live && open && (
-          <>
-            <span aria-hidden="true" style={{ display: 'inline-block', width: 6, height: 6, marginRight: 6, borderRadius: 999, background: '#1f9d55', verticalAlign: 'middle' }} />
-            Live · updated {part(stamp, 'hour')}:{part(stamp, 'minute')} IST
-          </>
-        )}
-        {live && !open && <>Last close · {part(stamp, 'day')} {part(stamp, 'month')} {part(stamp, 'year')}</>}
-        {!live && <>Sample levels as of {FARCON_CONFIG.illustrativeMarketAsOf}. <span className="hf-indicative">Illustrative</span></>}
-      </p>
+    <div className="hf-market-card-inner">
+      <div className="hf-market-head-row">
+        <div>
+          <span className="hf-index-name">{SAMPLE[focus].name}</span>
+          <div className="hf-level">
+            <CountUp value={primary.price} />{' '}
+            <span className="hf-up" style={tone(primary.change)}>
+              {moveText(primary.change, primary.changePct)}
+            </span>
+          </div>
+        </div>
+        <p className="hf-note hf-market-status">
+          {live && open && (
+            <>
+              <span aria-hidden="true" style={{ display: 'inline-block', width: 6, height: 6, marginRight: 4, borderRadius: 999, background: '#1f9d55', verticalAlign: 'middle' }} />
+              Live · {part(stamp, 'hour')}:{part(stamp, 'minute')} IST
+            </>
+          )}
+          {live && !open && <>Last close · {part(stamp, 'day')} {part(stamp, 'month')} {part(stamp, 'year')}</>}
+          {!live && <>Sample as of {FARCON_CONFIG.illustrativeMarketAsOf} <span className="hf-indicative">Illustrative</span></>}
+        </p>
+      </div>
       <div key={`${focus}-${period}`} className="hf-draw">
         <NiftyChart values={primary.points.map((point) => point[1])} labels={labels} name={SAMPLE[focus].name} />
       </div>
       <div className="hf-sensex">
-        <div>
+        <div className="hf-sensex-meta">
           <b>{SAMPLE[secondaryKey].name}</b>
           <strong><CountUp value={mini.price} /></strong>
           <span className="hf-up" style={tone(mini.change)}>{moveText(mini.change, mini.changePct)}</span>
         </div>
         <span key={`${secondaryKey}-${period}`} className="hf-draw"><SensexSpark values={mini.points.map((point) => point[1])} /></span>
-        <ChevronDown size={14} aria-hidden="true" />
       </div>
       {live && <p className="hf-note hf-source">Data: Yahoo Finance, may be delayed</p>}
-    </>
+    </div>
   );
 }
 
@@ -473,11 +471,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
   const [years, setYears] = useState(20);
   const [rate, setRate] = useState(12);
   const [fundTab, setFundTab] = useState('Equity Funds');
-  const storyRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
-  const [storyDot, setStoryDot] = useState(0);
-  const [storyStart, setStoryStart] = useState(0);
-  const [storiesPaused, setStoriesPaused] = useState(false);
   const [period, setPeriod] = useState<Period>('1D');
   const [indexFocus, setIndexFocus] = useState<IndexKey>('nifty');
   const [quotes, setQuotes] = useState<Partial<Record<string, LiveQuote>>>({});
@@ -487,26 +481,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
     ? FUNDS.filter((fund) => fund.group !== 'Debt Funds')
     : FUNDS.filter((fund) => fund.group === fundTab);
   const whatsapp = `https://wa.me/${FARCON_CONFIG.whatsappNumber}`;
-
-  const orderedStories = useMemo(
-    () => STORIES.map((_, index) => STORIES[(index + storyStart) % STORIES.length]),
-    [storyStart],
-  );
-
-  const scrollStories = (dir: number) => {
-    const el = storyRef.current;
-    if (el && el.scrollWidth > el.clientWidth + 12) {
-      const card = el.querySelector('article');
-      const width = card ? card.getBoundingClientRect().width + 14 : el.clientWidth;
-      const max = el.scrollWidth - el.clientWidth;
-      if (dir > 0 && el.scrollLeft + width >= max - 6) el.scrollTo({ left: 0, behavior: 'smooth' });
-      else if (dir < 0 && el.scrollLeft <= 6) el.scrollTo({ left: max, behavior: 'smooth' });
-      else el.scrollBy({ left: dir * width, behavior: 'smooth' });
-      return;
-    }
-    setStoryStart((current) => (current + dir + STORIES.length) % STORIES.length);
-    setStoryDot((current) => (current + dir + STORIES.length) % STORIES.length);
-  };
 
   useEffect(() => {
     let stop = false;
@@ -551,15 +525,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const scrollStoriesRef = useRef(scrollStories);
-  scrollStoriesRef.current = scrollStories;
-
-  useEffect(() => {
-    if (prefersReducedMotion() || storiesPaused) return undefined;
-    const timer = window.setInterval(() => scrollStoriesRef.current(1), 6500);
-    return () => window.clearInterval(timer);
-  }, [storiesPaused]);
-
   return (
     <div className="hf">
       <section className="hf-hero" data-section="hero" ref={heroRef}>
@@ -588,7 +553,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             </p>
             <h1>Investing,<br /><em>without the noise.</em></h1>
             <p className="hf-lede">Your goals are personal. Your investment journey should be too.</p>
-            <p className="hf-lede">Farcon helps you approach mutual fund investing with clarity, discipline and purpose.</p>
+            <p className="hf-lede">Farcon Wealth helps you approach mutual fund investing with clarity, discipline and purpose.</p>
             <div className="hf-cta-row">
               <button type="button" className="hf-btn hf-btn-green" onClick={() => document.getElementById('goals')?.scrollIntoView({ behavior: 'smooth' })}>
                 Start with a Goal <ArrowRight size={14} />
@@ -842,60 +807,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                 <p>{tool.text}</p>
               </button>
             ))}
-          </div>
-        </div>
-      </Reveal>
-
-      <Reveal as="section" className="hf-section" data-section="stories">
-        <div className="hf-wrap hf-split">
-          <div>
-            <span className="hf-eye">Sample investor conversations</span>
-            <h2>Sample investor conversations</h2>
-            <p className="hf-lede">Sample wording for how a planning conversation sounds. These are not testimonials and not client endorsements.</p>
-          </div>
-          <div>
-          <div
-            className="hf-carousel"
-            onMouseEnter={() => setStoriesPaused(true)}
-            onMouseLeave={() => setStoriesPaused(false)}
-            onFocus={() => setStoriesPaused(true)}
-            onBlur={() => setStoriesPaused(false)}
-          >
-            <button type="button" className="hf-side" onClick={() => scrollStories(-1)} aria-label="Previous stories"><ChevronLeft size={18} /></button>
-          <div
-            className="hf-stories"
-            ref={storyRef}
-            onScroll={(event) => {
-              const el = event.currentTarget;
-              if (el.scrollWidth <= el.clientWidth + 12) return;
-              const card = el.querySelector('article');
-              const width = card ? card.getBoundingClientRect().width + 14 : 1;
-              setStoryDot(Math.round(el.scrollLeft / width) % STORIES.length);
-            }}
-          >
-            {orderedStories.map((story) => (
-              <article key={story.initials} className="hf-story">
-                <div className="hf-quote">“</div>
-                <p>“{story.quote}”</p>
-                <div className="hf-who">
-                  <span className="hf-initials" data-who={story.initials[0]} aria-hidden="true">{story.initials[0]}</span>
-                  <span className="hf-who-text">
-                    <b>{story.initials}</b>
-                    <small>{story.role}</small>
-                  </span>
-                </div>
-              </article>
-            ))}
-          </div>
-            <button type="button" className="hf-side" onClick={() => scrollStories(1)} aria-label="Next stories"><ChevronRight size={18} /></button>
-          </div>
-          <div className="hf-dots">
-            {STORIES.map((story, index) => (
-              <button key={story.initials} type="button" className={storyDot === index ? 'is-on' : ''} aria-label={`Story ${index + 1}`} onClick={() => scrollStories(index - storyDot)}>
-                <i />
-              </button>
-            ))}
-          </div>
           </div>
         </div>
       </Reveal>

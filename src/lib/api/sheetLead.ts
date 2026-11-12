@@ -221,7 +221,7 @@ export async function forwardLead(
         leadId: data.leadId || lead.leadId,
         message: data.duplicate
           ? 'We already had your details from the last day, so this updated that note.'
-          : 'Thank you. Your details are with the Farcon team.',
+          : 'Thank you. Your details are with the Farcon Wealth team.',
       },
     };
   } catch {

@@ -59,7 +59,7 @@ export const FARCON_SERVICES: ServiceDetail[] = [
           'Yes. Mutual fund SIPs offer high flexibility. You can pause, modify, or activate top-up (step-up) SIPs at any time without penalty.',
       },
       {
-        question: 'Does Farcon hold my investment money?',
+        question: 'Does Farcon Wealth hold my investment money?',
         answer:
           'Farcon Wealth does not hold custody of your investment funds. Investments are made through official channels in the investor’s name.',
       },
@@ -360,11 +360,11 @@ export const FARCON_SERVICES: ServiceDetail[] = [
       },
     ],
   },
-  servicePage('mutual-fund-distribution', 'Mutual Fund Distribution', 'goal', 'wealth-creation', 'A registered distributor, not an adviser.', 'Farcon Wealth distributes mutual fund schemes under ARN 329006. The folio is in your name. Farcon does not hold the money and does not promise a return.'),
+  servicePage('mutual-fund-distribution', 'Mutual Fund Distribution', 'goal', 'wealth-creation', 'A registered distributor, not an adviser.', 'Farcon Wealth distributes mutual fund schemes under ARN 329006. The folio is in your name. Farcon Wealth does not hold the money and does not promise a return.'),
   servicePage('lumpsum', 'Lump-Sum Investing', 'lumpsum', 'wealth-creation', 'One amount, with a horizon attached.', 'A lump sum is useful when money is already set aside and the goal is years away. The category still follows the horizon, not a market call.'),
   servicePage('goal-based-planning', 'Goal-Based Planning', 'goal', 'wealth-creation', 'The date and the amount come first.', 'Planning starts with what the money is for, when it is needed, and what is already saved. A SIP or a lump sum is only the way the gap is funded.'),
   servicePage('wealth-creation', 'Wealth Creation', 'sip', 'wealth-creation', 'A long horizon, kept simple.', 'Wealth creation here means a long-term mutual fund plan in your name, reviewed when life changes, not when the index moves for a week.'),
-  servicePage('investment-solutions', 'Investment Solutions', 'goal', 'wealth-creation', 'A fit across the goals you already have.', 'When more than one goal is in play, Farcon maps each one to a horizon and a category mix. It is distribution and planning support, not a managed portfolio service.'),
+  servicePage('investment-solutions', 'Investment Solutions', 'goal', 'wealth-creation', 'A fit across the goals you already have.', 'When more than one goal is in play, Farcon Wealth maps each one to a horizon and a category mix. It is distribution and planning support, not a managed portfolio service.'),
 ];
 
 function servicePage(
@@ -395,13 +395,13 @@ function servicePage(
       { step: '01', title: 'Name the goal', description: 'What the money is for, and the year you expect to use it.' },
       { step: '02', title: 'See the gap', description: 'Inflation, current savings and the illustrative SIP or lump sum.' },
       { step: '03', title: 'Choose a category', description: 'Equity, hybrid, debt or ELSS only where the horizon and tax position fit.' },
-      { step: '04', title: 'Keep it in your name', description: 'Farcon does not hold the money. The folio stays yours.' },
+      { step: '04', title: 'Keep it in your name', description: 'Farcon Wealth does not hold the money. The folio stays yours.' },
     ],
     primaryGoalSlug,
     calculatorType,
     faqs: [
       { question: `What does ${title} include?`, answer: 'A planning conversation and mutual fund distribution. It is not investment advice from a registered investment adviser, and it is not a promise of returns.' },
-      { question: 'Does Farcon hold the money?', answer: 'No. Purchases sit with the mutual fund, the exchange and the registrar, in your name.' },
+      { question: 'Does Farcon Wealth hold the money?', answer: 'No. Purchases sit with the mutual fund, the exchange and the registrar, in your name.' },
     ],
   };
 }

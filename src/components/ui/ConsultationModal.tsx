@@ -139,7 +139,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               Book a Free Financial Consultation
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              A calm conversation with Farcon’s AMFI-registered distributor team.
+              A calm conversation with Farcon Wealth’s AMFI-registered distributor team.
             </p>
           </div>
           <button
@@ -162,7 +162,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 Consultation Request Confirmed
               </h2>
               <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-                Thank you, <strong>{formData.name}</strong>. The Farcon team will look at {formData.goal} and reply on <strong>{formData.phone}</strong>.
+                Thank you, <strong>{formData.name}</strong>. The Farcon Wealth team will look at {formData.goal} and reply on <strong>{formData.phone}</strong>.
               </p>
               <div className="inline-block px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-md text-[11px] text-slate-500 font-mono">
                 Reference ID: {assignedLeadId}

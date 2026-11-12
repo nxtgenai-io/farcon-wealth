@@ -78,6 +78,7 @@ export const ServiceShowcase: React.FC<ServiceShowcaseProps> = ({
   }
 
   const Title = heading;
+  const displayGroups = SERVICE_GROUPS.filter((group) => group.id === 'planning' || group.id === 'investing');
 
   return (
     <div className={`svc-show${variant === 'cards' ? ' is-cards' : ''}`}>
@@ -85,7 +86,7 @@ export const ServiceShowcase: React.FC<ServiceShowcaseProps> = ({
         <div className="svc-head">
           <div className="svc-intro">
             <span className="hf-eye">Services</span>
-            <Title>Distribution, planned around a goal.</Title>
+            <Title>Goal Planning and Investing</Title>
             <p className="hf-lede">
               Farcon Wealth is an AMFI-registered mutual fund distributor, ARN {FARCON_CONFIG.arn}. These are the conversations we have. We do not give investment advice.
             </p>
@@ -93,7 +94,7 @@ export const ServiceShowcase: React.FC<ServiceShowcaseProps> = ({
           <aside className="svc-trust" aria-label="Registration and AMC partners">
             <div className="svc-badge">
               <span className="svc-ico" aria-hidden="true">
-                <BadgeCheck size={20} strokeWidth={STROKE} />
+                <BadgeCheck size={18} strokeWidth={STROKE} />
               </span>
               <span>
                 <strong>AMFI-registered</strong>
@@ -118,26 +119,34 @@ export const ServiceShowcase: React.FC<ServiceShowcaseProps> = ({
         </div>
       )}
 
-      {SERVICE_GROUPS.map((group) => (
+      {displayGroups.map((group) => (
         <div key={group.id} className="svc-group">
           <p className="svc-kicker">{group.label}</p>
-          <div className={`svc-grid${group.slugs.length === 5 ? ' is-five' : ''}${group.slugs.length === 1 ? ' is-one' : ''}`}>
+          <div className={`svc-grid${group.slugs.length === 5 ? ' is-five' : ''}`}>
             {group.slugs.map((slug) => {
               const service = bySlug.get(slug);
               const Icon = ICONS[slug] ?? Target;
               if (!service) return null;
               return (
-                <button key={slug} type="button" className="svc-card" onClick={() => go(slug)}>
-                  <span className="svc-ico" aria-hidden="true">
-                    <Icon size={22} strokeWidth={STROKE} />
-                  </span>
-                  <span className="svc-card-copy">
-                    <strong>{service.title}</strong>
-                    <span>{SERVICE_LINES[slug] || service.tagline}</span>
-                  </span>
-                  <span className="svc-explore">
-                    Explore <ArrowRight size={14} strokeWidth={STROKE} aria-hidden="true" />
-                  </span>
+                <button
+                  key={slug}
+                  type="button"
+                  className="svc-card"
+                  onClick={() => go(slug)}
+                  aria-label={`${service.title} - Explore`}
+                >
+                  <div className="svc-card-top">
+                    <span className="svc-ico" aria-hidden="true">
+                      <Icon size={18} strokeWidth={STROKE} />
+                    </span>
+                    <span className="svc-arrow-badge" aria-hidden="true">
+                      <ArrowRight size={13} strokeWidth={STROKE} />
+                    </span>
+                  </div>
+                  <div className="svc-card-body">
+                    <strong className="svc-card-title">{service.title}</strong>
+                    <span className="svc-card-desc">{SERVICE_LINES[slug] || service.tagline}</span>
+                  </div>
                 </button>
               );
             })}

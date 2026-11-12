@@ -43,7 +43,7 @@ export const COMPLIANCE_REGISTRY = {
   scheme: {
     title: 'Educational Fund Exploration',
     disclaimer:
-      'Scheme details and historical performance metrics are provided for illustrative educational comparison only. Farcon does not offer unsolicited scheme recommendations online. Suitability must be assessed independently prior to any transaction.',
+      'Scheme details and historical performance metrics are provided for illustrative educational comparison only. Farcon Wealth does not offer unsolicited scheme recommendations online. Suitability must be assessed independently prior to any transaction.',
   },
 
   journey: {
