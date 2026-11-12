@@ -88,20 +88,34 @@ function doPost(e) {
     var leadId = text(data.leadId) || ('LEAD-' + new Date().getTime().toString(36).toUpperCase());
     var now = Date.now();
     var last = sheet.getLastRow();
-    if (last >= 2 && (phone || email)) {
+    if (last >= 2 && (phone || email || data.leadId)) {
       var start = Math.max(2, last - 499);
       var height = last - start + 1;
       var rows = sheet.getRange(start, 1, height, HEADERS.length).getValues();
       for (var i = rows.length - 1; i >= 0; i--) {
+        var msg = text(rows[i][11]);
+        // Primary correlation key: explicit leadId matching in Message cell
+        var matchedByLeadId = Boolean(data.leadId && msg.indexOf(text(data.leadId)) !== -1);
+
+        // Fallback correlation key: phone or email within 24-hour window if leadId was not provided
         var stamp = rows[i][0] instanceof Date ? rows[i][0].getTime() : Date.parse(rows[i][0]);
-        if (!stamp || now - stamp > 24 * 60 * 60 * 1000) continue;
+        var withinWindow = stamp && (now - stamp <= 24 * 60 * 60 * 1000);
         var samePhone = phone && digits(rows[i][4]) === phone;
         var sameEmail = email && text(rows[i][3]).toLowerCase() === email;
-        if (!samePhone && !sameEmail) continue;
-        var row = start + i;
-        sheet.getRange(row, 1, 1, HEADERS.length).setValues([rowValues(data, leadId, 'Updated')]);
-        sendInternalNotification(data, leadId, 'Updated');
-        return json({ ok: true, duplicate: true, leadId: leadId });
+        var matchedByFallback = Boolean(!data.leadId && withinWindow && (samePhone || sameEmail));
+
+        if (matchedByLeadId || matchedByFallback) {
+          var row = start + i;
+          var originalTimestamp = rows[i][0];
+          var updated = rowValues(data, leadId, 'Updated');
+          // Preserve original submission timestamp on update
+          if (originalTimestamp) {
+            updated[0] = originalTimestamp;
+          }
+          sheet.getRange(row, 1, 1, HEADERS.length).setValues([updated]);
+          sendInternalNotification(data, leadId, 'Updated');
+          return json({ ok: true, duplicate: true, leadId: leadId });
+        }
       }
     }
     sheet.appendRow(rowValues(data, leadId, 'New'));

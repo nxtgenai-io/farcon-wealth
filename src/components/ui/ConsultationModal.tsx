@@ -113,11 +113,11 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
       };
 
       const res = await leadService.submitLead(payload);
-      if (!res.success) {
-        setErrors({ form: leadErrorLine(res.message) });
+      if (!res.success || !res.leadId || typeof res.leadId !== 'string' || !res.leadId.trim()) {
+        setErrors({ form: leadErrorLine(res.message || 'Unable to secure consultation request. Please try again.') });
         return;
       }
-      setAssignedLeadId(res.leadId);
+      setAssignedLeadId(res.leadId.trim());
       setErrors({});
       setStep('details');
       analytics.track('consultation_step1_submitted', {
@@ -159,7 +159,13 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
         companyWebsite: formData.companyWebsite,
       };
 
-      await leadService.submitLead(payload);
+      const res = await leadService.submitLead(payload);
+      if (!res.success) {
+        setErrors({
+          form: res.message || 'Could not update your additional notes. You can retry or click Skip & Finish.',
+        });
+        return;
+      }
       setErrors({});
       setStep('confirmed');
       analytics.track('consultation_submitted', {
@@ -167,8 +173,9 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
         hasQuizProfile: Boolean(planningCtx.quizProfileTitle),
       });
     } catch {
-      // Even if network blips on step 2, step 1 was already secured, so proceed to confirmed
-      setStep('confirmed');
+      setErrors({
+        form: 'A connection issue occurred while updating your notes. You can retry or click Skip & Finish.',
+      });
     } finally {
       setSubmitting(false);
     }
