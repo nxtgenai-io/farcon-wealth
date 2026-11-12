@@ -1,5 +1,4 @@
 import { spawn } from 'child_process';
-import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
@@ -19,7 +18,6 @@ async function main() {
     'about:blank',
   ]);
 
-  // Wait for DevTools port
   let wsUrl = '';
   for (let attempt = 0; attempt < 30; attempt++) {
     await new Promise((r) => setTimeout(r, 300));
@@ -30,9 +28,7 @@ async function main() {
         wsUrl = data.webSocketDebuggerUrl;
         break;
       }
-    } catch {
-      // Retrying
-    }
+    } catch {}
   }
 
   if (!wsUrl) {
@@ -73,6 +69,19 @@ async function main() {
   console.log('| Viewport | Header Height | Stag Dimensions (W × H) | Wordmark Dimensions (W × H) | Total Lockup Height | Status |');
   console.log('|:---------|:--------------|:------------------------|:----------------------------|:--------------------|:-------|');
 
+  // Navigate once
+  await send('Page.navigate', { url: PREVIEW_URL });
+
+  // Poll until .fw-lockup-stag is rendered
+  for (let i = 0; i < 40; i++) {
+    await new Promise((r) => setTimeout(r, 250));
+    const check = await send('Runtime.evaluate', {
+      expression: `Boolean(document.querySelector('.fw-lockup-stag'))`,
+      returnByValue: true,
+    });
+    if (check.result?.value === true) break;
+  }
+
   for (const w of VIEWPORTS) {
     await send('Emulation.setDeviceMetricsOverride', {
       width: w,
@@ -81,8 +90,7 @@ async function main() {
       mobile: w < 768,
     });
 
-    await send('Page.navigate', { url: PREVIEW_URL });
-    await new Promise((r) => setTimeout(r, 1200));
+    await new Promise((r) => setTimeout(r, 400));
 
     const evalRes = await send('Runtime.evaluate', {
       expression: `(() => {
@@ -110,7 +118,7 @@ async function main() {
     try {
       val = JSON.parse(evalRes.result?.result?.value || evalRes.result?.value || '{}');
     } catch {}
-    const pass = val.sHeight > 18 && val.wHeight >= 14 && val.wWidth > 35;
+    const pass = val.sHeight >= 20 && val.wHeight >= 14 && val.wWidth >= 38;
     console.log(
       `| ${w}px | ${val.hHeight}px | ${val.sWidth} × ${val.sHeight}px | ${val.wWidth} × ${val.wHeight}px | ${val.uHeight}px | ${pass ? '✓ Legible' : '✗ Check'} |`
     );
