@@ -764,28 +764,30 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         <div className="hf-why-inner hf-split">
           <div>
             <span className="hf-eye">Why Farcon Wealth</span>
-            <h2>A disciplined approach to wealth creation.</h2>
-            <p className="hf-why-lead">We combine research, technology and a goal-based approach to help you invest with confidence.</p>
+            <h2>Suitability first. Discipline always.</h2>
+            <p className="hf-why-lead">
+              As an AMFI-registered mutual fund distributor (ARN: 329006), we help you match schemes to your horizon, stay disciplined through market volatility, and build wealth without noise.
+            </p>
             <button type="button" className="hf-btn hf-btn-white" onClick={() => navigate('/about')}>Know More About Us <ArrowRight size={16} /></button>
           </div>
           <div className="hf-cols">
             <article>
               <div className="hf-num">01</div>
               <div className="hf-icon-tile"><Target size={18} /></div>
-              <h3>Goal-Based Planning</h3>
-              <p>Your investments are aligned to what matters most — your goals, your timelines, your life events.</p>
+              <h3>Goal-First Framework</h3>
+              <p>Every rupee is aligned to a milestone — retirement, children’s education, or long-term financial independence.</p>
             </article>
             <article>
               <div className="hf-num">02</div>
               <div className="hf-icon-tile"><LineChart size={18} /></div>
-              <h3>Research-Backed Recommendations</h3>
-              <p>We use a structured research process to shortlist quality mutual funds across categories.</p>
+              <h3>Curated Scheme Selection</h3>
+              <p>Structured qualitative and quantitative evaluation across AMCs to select suitable schemes for your risk appetite.</p>
             </article>
             <article>
               <div className="hf-num">03</div>
               <div className="hf-icon-tile"><Shield size={18} /></div>
-              <h3>Transparent & Client-First</h3>
-              <p>No hidden charges. No pressure. Just clear guidance, in your best interest.</p>
+              <h3>Investor-Direct Custody</h3>
+              <p>All holdings remain registered strictly in your name with the mutual fund AMC. Farcon Wealth never holds custody of investor capital.</p>
             </article>
           </div>
         </div>
@@ -811,12 +813,49 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </Reveal>
 
+      <Reveal as="section" className="hf-section hf-founder-section" data-section="founder">
+        <div className="hf-wrap hf-split">
+          <div>
+            <span className="hf-eye">Leadership Note</span>
+            <h2>From the Desk of Founder / Director</h2>
+            <p className="hf-lede">
+              “True wealth creation is not about chasing the fastest runner in a bull market. It is about staying disciplined, choosing suitability over noise, and allowing time to compound your efforts.”
+            </p>
+          </div>
+          <div className="hf-founder-content">
+            <div className="hf-founder-message p-6 bg-white rounded-2xl border border-[#DCE4EE] shadow-xs space-y-4">
+              <p className="text-sm text-slate-700 leading-relaxed">
+                At Farcon Wealth, our commitment is straightforward: clear communication, transparent mutual fund distribution, and an unwavering focus on your financial goals.
+              </p>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                We believe that every family deserves access to sound, disciplined investment planning without high-pressure sales or confusing jargon.
+              </p>
+              {FARCON_CONFIG.founderVideoUrl ? (
+                <div className="aspect-video w-full rounded-xl overflow-hidden mt-4 border border-slate-200">
+                  <iframe
+                    src={FARCON_CONFIG.founderVideoUrl}
+                    title="Founder / Director Message"
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              ) : null}
+              <div className="pt-2 flex items-center justify-between text-xs text-slate-600 border-t border-slate-100">
+                <span className="font-semibold text-[#0F3D2E]">Farcon Wealth Leadership Team</span>
+                <span className="font-mono text-[11px] text-slate-400">ARN 329006</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Reveal>
+
       <Reveal as="section" className="hf-section" data-section="articles">
         <div className="hf-wrap hf-split">
           <div>
             <span className="hf-eye">Investor education</span>
-            <h2>Learn, Plan &amp; Grow</h2>
-            <p className="hf-lede">Simplified insights to help you make informed decisions.</p>
+            <h2>Learn and Grow</h2>
+            <p className="hf-lede">Practical, jargon-free insights on mutual funds, asset allocation, and systematic wealth creation.</p>
             <button type="button" className="hf-textlink" onClick={() => navigate('/education')}>Explore All Articles →</button>
           </div>
           <div className="hf-articles">

@@ -469,7 +469,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                 <input
                   type="range"
                   min={500000}
-                  max={50000000}
+                  max={1000000000}
                   step={500000}
                   value={goalTarget}
                   onChange={(e) => setGoalTarget(Number(e.target.value))}
@@ -611,7 +611,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                 <input
                   type="range"
                   min={20000}
-                  max={400000}
+                  max={1000000}
                   step={5000}
                   value={retExpense}
                   onChange={(e) => setRetExpense(Number(e.target.value))}
@@ -687,7 +687,7 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
                 <input
                   type="range"
                   min={0}
-                  max={10000000}
+                  max={1000000000}
                   step={100000}
                   value={retExistingCorpus}
                   onChange={(e) => setRetExistingCorpus(Number(e.target.value))}
@@ -868,6 +868,10 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
               {activeTab === 'goal' && (
                 <>
                   <div className="flex justify-between text-slate-600">
+                    <span>Target at Today’s Prices</span>
+                    <span className="text-slate-900 font-semibold font-mono">{formatINR(goalTarget)}</span>
+                  </div>
+                  <div className="flex justify-between text-slate-600">
                     <span>Inflation-Adjusted Target</span>
                     <span className="text-slate-900 font-semibold font-mono">{formatINR(goalResult.futureInflationAdjustedGoal)}</span>
                   </div>
@@ -884,6 +888,14 @@ export const CalculatorsHub: React.FC<CalculatorsHubProps> = ({
 
               {activeTab === 'retirement' && (
                 <>
+                  <div className="flex justify-between text-slate-600">
+                    <span>Required Corpus (Today’s Prices)</span>
+                    <span className="text-slate-900 font-semibold font-mono">{formatINR(retResult.corpusAtTodayPrices)}</span>
+                  </div>
+                  <div className="flex justify-between text-slate-600">
+                    <span>Future Inflated Corpus</span>
+                    <span className="text-slate-900 font-semibold font-mono">{formatINR(retResult.requiredRetirementCorpus)}</span>
+                  </div>
                   <div className="flex justify-between text-slate-600">
                     <span>Years to Retirement</span>
                     <span className="text-slate-900 font-semibold font-mono">{retResult.yearsToRetire} Years</span>

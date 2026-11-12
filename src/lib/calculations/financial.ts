@@ -41,6 +41,7 @@ export interface RetirementResult {
   currentMonthlyExpense: number;
   monthlyExpenseAtRetirement: number;
   requiredRetirementCorpus: number;
+  corpusAtTodayPrices: number;
   existingCorpusFutureValue: number;
   netCorpusDeficit: number;
   requiredMonthlySIP: number;
@@ -292,6 +293,10 @@ export function calculateRetirement(
   }
 
   // Future value of existing corpus at retirement
+  const corpusAtTodayPrices = yearsToRetire > 0
+    ? Math.round(requiredRetirementCorpus / Math.pow(1 + inf, yearsToRetire))
+    : requiredRetirementCorpus;
+
   const existingCorpusFutureValue = Math.round(
     existingCorpus * Math.pow(1 + preR, yearsToRetire)
   );
@@ -335,6 +340,7 @@ export function calculateRetirement(
     currentMonthlyExpense,
     monthlyExpenseAtRetirement,
     requiredRetirementCorpus,
+    corpusAtTodayPrices,
     existingCorpusFutureValue,
     netCorpusDeficit,
     requiredMonthlySIP,

@@ -172,7 +172,7 @@ export const LeadForm: React.FC<LeadFormProps> = ({ form, submitLabel, requireMe
           </label>
         </>
       )}
-      <label className="field"><span className="req">How should we reply?</span>
+      <label className="field"><span className="req">How should we contact?</span>
         <select value={values.contactPreference} onChange={set('contactPreference')}>
           <option value="">Select</option>
           <option>WhatsApp</option>
@@ -181,7 +181,7 @@ export const LeadForm: React.FC<LeadFormProps> = ({ form, submitLabel, requireMe
         </select>
         {errors.contactPreference && <span className="err">{errors.contactPreference}</span>}
       </label>
-      <label className="field"><span className={requireMessage ? 'req' : undefined}>Message</span><textarea value={values.message} onChange={set('message')} placeholder="What would you like to talk about?" />{errors.message && <span className="err">{errors.message}</span>}</label>
+      <label className="field"><span className={requireMessage ? 'req' : undefined}>How can we help you with your financial goals?</span><textarea value={values.message} onChange={set('message')} placeholder="What would you like to talk about?" />{errors.message && <span className="err">{errors.message}</span>}</label>
       <label className="field consent-row">
         <input type="checkbox" checked={values.consent} onChange={set('consent')} />
         <span>I agree Farcon Wealth may store this enquiry and reply about it. Read the <a href="/privacy">privacy policy</a>.</span>
