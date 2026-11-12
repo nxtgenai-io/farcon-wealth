@@ -88,22 +88,38 @@ function doPost(e) {
     var leadId = text(data.leadId) || ('LEAD-' + new Date().getTime().toString(36).toUpperCase());
     var now = Date.now();
     var last = sheet.getLastRow();
-    if (last >= 2 && (phone || email)) {
+    if (last >= 2 && (phone || email || data.leadId)) {
       var start = Math.max(2, last - 499);
       var height = last - start + 1;
       var rows = sheet.getRange(start, 1, height, HEADERS.length).getValues();
       for (var i = rows.length - 1; i >= 0; i--) {
+        var msg = text(rows[i][11]);
+        // Primary correlation key: explicit leadId matching in Message cell
+        var matchedByLeadId = Boolean(data.leadId && msg.indexOf(text(data.leadId)) !== -1);
+
+        // Fallback correlation key: phone or email within 24-hour window if leadId was not provided
         var stamp = rows[i][0] instanceof Date ? rows[i][0].getTime() : Date.parse(rows[i][0]);
-        if (!stamp || now - stamp > 24 * 60 * 60 * 1000) continue;
+        var withinWindow = stamp && (now - stamp <= 24 * 60 * 60 * 1000);
         var samePhone = phone && digits(rows[i][4]) === phone;
         var sameEmail = email && text(rows[i][3]).toLowerCase() === email;
-        if (!samePhone && !sameEmail) continue;
-        var row = start + i;
-        sheet.getRange(row, 1, 1, HEADERS.length).setValues([rowValues(data, leadId, 'Updated')]);
-        return json({ ok: true, duplicate: true, leadId: leadId });
+        var matchedByFallback = Boolean(!data.leadId && withinWindow && (samePhone || sameEmail));
+
+        if (matchedByLeadId || matchedByFallback) {
+          var row = start + i;
+          var originalTimestamp = rows[i][0];
+          var updated = rowValues(data, leadId, 'Updated');
+          // Preserve original submission timestamp on update
+          if (originalTimestamp) {
+            updated[0] = originalTimestamp;
+          }
+          sheet.getRange(row, 1, 1, HEADERS.length).setValues([updated]);
+          sendInternalNotification(data, leadId, 'Updated');
+          return json({ ok: true, duplicate: true, leadId: leadId });
+        }
       }
     }
     sheet.appendRow(rowValues(data, leadId, 'New'));
+    sendInternalNotification(data, leadId, 'New');
     return json({ ok: true, duplicate: false, leadId: leadId });
   } catch (err) {
     return json({ ok: false, error: String(err && err.message ? err.message : err) });
@@ -131,4 +147,29 @@ function rowValues(data, leadId, status) {
     cell(data.sourcePage),
     status,
   ];
+}
+
+function sendInternalNotification(data, leadId, status) {
+  try {
+    var recipient = PropertiesService.getScriptProperties().getProperty('NOTIFY_EMAIL') || 'hello@farconwealth.com';
+    if (!recipient) return;
+    var subject = '[Farcon Wealth Lead - ' + status + '] ' + text(data.name) + ' (' + text(data.phone) + ')';
+    var body = 'A consultation request has been submitted:\n\n' +
+      'Status: ' + status + '\n' +
+      'Lead ID: ' + leadId + '\n' +
+      'Name: ' + text(data.name) + '\n' +
+      'Phone: ' + text(data.phone) + '\n' +
+      'Email: ' + text(data.email) + '\n' +
+      'Contact Preference: ' + text(data.contactPreference || 'WhatsApp') + '\n' +
+      'Goal: ' + text(data.goal) + '\n' +
+      'Horizon: ' + text(data.timeHorizon) + '\n' +
+      'Message / Notes: ' + text(data.message) + '\n' +
+      'Source Page: ' + text(data.sourcePage) + '\n' +
+      'Timestamp: ' + new Date().toISOString() + '\n\n' +
+      'Google Sheet: https://docs.google.com/spreadsheets/d/' + SHEET_ID;
+    MailApp.sendEmail(recipient, subject, body);
+  } catch (err) {
+    // Non-blocking: email failures must never fail lead persistence in the sheet
+    console.error('Email notification failed: ' + err);
+  }
 }

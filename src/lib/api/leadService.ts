@@ -87,8 +87,9 @@ export class LocalAndRemoteLeadService {
     }
   }
 
-  async submitLead(lead: LeadContext & { contactPreference?: string; formStartedAt?: number; companyWebsite?: string }): Promise<LeadSubmissionResponse> {
+  async submitLead(lead: LeadContext & { contactPreference?: string; formStartedAt?: number; companyWebsite?: string; leadId?: string }): Promise<LeadSubmissionResponse> {
     return this.submitSheetLead({
+      leadId: lead.leadId,
       form: formName(lead.source),
       name: lead.name,
       email: lead.email,
