@@ -4,7 +4,7 @@ import { LeadContext } from '@/types';
 import { planningContextService } from '@/lib/planningContext';
 import { analytics } from '@/lib/analytics';
 import { FARCON_CONFIG } from '@/content/site/config';
-import { X, CheckCircle2, ShieldCheck, ArrowRight } from 'lucide-react';
+import { X, CheckCircle2, ShieldCheck, ArrowRight, ArrowLeft } from 'lucide-react';
 import { isIndianMobile } from '@/lib/phone';
 
 interface ConsultationModalProps {
@@ -13,11 +13,14 @@ interface ConsultationModalProps {
   prefilledGoal?: string;
 }
 
+type ModalStep = 'basic' | 'details' | 'confirmed';
+
 export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   isOpen,
   onClose,
   prefilledGoal = 'Retirement Planning',
 }) => {
+  const [step, setStep] = useState<ModalStep>('basic');
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -26,13 +29,18 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     investmentHorizon: '5–10 Years',
     monthlySavings: '₹10,000 – ₹25,000',
     notes: '',
-    consent: true,
+    consent: false, // Explicitly unchecked by default
     contactPreference: 'WhatsApp',
     companyWebsite: '',
   });
+
   const [startedAt, setStartedAt] = useState(() => Date.now());
   useEffect(() => {
-    if (isOpen) setStartedAt(Date.now());
+    if (isOpen) {
+      setStartedAt(Date.now());
+      setStep('basic');
+      setErrors({});
+    }
   }, [isOpen]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -42,13 +50,13 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     formAlertRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     formAlertRef.current?.focus();
   }, [errors.form]);
+
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [assignedLeadId, setAssignedLeadId] = useState('');
 
   if (!isOpen) return null;
 
-  const validate = () => {
+  const validateStep1 = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) {
       newErrors.name = 'Please provide your full name.';
@@ -56,19 +64,26 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     if (!isIndianMobile(formData.phone)) {
       newErrors.phone = 'Enter a 10-digit Indian mobile number starting with 6, 7, 8 or 9.';
     }
-    if (formData.email.trim() && !/^\S+@\S+\.\S+$/.test(formData.email.trim())) {
-      newErrors.email = 'Please provide a valid email address.';
-    }
     if (!formData.consent) {
-      newErrors.consent = 'Tick the box so we may store this enquiry.';
+      newErrors.consent = 'Please check the box to confirm consent for us to store your enquiry and reply.';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const validateStep2 = () => {
+    const newErrors: Record<string, string> = {};
+    if (formData.email.trim() && !/^\S+@\S+\.\S+$/.test(formData.email.trim())) {
+      newErrors.email = 'Please provide a valid email address.';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Step 1 Submission: immediately secures lead so no lead is lost if user leaves
+  const handleStep1Submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validateStep1()) return;
     if (formData.companyWebsite.trim()) {
       setErrors({ form: 'Unable to accept this submission.' });
       return;
@@ -90,7 +105,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
         plannerSummary: planningCtx.quizProfileTitle
           ? `User completed fit diagnostic: ${planningCtx.quizProfileTitle} (Score: ${planningCtx.quizScore})`
           : undefined,
-        source: 'Consultation Modal',
+        source: 'Consultation Modal - Step 1',
         consent: formData.consent,
         contactPreference: formData.contactPreference,
         formStartedAt: startedAt,
@@ -103,10 +118,10 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
         return;
       }
       setAssignedLeadId(res.leadId);
-      setSubmitted(true);
-      analytics.track('consultation_submitted', {
-        goal: formData.goal,
-        hasQuizProfile: Boolean(planningCtx.quizProfileTitle),
+      setErrors({});
+      setStep('details');
+      analytics.track('consultation_step1_submitted', {
+        hasPhone: true,
       });
     } catch {
       setErrors({ form: 'An unexpected connection error occurred. Please try again.' });
@@ -115,8 +130,60 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     }
   };
 
+  // Step 2 Submission: updates the existing lead with additional context
+  const handleStep2Submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateStep2()) return;
+
+    setSubmitting(true);
+    try {
+      const planningCtx = planningContextService.getPlanningContext();
+      const payload: LeadContext = {
+        leadId: assignedLeadId,
+        name: formData.name.trim(),
+        phone: formData.phone.trim(),
+        email: formData.email.trim(),
+        goal: formData.goal,
+        investmentHorizon: formData.investmentHorizon,
+        monthlySavings: formData.monthlySavings,
+        notes: formData.notes.trim(),
+        quizProfile: planningCtx.quizProfileTitle,
+        quizScore: planningCtx.quizScore,
+        plannerSummary: planningCtx.quizProfileTitle
+          ? `User completed fit diagnostic: ${planningCtx.quizProfileTitle} (Score: ${planningCtx.quizScore})`
+          : undefined,
+        source: 'Consultation Modal - Step 2 Complete',
+        consent: true,
+        contactPreference: formData.contactPreference,
+        formStartedAt: startedAt,
+        companyWebsite: formData.companyWebsite,
+      };
+
+      await leadService.submitLead(payload);
+      setErrors({});
+      setStep('confirmed');
+      analytics.track('consultation_submitted', {
+        goal: formData.goal,
+        hasQuizProfile: Boolean(planningCtx.quizProfileTitle),
+      });
+    } catch {
+      // Even if network blips on step 2, step 1 was already secured, so proceed to confirmed
+      setStep('confirmed');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleSkipStep2 = () => {
+    setErrors({});
+    setStep('confirmed');
+    analytics.track('consultation_step2_skipped', {
+      leadId: assignedLeadId,
+    });
+  };
+
   const handleResetAndClose = () => {
-    setSubmitted(false);
+    setStep('basic');
     setErrors({});
     onClose();
   };
@@ -133,10 +200,12 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
         <div className="flex items-center justify-between px-6 py-4.5 border-b border-[#DCE4EE] bg-[#FAFBFC]">
           <div>
             <h2 id="consultation-modal-title" className="text-base font-semibold text-slate-900">
-              Connect With Us
+              {step === 'details' ? 'Tell us a bit more (Optional)' : 'Connect With Us'}
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              A calm conversation with Farcon Wealth’s AMFI-registered distributor team.
+              {step === 'details'
+                ? 'Help us prepare for your conversation, or skip to finish.'
+                : 'A calm conversation with Farcon Wealth’s AMFI-registered distributor team.'}
             </p>
           </div>
           <button
@@ -150,7 +219,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
         {/* Content Body */}
         <div className="p-6">
-          {submitted ? (
+          {step === 'confirmed' ? (
             <div className="text-center py-6 space-y-4">
               <div className="w-12 h-12 bg-[#78A832]/10 text-[#78A832] rounded-full flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
@@ -159,7 +228,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 Consultation Request Confirmed
               </h2>
               <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-                Thank you, <strong>{formData.name}</strong>. The Farcon Wealth team will look at {formData.goal} and reply on <strong>{formData.phone}</strong>.
+                Thank you, <strong>{formData.name}</strong>. The Farcon Wealth team will look at {formData.goal} and reply on <strong>{formData.phone}</strong> via {formData.contactPreference}.
               </p>
               <div className="inline-block px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-md text-[11px] text-slate-500 font-mono">
                 Reference ID: {assignedLeadId}
@@ -173,12 +242,9 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 </button>
               </div>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-              <label className="hp" aria-hidden="true">
-                Website
-                <input tabIndex={-1} autoComplete="off" value={formData.companyWebsite} onChange={(event) => setFormData((current) => ({ ...current, companyWebsite: event.target.value }))} />
-              </label>
+          ) : step === 'details' ? (
+            /* STEP 2: Progressive disclosure for optional details */
+            <form onSubmit={handleStep2Submit} className="space-y-4" noValidate>
               {errors.form && (
                 <div ref={formAlertRef} tabIndex={-1} className="p-3 text-xs bg-red-50 text-red-700 rounded-md border border-red-200" role="alert" aria-live="assertive">
                   {errors.form}
@@ -187,35 +253,31 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Full Name <span className="text-red-500">*</span>
+                  How can we help you with your financial goals? <span className="text-slate-400">(Optional)</span>
                 </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Rajesh Sharma"
-                  className={`w-full px-3 py-2 text-xs rounded-md border ${
-                    errors.name ? 'border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-slate-900'
-                  } focus:outline-hidden`}
+                <textarea
+                  rows={2}
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  placeholder="e.g. Existing funds overlap, transitioning from fixed deposits, or starting first SIP"
+                  className="w-full px-3 py-2 text-xs rounded-md border border-slate-300 focus:border-slate-900 focus:outline-hidden resize-none"
                 />
-                {errors.name && <p className="text-[11px] text-red-600 mt-1">{errors.name}</p>}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-medium text-slate-700 mb-1">
-                    Mobile Number <span className="text-red-500">*</span>
+                    How should we contact?
                   </label>
-                  <input
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder="10-digit mobile"
-                    className={`w-full px-3 py-2 text-xs rounded-md border ${
-                      errors.phone ? 'border-red-500' : 'border-slate-300 focus:border-slate-900'
-                    } focus:outline-hidden`}
-                  />
-                  {errors.phone && <p className="text-[11px] text-red-600 mt-1">{errors.phone}</p>}
+                  <select
+                    value={formData.contactPreference}
+                    onChange={(e) => setFormData({ ...formData, contactPreference: e.target.value })}
+                    className="w-full px-3 py-2 text-xs rounded-md border border-slate-300 focus:border-slate-900 focus:outline-hidden bg-white"
+                  >
+                    <option value="WhatsApp">WhatsApp</option>
+                    <option value="Call">Call</option>
+                    <option value="Email">Email</option>
+                  </select>
                 </div>
 
                 <div>
@@ -272,17 +334,73 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 </div>
               </div>
 
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={handleSkipStep2}
+                  className="flex-1 py-2.5 px-4 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer text-center"
+                >
+                  Skip & Finish
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="flex-1 py-2.5 px-4 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-lg transition-colors flex items-center justify-center gap-2 shadow-xs disabled:opacity-50 cursor-pointer"
+                >
+                  {submitting ? (
+                    <span>Saving...</span>
+                  ) : (
+                    <>
+                      <span>Save & Complete</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          ) : (
+            /* STEP 1: Fast lead capture with required fields and explicit consent */
+            <form onSubmit={handleStep1Submit} className="space-y-4" noValidate>
+              <label className="hp" aria-hidden="true">
+                Website
+                <input tabIndex={-1} autoComplete="off" value={formData.companyWebsite} onChange={(event) => setFormData((current) => ({ ...current, companyWebsite: event.target.value }))} />
+              </label>
+              {errors.form && (
+                <div ref={formAlertRef} tabIndex={-1} className="p-3 text-xs bg-red-50 text-red-700 rounded-md border border-red-200" role="alert" aria-live="assertive">
+                  {errors.form}
+                </div>
+              )}
+
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">
-                  How can we help you with your financial goals? <span className="text-slate-400">(Optional)</span>
+                  Full Name <span className="text-red-500">*</span>
                 </label>
-                <textarea
-                  rows={2}
-                  value={formData.notes}
-                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  placeholder="e.g. Existing funds overlap, transitioning from fixed deposits, or starting first SIP"
-                  className="w-full px-3 py-2 text-xs rounded-md border border-slate-300 focus:border-slate-900 focus:outline-hidden resize-none"
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="e.g. Rajesh Sharma"
+                  className={`w-full px-3 py-2 text-xs rounded-md border ${
+                    errors.name ? 'border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-slate-900'
+                  } focus:outline-hidden`}
                 />
+                {errors.name && <p className="text-[11px] text-red-600 mt-1">{errors.name}</p>}
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-slate-700 mb-1">
+                  Mobile Number <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder="10-digit Indian mobile number"
+                  className={`w-full px-3 py-2 text-xs rounded-md border ${
+                    errors.phone ? 'border-red-500' : 'border-slate-300 focus:border-slate-900'
+                  } focus:outline-hidden`}
+                />
+                {errors.phone && <p className="text-[11px] text-red-600 mt-1">{errors.phone}</p>}
               </div>
 
               {/* Regulatory Assurance Strip */}
@@ -293,21 +411,29 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 </p>
               </div>
 
-              <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">How should we contact?</label>
-                <select value={formData.contactPreference || 'WhatsApp'} onChange={(e) => setFormData({ ...formData, contactPreference: e.target.value })} className="w-full px-3 py-2 text-xs rounded-md border border-slate-300 bg-white">
-                  <option value="WhatsApp">WhatsApp</option>
-                  <option value="Call">Call</option>
-                  <option value="Email">Email</option>
-                </select>
-                {errors.contactPreference && <p className="text-[11px] text-red-600 mt-1">{errors.contactPreference}</p>}
-              </div>
-              <label className="flex items-start gap-2 text-[11px] text-slate-600">
-                <input type="checkbox" checked={formData.consent} onChange={(e) => setFormData({ ...formData, consent: e.target.checked })} />
-                <span>I agree Farcon Wealth may store this enquiry and reply about it. Read the <a href="/privacy">privacy policy</a>.</span>
+              {/* Explicit Consent Checkbox - UNCHECKED BY DEFAULT */}
+              <label className="flex items-start gap-2 text-[11px] text-slate-600 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.consent}
+                  onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
+                  className="mt-0.5"
+                />
+                <span>
+                  I agree Farcon Wealth may store this enquiry and reply about it. Read our{' '}
+                  <a href="/privacy" target="_blank" rel="noreferrer" className="underline text-slate-800">
+                    privacy policy
+                  </a>.
+                </span>
               </label>
               {errors.consent && <p className="text-[11px] text-red-600">{errors.consent}</p>}
-              {errors.form && <a className="hf-btn hf-btn-outline" href={`https://wa.me/${FARCON_CONFIG.whatsappNumber}`} target="_blank" rel="noreferrer">Message us on WhatsApp</a>}
+
+              {errors.form && (
+                <a className="hf-btn hf-btn-outline" href={`https://wa.me/${FARCON_CONFIG.whatsappNumber}`} target="_blank" rel="noreferrer">
+                  Message us on WhatsApp
+                </a>
+              )}
+
               <div className="pt-2">
                 <button
                   type="submit"
@@ -318,7 +444,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                     <span>Securing Request...</span>
                   ) : (
                     <>
-                      <span>Confirm Consultation Request</span>
+                      <span>Continue to Details</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </>
                   )}

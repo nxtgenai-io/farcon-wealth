@@ -49,15 +49,21 @@ export const InvestorLoginView: React.FC<InvestorLoginViewProps> = ({
 
         {/* Primary Redirect Action */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <a
-            href={FARCON_CONFIG.investorLoginUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full sm:w-auto px-6 py-2.5 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-lg transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
-          >
-            <span>Proceed to Secure Client Portal</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
+          {FARCON_CONFIG.investorLoginUrl ? (
+            <a
+              href={FARCON_CONFIG.investorLoginUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto px-6 py-2.5 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-lg transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+            >
+              <span>Proceed to Secure Client Portal</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          ) : (
+            <div className="w-full sm:w-auto px-4 py-2.5 text-xs font-medium text-slate-600 bg-slate-100 rounded-lg border border-slate-200 flex items-center justify-center gap-2">
+              <span>Authorized Client Portal link will be activated once credentials are provided</span>
+            </div>
+          )}
 
           <button
             onClick={onOpenConsultation}

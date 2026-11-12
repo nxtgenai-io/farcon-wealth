@@ -15,6 +15,7 @@ import {
   Target,
   TrendingUp,
   User,
+  Video,
   Wallet,
 } from 'lucide-react';
 import { Reveal } from '@/components/ui/Reveal';
@@ -246,11 +247,11 @@ const GOALS = [
   { title: 'Tax Saving', text: 'Invest smart. Save more.', image: 'goal-tax', alt: 'A calculator resting on tax forms and coins', href: '/goals/tax-saving' as RoutePath },
 ];
 
-const PLAN_PRESETS: Record<string, { target: number; years: number; rate: number }> = {
-  Retirement: { target: 35_000_000, years: 20, rate: 12 },
-  'Child Education': { target: 10_000_000, years: 15, rate: 12 },
-  'Wealth Creation': { target: 20_000_000, years: 12, rate: 12 },
-  'Tax Saving': { target: 5_000_000, years: 5, rate: 12 },
+const PLAN_PRESETS: Record<string, { target: number; years: number; rate: number; inflation: number }> = {
+  Retirement: { target: 35_000_000, years: 20, rate: 12, inflation: 6 },
+  'Child Education': { target: 10_000_000, years: 15, rate: 12, inflation: 6 },
+  'Wealth Creation': { target: 20_000_000, years: 12, rate: 12, inflation: 6 },
+  'Tax Saving': { target: 5_000_000, years: 5, rate: 12, inflation: 0 },
 };
 
 const RISK_NOTE: Record<string, string> = {
@@ -265,6 +266,26 @@ function cardSrc(name: string) {
     src: `/images/home/${name}-800.webp`,
     srcSet: `/images/home/${name}-800.webp 800w, /images/home/${name}-1600.webp 1600w`,
   };
+}
+
+function isValidVideoUrl(url?: string): boolean {
+  if (!url) return false;
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.toLowerCase();
+    return (
+      host === 'www.youtube.com' ||
+      host === 'youtube.com' ||
+      host === 'www.youtube-nocookie.com' ||
+      host === 'youtube-nocookie.com' ||
+      host === 'youtu.be' ||
+      host === 'vimeo.com' ||
+      host === 'www.vimeo.com' ||
+      host === 'player.vimeo.com'
+    );
+  } catch {
+    return false;
+  }
 }
 
 function bleedSrc(name: string) {
@@ -470,13 +491,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
   const [target, setTarget] = useState(35_000_000);
   const [years, setYears] = useState(20);
   const [rate, setRate] = useState(12);
+  const [inflation, setInflation] = useState(6);
   const [fundTab, setFundTab] = useState('Equity Funds');
   const heroRef = useRef<HTMLElement>(null);
   const [period, setPeriod] = useState<Period>('1D');
   const [indexFocus, setIndexFocus] = useState<IndexKey>('nifty');
   const [quotes, setQuotes] = useState<Partial<Record<string, LiveQuote>>>({});
   const rangeKey = period.toLowerCase();
-  const plan = useMemo(() => planIllustration(target, years, rate), [target, years, rate]);
+  const plan = useMemo(() => planIllustration(target, years, rate, inflation), [target, years, rate, inflation]);
   const funds = fundTab === 'Equity Funds'
     ? FUNDS.filter((fund) => fund.group !== 'Debt Funds')
     : FUNDS.filter((fund) => fund.group === fundTab);
@@ -650,6 +672,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                     setTarget(preset.target);
                     setYears(preset.years);
                     setRate(preset.rate);
+                    setInflation(preset.inflation);
                   }}>{tab}</button>
                 ))}
               </div>
@@ -657,9 +680,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               <div className="hf-controls">
               <label className="hf-slider">
                 <span className="hf-slider-top"><span>Target Corpus</span></span>
-                <SyncedField label="Target corpus in rupees" value={target} min={5_000_000} max={100_000_000} step={500_000} display={(n) => formatINR(n)} onChange={setTarget} />
-                <input type="range" min={5_000_000} max={100_000_000} step={500_000} value={target} style={{ ['--pct' as string]: `${((target - 5_000_000) / 95_000_000) * 100}%` }} onChange={(e) => setTarget(Number(e.target.value))} />
-                <span className="hf-scale"><span>₹50 L</span><span>₹10 Cr</span></span>
+                <SyncedField label="Target corpus in rupees" value={target} min={5_000_000} max={1_000_000_000} step={500_000} display={(n) => formatPlanCompact(n)} onChange={setTarget} />
+                <input type="range" min={5_000_000} max={1_000_000_000} step={500_000} value={target} style={{ ['--pct' as string]: `${((target - 5_000_000) / 995_000_000) * 100}%` }} onChange={(e) => setTarget(Number(e.target.value))} />
+                <span className="hf-scale"><span>₹50 L</span><span>₹100 Cr</span></span>
               </label>
               <label className="hf-slider">
                 <span className="hf-slider-top"><span>Time Horizon</span></span>
@@ -673,15 +696,25 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                 <input type="range" min={6} max={18} step={1} value={rate} style={{ ['--pct' as string]: `${((rate - 6) / 12) * 100}%` }} onChange={(e) => setRate(Number(e.target.value))} />
                 <span className="hf-scale"><span>6%</span><span>18%</span></span>
               </label>
+              <label className="hf-slider">
+                <span className="hf-slider-top"><span>Expected Inflation (p.a.)</span></span>
+                <SyncedField label="Expected annual inflation percent" value={inflation} min={0} max={12} step={1} display={(n) => `${n}%`} onChange={setInflation} />
+                <input type="range" min={0} max={12} step={1} value={inflation} style={{ ['--pct' as string]: `${(inflation / 12) * 100}%` }} onChange={(e) => setInflation(Number(e.target.value))} />
+                <span className="hf-scale"><span>0%</span><span>12%</span></span>
+              </label>
               </div>
               <div className="hf-result" aria-live="polite">
                 <span>Required Monthly SIP</span>
                 <strong><AnimatedNumber value={plan.requiredMonthlySIP} durationMs={480} /></strong>
                 <dl>
+                  <div><dt>Target Today</dt><dd>{formatPlanCompact(target)}</dd></div>
+                  {inflation > 0 && (
+                    <div><dt>Future Inflated Target</dt><dd>{formatPlanCompact(plan.futureInflationAdjustedGoal)}</dd></div>
+                  )}
                   <div><dt>Total Investment</dt><dd>{formatPlanCompact(plan.totalInvestment)}</dd></div>
                   <div><dt>Estimated Growth</dt><dd>{formatPlanCompact(plan.estimatedGrowth)}</dd></div>
                 </dl>
-                <button type="button" className="hf-btn hf-btn-green" onClick={() => navigate(`/calculators/goal?target=${target}&years=${years}&rate=${rate}` as RoutePath)}>
+                <button type="button" className="hf-btn hf-btn-green" onClick={() => navigate(`/calculators/goal?target=${target}&years=${years}&rate=${rate}&inflation=${inflation}` as RoutePath)}>
                   View Detailed Plan <ArrowRight size={16} />
                 </button>
               </div>
@@ -830,17 +863,27 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               <p className="text-xs text-slate-500 leading-relaxed">
                 We believe that every family deserves access to sound, disciplined investment planning without high-pressure sales or confusing jargon.
               </p>
-              {FARCON_CONFIG.founderVideoUrl ? (
-                <div className="aspect-video w-full rounded-xl overflow-hidden mt-4 border border-slate-200">
+              {isValidVideoUrl(FARCON_CONFIG.founderVideoUrl) ? (
+                <div className="aspect-video w-full rounded-xl overflow-hidden mt-4 border border-slate-200 bg-black">
                   <iframe
                     src={FARCON_CONFIG.founderVideoUrl}
                     title="Founder / Director Message"
                     className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
                 </div>
-              ) : null}
+              ) : (
+                <div className="mt-4 p-4 rounded-xl border border-dashed border-[#C5D5C8] bg-[#F7FAF8] flex items-center gap-3.5 text-slate-600">
+                  <div className="w-9 h-9 rounded-full bg-[#E5EFE7] flex items-center justify-center shrink-0 text-[#0F3D2E]">
+                    <Video size={18} />
+                  </div>
+                  <div className="text-xs">
+                    <p className="font-semibold text-slate-800">Founder Video Message</p>
+                    <p className="text-slate-500 mt-0.5">Official video message from the Founder / Director will appear here upon publication.</p>
+                  </div>
+                </div>
+              )}
               <div className="pt-2 flex items-center justify-between text-xs text-slate-600 border-t border-slate-100">
                 <span className="font-semibold text-[#0F3D2E]">Farcon Wealth Leadership Team</span>
                 <span className="font-mono text-[11px] text-slate-400">ARN 329006</span>

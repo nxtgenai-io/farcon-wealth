@@ -145,6 +145,7 @@ export interface LeadContext {
   portfolioReviewRequested?: boolean;
   notes?: string;
   source?: string;
+  leadId?: string;
   utmSource?: string;
   pageUrl?: string;
   timestamp?: string;

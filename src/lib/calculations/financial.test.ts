@@ -65,6 +65,27 @@ console.log('✓ ₹100 Crore Target Corpus calculation verified: Future target'
 });
 console.log('✓ User-configurable inflation variations (0% to 10%) verified');
 
+// 4d. Goal SIP Inflation Variations & Homepage Illustration Test
+import { planIllustration, formatPlanCompact } from '../../components/sections/home/planGoal';
+
+// Plan illustration with 0% vs 6% inflation
+const planZero = planIllustration(35000000, 20, 12, 0);
+assert(planZero.futureInflationAdjustedGoal === 35000000, '0% inflation target should match principal');
+assert(planZero.requiredMonthlySIP > 0, 'Plan SIP should be positive');
+
+const planWithInf = planIllustration(35000000, 20, 12, 6);
+assert(planWithInf.futureInflationAdjustedGoal > 35000000, '6% inflation target should exceed base target');
+assert(planWithInf.requiredMonthlySIP > planZero.requiredMonthlySIP, 'Inflation should increase required SIP');
+assert(planWithInf.series.length === 20, 'Series must have 20 data points');
+console.log('✓ Homepage Plan Illustration with inflation verified');
+
+// Format compact tests
+assert(formatPlanCompact(5000000) === '₹50 L', `Expected ₹50 L, got ${formatPlanCompact(5000000)}`);
+assert(formatPlanCompact(35000000) === '₹3.50 Cr', `Expected ₹3.50 Cr, got ${formatPlanCompact(35000000)}`);
+assert(formatPlanCompact(100000000) === '₹10 Cr', `Expected ₹10 Cr, got ${formatPlanCompact(100000000)}`);
+assert(formatPlanCompact(1000000000) === '₹100 Cr', `Expected ₹100 Cr, got ${formatPlanCompact(1000000000)}`);
+console.log('✓ formatPlanCompact up to ₹100 Cr verified');
+
 // 5. Quiz Scoring Engine Test
 const conservativeAnswers = { 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1 };
 const resConservative = scoreQuiz(conservativeAnswers);
