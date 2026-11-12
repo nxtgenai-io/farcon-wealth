@@ -44,7 +44,26 @@ console.log('✓ Goal calculation deterministic and verified: Required SIP', for
 const retTest = calculateRetirement(30, 60, 85, 50000, 6, 12, 8, 0);
 assert(retTest.yearsToRetire === 30, 'Years to retire mismatch');
 assert(retTest.requiredRetirementCorpus > 10000000, 'Retirement corpus should be substantial');
-console.log('✓ Retirement calculation deterministic and verified: Required Corpus', formatINR(retTest.requiredRetirementCorpus, { compact: true }));
+assert(retTest.corpusAtTodayPrices > 0, 'Corpus at today prices must be positive');
+assert(retTest.corpusAtTodayPrices < retTest.requiredRetirementCorpus, 'Today price corpus must be lower than inflated future corpus');
+// Verify inflation discounting relationship: corpusToday * (1.06)^30 approx requiredRetirementCorpus
+const recomputedFuture = Math.round(retTest.corpusAtTodayPrices * Math.pow(1.06, 30));
+assert(Math.abs(recomputedFuture - retTest.requiredRetirementCorpus) < 2000, 'Discounted today corpus must compound back to future corpus');
+console.log('✓ Retirement calculation deterministic and verified: Required Future Corpus', formatINR(retTest.requiredRetirementCorpus, { compact: true }), 'at today prices:', formatINR(retTest.corpusAtTodayPrices, { compact: true }));
+
+// 4b. High-Net-Worth / Target Corpus up to ₹100 Crore
+const hnwGoal = calculateGoalSIP(1000000000, 12, 20, 6, 0); // ₹100 Crore in 20 years with 6% inflation
+assert(hnwGoal.futureInflationAdjustedGoal > 1000000000, 'Inflation adjusted goal should exceed 100 Cr');
+assert(hnwGoal.requiredMonthlySIP > 0, 'Required monthly SIP for 100 Cr must be positive');
+console.log('✓ ₹100 Crore Target Corpus calculation verified: Future target', formatINR(hnwGoal.futureInflationAdjustedGoal, { compact: true }), 'SIP:', formatINR(hnwGoal.requiredMonthlySIP));
+
+// 4c. Configurable Inflation Variation Test (0%, 4%, 6%, 8%, 10%)
+[0, 4, 6, 8, 10].forEach((rate) => {
+  const varied = calculateRetirement(35, 60, 85, 60000, rate, 12, 8, 500000);
+  assert(varied.inflationRate === rate, `Inflation rate should match ${rate}`);
+  assert(varied.requiredRetirementCorpus > 0, 'Corpus must be positive');
+});
+console.log('✓ User-configurable inflation variations (0% to 10%) verified');
 
 // 5. Quiz Scoring Engine Test
 const conservativeAnswers = { 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1 };

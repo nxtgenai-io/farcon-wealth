@@ -40,7 +40,7 @@ def draw_card(title: str, dest: Path) -> None:
     brand = ImageFont.truetype(BOLD, 28)
     body = ImageFont.truetype(BOLD, 64)
     small = ImageFont.truetype(REGULAR, 26)
-    draw.text((72, 72), 'FARCON WEALTH', font=brand, fill=FOREST)
+    draw.text((72, 72), 'Farcon Wealth', font=brand, fill=FOREST)
     lines = wrap(draw, title, body, 1000)
     y = 168
     for line in lines:

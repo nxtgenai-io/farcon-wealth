@@ -26,8 +26,8 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     investmentHorizon: '5–10 Years',
     monthlySavings: '₹10,000 – ₹25,000',
     notes: '',
-    consent: false,
-    contactPreference: '',
+    consent: true,
+    contactPreference: 'WhatsApp',
     companyWebsite: '',
   });
   const [startedAt, setStartedAt] = useState(() => Date.now());
@@ -58,9 +58,6 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     }
     if (formData.email.trim() && !/^\S+@\S+\.\S+$/.test(formData.email.trim())) {
       newErrors.email = 'Please provide a valid email address.';
-    }
-    if (!formData.contactPreference) {
-      newErrors.contactPreference = 'Choose WhatsApp, email or a call.';
     }
     if (!formData.consent) {
       newErrors.consent = 'Tick the box so we may store this enquiry.';
@@ -136,10 +133,10 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
         <div className="flex items-center justify-between px-6 py-4.5 border-b border-[#DCE4EE] bg-[#FAFBFC]">
           <div>
             <h2 id="consultation-modal-title" className="text-base font-semibold text-slate-900">
-              Book a Free Financial Consultation
+              Connect With Us
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              A calm conversation with Farcon’s AMFI-registered distributor team.
+              A calm conversation with Farcon Wealth’s AMFI-registered distributor team.
             </p>
           </div>
           <button
@@ -162,7 +159,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 Consultation Request Confirmed
               </h2>
               <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-                Thank you, <strong>{formData.name}</strong>. The Farcon team will look at {formData.goal} and reply on <strong>{formData.phone}</strong>.
+                Thank you, <strong>{formData.name}</strong>. The Farcon Wealth team will look at {formData.goal} and reply on <strong>{formData.phone}</strong>.
               </p>
               <div className="inline-block px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-md text-[11px] text-slate-500 font-mono">
                 Reference ID: {assignedLeadId}
@@ -277,7 +274,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Specific Questions or Context <span className="text-slate-400">(Optional)</span>
+                  How can we help you with your financial goals? <span className="text-slate-400">(Optional)</span>
                 </label>
                 <textarea
                   rows={2}
@@ -297,12 +294,11 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">How should we reply? <span className="text-red-500">*</span></label>
-                <select value={formData.contactPreference} onChange={(e) => setFormData({ ...formData, contactPreference: e.target.value })} className="w-full px-3 py-2 text-xs rounded-md border border-slate-300 bg-white">
-                  <option value="">Select</option>
-                  <option>WhatsApp</option>
-                  <option>Email</option>
-                  <option>Call</option>
+                <label className="block text-xs font-medium text-slate-700 mb-1">How should we contact?</label>
+                <select value={formData.contactPreference || 'WhatsApp'} onChange={(e) => setFormData({ ...formData, contactPreference: e.target.value })} className="w-full px-3 py-2 text-xs rounded-md border border-slate-300 bg-white">
+                  <option value="WhatsApp">WhatsApp</option>
+                  <option value="Call">Call</option>
+                  <option value="Email">Email</option>
                 </select>
                 {errors.contactPreference && <p className="text-[11px] text-red-600 mt-1">{errors.contactPreference}</p>}
               </div>

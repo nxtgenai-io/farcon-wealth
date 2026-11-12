@@ -109,12 +109,12 @@ export function cannedReply(text: string): { text: string } | null {
   }
   if (FUND_PICK.test(text)) {
     return {
-      text: `Farcon does not say which fund you should buy, and this chat will not name a scheme for you. Suitability depends on the goal, the date, and what you can leave invested, which is a conversation with a person. Start with the investor quiz (/investor-quiz), request a portfolio review (/portfolio-review), or use Start Investing (/start-investing). You can also message us on WhatsApp. ${AI_RISK_LINE}`,
+      text: `Farcon Wealth does not say which fund you should buy, and this chat will not name a scheme for you. Suitability depends on the goal, the date, and what you can leave invested, which is a conversation with a person. Start with the investor quiz (/investor-quiz), request a portfolio review (/portfolio-review), or use Start Investing (/start-investing). You can also message us on WhatsApp. ${AI_RISK_LINE}`,
     };
   }
   if (GUARANTEE.test(text)) {
     return {
-      text: `Farcon cannot guarantee a return, including 15%. A mutual fund can fall in value, and nothing on this site promises a rate. The calculators (/calculators) only illustrate a rate you type in. Read the disclosures (/disclosures), or message us on WhatsApp if you want to talk it through. ${AI_RISK_LINE}`,
+      text: `Farcon Wealth cannot guarantee a return, including 15%. A mutual fund can fall in value, and nothing on this site promises a rate. The calculators (/calculators) only illustrate a rate you type in. Read the disclosures (/disclosures), or message us on WhatsApp if you want to talk it through. ${AI_RISK_LINE}`,
     };
   }
   return null;

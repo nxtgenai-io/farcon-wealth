@@ -69,7 +69,7 @@ export const InvestorLoginView: React.FC<InvestorLoginViewProps> = ({
 
         {/* Support Note */}
         <div className="mt-8 pt-6 border-t border-slate-100 text-xs text-slate-500">
-          <span>First time logging in or forgot password? Contact Farcon Client Support at </span>
+          <span>First time logging in or forgot password? Contact Farcon Wealth Client Support at </span>
           <a href={`mailto:${FARCON_CONFIG.email}`} className="text-slate-900 font-semibold hover:underline">
             {FARCON_CONFIG.email}
           </a>

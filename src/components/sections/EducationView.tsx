@@ -69,13 +69,13 @@ export const EducationView: React.FC<EducationViewProps> = ({
         <div className="mt-12 p-6 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <h2 className="text-sm font-semibold text-slate-900">Have questions about this topic?</h2>
-            <p className="text-xs text-slate-600 mt-0.5">Message the Farcon team. We are a mutual fund distributor.</p>
+            <p className="text-xs text-slate-600 mt-0.5">Message the Farcon Wealth team. We are a mutual fund distributor.</p>
           </div>
           <button
             onClick={onOpenConsultation}
             className="px-5 py-2.5 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-md transition-colors shrink-0 shadow-xs"
           >
-            Ask Farcon
+            Ask Farcon Wealth
           </button>
         </div>
       </article>
@@ -198,7 +198,7 @@ export const EducationView: React.FC<EducationViewProps> = ({
             Transparency, Custody & Process
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            Clear answers to common questions about Farcon’s distributor model.
+            Clear answers to common questions about Farcon Wealth’s distributor model.
           </p>
         </div>
 

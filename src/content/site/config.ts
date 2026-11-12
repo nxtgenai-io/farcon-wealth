@@ -2,7 +2,7 @@ export const SITE_URL = 'https://farconwealth.com';
 
 export const FARCON_CONFIG = {
   siteUrl: SITE_URL,
-  brandName: 'FARCON WEALTH',
+  brandName: 'Farcon Wealth',
   legalName: 'Farcon Wealth Private Limited',
   registrationType: 'AMFI Registered Mutual Fund Distributor',
   arn: '329006',
@@ -15,6 +15,8 @@ export const FARCON_CONFIG = {
   phoneNumber: '',
   /** Leave empty until Ankit shares the real investor-platform URL. The login page hides the link while this is blank. */
   investorLoginUrl: '',
+  /** Leave empty until the approved founder video URL is provided. Section displays introductory message while blank. */
+  founderVideoUrl: '',
   /** Leave empty until the real profiles exist. The footer hides each icon while its URL is blank. */
   social: { linkedin: '', youtube: '', instagram: '' },
   /** Leave empty to hide the Turnstile widget. The worker checks TURNSTILE_SECRET only when that secret is set. */

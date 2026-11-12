@@ -71,7 +71,7 @@ export const PortfolioReviewView: React.FC<PortfolioReviewViewProps> = ({ naviga
         <div className="lg:col-span-5 bg-[#F2F6FB] text-[#17243A] p-7 sm:p-9 rounded-2xl border border-[#DCE4EE] space-y-7 shadow-xs">
           <div>
             <h2 className="text-xs font-semibold uppercase tracking-wider text-[#315FCE]">
-              The Farcon Diagnostic Process
+              The Farcon Wealth Diagnostic Process
             </h2>
             <p className="text-xs text-[#52647D] mt-1.5 leading-relaxed">
               We evaluate your Consolidated Account Statement (CAS) with institutional rigor.

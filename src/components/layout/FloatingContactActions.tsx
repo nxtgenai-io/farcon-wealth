@@ -36,7 +36,7 @@ export const FloatingContactActions: React.FC<{ onOpenAI?: () => void }> = ({ on
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Chat with Farcon on WhatsApp"
+        aria-label="Chat with Farcon Wealth on WhatsApp"
         tabIndex={show ? 0 : -1}
         aria-hidden={show ? undefined : true}
       >

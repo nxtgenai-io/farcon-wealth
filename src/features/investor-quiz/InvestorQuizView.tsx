@@ -562,12 +562,12 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                   <ArrowRight className="w-3.5 h-3.5 text-[#78A832]" />
                 </button>
 
-                {/* Talk to Farcon */}
+                {/* Talk to Farcon Wealth */}
                 <button
                   onClick={() => onOpenConsultation(`Discuss ${result.profile.title} Diagnostic`)}
                   className="px-6 py-3.5 text-xs font-semibold text-slate-800 bg-[#F2F6FB] hover:bg-slate-200/80 border border-[#DCE4EE] rounded-md transition-colors cursor-pointer"
                 >
-                  Talk to Farcon Advisor
+                  Talk to Farcon Wealth
                 </button>
 
                 {/* Use Calculator */}
@@ -616,14 +616,14 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                 </select>
                 <label className="sm:col-span-3 flex items-start gap-2 text-[11px] text-slate-600">
                   <input type="checkbox" checked={quizConsent} onChange={(e) => setQuizConsent(e.target.checked)} />
-                  <span>I agree Farcon may store this quiz result and reply about it. Read the <a href="/privacy">privacy policy</a>.</span>
+                  <span>I agree Farcon Wealth may store this quiz result and reply about it. Read the <a href="/privacy">privacy policy</a>.</span>
                 </label>
                 <button
                   type="submit"
                   disabled={savingLead}
                   className="py-2.5 px-5 text-xs font-semibold text-white bg-[#101A2C] hover:bg-[#15243B] rounded-lg transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
                 >
-                  {savingLead ? 'Sending...' : 'Send to the Farcon team'}
+                  {savingLead ? 'Sending...' : 'Send to the Farcon Wealth team'}
                 </button>
                 {leadError && (
                   <>
@@ -637,7 +637,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
             <div className="p-5 bg-[#E8F5E9] rounded-2xl border border-[#C8E6C9] text-xs text-[#17243A] flex items-center gap-2.5 shadow-2xs">
               <CheckCircle2 className="w-5 h-5 text-[#78A832] shrink-0" />
               <span>
-                Your note is with the Farcon team. We will reply on {leadPhone}.
+                Your note is with the Farcon Wealth team. We will reply on {leadPhone}.
               </span>
             </div>
           )}

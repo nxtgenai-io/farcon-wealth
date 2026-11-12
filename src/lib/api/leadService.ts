@@ -74,14 +74,14 @@ export class LocalAndRemoteLeadService {
       return {
         success: true,
         leadId: data.leadId || '',
-        message: data.message || 'Thank you. Your details are with the Farcon team.',
+        message: data.message || 'Thank you. Your details are with the Farcon Wealth team.',
         timestamp,
       };
     } catch {
       return {
         success: false,
         leadId: '',
-        message: 'We could not reach Farcon just now.',
+        message: 'We could not reach Farcon Wealth just now.',
         timestamp,
       };
     }

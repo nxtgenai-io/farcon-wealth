@@ -56,7 +56,7 @@ export const GoalsView: React.FC<GoalsViewProps> = ({ activeSlug, navigate, onOp
               <ul className="tick">{goal.coreConsiderations.map((item) => <li key={item}><i>✓</i><span>{item}</span></li>)}</ul>
             </article>
             <article className="pg-card">
-              <h2>How Farcon approaches it</h2>
+              <h2>How Farcon Wealth approaches it</h2>
               <ul className="tick">{goal.farconApproach.map((item) => <li key={item}><i>✓</i><span>{item}</span></li>)}</ul>
             </article>
           </div>

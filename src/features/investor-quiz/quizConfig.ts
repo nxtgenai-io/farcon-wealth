@@ -233,7 +233,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     id: 8,
     category: 'Decision-Making Style',
     question: 'When hearing about turbulent headlines or political events, what is your preferred approach?',
-    context: 'At Farcon, our core positioning is "Investing, without the noise."',
+    context: 'At Farcon Wealth, our core positioning is "Investing, without the noise."',
     options: [
       {
         label: 'Constant monitoring',
@@ -294,7 +294,7 @@ export const QUIZ_PROFILES: Record<'conservative' | 'moderate' | 'growth', QuizR
       'Typically pairs Flexi-Cap and Large-Cap equity with Aggressive Hybrid or Balanced Advantage strategies for automatic market counter-balancing.',
     nextSteps: [
       'Align specific monthly SIP amounts to tangible goals (Child Education, Home, Wealth Creation)',
-      'Use the Farcon SIP Calculator to project your 5–7 year trajectory',
+      'Use the Farcon Wealth SIP Calculator to project your 5–7 year trajectory',
       'Connect with Farcon Wealth to structure a disciplined, multi-asset plan',
     ],
   },
@@ -313,7 +313,7 @@ export const QUIZ_PROFILES: Record<'conservative' | 'moderate' | 'growth', QuizR
     assetAllocationPhilosophy:
       'Emphasizes diversified equity mutual funds (Flexi Cap, Large & Mid Cap, ELSS) with systematic periodic rebalancing and minimal near-term cash drag.',
     nextSteps: [
-      'Calculate your target retirement corpus or wealth goal with the Farcon Planner',
+      'Calculate your target retirement corpus or wealth goal with the Farcon Wealth Planner',
       'Establish automated SIPs with an annual step-up increment of 10%',
       'Book a complimentary portfolio review with Farcon Wealth to optimize fund overlap',
     ],

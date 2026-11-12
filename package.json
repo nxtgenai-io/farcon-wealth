@@ -10,6 +10,7 @@
     "start": "tsx server.ts",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
+    "test": "tsx src/lib/calculations/financial.test.ts && tsx scripts/test-routes-and-forms.ts",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
