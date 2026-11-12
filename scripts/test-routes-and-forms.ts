@@ -52,10 +52,52 @@ const botLead = { ...validLead, companyWebsite: 'spam-bot.com' };
 const sanitisedBot = sanitiseLead(botLead);
 assert(sanitisedBot.ok === false, 'Honeypot lead must fail sanitization');
 
-// Missing consent test
+// Missing consent test (unchecked checkbox)
 const noConsentLead = { ...validLead, consent: false };
 const sanitisedNoConsent = sanitiseLead(noConsentLead);
 assert(sanitisedNoConsent.ok === false, 'Missing consent must fail sanitization');
 
+// Rapid submission (bot / automated submission under 2000ms)
+const fastLead = { ...validLead, formStartedAt: Date.now() - 500 };
+const sanitisedFast = sanitiseLead(fastLead);
+assert(sanitisedFast.ok === false, 'Fast fill under 2 seconds must fail');
+
+// 4. Multi-Step Progressive Flow & Deduplication Tests
+const step1Lead = {
+  form: 'Consultation Modal - Step 1',
+  name: 'Anita Verma',
+  phone: '9876543210',
+  contactPreference: 'WhatsApp',
+  consent: true,
+  formStartedAt: Date.now() - 4000,
+  companyWebsite: '',
+};
+const resStep1 = sanitiseLead(step1Lead);
+assert(resStep1.ok === true, 'Step 1 lead must pass sanitization');
+if (!resStep1.ok) throw new Error('Step 1 failed');
+assert(Boolean(resStep1.lead.leadId), 'Lead ID must be generated');
+
+// Step 2 update with same leadId
+const step2Lead = {
+  form: 'Consultation Modal - Step 2 Complete',
+  leadId: resStep1.lead.leadId,
+  name: 'Anita Verma',
+  phone: '9876543210',
+  email: 'anita.verma@example.com',
+  goal: 'Retirement Planning',
+  timeHorizon: '10+ Years',
+  message: 'Transitioning from FDs to mutual funds',
+  contactPreference: 'Call',
+  consent: true,
+  formStartedAt: Date.now() - 15000,
+  companyWebsite: '',
+};
+const resStep2 = sanitiseLead(step2Lead);
+assert(resStep2.ok === true, 'Step 2 update must pass sanitization');
+if (!resStep2.ok) throw new Error('Step 2 failed');
+assert(resStep2.lead.leadId === resStep1.lead.leadId, 'Lead ID must match across steps');
+assert(resStep2.lead.contactPreference === 'Call', 'Updated preference preserved');
+
+console.log('✓ Multi-step progressive disclosure and deduplication verified');
 console.log('✓ Lead sanitization and security checks verified');
 console.log('[ALL ROUTE & FORM TESTS PASSED]');

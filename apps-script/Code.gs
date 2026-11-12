@@ -100,10 +100,12 @@ function doPost(e) {
         if (!samePhone && !sameEmail) continue;
         var row = start + i;
         sheet.getRange(row, 1, 1, HEADERS.length).setValues([rowValues(data, leadId, 'Updated')]);
+        sendInternalNotification(data, leadId, 'Updated');
         return json({ ok: true, duplicate: true, leadId: leadId });
       }
     }
     sheet.appendRow(rowValues(data, leadId, 'New'));
+    sendInternalNotification(data, leadId, 'New');
     return json({ ok: true, duplicate: false, leadId: leadId });
   } catch (err) {
     return json({ ok: false, error: String(err && err.message ? err.message : err) });
@@ -131,4 +133,29 @@ function rowValues(data, leadId, status) {
     cell(data.sourcePage),
     status,
   ];
+}
+
+function sendInternalNotification(data, leadId, status) {
+  try {
+    var recipient = PropertiesService.getScriptProperties().getProperty('NOTIFY_EMAIL') || 'hello@farconwealth.com';
+    if (!recipient) return;
+    var subject = '[Farcon Wealth Lead - ' + status + '] ' + text(data.name) + ' (' + text(data.phone) + ')';
+    var body = 'A consultation request has been submitted:\n\n' +
+      'Status: ' + status + '\n' +
+      'Lead ID: ' + leadId + '\n' +
+      'Name: ' + text(data.name) + '\n' +
+      'Phone: ' + text(data.phone) + '\n' +
+      'Email: ' + text(data.email) + '\n' +
+      'Contact Preference: ' + text(data.contactPreference || 'WhatsApp') + '\n' +
+      'Goal: ' + text(data.goal) + '\n' +
+      'Horizon: ' + text(data.timeHorizon) + '\n' +
+      'Message / Notes: ' + text(data.message) + '\n' +
+      'Source Page: ' + text(data.sourcePage) + '\n' +
+      'Timestamp: ' + new Date().toISOString() + '\n\n' +
+      'Google Sheet: https://docs.google.com/spreadsheets/d/' + SHEET_ID;
+    MailApp.sendEmail(recipient, subject, body);
+  } catch (err) {
+    // Non-blocking: email failures must never fail lead persistence in the sheet
+    console.error('Email notification failed: ' + err);
+  }
 }

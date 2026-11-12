@@ -10,7 +10,9 @@ Do not add columns. `apps-script/Code.gs` writes into that row. Lead ID, consent
 
 1. Open the spreadsheet. Go to **Extensions → Apps Script**.
 2. Replace the default `Code.gs` with the file in this folder. Remove any older `leads-webhook` file in that project so only this script runs.
-3. **Project Settings → Script properties → Add script property.** Name: `LEADS_SECRET`. Value: a long random string. The same value is the worker secret `LEADS_SECRET`. It is not stored in this repo.
+3. **Project Settings → Script properties → Add script property.**
+   - Name: `LEADS_SECRET`. Value: a long random string. The same value is the worker secret `LEADS_SECRET`. It is not stored in this repo.
+   - Optional: `NOTIFY_EMAIL`. Value: email address for internal notifications (defaults to `hello@farconwealth.com`). The script sends immediate email alerts on new submissions and updates via `MailApp.sendEmail`.
 4. **Deploy → New deployment → Type: Web app.**
    - Execute as: **Me**
    - Who has access: **Anyone**
