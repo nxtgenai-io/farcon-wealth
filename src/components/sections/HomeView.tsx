@@ -183,11 +183,11 @@ function CountUp({ value }: { value: number }) {
 
 function NiftyChart({ values, labels, name }: { values: number[]; labels: string[]; name: string }) {
   const w = 340;
-  const h = 76;
+  const h = 88;
   const left = 6;
-  const right = 46;
-  const top = 6;
-  const bottom = 14;
+  const right = 52;
+  const top = 8;
+  const bottom = 18;
   const low = Math.min(...values);
   const high = Math.max(...values);
   const pad = (high - low) * 0.08 || Math.abs(high) * 0.002 || 1;
@@ -209,22 +209,22 @@ function NiftyChart({ values, labels, name }: { values: number[]; labels: string
         return (
           <g key={tick}>
             <line x1={left} x2={w - right} y1={y} y2={y} stroke="#e7efe9" strokeWidth="1" />
-            <text x={w - 2} y={y + 3} fontSize="8" fill="#5c675f" textAnchor="end">{Math.round(tick).toLocaleString('en-IN')}</text>
+            <text x={w - 2} y={y + 3.5} fontSize="10.5" fontWeight="500" fill="#5c675f" textAnchor="end">{Math.round(tick).toLocaleString('en-IN')}</text>
           </g>
         );
       })}
       {labels.map((label, i) => (
-        <text key={`${label}-${i}`} x={left + (i / Math.max(1, labels.length - 1)) * (w - left - right)} y={h - 1} fontSize="8" fill="#5c675f" textAnchor={i === 0 ? 'start' : i === labels.length - 1 ? 'end' : 'middle'}>{label}</text>
+        <text key={`${label}-${i}`} x={left + (i / Math.max(1, labels.length - 1)) * (w - left - right)} y={h - 2} fontSize="10.5" fontWeight="500" fill="#5c675f" textAnchor={i === 0 ? 'start' : i === labels.length - 1 ? 'end' : 'middle'}>{label}</text>
       ))}
       <path d={area} fill="rgba(31,157,85,0.14)" />
-      <path className="hf-line" d={d} fill="none" stroke="#1F9D55" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
+      <path className="hf-line" d={d} fill="none" stroke="#1F9D55" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
 }
 
 function SensexSpark({ values }: { values: number[] }) {
-  const w = 76;
-  const h = 20;
+  const w = 84;
+  const h = 22;
   const min = Math.min(...values);
   const max = Math.max(...values);
   const pts = values.map((v, i) => {
@@ -233,8 +233,8 @@ function SensexSpark({ values }: { values: number[] }) {
     return [x, y] as const;
   });
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} width="76" height="20" aria-hidden="true">
-      <path className="hf-line" d={smoothLine(pts)} fill="none" stroke="#1F9D55" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round" />
+    <svg viewBox={`0 0 ${w} ${h}`} width="84" height="22" aria-hidden="true">
+      <path className="hf-line" d={smoothLine(pts)} fill="none" stroke="#1F9D55" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
     </svg>
   );
 }

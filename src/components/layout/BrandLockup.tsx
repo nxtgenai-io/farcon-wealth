@@ -22,22 +22,40 @@ export const BrandLockup: React.FC<BrandLockupProps> = ({
       onClick={onClick}
       aria-label="Farcon Wealth"
     >
-      <span className="fw-lockup-unit">
-        <img
-          src="/brand/farcon-stag.png"
-          alt=""
-          className="fw-lockup-icon"
-          width={512}
-          height={512}
-          loading="eager"
-          decoding="sync"
-        />
-        <span className="fw-lockup-wordmark">Farcon Wealth</span>
-      </span>
-      {isFooter && (
-        <small style={{ color: sub }}>
-          AMFI REGISTERED MUTUAL FUND DISTRIBUTOR | ARN: {FARCON_CONFIG.arn}
-        </small>
+      {isFooter ? (
+        <>
+          <picture className="fw-lockup-media">
+            <source type="image/webp" srcSet="/brand/farcon-lockup-1x.webp 1x, /brand/farcon-lockup-2x.webp 2x" />
+            <img
+              src="/brand/farcon-lockup-1x.png"
+              srcSet="/brand/farcon-lockup-1x.png 1x, /brand/farcon-lockup-2x.png 2x"
+              alt="Farcon Wealth"
+              width={163}
+              height={64}
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
+          <small style={{ color: sub }}>
+            AMFI REGISTERED MUTUAL FUND DISTRIBUTOR | ARN: {FARCON_CONFIG.arn}
+          </small>
+        </>
+      ) : (
+        <span className="fw-lockup-unit">
+          <img
+            src="/brand/farcon-stag.png"
+            alt=""
+            className="fw-lockup-icon"
+            width={397}
+            height={348}
+            loading="eager"
+            decoding="sync"
+          />
+          <span className="fw-lockup-wordmark">
+            <span className="fw-wordmark-farcon">FARCON</span>
+            <span className="fw-wordmark-wealth">WEALTH</span>
+          </span>
+        </span>
       )}
     </button>
   );

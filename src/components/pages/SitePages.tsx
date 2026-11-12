@@ -436,7 +436,7 @@ export const StartInvestingPage: React.FC = () => (
       <div>
         <span className="hf-eye">Start investing</span>
         <h1>Tell us the goal, then the amount.</h1>
-        <p className="lede">This is a mutual fund distribution enquiry. It is separate from a general consultation. Farcon does not place an order from this form.</p>
+        <p className="lede">This is a mutual fund distribution enquiry. It is separate from a general consultation. Farcon Wealth does not place an order from this form.</p>
         <p className="hf-note">AMFI-registered Mutual Fund Distributor · ARN {FARCON_CONFIG.arn}. You can also <a href={whatsappHref}>message us on WhatsApp</a>.</p>
       </div>
       <LeadForm form="Start Investing" submitLabel="Send the investing enquiry" showPreferences requireGoal />

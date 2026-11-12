@@ -9,9 +9,12 @@ interface FarconLogoProps {
 
 export const FarconLogo: React.FC<FarconLogoProps> = ({
   variant = 'full',
+  theme = 'auto',
   className = '',
   size = 'md',
 }) => {
+  const isDark = theme === 'dark';
+
   const heightClasses = {
     sm: variant === 'mark' ? 'h-7' : 'h-10',
     md: variant === 'mark' ? 'h-9' : 'h-12',
@@ -26,9 +29,27 @@ export const FarconLogo: React.FC<FarconLogoProps> = ({
           src="/brand/farcon-stag.png"
           alt="Farcon Wealth"
           className="h-full w-auto object-contain block select-none pointer-events-none"
-          width={512}
-          height={512}
+          width={397}
+          height={348}
         />
+      </div>
+    );
+  }
+
+  if (variant === 'horizontal' || variant === 'compact') {
+    return (
+      <div className={`inline-flex items-center select-none ${heightClasses} ${className}`}>
+        <picture>
+          <source type="image/webp" srcSet="/brand/farcon-lockup-1x.webp 1x, /brand/farcon-lockup-2x.webp 2x" />
+          <img
+            src="/brand/farcon-lockup-1x.png"
+            srcSet="/brand/farcon-lockup-1x.png 1x, /brand/farcon-lockup-2x.png 2x"
+            alt="Farcon Wealth"
+            className="h-full w-auto object-contain block select-none pointer-events-none"
+            width={163}
+            height={64}
+          />
+        </picture>
       </div>
     );
   }
@@ -39,11 +60,12 @@ export const FarconLogo: React.FC<FarconLogoProps> = ({
         src="/brand/farcon-stag.png"
         alt=""
         className="h-3/5 w-auto object-contain block select-none pointer-events-none"
-        width={512}
-        height={512}
+        width={397}
+        height={348}
       />
-      <span className="font-sans font-bold text-xs tracking-tight text-[#0F3D2E] leading-none mt-1">
-        Farcon Wealth
+      <span className="inline-flex items-center gap-1 font-sans font-extrabold text-[11px] tracking-[0.14em] uppercase leading-none mt-1">
+        <span className={isDark ? 'text-white' : 'text-[#0F3D2E]'}>FARCON</span>
+        <span className="text-[#1F9D55]">WEALTH</span>
       </span>
     </div>
   );

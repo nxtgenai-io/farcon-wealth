@@ -567,7 +567,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
                   onClick={() => onOpenConsultation(`Discuss ${result.profile.title} Diagnostic`)}
                   className="px-6 py-3.5 text-xs font-semibold text-slate-800 bg-[#F2F6FB] hover:bg-slate-200/80 border border-[#DCE4EE] rounded-md transition-colors cursor-pointer"
                 >
-                  Talk to Farcon Wealth Advisor
+                  Talk to Farcon Wealth
                 </button>
 
                 {/* Use Calculator */}
