@@ -28,42 +28,6 @@ interface HomeViewProps {
   onOpenAI: () => void;
 }
 
-const PERIODS = ['1D', '1W', '1M', '1Y', '5Y'] as const;
-type Period = (typeof PERIODS)[number];
-type IndexKey = 'nifty' | 'sensex';
-
-const SAMPLE = {
-  nifty: { name: 'NIFTY 50', price: 24612.35, change: 185.7, changePct: 0.76 },
-  sensex: { name: 'SENSEX', price: 81050.62, change: 618.91, changePct: 0.77 },
-};
-
-type LiveQuote = {
-  symbol: IndexKey;
-  price: number;
-  change: number;
-  changePct: number;
-  points: [number, number][];
-  marketTime: number;
-};
-
-function smoothSeries(start: number, end: number, points = 24): number[] {
-  return Array.from({ length: points }, (_, i) => {
-    const t = i / (points - 1);
-    const eased = t * t * (3 - 2 * t);
-    const lift = Math.sin(t * Math.PI) * (end - start) * 0.035;
-    const value = start + (end - start) * eased + lift;
-    return i === points - 1 ? end : Math.round(value);
-  });
-}
-
-const PATHS: Record<Period, Record<IndexKey, number[]>> = {
-  '1D': { nifty: [24230, 24270, 24360, 24320, 24410, 24500, 24460, 24540, 24510, 24580, 24550, 24600, 24612], sensex: smoothSeries(80420, 81051) },
-  '1W': { nifty: smoothSeries(24110, 24612), sensex: smoothSeries(79200, 81051) },
-  '1M': { nifty: smoothSeries(23680, 24612), sensex: smoothSeries(77600, 81051) },
-  '1Y': { nifty: smoothSeries(21840, 24612), sensex: smoothSeries(72400, 81051) },
-  '5Y': { nifty: smoothSeries(14200, 24612), sensex: smoothSeries(48200, 81051) },
-};
-
 function smoothLine(pts: Array<readonly [number, number]>): string {
   if (pts.length === 0) return '';
   let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
@@ -79,166 +43,6 @@ function smoothLine(pts: Array<readonly [number, number]>): string {
     d += ` C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
   }
   return d;
-}
-
-function istParts(unix: number) {
-  return new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'Asia/Kolkata',
-    weekday: 'short',
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hourCycle: 'h23',
-  }).formatToParts(new Date(unix * 1000));
-}
-
-function part(parts: Intl.DateTimeFormatPart[], type: string) {
-  return parts.find((item) => item.type === type)?.value ?? '';
-}
-
-function marketOpen(now = Date.now()) {
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'Asia/Kolkata',
-    weekday: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-    hourCycle: 'h23',
-  }).formatToParts(new Date(now));
-  const day = part(parts, 'weekday');
-  if (day === 'Sat' || day === 'Sun') return false;
-  const minutes = Number(part(parts, 'hour')) * 60 + Number(part(parts, 'minute'));
-  return minutes >= 9 * 60 + 15 && minutes <= 15 * 60 + 30;
-}
-
-function axisLabels(points: [number, number][], period: Period): string[] {
-  const picks = [0, 0.33, 0.66, 1].map((ratio) => points[Math.min(points.length - 1, Math.round(ratio * (points.length - 1)))][0]);
-  return picks.map((unix) => {
-    const parts = istParts(unix);
-    if (period === '1D') return `${part(parts, 'hour')}:${part(parts, 'minute')}`;
-    if (period === '5Y') return `${part(parts, 'month')} ${part(parts, 'year').slice(2)}`;
-    return `${part(parts, 'day')} ${part(parts, 'month')}`;
-  });
-}
-
-function moveText(change: number, pct: number) {
-  const sign = change > 0 ? '+' : '';
-  return `${sign}${change.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${sign}${pct.toFixed(2)}%)`;
-}
-
-function CountUp({ value }: { value: number }) {
-  const [shown, setShown] = useState(value);
-  const ref = useRef<HTMLSpanElement>(null);
-  const shownRef = useRef(value);
-  shownRef.current = shown;
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return undefined;
-    let frame = 0;
-    let observer: IntersectionObserver | undefined;
-    const play = (from: number) => {
-      cancelAnimationFrame(frame);
-      const start = performance.now();
-      const tick = (now: number) => {
-        const progress = Math.min(1, (now - start) / 520);
-        const eased = 1 - (1 - progress) ** 3;
-        setShown(from + (value - from) * eased);
-        if (progress < 1) frame = requestAnimationFrame(tick);
-      };
-      frame = requestAnimationFrame(tick);
-    };
-    if (prefersReducedMotion()) {
-      setShown(value);
-      return undefined;
-    }
-    const arm = () => {
-      const from = el.dataset.played === '1' ? shownRef.current : 0;
-      el.dataset.played = '1';
-      setShown(from);
-      play(from);
-    };
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight && rect.bottom > 0) arm();
-    else {
-      observer = new IntersectionObserver(([entry]) => {
-        if (!entry?.isIntersecting) return;
-        observer?.disconnect();
-        arm();
-      }, { threshold: 0.4 });
-      observer.observe(el);
-    }
-    return () => {
-      cancelAnimationFrame(frame);
-      observer?.disconnect();
-    };
-  }, [value]);
-  const finalText = value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const shownText = shown.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return (
-    <span className="count-up" ref={ref}>
-      <span className="count-up-sizer" aria-hidden="true">{finalText}</span>
-      <span>{shownText}</span>
-    </span>
-  );
-}
-
-function NiftyChart({ values, labels, name }: { values: number[]; labels: string[]; name: string }) {
-  const w = 340;
-  const h = 88;
-  const left = 6;
-  const right = 52;
-  const top = 8;
-  const bottom = 18;
-  const low = Math.min(...values);
-  const high = Math.max(...values);
-  const pad = (high - low) * 0.08 || Math.abs(high) * 0.002 || 1;
-  const min = low - pad;
-  const max = high + pad;
-  const span = max - min || 1;
-  const pts = values.map((v, i) => {
-    const x = left + (i / Math.max(1, values.length - 1)) * (w - left - right);
-    const y = top + (1 - (v - min) / span) * (h - top - bottom);
-    return [x, y] as const;
-  });
-  const d = smoothLine(pts);
-  const area = `${d} L${pts[pts.length - 1][0].toFixed(1)} ${h - bottom} L${pts[0][0].toFixed(1)} ${h - bottom} Z`;
-  const ticks = [0, 1, 2].map((i) => max - (span * i) / 2);
-  return (
-    <svg viewBox={`0 0 ${w} ${h}`} role="img" aria-label={`${name} chart`}>
-      {ticks.map((tick) => {
-        const y = top + (1 - (tick - min) / span) * (h - top - bottom);
-        return (
-          <g key={tick}>
-            <line x1={left} x2={w - right} y1={y} y2={y} stroke="#e7efe9" strokeWidth="1" />
-            <text x={w - 2} y={y + 3.5} fontSize="10.5" fontWeight="500" fill="#5c675f" textAnchor="end">{Math.round(tick).toLocaleString('en-IN')}</text>
-          </g>
-        );
-      })}
-      {labels.map((label, i) => (
-        <text key={`${label}-${i}`} x={left + (i / Math.max(1, labels.length - 1)) * (w - left - right)} y={h - 2} fontSize="10.5" fontWeight="500" fill="#5c675f" textAnchor={i === 0 ? 'start' : i === labels.length - 1 ? 'end' : 'middle'}>{label}</text>
-      ))}
-      <path d={area} fill="rgba(31,157,85,0.14)" />
-      <path className="hf-line" d={d} fill="none" stroke="#1F9D55" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function SensexSpark({ values }: { values: number[] }) {
-  const w = 84;
-  const h = 22;
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const pts = values.map((v, i) => {
-    const x = (i / Math.max(1, values.length - 1)) * w;
-    const y = 2 + (1 - (v - min) / (max - min || 1)) * (h - 4);
-    return [x, y] as const;
-  });
-  return (
-    <svg viewBox={`0 0 ${w} ${h}`} width="84" height="22" aria-hidden="true">
-      <path className="hf-line" d={smoothLine(pts)} fill="none" stroke="#1F9D55" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
-    </svg>
-  );
 }
 
 const GOALS = [
@@ -452,54 +256,6 @@ function AreaChart({
   );
 }
 
-function MarketReadout({ focus, period, quote, other }: { focus: IndexKey; period: Period; quote?: LiveQuote; other?: LiveQuote }) {
-  const primary = quote ?? { ...SAMPLE[focus], points: PATHS[period][focus].map((close, i) => [i, close] as [number, number]), marketTime: 0 };
-  const secondaryKey: IndexKey = focus === 'nifty' ? 'sensex' : 'nifty';
-  const mini = other ?? { ...SAMPLE[secondaryKey], points: PATHS[period][secondaryKey].map((close, i) => [i, close] as [number, number]), marketTime: 0 };
-  const live = Boolean(quote);
-  const open = marketOpen();
-  const labels = live && quote ? axisLabels(quote.points, period) : ['09:15', '11:00', '13:00', '15:30'];
-  const stamp = quote ? istParts(quote.marketTime) : [];
-  const tone = (change: number) => (change < 0 ? { color: '#8a5a2a' } : undefined);
-  return (
-    <div className="hf-market-card-inner">
-      <div className="hf-market-head-row">
-        <div>
-          <span className="hf-index-name">{SAMPLE[focus].name}</span>
-          <div className="hf-level">
-            <CountUp value={primary.price} />{' '}
-            <span className="hf-up" style={tone(primary.change)}>
-              {moveText(primary.change, primary.changePct)}
-            </span>
-          </div>
-        </div>
-        <p className="hf-note hf-market-status">
-          {live && open && (
-            <>
-              <span aria-hidden="true" style={{ display: 'inline-block', width: 6, height: 6, marginRight: 4, borderRadius: 999, background: '#1f9d55', verticalAlign: 'middle' }} />
-              Live · {part(stamp, 'hour')}:{part(stamp, 'minute')} IST
-            </>
-          )}
-          {live && !open && <>Last close · {part(stamp, 'day')} {part(stamp, 'month')} {part(stamp, 'year')}</>}
-          {!live && <>Sample as of {FARCON_CONFIG.illustrativeMarketAsOf} <span className="hf-indicative">Illustrative</span></>}
-        </p>
-      </div>
-      <div key={`${focus}-${period}`} className="hf-draw">
-        <NiftyChart values={primary.points.map((point) => point[1])} labels={labels} name={SAMPLE[focus].name} />
-      </div>
-      <div className="hf-sensex">
-        <div className="hf-sensex-meta">
-          <b>{SAMPLE[secondaryKey].name}</b>
-          <strong><CountUp value={mini.price} /></strong>
-          <span className="hf-up" style={tone(mini.change)}>{moveText(mini.change, mini.changePct)}</span>
-        </div>
-        <span key={`${secondaryKey}-${period}`} className="hf-draw"><SensexSpark values={mini.points.map((point) => point[1])} /></span>
-      </div>
-      {live && <p className="hf-note hf-source">Data: Yahoo Finance, may be delayed</p>}
-    </div>
-  );
-}
-
 export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation }) => {
   const [planTab, setPlanTab] = useState<(typeof PLAN_TABS)[number]>('Retirement');
   const [target, setTarget] = useState(35_000_000);
@@ -508,47 +264,22 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
   const [inflation, setInflation] = useState(6);
   const [fundTab, setFundTab] = useState('Equity Funds');
   const heroRef = useRef<HTMLElement>(null);
-  const [period, setPeriod] = useState<Period>('1D');
-  const [indexFocus, setIndexFocus] = useState<IndexKey>('nifty');
-  const [quotes, setQuotes] = useState<Partial<Record<string, LiveQuote>>>({});
-  const rangeKey = period.toLowerCase();
+
+  // Quick Goal SIP Calculator state in Hero
+  const [quickTarget, setQuickTarget] = useState(5_000_000); // 50 Lakhs
+  const [quickYears, setQuickYears] = useState(10); // 10 Years
+  const [quickRate, setQuickRate] = useState(12); // 12% p.a.
+
+  const quickIllustration = useMemo(
+    () => planIllustration(quickTarget, quickYears, quickRate, 0),
+    [quickTarget, quickYears, quickRate]
+  );
+
   const plan = useMemo(() => planIllustration(target, years, rate, inflation), [target, years, rate, inflation]);
   const funds = fundTab === 'Equity Funds'
     ? FUNDS.filter((fund) => fund.group !== 'Debt Funds')
     : FUNDS.filter((fund) => fund.group === fundTab);
   const whatsapp = `https://wa.me/${FARCON_CONFIG.whatsappNumber}`;
-
-  useEffect(() => {
-    let stop = false;
-    const load = () => {
-      Promise.all((['nifty', 'sensex'] as const).map(async (symbol) => {
-        const response = await fetch(`/api/market?symbol=${symbol}&range=${rangeKey}`);
-        if (!response.ok) throw new Error('market');
-        return response.json() as Promise<LiveQuote>;
-      })).then((rows) => {
-        if (stop) return;
-        setQuotes((current) => {
-          const next = { ...current };
-          for (const row of rows) next[`${row.symbol}:${rangeKey}`] = row;
-          return next;
-        });
-      }).catch(() => undefined);
-    };
-    load();
-    if (period !== '1D') return () => { stop = true; };
-    let timer = 0;
-    const arm = () => {
-      window.clearInterval(timer);
-      if (document.visibilityState === 'visible' && marketOpen()) timer = window.setInterval(load, 60_000);
-    };
-    document.addEventListener('visibilitychange', arm);
-    arm();
-    return () => {
-      stop = true;
-      document.removeEventListener('visibilitychange', arm);
-      window.clearInterval(timer);
-    };
-  }, [period, rangeKey]);
 
   useEffect(() => {
     if (prefersReducedMotion()) return undefined;
@@ -560,6 +291,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  const handleOpenFullPlanner = () => {
+    setTarget(quickTarget);
+    setYears(quickYears);
+    setRate(quickRate);
+    document.getElementById('planner')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <div className="hf">
@@ -578,7 +316,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         <div className="hf-hero-scrim" aria-hidden="true" />
         <div className="hf-hero-inner">
           <div className="hf-hero-copy">
-            <span className="hf-eye">Goal-based wealth guidance</span>
+            <span className="hf-eye">AMFI-Registered Mutual Fund Distributor</span>
             <p className="hf-script">
               A more secure
               <br />tomorrow, together.
@@ -587,39 +325,161 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                 <path d="M18 30 l10 -2 M18 30 l3 8" fill="none" stroke="#2c3a34" strokeWidth="1.2" strokeLinecap="round" />
               </svg>
             </p>
-            <h1>Investing,<br /><em>without the noise.</em></h1>
-            <p className="hf-lede">Your goals are personal. Your investment journey should be too.</p>
-            <p className="hf-lede">Farcon Wealth helps you approach mutual fund investing with clarity, discipline and purpose.</p>
+            <h1>Your family’s future <br /><em>deserves a thoughtful plan.</em></h1>
+            <p className="hf-lede">Personalized mutual fund strategies designed around the milestones that matter most to your family—from children’s education to lifelong retirement peace.</p>
+            <p className="hf-lede">Guidance with clarity and discipline from an AMFI-registered distributor. Direct accounts in your name, with zero market hype.</p>
             <div className="hf-cta-row">
               <button type="button" className="hf-btn hf-btn-green" onClick={() => document.getElementById('goals')?.scrollIntoView({ behavior: 'smooth' })}>
                 Start with a Goal <ArrowRight size={14} />
               </button>
-              <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/start-investing')}>
-                Start investing
-              </button>
               <button type="button" className="hf-btn hf-btn-outline" onClick={() => onOpenConsultation('Book a Free 15-Minute Call')}>
                 Book a Free 15-Minute Call
               </button>
+              <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/start-investing')}>
+                Start Investing
+              </button>
             </div>
             <div className="hf-trust">
-              <span><Target size={14} /> Goal-based</span>
-              <span><Shield size={14} /> Transparent</span>
-              <span><User size={14} /> In your name</span>
+              <span><Shield size={14} /> AMFI Regd. ARN {FARCON_CONFIG.arn}</span>
+              <span><Target size={14} /> Milestone-Oriented</span>
+              <span><User size={14} /> In Your Own Name</span>
             </div>
           </div>
-          <article className="hf-market" aria-label="Market snapshot">
-            <div className="hf-market-tabs">
-              <div className="hf-tabs" role="group" aria-label="Index">
-                <button type="button" className={indexFocus === 'nifty' ? 'is-on' : ''} onClick={() => setIndexFocus('nifty')}>NIFTY 50</button>
-                <button type="button" className={indexFocus === 'sensex' ? 'is-on' : ''} onClick={() => setIndexFocus('sensex')}>SENSEX</button>
+
+          <article className="hf-hero-calc" aria-label="Quick SIP Goal Calculator">
+            <div className="hf-calc-header">
+              <div className="hf-calc-badge">
+                <Calculator size={14} /> Quick Goal SIP Estimator
               </div>
-              <div className="hf-tabs" role="group" aria-label="Period">
-                {PERIODS.map((item) => (
-                  <button key={item} type="button" className={period === item ? 'is-on' : ''} onClick={() => setPeriod(item)}>{item}</button>
-                ))}
+              <h3 className="hf-calc-title">Estimate your monthly plan</h3>
+            </div>
+
+            {/* Quick goal presets */}
+            <div className="hf-calc-presets" role="group" aria-label="Quick goal presets">
+              {[
+                { label: '₹25 L (5y)', target: 2_500_000, years: 5, rate: 12 },
+                { label: '₹50 L (10y)', target: 5_000_000, years: 10, rate: 12 },
+                { label: '₹1 Cr (12y)', target: 10_000_000, years: 12, rate: 12 },
+                { label: '₹2 Cr (15y)', target: 20_000_000, years: 15, rate: 12 },
+              ].map((preset) => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  className={`hf-calc-preset-chip ${quickTarget === preset.target && quickYears === preset.years ? 'is-active' : ''}`}
+                  onClick={() => {
+                    setQuickTarget(preset.target);
+                    setQuickYears(preset.years);
+                    setQuickRate(preset.rate);
+                  }}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="hf-calc-fields">
+              {/* Target Corpus Slider */}
+              <div className="hf-calc-field">
+                <div className="hf-calc-label-row">
+                  <span className="hf-calc-label">Target Corpus</span>
+                  <span className="hf-calc-val-pill">{formatPlanCompact(quickTarget)}</span>
+                </div>
+                <input
+                  type="range"
+                  className="hf-calc-range"
+                  min={500_000}
+                  max={100_000_000}
+                  step={500_000}
+                  value={quickTarget}
+                  style={{ ['--pct' as string]: `${((quickTarget - 500_000) / 99_500_000) * 100}%` }}
+                  onChange={(e) => setQuickTarget(Number(e.target.value))}
+                  aria-label="Target corpus"
+                />
+                <div className="hf-calc-scale">
+                  <span>₹5 L</span>
+                  <span>₹10 Cr</span>
+                </div>
+              </div>
+
+              {/* Time Horizon Slider */}
+              <div className="hf-calc-field">
+                <div className="hf-calc-label-row">
+                  <span className="hf-calc-label">Time Horizon</span>
+                  <span className="hf-calc-val-pill">{quickYears} {quickYears === 1 ? 'Year' : 'Years'}</span>
+                </div>
+                <input
+                  type="range"
+                  className="hf-calc-range"
+                  min={1}
+                  max={30}
+                  step={1}
+                  value={quickYears}
+                  style={{ ['--pct' as string]: `${((quickYears - 1) / 29) * 100}%` }}
+                  onChange={(e) => setQuickYears(Number(e.target.value))}
+                  aria-label="Time horizon in years"
+                />
+                <div className="hf-calc-scale">
+                  <span>1 Year</span>
+                  <span>30 Years</span>
+                </div>
+              </div>
+
+              {/* Assumed Return Rate Slider */}
+              <div className="hf-calc-field">
+                <div className="hf-calc-label-row">
+                  <span className="hf-calc-label">Assumed Return</span>
+                  <span className="hf-calc-val-pill">{quickRate}% p.a.</span>
+                </div>
+                <input
+                  type="range"
+                  className="hf-calc-range"
+                  min={8}
+                  max={15}
+                  step={0.5}
+                  value={quickRate}
+                  style={{ ['--pct' as string]: `${((quickRate - 8) / 7) * 100}%` }}
+                  onChange={(e) => setQuickRate(Number(e.target.value))}
+                  aria-label="Assumed return rate"
+                />
+                <div className="hf-calc-scale">
+                  <span>8% (Conservative)</span>
+                  <span>15% (Aggressive)</span>
+                </div>
               </div>
             </div>
-            <MarketReadout focus={indexFocus} period={period} quote={quotes[`${indexFocus}:${rangeKey}`]} other={quotes[`${indexFocus === 'nifty' ? 'sensex' : 'nifty'}:${rangeKey}`]} />
+
+            {/* Result Box */}
+            <div className="hf-calc-result-box">
+              <div className="hf-calc-result-header">
+                <span className="hf-calc-result-eyebrow">Required Monthly SIP</span>
+                <div className="hf-calc-result-amount">
+                  {formatINR(quickIllustration.requiredMonthlySIP)}
+                  <span className="hf-calc-result-unit">/ month</span>
+                </div>
+              </div>
+              <div className="hf-calc-stats-grid">
+                <div className="hf-calc-stat-item">
+                  <span className="hf-calc-stat-k">Total Invested</span>
+                  <span className="hf-calc-stat-v">{formatPlanCompact(quickIllustration.totalInvestment)}</span>
+                </div>
+                <div className="hf-calc-stat-item">
+                  <span className="hf-calc-stat-k">Est. Wealth Gain</span>
+                  <span className="hf-calc-stat-v is-gain">+{formatPlanCompact(quickIllustration.estimatedGrowth)}</span>
+                </div>
+              </div>
+            </div>
+
+            <p className="hf-calc-disclaimer">
+              Illustrative calculation at {quickRate}% p.a. assumed return. Mutual fund investments are subject to market risks; past performance does not guarantee future results.
+            </p>
+
+            <button
+              type="button"
+              className="hf-btn hf-btn-green hf-calc-cta-btn"
+              onClick={handleOpenFullPlanner}
+            >
+              Customize Full Plan in Goal Planner <ArrowRight size={14} />
+            </button>
           </article>
         </div>
       </section>
