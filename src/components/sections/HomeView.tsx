@@ -269,10 +269,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
   const [quickTarget, setQuickTarget] = useState(5_000_000); // 50 Lakhs
   const [quickYears, setQuickYears] = useState(10); // 10 Years
   const [quickRate, setQuickRate] = useState(12); // 12% p.a.
+  const [quickInflation, setQuickInflation] = useState(6); // 6% p.a. default inflation
 
   const quickIllustration = useMemo(
-    () => planIllustration(quickTarget, quickYears, quickRate, 0),
-    [quickTarget, quickYears, quickRate]
+    () => planIllustration(quickTarget, quickYears, quickRate, quickInflation),
+    [quickTarget, quickYears, quickRate, quickInflation]
   );
 
   const plan = useMemo(() => planIllustration(target, years, rate, inflation), [target, years, rate, inflation]);
@@ -296,6 +297,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
     setTarget(quickTarget);
     setYears(quickYears);
     setRate(quickRate);
+    setInflation(quickInflation);
     document.getElementById('planner')?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -459,6 +461,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               </div>
               <div className="hf-calc-stats-grid">
                 <div className="hf-calc-stat-item">
+                  <span className="hf-calc-stat-k">Future Goal (6% infl.)</span>
+                  <span className="hf-calc-stat-v">{formatPlanCompact(quickIllustration.futureInflationAdjustedGoal)}</span>
+                </div>
+                <div className="hf-calc-stat-item">
                   <span className="hf-calc-stat-k">Total Invested</span>
                   <span className="hf-calc-stat-v">{formatPlanCompact(quickIllustration.totalInvestment)}</span>
                 </div>
@@ -470,7 +476,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             </div>
 
             <p className="hf-calc-disclaimer">
-              Illustrative calculation at {quickRate}% p.a. assumed return. Mutual fund investments are subject to market risks; past performance does not guarantee future results.
+              Includes 6% p.a. assumed inflation so your corpus matches future purchasing power (adjust inflation, horizon and asset allocation in the full planner). Mutual fund investments are subject to market risks.
             </p>
 
             <button

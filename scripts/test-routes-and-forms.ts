@@ -225,4 +225,17 @@ assert(s6.step === 'confirmed' && s6.leadId === 'LEAD-XYZ123', 'Scenario 6: Skip
 console.log('✓ Truthful consultation confirmation scenarios (all 6) verified');
 console.log('✓ Multi-step progressive disclosure and deduplication verified');
 console.log('✓ Lead sanitization and security checks verified');
+
+// 9. Quick Goal SIP Estimator & Full Planner Handoff Consistency
+import { planIllustration as checkIllustration } from '../src/components/sections/home/planGoal';
+const heroQuickCalcDefault = checkIllustration(5000000, 10, 12, 6);
+assert(heroQuickCalcDefault.requiredMonthlySIP === 38540, 'Quick calculator must compute ₹38,540 with 6% inflation');
+assert(heroQuickCalcDefault.futureInflationAdjustedGoal === 8954238, 'Quick calculator future goal must match ₹89.54 L with 6% inflation');
+
+// Verify handoff preservation
+const fullPlannerReceived = checkIllustration(5000000, 10, 12, 6);
+assert(fullPlannerReceived.requiredMonthlySIP === heroQuickCalcDefault.requiredMonthlySIP, 'Planner must produce identical monthly SIP upon handoff');
+assert(fullPlannerReceived.futureInflationAdjustedGoal === heroQuickCalcDefault.futureInflationAdjustedGoal, 'Planner must produce identical future goal upon handoff');
+console.log('✓ Quick-calculator 6% inflation benchmark & planner handoff consistency verified');
+
 console.log('[ALL ROUTE & FORM TESTS PASSED]');

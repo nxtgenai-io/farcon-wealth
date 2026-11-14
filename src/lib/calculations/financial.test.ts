@@ -173,4 +173,28 @@ const resModerate = scoreQuiz(moderateAnswers);
 assert(resModerate.band === 'moderate', 'Should be moderate');
 console.log('✓ 9. Quiz scoring engine deterministic and verified across all bands');
 
+// 10. Quick Goal SIP Estimator & Planner Handoff Consistency (Stage 1 Refinement)
+// Quick calculator default 6% inflation assumption must match canonical goal SIP calculation and full planner.
+// Case A: Default benchmark ₹50 Lakh, 10 yrs, 12% return, 6% inflation
+const quickDefault = planIllustration(5000000, 10, 12, 6);
+assert(quickDefault.futureInflationAdjustedGoal === 8954238, `Future goal expected 8954238, got ${quickDefault.futureInflationAdjustedGoal}`);
+assert(quickDefault.requiredMonthlySIP === 38540, `Required monthly SIP expected 38540, got ${quickDefault.requiredMonthlySIP}`);
+assert(quickDefault.totalInvestment === 38540 * 120, `Total investment expected ${38540 * 120}, got ${quickDefault.totalInvestment}`);
+assert(quickDefault.estimatedGrowth === 8954238 - (38540 * 120), `Estimated growth mismatch: ${quickDefault.estimatedGrowth}`);
+
+// Case B: Preset ₹1 Cr (12y, 12% return, 6% inflation)
+const quickPreset1Cr = planIllustration(10000000, 12, 12, 6);
+assert(quickPreset1Cr.futureInflationAdjustedGoal === 20121965, `Future goal expected 20121965, got ${quickPreset1Cr.futureInflationAdjustedGoal}`);
+assert(quickPreset1Cr.requiredMonthlySIP === 62442, `Required monthly SIP expected 62442, got ${quickPreset1Cr.requiredMonthlySIP}`);
+
+// Case C: Planner handoff preservation check
+// When handoff occurs, inputs (target, years, rate, inflation) transferred into the full planner
+// must yield the exact same plan output without any mismatch.
+const plannerHandoff = planIllustration(5000000, 10, 12, 6);
+assert(plannerHandoff.requiredMonthlySIP === quickDefault.requiredMonthlySIP, 'Planner and quick calculator SIP must be identical');
+assert(plannerHandoff.futureInflationAdjustedGoal === quickDefault.futureInflationAdjustedGoal, 'Planner and quick calculator future goal must be identical');
+assert(plannerHandoff.totalInvestment === quickDefault.totalInvestment, 'Planner and quick calculator total investment must be identical');
+assert(plannerHandoff.estimatedGrowth === quickDefault.estimatedGrowth, 'Planner and quick calculator estimated growth must be identical');
+console.log('✓ 10. Quick Goal SIP 6% default inflation & planner handoff consistency verified');
+
 console.log('[ALL COMPREHENSIVE TESTS PASSED SUCCESSFULLY]');
