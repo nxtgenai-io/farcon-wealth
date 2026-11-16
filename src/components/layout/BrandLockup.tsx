@@ -43,11 +43,20 @@ export const BrandLockup: React.FC<BrandLockupProps> = ({
       ) : (
         <span className="fw-lockup-unit">
           <img
-            src="/brand/farcon-official-stacked.png"
+            src="/brand/farcon-official-stag.png"
+            alt=""
+            className="fw-lockup-stag"
+            width={456}
+            height={400}
+            loading="eager"
+            decoding="sync"
+          />
+          <img
+            src="/brand/farcon-official-wordmark.png"
             alt="Farcon Wealth"
-            className="fw-lockup-stacked-img"
+            className="fw-lockup-wordmark-img"
             width={459}
-            height={613}
+            height={172}
             loading="eager"
             decoding="sync"
           />

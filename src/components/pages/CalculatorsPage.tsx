@@ -158,7 +158,6 @@ const COPY: Record<Tab, { eye: string; h1: string; lede: string }> = {
 
 export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 'sip', navigate, onOpenConsultation }) => {
   const [tab, setTab] = useState<Tab>(initialType);
-  useEffect(() => setTab(initialType), [initialType]);
   const [sipAmount, setSipAmount] = useState(25000);
   const [sipRate, setSipRate] = useState(12);
   const [sipYears, setSipYears] = useState(15);
@@ -166,21 +165,45 @@ export const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ initialType = 
   const [lumpRate, setLumpRate] = useState(12);
   const [lumpYears, setLumpYears] = useState(10);
   const goalQuery = useMemo(() => {
-    const params = new URLSearchParams(window.location.search);
+    const search = typeof window !== 'undefined' ? window.location.search : '';
+    const params = new URLSearchParams(search);
     const target = Number(params.get('target'));
     const years = Number(params.get('years'));
     const rate = Number(params.get('rate'));
+    const inflationParam = params.get('inflation');
+    const parsedInflation = inflationParam !== null ? Number(inflationParam) : 6;
     return {
-      target: target >= 500000 ? target : 10000000,
-      years: years >= 1 ? years : 15,
-      rate: rate >= 6 ? rate : 12,
+      target: target >= 500000 ? Math.min(1000000000, target) : 10000000,
+      years: years >= 1 ? Math.min(30, years) : 15,
+      rate: rate >= 6 ? Math.min(18, rate) : 12,
+      inflation: !isNaN(parsedInflation) && parsedInflation >= 0 && parsedInflation <= 12 ? parsedInflation : 6,
     };
   }, []);
   const [goal, setGoal] = useState(goalQuery.target);
   const [goalRate, setGoalRate] = useState(goalQuery.rate);
   const [goalYears, setGoalYears] = useState(goalQuery.years);
   const [goalSavings, setGoalSavings] = useState(0);
-  const [goalInflation, setGoalInflation] = useState(6);
+  const [goalInflation, setGoalInflation] = useState(goalQuery.inflation);
+
+  useEffect(() => {
+    setTab(initialType);
+    if (initialType === 'goal' && typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const target = Number(params.get('target'));
+      const years = Number(params.get('years'));
+      const rate = Number(params.get('rate'));
+      const inflationParam = params.get('inflation');
+      if (target >= 500000) setGoal(Math.min(1000000000, target));
+      if (years >= 1) setGoalYears(Math.min(30, years));
+      if (rate >= 6) setGoalRate(Math.min(18, rate));
+      if (inflationParam !== null) {
+        const parsedInflation = Number(inflationParam);
+        if (!isNaN(parsedInflation) && parsedInflation >= 0 && parsedInflation <= 12) {
+          setGoalInflation(parsedInflation);
+        }
+      }
+    }
+  }, [initialType]);
   const [age, setAge] = useState(32);
   const [retireAge, setRetireAge] = useState(60);
   const [lifeAge, setLifeAge] = useState(85);

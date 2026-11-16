@@ -26,11 +26,11 @@ export const FarconLogo: React.FC<FarconLogoProps> = ({
     return (
       <div className={`inline-flex items-center justify-center ${heightClasses} ${className}`}>
         <img
-          src="/brand/farcon-stag.png"
+          src="/brand/farcon-official-stag.png"
           alt="Farcon Wealth"
           className="h-full w-auto object-contain block select-none pointer-events-none"
-          width={397}
-          height={348}
+          width={456}
+          height={400}
         />
       </div>
     );
@@ -57,11 +57,18 @@ export const FarconLogo: React.FC<FarconLogoProps> = ({
   return (
     <div className={`inline-flex flex-col items-center justify-center text-center select-none ${heightClasses} ${className}`}>
       <img
-        src="/brand/farcon-official-stacked.png"
+        src="/brand/farcon-official-stag.png"
+        alt=""
+        className="h-3/5 w-auto object-contain block select-none pointer-events-none"
+        width={456}
+        height={400}
+      />
+      <img
+        src="/brand/farcon-official-wordmark.png"
         alt="Farcon Wealth"
-        className="h-full w-auto object-contain block select-none pointer-events-none"
+        className="h-2/5 w-auto object-contain block select-none pointer-events-none mt-0.5"
         width={459}
-        height={613}
+        height={172}
       />
     </div>
   );

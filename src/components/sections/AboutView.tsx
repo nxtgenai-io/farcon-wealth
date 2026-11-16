@@ -92,6 +92,13 @@ export const AboutView: React.FC<AboutViewProps> = ({ navigate, onOpenConsultati
             <a href={`mailto:${FARCON_CONFIG.email}`} className="text-[#315FCE] block mt-0.5 hover:underline">
               {FARCON_CONFIG.email}
             </a>
+            <div className="mt-1 flex flex-col gap-0.5">
+              {FARCON_CONFIG.phoneNumbers.map((phone) => (
+                <a key={phone} href={`tel:${phone.replace(/\s+/g, '')}`} className="text-slate-300 hover:text-white">
+                  {phone}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 

@@ -13,6 +13,8 @@ export type AnalyticsEventType =
   | 'quiz_completed'
   | 'consultation_opened'
   | 'consultation_submitted'
+  | 'consultation_step1_submitted'
+  | 'consultation_step2_skipped'
   | 'goal_journey_stage_changed'
   | 'goal_journey_archetype_changed'
   | 'scheme_filter_changed';

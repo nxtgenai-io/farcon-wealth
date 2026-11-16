@@ -13,7 +13,7 @@ export const COMPLIANCE_REGISTRY = {
     phoneNumber: FARCON_CONFIG.phoneNumber,
     amfiRegistration: `Farcon Wealth is an AMFI-registered Mutual Fund Distributor · ARN: ${FARCON_CONFIG.arn}`,
     amfiShortBadge: `AMFI-registered MFD · ARN: ${FARCON_CONFIG.arn}`,
-    registeredOffice: 'Farcon Wealth Private Limited, Bangalore, Karnataka, India',
+    registeredOffice: `Farcon Wealth Private Limited, ${FARCON_CONFIG.registeredAddress}`,
     custodyStatement:
       'Farcon Wealth does not hold custody of your investment funds. Investments are made through official channels in the investor’s name.',
   },

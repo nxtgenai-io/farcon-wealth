@@ -1,0 +1,355 @@
+{
+  "timestamp": "2026-11-14T01:15:55.296Z",
+  "viewports": [
+    {
+      "viewport": "1440px-desktop",
+      "width": 1440,
+      "height": 900,
+      "docW": 1432,
+      "winW": 1440,
+      "overflow": false,
+      "heroHeight": 740,
+      "h1Text": "Your family’s future deserves a thoughtful plan.",
+      "h1Width": 480,
+      "h1Size": "58px",
+      "h1LineHeight": "60.32px",
+      "photoVisible": true,
+      "photoRect": {
+        "width": 1432,
+        "height": 740,
+        "top": 65
+      },
+      "photoObjFit": "cover",
+      "photoObjPos": "58% 42%",
+      "calcVisible": true,
+      "calcWidth": 420,
+      "calcHeight": 547,
+      "trustWidth": 520,
+      "trustHeight": 28,
+      "trustSpans": [
+        "AMFI Regd. ARN 329006",
+        "Milestone-Oriented",
+        "In Your Own Name"
+      ],
+      "monthlySip": "₹38,540/ month",
+      "pills": [
+        "₹50 L",
+        "10 Years",
+        "12% p.a."
+      ],
+      "statKeys": [
+        "Future Goal (6% infl.)",
+        "Total Invested",
+        "Est. Wealth Gain"
+      ],
+      "statVals": [
+        "₹89.54 L",
+        "₹46.25 L",
+        "+₹43.29 L"
+      ],
+      "disclaimer": "Includes 6% p.a. assumed inflation so your corpus matches future purchasing power (adjust inflation, horizon and asset allocation in the full planner). Mutual fund investments are subject to market risks.",
+      "heroElements": [
+        {
+          "cls": "hf-hero-photo",
+          "top": 65,
+          "height": 740
+        },
+        {
+          "cls": "hf-hero-scrim",
+          "top": 65,
+          "height": 740
+        },
+        {
+          "cls": "hf-hero-inner",
+          "top": 65,
+          "height": 740
+        }
+      ]
+    },
+    {
+      "viewport": "1280px-laptop",
+      "width": 1280,
+      "height": 800,
+      "docW": 1272,
+      "winW": 1280,
+      "overflow": false,
+      "heroHeight": 740,
+      "h1Text": "Your family’s future deserves a thoughtful plan.",
+      "h1Width": 480,
+      "h1Size": "58px",
+      "h1LineHeight": "60.32px",
+      "photoVisible": true,
+      "photoRect": {
+        "width": 1272,
+        "height": 740,
+        "top": 65
+      },
+      "photoObjFit": "cover",
+      "photoObjPos": "58% 42%",
+      "calcVisible": true,
+      "calcWidth": 420,
+      "calcHeight": 547,
+      "trustWidth": 520,
+      "trustHeight": 28,
+      "trustSpans": [
+        "AMFI Regd. ARN 329006",
+        "Milestone-Oriented",
+        "In Your Own Name"
+      ],
+      "monthlySip": "₹38,540/ month",
+      "pills": [
+        "₹50 L",
+        "10 Years",
+        "12% p.a."
+      ],
+      "statKeys": [
+        "Future Goal (6% infl.)",
+        "Total Invested",
+        "Est. Wealth Gain"
+      ],
+      "statVals": [
+        "₹89.54 L",
+        "₹46.25 L",
+        "+₹43.29 L"
+      ],
+      "disclaimer": "Includes 6% p.a. assumed inflation so your corpus matches future purchasing power (adjust inflation, horizon and asset allocation in the full planner). Mutual fund investments are subject to market risks.",
+      "heroElements": [
+        {
+          "cls": "hf-hero-photo",
+          "top": 65,
+          "height": 740
+        },
+        {
+          "cls": "hf-hero-scrim",
+          "top": 65,
+          "height": 740
+        },
+        {
+          "cls": "hf-hero-inner",
+          "top": 65,
+          "height": 740
+        }
+      ]
+    },
+    {
+      "viewport": "768px-tablet",
+      "width": 768,
+      "height": 1024,
+      "docW": 760,
+      "winW": 768,
+      "overflow": false,
+      "heroHeight": 959,
+      "h1Text": "Your family’s future deserves a thoughtful plan.",
+      "h1Width": 346,
+      "h1Size": "38.4px",
+      "h1LineHeight": "39.168px",
+      "photoVisible": true,
+      "photoRect": {
+        "width": 346,
+        "height": 280,
+        "top": 85
+      },
+      "photoObjFit": "cover",
+      "photoObjPos": "50% 42%",
+      "calcVisible": true,
+      "calcWidth": 346,
+      "calcHeight": 603,
+      "trustWidth": 346,
+      "trustHeight": 64,
+      "trustSpans": [
+        "AMFI Regd. ARN 329006",
+        "Milestone-Oriented",
+        "In Your Own Name"
+      ],
+      "monthlySip": "₹38,540/ month",
+      "pills": [
+        "₹50 L",
+        "10 Years",
+        "12% p.a."
+      ],
+      "statKeys": [
+        "Future Goal (6% infl.)",
+        "Total Invested",
+        "Est. Wealth Gain"
+      ],
+      "statVals": [
+        "₹89.54 L",
+        "₹46.25 L",
+        "+₹43.29 L"
+      ],
+      "disclaimer": "Includes 6% p.a. assumed inflation so your corpus matches future purchasing power (adjust inflation, horizon and asset allocation in the full planner). Mutual fund investments are subject to market risks.",
+      "heroElements": [
+        {
+          "cls": "hf-hero-photo",
+          "top": 85,
+          "height": 280
+        },
+        {
+          "cls": "hf-hero-scrim",
+          "top": 0,
+          "height": 0
+        },
+        {
+          "cls": "hf-hero-inner",
+          "top": 0,
+          "height": 0
+        }
+      ]
+    },
+    {
+      "viewport": "390px-mobile-iphone",
+      "width": 390,
+      "height": 844,
+      "docW": 390,
+      "winW": 390,
+      "overflow": false,
+      "heroHeight": 1349,
+      "h1Text": "Your family’s future deserves a thoughtful plan.",
+      "h1Width": 358,
+      "h1Size": "33.15px",
+      "h1LineHeight": "34.476px",
+      "photoVisible": true,
+      "photoRect": {
+        "width": 358,
+        "height": 180,
+        "top": 1204
+      },
+      "photoObjFit": "cover",
+      "photoObjPos": "50% 46%",
+      "calcVisible": true,
+      "calcWidth": 358,
+      "calcHeight": 599,
+      "trustWidth": 358,
+      "trustHeight": 62,
+      "trustSpans": [
+        "AMFI Regd. ARN 329006",
+        "Milestone-Oriented",
+        "In Your Own Name"
+      ],
+      "monthlySip": "₹38,540/ month",
+      "pills": [
+        "₹50 L",
+        "10 Years",
+        "12% p.a."
+      ],
+      "statKeys": [
+        "Future Goal (6% infl.)",
+        "Total Invested",
+        "Est. Wealth Gain"
+      ],
+      "statVals": [
+        "₹89.54 L",
+        "₹46.25 L",
+        "+₹43.29 L"
+      ],
+      "disclaimer": "Includes 6% p.a. assumed inflation so your corpus matches future purchasing power (adjust inflation, horizon and asset allocation in the full planner). Mutual fund investments are subject to market risks.",
+      "heroElements": [
+        {
+          "cls": "hf-hero-photo",
+          "top": 1204,
+          "height": 180
+        },
+        {
+          "cls": "hf-hero-scrim",
+          "top": 0,
+          "height": 0
+        },
+        {
+          "cls": "hf-hero-inner",
+          "top": 0,
+          "height": 0
+        }
+      ]
+    },
+    {
+      "viewport": "360px-mobile-small",
+      "width": 360,
+      "height": 780,
+      "docW": 360,
+      "winW": 360,
+      "overflow": false,
+      "heroHeight": 1380,
+      "h1Text": "Your family’s future deserves a thoughtful plan.",
+      "h1Width": 328,
+      "h1Size": "30.6px",
+      "h1LineHeight": "31.824px",
+      "photoVisible": true,
+      "photoRect": {
+        "width": 328,
+        "height": 180,
+        "top": 1235
+      },
+      "photoObjFit": "cover",
+      "photoObjPos": "50% 46%",
+      "calcVisible": true,
+      "calcWidth": 328,
+      "calcHeight": 599,
+      "trustWidth": 328,
+      "trustHeight": 62,
+      "trustSpans": [
+        "AMFI Regd. ARN 329006",
+        "Milestone-Oriented",
+        "In Your Own Name"
+      ],
+      "monthlySip": "₹38,540/ month",
+      "pills": [
+        "₹50 L",
+        "10 Years",
+        "12% p.a."
+      ],
+      "statKeys": [
+        "Future Goal (6% infl.)",
+        "Total Invested",
+        "Est. Wealth Gain"
+      ],
+      "statVals": [
+        "₹89.54 L",
+        "₹46.25 L",
+        "+₹43.29 L"
+      ],
+      "disclaimer": "Includes 6% p.a. assumed inflation so your corpus matches future purchasing power (adjust inflation, horizon and asset allocation in the full planner). Mutual fund investments are subject to market risks.",
+      "heroElements": [
+        {
+          "cls": "hf-hero-photo",
+          "top": 1235,
+          "height": 180
+        },
+        {
+          "cls": "hf-hero-scrim",
+          "top": 0,
+          "height": 0
+        },
+        {
+          "cls": "hf-hero-inner",
+          "top": 0,
+          "height": 0
+        }
+      ]
+    }
+  ],
+  "interactionHandoff": {
+    "preset1Cr": {
+      "amount": "₹62,442/ month",
+      "pills": [
+        "₹1 Cr",
+        "12 Years",
+        "12% p.a."
+      ],
+      "stats": [
+        "₹2.01 Cr",
+        "₹89.92 L",
+        "+₹1.11 Cr"
+      ]
+    },
+    "plannerHandoff": {
+      "plannerResultAmount": "₹62,454",
+      "plannerDlItems": [
+        "Target Today: ₹1 Cr",
+        "Future Inflated Target: ₹2.01 Cr",
+        "Total Investment: ₹89.92 L",
+        "Estimated Growth: ₹1.11 Cr"
+      ],
+      "scrolled": true
+    }
+  }
+}

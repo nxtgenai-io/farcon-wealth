@@ -82,6 +82,16 @@ export const LegalViews: React.FC<LegalViewProps> = ({ type, navigate }) => {
                 <br />
                 Address: {FARCON_CONFIG.registeredAddress}
                 <br />
+                Telephone:{' '}
+                {FARCON_CONFIG.phoneNumbers.map((phone, i) => (
+                  <React.Fragment key={phone}>
+                    {i > 0 && ' · '}
+                    <a href={`tel:${phone.replace(/\s+/g, '')}`} className="underline text-slate-800">
+                      {phone}
+                    </a>
+                  </React.Fragment>
+                ))}
+                <br />
                 Turnaround Time: We acknowledge all complaints within 24 business hours and aim to resolve them within 5 business days.
               </p>
 
