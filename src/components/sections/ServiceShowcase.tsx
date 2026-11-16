@@ -2,7 +2,6 @@ import React from 'react';
 import {
   ArrowDownToLine,
   ArrowRight,
-  BadgeCheck,
   CalendarClock,
   ClipboardCheck,
   GraduationCap,
@@ -18,7 +17,7 @@ import {
 import { RoutePath } from '@/types';
 import { FARCON_CONFIG } from '@/content/site/config';
 import { FARCON_SERVICES } from '@/content/services/servicesData';
-import { AMC_WORDMARKS, SERVICE_GROUPS, SERVICE_LINES } from '@/content/services/serviceGroups';
+import { SERVICE_GROUPS, SERVICE_LINES } from '@/content/services/serviceGroups';
 
 const ICONS: Record<string, LucideIcon> = {
   'sip-planning': CalendarClock,
@@ -91,31 +90,6 @@ export const ServiceShowcase: React.FC<ServiceShowcaseProps> = ({
               Farcon Wealth is an AMFI-registered mutual fund distributor, ARN {FARCON_CONFIG.arn}. These are the conversations we have. We do not give investment advice.
             </p>
           </div>
-          <aside className="svc-trust" aria-label="Registration and AMC partners">
-            <div className="svc-badge">
-              <span className="svc-ico" aria-hidden="true">
-                <BadgeCheck size={18} strokeWidth={STROKE} />
-              </span>
-              <span>
-                <strong>AMFI-registered</strong>
-                <small>Mutual fund distributor · ARN {FARCON_CONFIG.arn}</small>
-              </span>
-            </div>
-            <ul className="svc-chips">
-              <li>Investments in your name</li>
-              <li>Regular plans</li>
-              <li>Commission disclosed</li>
-            </ul>
-            <p className="svc-kicker">AMC partners</p>
-            <div className="svc-amc-fade">
-              <ul className="svc-amc">
-                {AMC_WORDMARKS.map((name) => (
-                  <li key={name}>{name}</li>
-                ))}
-              </ul>
-            </div>
-            <p className="svc-amc-note">Logos are trademarks of their respective AMCs; shown to indicate funds we distribute.</p>
-          </aside>
         </div>
       )}
 

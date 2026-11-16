@@ -341,8 +341,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               <button type="button" className="hf-btn hf-btn-green" onClick={() => document.getElementById('planner')?.scrollIntoView({ behavior: 'smooth' })}>
                 Start with a Goal <ArrowRight size={14} />
               </button>
-              <button type="button" className="hf-btn hf-btn-outline" onClick={() => onOpenConsultation('Book a Free 15-Minute Call')}>
-                Book a Free 15-Minute Call
+              <button type="button" className="hf-btn hf-btn-outline" onClick={() => onOpenConsultation('Connect with our Expert')}>
+                Connect with our Expert
               </button>
               <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/start-investing')}>
                 Start Investing

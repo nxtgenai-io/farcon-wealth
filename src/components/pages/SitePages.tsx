@@ -618,8 +618,8 @@ export const EducationPage: React.FC<PageProps & { focus?: 'education' | 'blogs'
 
 export const ContactPage: React.FC = () => {
   const [mapOn, setMapOn] = useState(false);
-  const map = 'https://maps.google.com/maps?q=A-160%20P.C.%20Colony%20Kankarbagh%20Patna%20800020&z=15&output=embed';
-  const mapsLink = 'https://maps.google.com/?q=A-160+P.C.+Colony+Kankarbagh+Patna+800020';
+  const map = 'https://maps.google.com/maps?q=4th%20Floor,%20Unison%20Tower,%20Near%20Rajeev%20Nagar%20Crossing,%20Atal%20Path,%20Patna%20800013&z=15&output=embed';
+  const mapsLink = 'https://maps.google.com/?q=4th+Floor,+Unison+Tower,+Near+Rajeev+Nagar+Crossing,+Atal+Path,+Patna+800013';
   return (
     <div className="pg">
       <div className="pg-wrap">
@@ -633,7 +633,15 @@ export const ContactPage: React.FC = () => {
             <h2>The Patna desk</h2>
             <p>{FARCON_CONFIG.registeredAddress}</p>
             <p>{FARCON_CONFIG.hours}</p>
-            <p>{FARCON_CONFIG.email}</p>
+            <p><a href={`mailto:${FARCON_CONFIG.email}`} style={{ color: 'inherit' }}>{FARCON_CONFIG.email}</a></p>
+            <div className="contact-tel-group" style={{ margin: '8px 0', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 600, color: '#0f3d2e', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Telephone</span>
+              {FARCON_CONFIG.phoneNumbers.map((phone) => (
+                <a key={phone} href={`tel:${phone.replace(/\s+/g, '')}`} style={{ color: '#0f3d2e', fontWeight: 600, textDecoration: 'none' }}>
+                  {phone}
+                </a>
+              ))}
+            </div>
             <a className="hf-btn hf-btn-green" href={whatsappHref} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
             {mapOn ? (
               <iframe className="map" title="Farcon Wealth office on Google Maps" src={map} />
@@ -651,7 +659,7 @@ export const ContactPage: React.FC = () => {
                 </svg>
                 <div className="map-caption">
                   <strong>Patna office</strong>
-                  <p>Kankarbagh · the map loads when you ask for it.</p>
+                  <p>Atal Path · the map loads when you ask for it.</p>
                   <div className="hf-cta-row">
                     <button type="button" className="hf-btn hf-btn-outline" onClick={() => setMapOn(true)}>Show the map</button>
                     <a className="hf-btn hf-btn-outline" href={mapsLink} target="_blank" rel="noreferrer">Open in Google Maps</a>

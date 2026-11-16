@@ -67,6 +67,11 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
         <div>
           <h2>Connect With Us</h2>
           <a className="fw-wa-pill" href={whatsapp} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
+          {FARCON_CONFIG.phoneNumbers.map((phone) => (
+            <a key={phone} href={`tel:${phone.replace(/\s+/g, '')}`} aria-label={`Call ${phone}`}>
+              {phone}
+            </a>
+          ))}
           <div className="fw-social">
             {FARCON_CONFIG.social.linkedin ? (
               <a href={FARCON_CONFIG.social.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn">

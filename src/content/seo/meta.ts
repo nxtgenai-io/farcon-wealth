@@ -3,7 +3,7 @@ import { BLOG_POSTS } from '@/content/blogs/blogData';
 import { FARCON_GOALS } from '@/content/goals/goalsData';
 import { FAQ_ITEMS } from '@/content/faq/faqData';
 import fundBook from '@/content/funds/schemes.json';
-import { SITE_URL } from '@/content/site/config';
+import { SITE_URL, FARCON_CONFIG } from '@/content/site/config';
 
 const SITE = SITE_URL;
 
@@ -222,7 +222,16 @@ const ORG = {
   url: `${SITE}/`,
   logo: `${SITE}/brand/farcon-lockup-2x.png`,
   email: 'hello@farconwealth.com',
+  telephone: FARCON_CONFIG.phoneNumbers,
   identifier: 'ARN 329006',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '4th Floor, Unison Tower, Near Rajeev Nagar Crossing, Atal Path',
+    addressLocality: 'Patna',
+    addressRegion: 'Bihar',
+    postalCode: '800013',
+    addressCountry: 'IN',
+  },
 };
 
 export function jsonLdFor(path: string) {

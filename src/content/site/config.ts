@@ -9,10 +9,16 @@ export const FARCON_CONFIG = {
   tagline: 'Investing, without the noise.',
   subTagline: 'Clarity over complexity. Suitability before returns. Transparent process.',
   email: 'hello@farconwealth.com',
-  registeredAddress: 'A-160, P.C. Colony, Kankarbagh, Patna, Bihar, India – 800020',
+  registeredAddress: '4th Floor, Unison Tower, Near Rajeev Nagar Crossing, Atal Path, Patna – 800013, Bihar, India',
+  officeAddress: '4th Floor, Unison Tower, Near Rajeev Nagar Crossing, Atal Path, Patna – 800013, Bihar, India',
   whatsappNumber: '917673008502',
-  /** Blank on purpose: the site must not publish a phone number or tel: link. */
-  phoneNumber: '',
+  phoneNumbers: [
+    '+91 93077 45700',
+    '+91 92967 87132',
+    '+91 97713 48560',
+  ],
+  /** Primary contact phone number */
+  phoneNumber: '+91 93077 45700',
   /** Leave empty until Ankit shares the real investor-platform URL. The login page hides the link while this is blank. */
   investorLoginUrl: '',
   /** Leave empty until the approved founder video URL is provided. Section displays introductory message while blank. */
