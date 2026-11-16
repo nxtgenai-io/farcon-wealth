@@ -129,7 +129,7 @@ function simulateSheetUpdate(existingRow: any[], updateData: any) {
   const msg = String(existingRow[11] || '');
   const matchedByLeadId = Boolean(updateData.leadId && msg.indexOf(updateData.leadId) !== -1);
   const matchedByPhone = Boolean(!updateData.leadId && existingRow[4] === updateData.phone);
-  
+
   if (matchedByLeadId || matchedByPhone) {
     const updatedRow = [...existingRow];
     // Keep original timestamp
