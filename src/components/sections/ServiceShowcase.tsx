@@ -85,9 +85,12 @@ export const ServiceShowcase: React.FC<ServiceShowcaseProps> = ({
         <div className="svc-head">
           <div className="svc-intro">
             <span className="hf-eye">Services</span>
-            <Title>Goal Planning and Investing</Title>
+            <Title>Goal Planning &amp; Mutual Fund Distribution</Title>
             <p className="hf-lede">
-              Farcon Wealth is an AMFI-registered mutual fund distributor, ARN {FARCON_CONFIG.arn}. These are the conversations we have. We do not give investment advice.
+              Whatever you're planning for your future, Farcon Wealth is here to help you plan each step with clarity. What's your next goal?
+            </p>
+            <p className="text-xs text-[#5E675C] mt-2">
+              AMFI-registered Mutual Fund Distributor · ARN {FARCON_CONFIG.arn}. We help you select and execute suitable mutual fund schemes aligned to your personal milestones.
             </p>
           </div>
         </div>

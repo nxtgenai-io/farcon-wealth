@@ -17,19 +17,19 @@ export const SERVICE_GROUPS: { id: string; label: string; slugs: string[] }[] = 
   },
 ];
 
-/** One-line card copy. Kept short so a five-across row stays a single line. */
+/** One-line card copy. Kept concise and clear for first-time investors. */
 export const SERVICE_LINES: Record<string, string> = {
-  'sip-planning': 'Compounding tied to a personal milestone.',
-  'goal-based-planning': 'The date and the amount come first.',
-  retirement: 'Independence, with inflation in the plan.',
-  'child-education': 'Education funding, retirement left intact.',
-  'wealth-creation': 'A long horizon, kept simple.',
-  'mutual-fund-distribution': 'A registered distributor, not an adviser.',
-  lumpsum: 'One amount, with a horizon attached.',
-  elss: 'ELSS for tax saving and a long horizon.',
-  swp: 'A predictable monthly cash flow.',
-  'investment-solutions': 'A fit across the goals you already have.',
-  'portfolio-review': 'Less duplication, lower drag, more clarity.',
+  'sip-planning': 'Disciplined monthly investing tied directly to your timeline.',
+  'goal-based-planning': 'Target corpus, timeline, and inflation modeled upfront.',
+  retirement: 'Build long-term independence with inflation-adjusted income.',
+  'child-education': 'Fund future higher-education costs while keeping retirement intact.',
+  'wealth-creation': 'Patient equity compounding designed for a 7+ year horizon.',
+  'mutual-fund-distribution': 'Registered AMFI distribution through official AMC platforms.',
+  lumpsum: 'Deploy surplus capital systematically across curated fund categories.',
+  elss: 'Tax-saving equity funds with the shortest statutory lock-in.',
+  swp: 'Structured regular monthly cash flows from accumulated capital.',
+  'investment-solutions': 'Coordinated portfolios balanced across debt, hybrid, and equity.',
+  'portfolio-review': 'Less duplication, lower drag, and clear portfolio alignment.',
 };
 
 /** Text wordmarks only. Official AMC logos are not reproduced. */
