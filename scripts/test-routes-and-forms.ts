@@ -2,6 +2,8 @@ import { FARCON_SERVICES } from '../src/content/services/servicesData';
 import { SERVICE_GROUPS } from '../src/content/services/serviceGroups';
 import { isIndianMobile } from '../src/lib/phone';
 import { sanitiseLead } from '../src/lib/api/sheetLead';
+import { normalizePathname, parseAndNormalizeUrl } from '../src/lib/routing/normalizeRoute';
+import { metaFor } from '../src/content/seo/meta';
 
 function assert(condition: boolean, msg: string) {
   if (!condition) throw new Error(`Assertion failed: ${msg}`);
@@ -22,6 +24,45 @@ const allSlugs = new Set(FARCON_SERVICES.map((s) => s.slug));
   assert(allSlugs.has(slug), `Service slug ${slug} must exist in FARCON_SERVICES`);
 });
 console.log('✓ All 10 service cards and routes verified in source');
+
+// 1b. Route Normalization and Deep Link Tests
+const routesToTest = [
+  '/contact',
+  '/about',
+  '/disclosures',
+  '/privacy',
+  '/terms',
+  '/grievance',
+  '/goals/retirement',
+  '/calculators/sip',
+  '/blogs/mutual-funds-101-beginners-guide',
+  '/blogs/sip-vs-lumpsum-investing-guide',
+  '/blogs/demystifying-elss-tax-saving-beyond-80c',
+  '/blogs/why-sip-beats-market-timing',
+];
+
+routesToTest.forEach((route) => {
+  // Test both with and without trailing slash
+  const clean = normalizePathname(route);
+  const withSlash = normalizePathname(`${route}/`);
+  const withMultipleSlashes = normalizePathname(`${route}///`);
+  assert(clean === route, `Route ${route} without trailing slash must remain ${route}`);
+  assert(withSlash === route, `Route ${route}/ with trailing slash must normalize to ${route}`);
+  assert(withMultipleSlashes === route, `Route ${route}/// with trailing slashes must normalize to ${route}`);
+
+  // Ensure metaFor recognizes normalized route and does not return Page not found
+  const meta = metaFor(withSlash);
+  assert(!meta.title.startsWith('Page not found'), `Normalized route ${withSlash} must have valid meta title, got: ${meta.title}`);
+});
+
+// Test query string and hash preservation
+const deepLink = '/contact/?utm_source=google&utm_medium=cpc#consultation-form';
+const parsedDeepLink = parseAndNormalizeUrl(deepLink);
+assert(parsedDeepLink.pathname === '/contact', 'Deep link pathname must be /contact');
+assert(parsedDeepLink.search === '?utm_source=google&utm_medium=cpc', 'UTM query string must be preserved');
+assert(parsedDeepLink.hash === '#consultation-form', 'Hash fragment must be preserved');
+assert(parsedDeepLink.fullPath === '/contact?utm_source=google&utm_medium=cpc#consultation-form', 'Canonical fullPath preserved');
+console.log('✓ Route normalization, deep links, and trailing-slash resolution verified');
 
 // 2. Phone Validation Tests
 assert(isIndianMobile('9876543210') === true, 'Standard 10-digit mobile starting with 9 must pass');

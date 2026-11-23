@@ -5,20 +5,22 @@ import { formatPlanCompact, formatTargetLabel, planIllustration } from '@/compon
 import { getCanonicalVideoEmbedUrl } from '@/lib/video/embedUrl';
 import { FARCON_CONFIG } from '@/content/site/config';
 import { ServiceShowcase } from '@/components/sections/ServiceShowcase';
+import { MarketSnapshot } from '@/components/sections/MarketSnapshot';
 import { FAQ_ITEMS } from '@/content/faq/faqData';
 import {
   ArrowRight,
   Calculator,
+  CalendarClock,
   CheckCircle,
   ChevronDown,
   FileText,
+  Landmark,
   LineChart,
   Shield,
   Sprout,
   Target,
   TrendingUp,
   User,
-  Video,
   Wallet,
 } from 'lucide-react';
 import { Reveal } from '@/components/ui/Reveal';
@@ -59,13 +61,6 @@ const PLAN_PRESETS: Record<string, { target: number; years: number; rate: number
   'Child Education': { target: 10_000_000, years: 15, rate: 12, inflation: 6 },
   'Wealth Creation': { target: 20_000_000, years: 12, rate: 12, inflation: 6 },
   'Tax Saving': { target: 5_000_000, years: 5, rate: 12, inflation: 0 },
-};
-
-const RISK_NOTE: Record<string, string> = {
-  'Very High Risk': 'Very high risk: returns can swing sharply. Suitable only when the goal is many years away.',
-  'High Risk': 'High risk: equity-oriented. Values can fall in the short term.',
-  'Moderate Risk': 'Moderate risk: a mix of growth and stability. Still subject to market movement.',
-  'Low Risk': 'Low risk: relatively steadier, with lower expected growth. Not risk-free.',
 };
 
 function cardSrc(name: string) {
@@ -126,23 +121,6 @@ function PlanningPlant() {
 
 const PLAN_TABS = ['Retirement', 'Child Education', 'Wealth Creation', 'Tax Saving'] as const;
 
-const RISK = {
-  veryHigh: '#0E6B38',
-  high: '#9B2C2C',
-  moderate: '#9A5410',
-} as const;
-
-const FUNDS = [
-  { name: 'SBI Small Cap Fund', group: 'Equity Funds', tags: ['Equity', 'Small Cap'], cagr: '26.4%', nav: '₹164.72', risk: 'Very High Risk', tone: RISK.veryHigh, logo: '/images/amc/sbi.svg', spark: [12, 13, 15, 16, 18, 20, 22, 24, 26] },
-  { name: 'HDFC Flexi Cap Fund', group: 'Equity Funds', tags: ['Equity', 'Flexi Cap'], cagr: '21.8%', nav: '₹712.35', risk: 'High Risk', tone: RISK.high, logo: '/images/amc/hdfc-mark.svg', spark: [11, 13, 14, 16, 17, 18, 20, 21, 22] },
-  { name: 'ICICI Prudential Balanced Advantage Fund', group: 'Hybrid Funds', tags: ['Hybrid', 'Dynamic'], cagr: '14.6%', nav: '₹348.12', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/icici-mark.png', spark: [12, 12.4, 13, 13.6, 14.2, 14.8, 15.4, 16.2, 17] },
-  { name: 'Axis ELSS Tax Saver Fund', group: 'Tax Saving (ELSS)', tags: ['Equity', 'ELSS'], cagr: '18.2%', nav: '₹112.46', risk: 'High Risk', tone: RISK.high, logo: '/images/amc/axis-mark.svg', spark: [10, 11, 12.5, 13.5, 15, 16, 17.2, 18.2, 19] },
-  { name: 'HDFC Short Term Fund', group: 'Debt Funds', tags: ['Debt', 'Short Duration'], cagr: '7.4%', nav: '₹28.16', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/hdfc-mark.svg', spark: [12, 12.2, 12.4, 12.7, 13, 13.2, 13.5, 13.8, 14] },
-  { name: 'SBI Gilt Fund', group: 'Debt Funds', tags: ['Debt', 'Gilt'], cagr: '7.1%', nav: '₹58.40', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/sbi.svg', spark: [11, 11.4, 11.2, 11.8, 12.1, 12.4, 12.2, 12.8, 13.1] },
-  { name: 'ICICI Prudential Corporate Bond Fund', group: 'Debt Funds', tags: ['Debt', 'Corporate'], cagr: '7.6%', nav: '₹26.90', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/icici-mark.png', spark: [10, 10.4, 10.8, 11.1, 11.4, 11.8, 12.1, 12.5, 12.8] },
-  { name: 'Axis Money Market Fund', group: 'Debt Funds', tags: ['Debt', 'Money Market'], cagr: '6.8%', nav: '₹2,746', risk: 'Low Risk', tone: RISK.moderate, logo: '/images/amc/axis-mark.svg', spark: [9, 9.2, 9.4, 9.5, 9.7, 9.9, 10.1, 10.3, 10.5] },
-];
-
 const TOOLS: { title: string; text: string; href: RoutePath; tint: string; icon: React.ReactNode }[] = [
   { title: 'SIP Calculator', text: 'Build wealth regularly', href: '/calculators/sip', tint: '#E5F6EA', icon: <TrendingUp size={16} color="#1F9D55" /> },
   { title: 'Lumpsum Calculator', text: 'Grow your investments', href: '/calculators/lumpsum', tint: '#E7F0FB', icon: <Wallet size={16} color="#3B82C4" /> },
@@ -151,26 +129,6 @@ const TOOLS: { title: string; text: string; href: RoutePath; tint: string; icon:
   { title: 'Historical Returns', text: 'Analyse past performance', href: '/mutual-funds', tint: '#FDE8EA', icon: <LineChart size={16} color="#D4535A" /> },
   { title: 'Risk Analysis', text: 'Understand your risk', href: '/investor-quiz', tint: '#F3E8FB', icon: <Shield size={16} color="#8A4FB3" /> },
 ];
-
-function Spark({ values, color }: { values: number[]; color: string }) {
-  const w = 180;
-  const h = 84;
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const pts = values.map((v, i) => {
-    const x = (i / (values.length - 1)) * w;
-    const y = h - 8 - ((v - min) / (max - min || 1)) * (h - 16);
-    return [x, y] as const;
-  });
-  const d = smoothLine(pts);
-  const area = `${d} L${w} ${h} L0 ${h} Z`;
-  return (
-    <svg className="hf-spark" viewBox={`0 0 ${w} ${h}`} width="100%" height="84" aria-hidden="true">
-      <path d={area} fill={color} opacity="0.14" />
-      <path d={d} fill="none" stroke={color} strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 function AreaChart({
   series,
@@ -269,7 +227,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
   const [years, setYears] = useState(20);
   const [rate, setRate] = useState(12);
   const [inflation, setInflation] = useState(6);
-  const [fundTab, setFundTab] = useState('Equity Funds');
   const heroRef = useRef<HTMLElement>(null);
 
   // Quick Goal SIP Calculator state in Hero
@@ -284,9 +241,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
   );
 
   const plan = useMemo(() => planIllustration(target, years, rate, inflation), [target, years, rate, inflation]);
-  const funds = fundTab === 'Equity Funds'
-    ? FUNDS.filter((fund) => fund.group !== 'Debt Funds')
-    : FUNDS.filter((fund) => fund.group === fundTab);
   const whatsapp = `https://wa.me/${FARCON_CONFIG.whatsappNumber}`;
 
   useEffect(() => {
@@ -938,52 +892,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </Reveal>
 
-      <Reveal as="section" className="hf-section" data-section="funds">
-        <div className="hf-wrap hf-split">
-          <div>
-            <span className="hf-eye">Featured mutual funds</span>
-            <h2>Explore top funds for your <em>goals.</em></h2>
-            <p className="hf-lede">A teaching set, as of {FARCON_CONFIG.illustrativeMarketAsOf}. These figures are not live NAV and not a recommendation.</p>
-          </div>
-          <div>
-          <div className="hf-pills">
-            {['Equity Funds', 'Hybrid Funds', 'Debt Funds', 'Tax Saving (ELSS)'].map((tab) => (
-              <button key={tab} type="button" className={fundTab === tab ? 'is-on' : ''} onClick={() => setFundTab(tab)}>{tab}</button>
-            ))}
-          </div>
-          <div className="hf-fund-row" key={fundTab}>
-            {funds.map((fund) => (
-              <article key={fund.name} className="hf-fund">
-                <div className="hf-amc">
-                  <img className="hf-logo" src={fund.logo} alt={`${fund.name} mark`} width={28} height={28} />
-                  <div>
-                    <h2>{fund.name}</h2>
-                    <div className="hf-sub">Direct Growth</div>
-                  </div>
-                </div>
-                <div className="hf-tags">{fund.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-                <div className="hf-metrics">
-                  <span>3Y CAGR<b>{fund.cagr}</b></span>
-                  <span>NAV · {FARCON_CONFIG.illustrativeMarketAsOf}<b>{fund.nav}</b></span>
-                </div>
-                <Spark values={fund.spark} color={fund.tone} />
-                <span className="hf-pill" tabIndex={0} style={{ background: fund.tone }}>
-                  {fund.risk}
-                  <span className="hf-tip" role="tooltip">{RISK_NOTE[fund.risk]}</span>
-                </span>
-              </article>
-            ))}
-            {funds.length === 0 && (
-              <article className="hf-fund">
-                <h2>Debt funds</h2>
-                <p>Debt schemes are listed in the fund explorer. The figures on this shelf are a sample, as of {FARCON_CONFIG.illustrativeMarketAsOf}.</p>
-                <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
-              </article>
-            )}
-          </div>
-          <button type="button" className="hf-textlink hf-fund-more" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
-          </div>
-        </div>
+      <Reveal as="div" data-section="market-snapshot">
+        <MarketSnapshot navigate={navigate} />
       </Reveal>
 
       <section className="hf-why" data-section="why">
@@ -1015,20 +925,26 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             <article>
               <div className="hf-num">01</div>
               <div className="hf-icon-tile"><Target size={18} /></div>
-              <h3>Goal-First Framework</h3>
-              <p>Every rupee is aligned to a milestone — retirement, children’s education, or long-term financial independence.</p>
+              <h3>Goals before schemes</h3>
+              <p>Every investment begins with your specific life goal — retirement, children's education, or wealth creation — rather than chasing arbitrary short-term returns.</p>
             </article>
             <article>
               <div className="hf-num">02</div>
-              <div className="hf-icon-tile"><LineChart size={18} /></div>
-              <h3>Curated Scheme Selection</h3>
-              <p>Structured qualitative and quantitative evaluation across AMCs to select suitable schemes for your risk appetite.</p>
+              <div className="hf-icon-tile"><Landmark size={18} /></div>
+              <h3>Transparent mutual fund distribution</h3>
+              <p>As an AMFI-registered distributor (ARN {FARCON_CONFIG.arn}), we offer clear scheme facts, commission disclosures, and horizon-appropriate fund selection.</p>
             </article>
             <article>
               <div className="hf-num">03</div>
               <div className="hf-icon-tile"><Shield size={18} /></div>
-              <h3>Investor-Direct Custody</h3>
-              <p>All holdings remain registered strictly in your name with the mutual fund AMC. Farcon Wealth never holds custody of investor capital.</p>
+              <h3>Investments held in your name</h3>
+              <p>Farcon Wealth never holds client money. All investments execute directly in your name through regulated clearing infrastructure to the fund houses.</p>
+            </article>
+            <article>
+              <div className="hf-num">04</div>
+              <div className="hf-icon-tile"><CalendarClock size={18} /></div>
+              <h3>Disciplined milestone reviews</h3>
+              <p>Structured milestone check-ins keep your asset allocation and SIPs on track across life stages and market cycles, without reactive emotional changes.</p>
             </article>
           </div>
         </div>
@@ -1054,50 +970,60 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </Reveal>
 
-      <Reveal as="section" className="hf-section hf-founder-section" data-section="founder">
+      <Reveal as="section" className="hf-section hf-founder-section" data-section="approach">
         <div className="hf-wrap hf-split">
           <div>
-            <span className="hf-eye">Leadership Note</span>
-            <h2>From the Desk of Founder / Director</h2>
+            <span className="hf-eye">Our Approach</span>
+            <h2>A Note from Farcon Wealth</h2>
             <p className="hf-lede">
               “True wealth creation is not about chasing the fastest runner in a bull market. It is about staying disciplined, choosing suitability over noise, and allowing time to compound your efforts.”
             </p>
+            <div className="mt-4">
+              <button
+                type="button"
+                className="hf-btn hf-btn-outline text-xs"
+                onClick={() => navigate('/about')}
+              >
+                Learn More About Our Team →
+              </button>
+            </div>
           </div>
           <div className="hf-founder-content">
-            <div className="hf-founder-message p-6 bg-white rounded-2xl border border-[#DCE4EE] shadow-xs space-y-4">
+            <div className="hf-founder-message p-7 bg-white rounded-2xl border border-[#DCE4EE] shadow-sm space-y-4">
               <p className="text-sm text-slate-700 leading-relaxed">
-                At Farcon Wealth, our commitment is straightforward: clear communication, transparent mutual fund distribution, and an unwavering focus on your financial goals.
+                At Farcon Wealth, our commitment is straightforward: clear communication, transparent mutual fund distribution, and an unwavering focus on your financial milestones.
+              </p>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                We believe that every family deserves access to structured, disciplined investment guidance without high-pressure sales tactics or confusing financial jargon. Every rupee is planned around your timeline before schemes are selected.
               </p>
               <p className="text-xs text-slate-500 leading-relaxed">
-                We believe that every family deserves access to sound, disciplined investment planning without high-pressure sales or confusing jargon.
+                All mutual fund investments are executed through official exchange clearing corporations directly in your name. Farcon Wealth never holds investor capital, ensuring complete custody safety and institutional transparency.
               </p>
+
               {(() => {
                 const canonicalEmbed = getCanonicalVideoEmbedUrl(FARCON_CONFIG.founderVideoUrl);
-                return canonicalEmbed ? (
+                if (!canonicalEmbed) return null;
+                return (
                   <div className="aspect-video w-full rounded-xl overflow-hidden mt-4 border border-slate-200 bg-black">
                     <iframe
                       src={canonicalEmbed}
-                      title="Founder / Director Message"
+                      title="Farcon Wealth Video Message"
                       className="w-full h-full"
                       allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     />
                   </div>
-                ) : (
-                  <div className="mt-4 p-4 rounded-xl border border-dashed border-[#C5D5C8] bg-[#F7FAF8] flex items-center gap-3.5 text-slate-600">
-                    <div className="w-9 h-9 rounded-full bg-[#E5EFE7] flex items-center justify-center shrink-0 text-[#0F3D2E]">
-                      <Video size={18} />
-                    </div>
-                    <div className="text-xs">
-                      <p className="font-semibold text-slate-800">Founder Video Message</p>
-                      <p className="text-slate-500 mt-0.5">Official video message from the Founder / Director will appear here upon publication.</p>
-                    </div>
-                  </div>
                 );
               })()}
-              <div className="pt-2 flex items-center justify-between text-xs text-slate-600 border-t border-slate-100">
-                <span className="font-semibold text-[#0F3D2E]">Farcon Wealth Leadership Team</span>
-                <span className="font-mono text-[11px] text-slate-400">ARN 329006</span>
+
+              <div className="pt-4 flex items-center justify-between text-xs text-slate-600 border-t border-slate-100">
+                <div>
+                  <span className="block font-semibold text-[#0F3D2E]">The Farcon Wealth Team</span>
+                  <span className="text-[11px] text-slate-500">Patna Desk · Unison Tower, Atal Path</span>
+                </div>
+                <span className="font-mono text-[11px] text-[#0F3D2E] font-semibold bg-[#E7F3EC] px-2.5 py-1 rounded-md">
+                  ARN {FARCON_CONFIG.arn}
+                </span>
               </div>
             </div>
           </div>
@@ -1114,11 +1040,19 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           </div>
           <div className="hf-articles">
             {[
-              ['article-funds', 'Coin stacks with a small plant', 'Mutual Funds 101', 'A beginner\'s guide to investing in mutual funds'],
-              ['article-sip', 'A pink piggy bank', 'SIP vs Lumpsum', 'Which strategy is right for you?'],
-              ['article-elss', 'A calculator on tax paperwork', 'Tax Saving with ELSS', 'Save tax while building wealth'],
-            ].map(([name, alt, title, text]) => (
-              <a key={title} className="hf-article" href="/education" onClick={(event) => { event.preventDefault(); navigate('/education'); }}>
+              ['article-funds', 'Coin stacks with a small plant', 'Mutual Funds 101', "A beginner's guide to investing in mutual funds", '/blogs/mutual-funds-101-beginners-guide'],
+              ['article-sip', 'A pink piggy bank', 'SIP vs Lumpsum', 'Which strategy is right for you?', '/blogs/sip-vs-lumpsum-investing-guide'],
+              ['article-elss', 'A calculator on tax paperwork', 'Tax Saving with ELSS', 'Save tax while building wealth', '/blogs/demystifying-elss-tax-saving-beyond-80c'],
+            ].map(([name, alt, title, text, href]) => (
+              <a
+                key={title}
+                className="hf-article"
+                href={href}
+                onClick={(event) => {
+                  event.preventDefault();
+                  navigate(href as RoutePath);
+                }}
+              >
                 <img {...cardSrc(name)} sizes="96px" alt={alt} width={1600} height={1100} loading="eager" fetchPriority="low" decoding="async" />
                 <div>
                   <h2>{title}</h2>

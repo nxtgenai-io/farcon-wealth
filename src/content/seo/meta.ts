@@ -4,6 +4,7 @@ import { FARCON_GOALS } from '@/content/goals/goalsData';
 import { FAQ_ITEMS } from '@/content/faq/faqData';
 import fundBook from '@/content/funds/schemes.json';
 import { SITE_URL, FARCON_CONFIG } from '@/content/site/config';
+import { normalizePathname } from '@/lib/routing/normalizeRoute';
 
 const SITE = SITE_URL;
 
@@ -107,7 +108,8 @@ const NOT_FOUND_META = {
   description: 'This page is not on the Farcon Wealth site.',
 };
 
-export function metaFor(path: string) {
+export function metaFor(rawPath: string) {
+  const path = normalizePathname(rawPath);
   if (PAGE_META[path]) return PAGE_META[path];
   if (path.startsWith('/goals/')) {
     const goal = FARCON_GOALS.find((item) => item.slug === path.slice('/goals/'.length));
@@ -141,7 +143,8 @@ export function metaFor(path: string) {
   return NOT_FOUND_META;
 }
 
-export function pageH1(path: string): string {
+export function pageH1(rawPath: string): string {
+  const path = normalizePathname(rawPath);
   const fixed: Record<string, string> = {
     '/': 'Investing, without the noise.',
     '/about': 'A distributor with a planning desk.',
