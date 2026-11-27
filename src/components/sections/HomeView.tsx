@@ -276,8 +276,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               </svg>
             </p>
             <h1>Your family’s future <br /><em>deserves a thoughtful plan.</em></h1>
-            <p className="hf-lede">Personalized mutual fund strategies designed around the milestones that matter most to your family—from children’s education to lifelong retirement peace.</p>
-            <p className="hf-lede">Guidance with clarity and discipline from an AMFI-registered distributor. Investments held in your name, planned for your timeline.</p>
+            <p className="hf-lede">Personalized mutual fund guidance for your family’s milestones—from children’s education to retirement, with investments held in your name.</p>
             <div className="hf-cta-row">
               <button
                 type="button"
