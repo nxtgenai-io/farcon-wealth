@@ -36,7 +36,7 @@ export const FARCON_SERVICES: ServiceDetail[] = [
         step: '03',
         title: 'Disciplined Automated Setup',
         description:
-          'Direct mandate registration in your name with institutional transparency, zero intermediary fund holding.',
+          'Automated SIP mandate setup in your own investor name through official AMC/exchange channels, with zero intermediary custody.',
       },
       {
         step: '04',
@@ -79,16 +79,16 @@ export const FARCON_SERVICES: ServiceDetail[] = [
       'A structured, staged migration roadmap to streamline your portfolio into 4–6 purpose-driven schemes.',
     ],
     whoItIsFor: [
-      'Investors with cluttered portfolios spread across multiple apps, brokers, or direct folios.',
+      'Investors with cluttered portfolios spread across multiple apps, brokers, or separate folios.',
       'Individuals who started funds years ago without an overarching strategy and have lost track of asset allocation.',
       'Investors seeking institutional clarity on whether their current investments still match their future needs.',
     ],
     howFarconApproaches: [
       {
         step: '01',
-        title: 'Consolidated Statement Upload',
+        title: 'Consolidated Statement Review',
         description:
-          'Upload your CAMS/KFintech Consolidated Account Statement (CAS) in encrypted, confidential storage.',
+          'Review your CAMS/KFintech Consolidated Account Statement (CAS) details discussed during your consultation.',
       },
       {
         step: '02',
@@ -153,7 +153,7 @@ export const FARCON_SERVICES: ServiceDetail[] = [
         step: '02',
         title: 'Eliminate Year-End Panic',
         description:
-          'Instead of last-minute February scrambles, we set up year-round monthly SIPs in high-conviction ELSS schemes.',
+          'Instead of last-minute February scrambles, we help set up year-round monthly SIPs in ELSS schemes aligned with your horizon.',
       },
       {
         step: '03',

@@ -5,7 +5,7 @@ export const AI_MAX_TURNS = 6;
 export const AI_MODEL = '@cf/meta/llama-3.1-8b-instruct-fast';
 
 export const AI_RISK_LINE =
-  'Mutual fund investments are subject to market risks. Read all scheme related documents carefully.';
+  'Mutual Fund investments are subject to market risks, read all scheme related documents carefully.';
 
 export const AI_FALLBACK_TEXT =
   'Farcon AI could not answer just now. You can still open the calculators, request a portfolio review, or start investing. Message us on WhatsApp for a personal conversation. We do not give investment advice in this chat.';

@@ -4,7 +4,9 @@ import { formatINR } from '@/lib/formatting/currency';
 import { formatPlanCompact, formatTargetLabel, planIllustration } from '@/components/sections/home/planGoal';
 import { getCanonicalVideoEmbedUrl } from '@/lib/video/embedUrl';
 import { FARCON_CONFIG } from '@/content/site/config';
+import { COMPLIANCE_REGISTRY } from '@/lib/compliance';
 import { ServiceShowcase } from '@/components/sections/ServiceShowcase';
+import { MarketSnapshot } from '@/components/sections/MarketSnapshot';
 import { FAQ_ITEMS } from '@/content/faq/faqData';
 import {
   ArrowRight,
@@ -14,37 +16,22 @@ import {
   FileText,
   LineChart,
   Shield,
+  ShieldCheck,
   Sprout,
   Target,
   TrendingUp,
   User,
-  Video,
+  UserCheck,
   Wallet,
 } from 'lucide-react';
 import { Reveal } from '@/components/ui/Reveal';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
+import { FeaturedFundsSection } from '@/components/sections/home/FeaturedFundsSection';
 
 interface HomeViewProps {
   navigate: (path: RoutePath) => void;
   onOpenConsultation: (subject?: string) => void;
   onOpenAI: () => void;
-}
-
-function smoothLine(pts: Array<readonly [number, number]>): string {
-  if (pts.length === 0) return '';
-  let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
-  for (let i = 0; i < pts.length - 1; i += 1) {
-    const p0 = pts[i - 1] ?? pts[i];
-    const p1 = pts[i];
-    const p2 = pts[i + 1];
-    const p3 = pts[i + 2] ?? p2;
-    const c1x = p1[0] + (p2[0] - p0[0]) / 6;
-    const c1y = p1[1] + (p2[1] - p0[1]) / 6;
-    const c2x = p2[0] - (p3[0] - p1[0]) / 6;
-    const c2y = p2[1] - (p3[1] - p1[1]) / 6;
-    d += ` C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
-  }
-  return d;
 }
 
 const GOALS = [
@@ -59,13 +46,6 @@ const PLAN_PRESETS: Record<string, { target: number; years: number; rate: number
   'Child Education': { target: 10_000_000, years: 15, rate: 12, inflation: 6 },
   'Wealth Creation': { target: 20_000_000, years: 12, rate: 12, inflation: 6 },
   'Tax Saving': { target: 5_000_000, years: 5, rate: 12, inflation: 0 },
-};
-
-const RISK_NOTE: Record<string, string> = {
-  'Very High Risk': 'Very high risk: returns can swing sharply. Suitable only when the goal is many years away.',
-  'High Risk': 'High risk: equity-oriented. Values can fall in the short term.',
-  'Moderate Risk': 'Moderate risk: a mix of growth and stability. Still subject to market movement.',
-  'Low Risk': 'Low risk: relatively steadier, with lower expected growth. Not risk-free.',
 };
 
 function cardSrc(name: string) {
@@ -126,23 +106,6 @@ function PlanningPlant() {
 
 const PLAN_TABS = ['Retirement', 'Child Education', 'Wealth Creation', 'Tax Saving'] as const;
 
-const RISK = {
-  veryHigh: '#0E6B38',
-  high: '#9B2C2C',
-  moderate: '#9A5410',
-} as const;
-
-const FUNDS = [
-  { name: 'SBI Small Cap Fund', group: 'Equity Funds', tags: ['Equity', 'Small Cap'], cagr: '26.4%', nav: '₹164.72', risk: 'Very High Risk', tone: RISK.veryHigh, logo: '/images/amc/sbi.svg', spark: [12, 13, 15, 16, 18, 20, 22, 24, 26] },
-  { name: 'HDFC Flexi Cap Fund', group: 'Equity Funds', tags: ['Equity', 'Flexi Cap'], cagr: '21.8%', nav: '₹712.35', risk: 'High Risk', tone: RISK.high, logo: '/images/amc/hdfc-mark.svg', spark: [11, 13, 14, 16, 17, 18, 20, 21, 22] },
-  { name: 'ICICI Prudential Balanced Advantage Fund', group: 'Hybrid Funds', tags: ['Hybrid', 'Dynamic'], cagr: '14.6%', nav: '₹348.12', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/icici-mark.png', spark: [12, 12.4, 13, 13.6, 14.2, 14.8, 15.4, 16.2, 17] },
-  { name: 'Axis ELSS Tax Saver Fund', group: 'Tax Saving (ELSS)', tags: ['Equity', 'ELSS'], cagr: '18.2%', nav: '₹112.46', risk: 'High Risk', tone: RISK.high, logo: '/images/amc/axis-mark.svg', spark: [10, 11, 12.5, 13.5, 15, 16, 17.2, 18.2, 19] },
-  { name: 'HDFC Short Term Fund', group: 'Debt Funds', tags: ['Debt', 'Short Duration'], cagr: '7.4%', nav: '₹28.16', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/hdfc-mark.svg', spark: [12, 12.2, 12.4, 12.7, 13, 13.2, 13.5, 13.8, 14] },
-  { name: 'SBI Gilt Fund', group: 'Debt Funds', tags: ['Debt', 'Gilt'], cagr: '7.1%', nav: '₹58.40', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/sbi.svg', spark: [11, 11.4, 11.2, 11.8, 12.1, 12.4, 12.2, 12.8, 13.1] },
-  { name: 'ICICI Prudential Corporate Bond Fund', group: 'Debt Funds', tags: ['Debt', 'Corporate'], cagr: '7.6%', nav: '₹26.90', risk: 'Moderate Risk', tone: RISK.moderate, logo: '/images/amc/icici-mark.png', spark: [10, 10.4, 10.8, 11.1, 11.4, 11.8, 12.1, 12.5, 12.8] },
-  { name: 'Axis Money Market Fund', group: 'Debt Funds', tags: ['Debt', 'Money Market'], cagr: '6.8%', nav: '₹2,746', risk: 'Low Risk', tone: RISK.moderate, logo: '/images/amc/axis-mark.svg', spark: [9, 9.2, 9.4, 9.5, 9.7, 9.9, 10.1, 10.3, 10.5] },
-];
-
 const TOOLS: { title: string; text: string; href: RoutePath; tint: string; icon: React.ReactNode }[] = [
   { title: 'SIP Calculator', text: 'Build wealth regularly', href: '/calculators/sip', tint: '#E5F6EA', icon: <TrendingUp size={16} color="#1F9D55" /> },
   { title: 'Lumpsum Calculator', text: 'Grow your investments', href: '/calculators/lumpsum', tint: '#E7F0FB', icon: <Wallet size={16} color="#3B82C4" /> },
@@ -151,26 +114,6 @@ const TOOLS: { title: string; text: string; href: RoutePath; tint: string; icon:
   { title: 'Historical Returns', text: 'Analyse past performance', href: '/mutual-funds', tint: '#FDE8EA', icon: <LineChart size={16} color="#D4535A" /> },
   { title: 'Risk Analysis', text: 'Understand your risk', href: '/investor-quiz', tint: '#F3E8FB', icon: <Shield size={16} color="#8A4FB3" /> },
 ];
-
-function Spark({ values, color }: { values: number[]; color: string }) {
-  const w = 180;
-  const h = 84;
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const pts = values.map((v, i) => {
-    const x = (i / (values.length - 1)) * w;
-    const y = h - 8 - ((v - min) / (max - min || 1)) * (h - 16);
-    return [x, y] as const;
-  });
-  const d = smoothLine(pts);
-  const area = `${d} L${w} ${h} L0 ${h} Z`;
-  return (
-    <svg className="hf-spark" viewBox={`0 0 ${w} ${h}`} width="100%" height="84" aria-hidden="true">
-      <path d={area} fill={color} opacity="0.14" />
-      <path d={d} fill="none" stroke={color} strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 function AreaChart({
   series,
@@ -269,7 +212,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
   const [years, setYears] = useState(20);
   const [rate, setRate] = useState(12);
   const [inflation, setInflation] = useState(6);
-  const [fundTab, setFundTab] = useState('Equity Funds');
   const heroRef = useRef<HTMLElement>(null);
 
   // Quick Goal SIP Calculator state in Hero
@@ -284,9 +226,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
   );
 
   const plan = useMemo(() => planIllustration(target, years, rate, inflation), [target, years, rate, inflation]);
-  const funds = fundTab === 'Equity Funds'
-    ? FUNDS.filter((fund) => fund.group !== 'Debt Funds')
-    : FUNDS.filter((fund) => fund.group === fundTab);
   const whatsapp = `https://wa.me/${FARCON_CONFIG.whatsappNumber}`;
 
   useEffect(() => {
@@ -336,22 +275,43 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             </p>
             <h1>Your family’s future <br /><em>deserves a thoughtful plan.</em></h1>
             <p className="hf-lede">Personalized mutual fund strategies designed around the milestones that matter most to your family—from children’s education to lifelong retirement peace.</p>
-            <p className="hf-lede">Guidance with clarity and discipline from an AMFI-registered distributor. Direct accounts in your name, with zero market hype.</p>
+            <p className="hf-lede">Guidance with clarity and discipline from an AMFI-registered distributor. Investments held in your name, planned for your timeline.</p>
             <div className="hf-cta-row">
-              <button type="button" className="hf-btn hf-btn-green" onClick={() => document.getElementById('planner')?.scrollIntoView({ behavior: 'smooth' })}>
-                Start with a Goal <ArrowRight size={14} />
+              <button
+                type="button"
+                className="hf-btn hf-btn-green"
+                onClick={() => document.getElementById('planner')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Plan My Goal <ArrowRight size={14} />
               </button>
-              <button type="button" className="hf-btn hf-btn-outline" onClick={() => onOpenConsultation('Connect with our Expert')}>
-                Connect with our Expert
+              <button
+                type="button"
+                className="hf-btn hf-btn-outline"
+                onClick={() => onOpenConsultation('Talk to Our Team')}
+              >
+                Talk to Our Team
               </button>
-              <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/start-investing')}>
-                Start Investing
-              </button>
+              <a
+                href="/services"
+                className="hf-textlink hf-hero-tertiary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate('/services');
+                }}
+              >
+                Explore Services <ArrowRight size={13} />
+              </a>
             </div>
-            <div className="hf-trust">
-              <span><Shield size={14} /> AMFI Regd. ARN {FARCON_CONFIG.arn}</span>
-              <span><Target size={14} /> Milestone-Oriented</span>
-              <span><User size={14} /> In Your Own Name</span>
+            <div className="hf-trust" aria-label="Key trust highlights">
+              <span title={`AMFI-registered Mutual Fund Distributor (ARN ${FARCON_CONFIG.arn})`}>
+                <ShieldCheck size={14} /> AMFI Regd. ARN {FARCON_CONFIG.arn}
+              </span>
+              <span title="Goal-oriented mutual fund planning designed for family milestones">
+                <Target size={14} /> Milestone-Oriented
+              </span>
+              <span title="All investments and folios are held in your own name">
+                <UserCheck size={14} /> In Your Own Name
+              </span>
             </div>
           </div>
 
@@ -488,7 +448,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             </div>
 
             <p className="hf-calc-disclaimer">
-              Includes 6% p.a. assumed inflation so future corpus accounts for living costs. Mutual fund investments are subject to market risks; past performance does not guarantee future results.
+              Illustrative calculation assuming {quickRate}% p.a. return and 6% p.a. inflation (adjustable in full planner; not a scheme-specific projection). {COMPLIANCE_REGISTRY.statutoryMutualFund.standardRisk}
             </p>
 
             <button
@@ -531,9 +491,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                 <Shield size={20} />
               </div>
               <div className="hf-amfi-card-text">
-                <h3>Direct Account Ownership</h3>
+                <h3>Investments Held in Your Name</h3>
                 <p>
-                  Every rupee is invested directly in your name with SEBI-regulated fund houses. Farcon Wealth holds zero client funds, securities, or pool accounts.
+                  Investments stay in your own name with SEBI-regulated mutual fund houses. Farcon Wealth holds zero client funds, securities, or pool accounts.
                 </p>
               </div>
             </div>
@@ -545,7 +505,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               <div className="hf-amfi-card-text">
                 <h3>Regular Plans · Commission Disclosed</h3>
                 <p>
-                  We distribute regular mutual fund schemes. Distribution commissions are fully disclosed upon request and audited under AMFI guidelines with zero hidden fees.
+                  We distribute Regular Plans of mutual fund schemes and receive trail commissions from AMCs.{' '}
+                  <button
+                    type="button"
+                    className="underline text-[#0F3D2E] font-medium cursor-pointer"
+                    onClick={() => navigate('/disclosures#commission' as RoutePath)}
+                  >
+                    View commission disclosure &amp; status
+                  </button>.
                 </p>
               </div>
             </div>
@@ -557,7 +524,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
               <div className="hf-amfi-card-text">
                 <h3>Disciplined Milestone Planning</h3>
                 <p>
-                  Objective financial modeling tailored to your family milestones—retirement, education, and wealth—with zero product push or speculative return promises.
+                  Assumption-based financial modeling tailored to your family milestones—retirement, education, and wealth—without speculative return promises.
                 </p>
               </div>
             </div>
@@ -566,8 +533,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           {/* Partner AMC Ecosystem */}
           <div className="hf-amfi-ecosystem">
             <div className="hf-amfi-ecosystem-head">
-              <span className="hf-amfi-ecosystem-tag">Partner Fund House Ecosystem</span>
-              <p className="hf-amfi-ecosystem-title">Invest across India’s leading Asset Management Companies (AMCs)</p>
+              <span className="hf-amfi-ecosystem-tag">Distribution Ecosystem · Scope Notice</span>
+              <p className="hf-amfi-ecosystem-title">Mutual fund categories across Asset Management Companies (AMCs)</p>
             </div>
             <div className="hf-amfi-logos">
               <div className="hf-amfi-logo-tile" title="SBI Mutual Fund">
@@ -599,10 +566,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             {/* Regulatory Disclaimers & Notes */}
             <div className="hf-amfi-footnotes">
               <p className="hf-amfi-trademark-note">
-                Mutual fund logos and trademarks belong to their respective Asset Management Companies (AMCs) and are displayed solely to identify fund houses available for investment through our AMFI distributor code.
+                Mutual fund marks belong to their respective Asset Management Companies (AMCs). Active empanelment confirmation for listed AMCs is tracked in our regulatory preflight; information offered relates to mutual fund products we distribute, and investors may consider alternatives not offered by Farcon Wealth.
               </p>
               <p className="hf-amfi-disclaimer">
-                Farcon Wealth Private Limited is an AMFI-registered Mutual Fund Distributor (ARN: 329006) and not an Investment Adviser. Mutual fund investments are subject to market risks; read all scheme related documents carefully before investing. Past performance is not indicative of future returns.
+                {COMPLIANCE_REGISTRY.distributor.amfiRegistration} (not a SEBI-registered Investment Adviser). {COMPLIANCE_REGISTRY.statutoryMutualFund.standardRisk} {COMPLIANCE_REGISTRY.statutoryMutualFund.pastPerformance}
               </p>
             </div>
           </div>
@@ -915,20 +882,20 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                 </div>
                 <div className="hf-plan-assumptions-box">
                   <p className="hf-note">
-                    Calculation uses monthly compounding based on assumed constant return of {rate}% p.a. and {inflation}% inflation. Real-world returns fluctuate with market conditions.
+                    Illustrative mathematical projection assuming {rate}% p.a. return and {inflation}% p.a. inflation (not a scheme-specific return or guarantee). {COMPLIANCE_REGISTRY.statutoryMutualFund.standardRisk}
                   </p>
                   <ul className="hf-truststrip hf-truststrip-compact">
                     <li>AMFI-registered ARN {FARCON_CONFIG.arn}</li>
                     <li>Investments in your name</li>
                     <li>
-                      <button type="button" onClick={() => navigate('/disclosures')}>
+                      <button type="button" onClick={() => navigate('/disclosures#commission' as RoutePath)}>
                         Commission disclosed
                       </button>
                     </li>
                   </ul>
                   <div className="hf-plan-actions-row">
                     <a className="hf-btn hf-btn-outline hf-expert" href={whatsapp} target="_blank" rel="noreferrer">
-                      Talk to an expert
+                      Talk to Our Team
                     </a>
                   </div>
                 </div>
@@ -938,53 +905,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </Reveal>
 
-      <Reveal as="section" className="hf-section" data-section="funds">
-        <div className="hf-wrap hf-split">
-          <div>
-            <span className="hf-eye">Featured mutual funds</span>
-            <h2>Explore top funds for your <em>goals.</em></h2>
-            <p className="hf-lede">A teaching set, as of {FARCON_CONFIG.illustrativeMarketAsOf}. These figures are not live NAV and not a recommendation.</p>
-          </div>
-          <div>
-          <div className="hf-pills">
-            {['Equity Funds', 'Hybrid Funds', 'Debt Funds', 'Tax Saving (ELSS)'].map((tab) => (
-              <button key={tab} type="button" className={fundTab === tab ? 'is-on' : ''} onClick={() => setFundTab(tab)}>{tab}</button>
-            ))}
-          </div>
-          <div className="hf-fund-row" key={fundTab}>
-            {funds.map((fund) => (
-              <article key={fund.name} className="hf-fund">
-                <div className="hf-amc">
-                  <img className="hf-logo" src={fund.logo} alt={`${fund.name} mark`} width={28} height={28} />
-                  <div>
-                    <h2>{fund.name}</h2>
-                    <div className="hf-sub">Direct Growth</div>
-                  </div>
-                </div>
-                <div className="hf-tags">{fund.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-                <div className="hf-metrics">
-                  <span>3Y CAGR<b>{fund.cagr}</b></span>
-                  <span>NAV · {FARCON_CONFIG.illustrativeMarketAsOf}<b>{fund.nav}</b></span>
-                </div>
-                <Spark values={fund.spark} color={fund.tone} />
-                <span className="hf-pill" tabIndex={0} style={{ background: fund.tone }}>
-                  {fund.risk}
-                  <span className="hf-tip" role="tooltip">{RISK_NOTE[fund.risk]}</span>
-                </span>
-              </article>
-            ))}
-            {funds.length === 0 && (
-              <article className="hf-fund">
-                <h2>Debt funds</h2>
-                <p>Debt schemes are listed in the fund explorer. The figures on this shelf are a sample, as of {FARCON_CONFIG.illustrativeMarketAsOf}.</p>
-                <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
-              </article>
-            )}
-          </div>
-          <button type="button" className="hf-textlink hf-fund-more" onClick={() => navigate('/mutual-funds')}>View All Funds →</button>
-          </div>
-        </div>
-      </Reveal>
+      <FeaturedFundsSection navigate={navigate} />
+
+      <MarketSnapshot navigate={navigate} />
 
       <section className="hf-why" data-section="why">
         <img
@@ -1027,8 +950,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
             <article>
               <div className="hf-num">03</div>
               <div className="hf-icon-tile"><Shield size={18} /></div>
-              <h3>Investor-Direct Custody</h3>
-              <p>All holdings remain registered strictly in your name with the mutual fund AMC. Farcon Wealth never holds custody of investor capital.</p>
+              <h3>Folio in Investor’s Name</h3>
+              <p>All holdings remain registered in your own name with the mutual fund AMC. Farcon Wealth never holds custody of investor capital.</p>
             </article>
           </div>
         </div>
@@ -1054,22 +977,22 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
         </div>
       </Reveal>
 
-      <Reveal as="section" className="hf-section hf-founder-section" data-section="founder">
+      <Reveal as="section" className="hf-section hf-founder-section" data-section="approach-note">
         <div className="hf-wrap hf-split">
           <div>
-            <span className="hf-eye">Leadership Note</span>
-            <h2>From the Desk of Founder / Director</h2>
+            <span className="hf-eye">Our Guiding Philosophy</span>
+            <h2>A Note from Farcon Wealth</h2>
             <p className="hf-lede">
-              “True wealth creation is not about chasing the fastest runner in a bull market. It is about staying disciplined, choosing suitability over noise, and allowing time to compound your efforts.”
+              Goal-based mutual fund planning begins with clarity around the date, timeline, and liquidity needs of each family milestone—rather than reacting to short-term market headlines.
             </p>
           </div>
           <div className="hf-founder-content">
             <div className="hf-founder-message p-6 bg-white rounded-2xl border border-[#DCE4EE] shadow-xs space-y-4">
               <p className="text-sm text-slate-700 leading-relaxed">
-                At Farcon Wealth, our commitment is straightforward: clear communication, transparent mutual fund distribution, and an unwavering focus on your financial goals.
+                At Farcon Wealth, our commitment is straightforward: clear communication, transparent Regular Plan mutual fund distribution, and disciplined goal modeling tailored to your horizon.
               </p>
               <p className="text-xs text-slate-500 leading-relaxed">
-                We believe that every family deserves access to sound, disciplined investment planning without high-pressure sales or confusing jargon.
+                Every investment remains in your own name with the respective Asset Management Company and registrar, supported by periodic reviews as family needs evolve.
               </p>
               {(() => {
                 const canonicalEmbed = getCanonicalVideoEmbedUrl(FARCON_CONFIG.founderVideoUrl);
@@ -1077,27 +1000,17 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
                   <div className="aspect-video w-full rounded-xl overflow-hidden mt-4 border border-slate-200 bg-black">
                     <iframe
                       src={canonicalEmbed}
-                      title="Founder / Director Message"
+                      title="Farcon Wealth Introduction"
                       className="w-full h-full"
                       allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     />
                   </div>
-                ) : (
-                  <div className="mt-4 p-4 rounded-xl border border-dashed border-[#C5D5C8] bg-[#F7FAF8] flex items-center gap-3.5 text-slate-600">
-                    <div className="w-9 h-9 rounded-full bg-[#E5EFE7] flex items-center justify-center shrink-0 text-[#0F3D2E]">
-                      <Video size={18} />
-                    </div>
-                    <div className="text-xs">
-                      <p className="font-semibold text-slate-800">Founder Video Message</p>
-                      <p className="text-slate-500 mt-0.5">Official video message from the Founder / Director will appear here upon publication.</p>
-                    </div>
-                  </div>
-                );
+                ) : null;
               })()}
               <div className="pt-2 flex items-center justify-between text-xs text-slate-600 border-t border-slate-100">
-                <span className="font-semibold text-[#0F3D2E]">Farcon Wealth Leadership Team</span>
-                <span className="font-mono text-[11px] text-slate-400">ARN 329006</span>
+                <span className="font-semibold text-[#0F3D2E]">{FARCON_CONFIG.brandName}</span>
+                <span className="font-mono text-[11px] text-slate-400">AMFI ARN {FARCON_CONFIG.arn}</span>
               </div>
             </div>
           </div>
@@ -1109,16 +1022,24 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           <div>
             <span className="hf-eye">Investor education</span>
             <h2>Learn and Grow</h2>
-            <p className="hf-lede">Practical, jargon-free insights on mutual funds, asset allocation, and systematic wealth creation.</p>
+            <p className="hf-lede">Practical, jargon-free notes on mutual fund mechanics, asset allocation, and systematic investing.</p>
             <button type="button" className="hf-textlink" onClick={() => navigate('/education')}>Explore All Articles →</button>
           </div>
           <div className="hf-articles">
             {[
-              ['article-funds', 'Coin stacks with a small plant', 'Mutual Funds 101', 'A beginner\'s guide to investing in mutual funds'],
-              ['article-sip', 'A pink piggy bank', 'SIP vs Lumpsum', 'Which strategy is right for you?'],
-              ['article-elss', 'A calculator on tax paperwork', 'Tax Saving with ELSS', 'Save tax while building wealth'],
-            ].map(([name, alt, title, text]) => (
-              <a key={title} className="hf-article" href="/education" onClick={(event) => { event.preventDefault(); navigate('/education'); }}>
+              ['article-funds', 'Coin stacks with a small plant', 'Mutual Funds 101', 'A beginner\'s guide to investing in mutual funds', '/blogs/mutual-funds-101-beginners-guide' as RoutePath],
+              ['article-sip', 'A pink piggy bank', 'SIP vs Lumpsum', 'Which strategy aligns with your goal?', '/blogs/sip-vs-lumpsum-investing-guide' as RoutePath],
+              ['article-elss', 'A calculator on tax paperwork', 'Tax Saving with ELSS', 'Understanding 80C lock-in and regime rules', '/blogs/demystifying-elss-tax-saving-beyond-80c' as RoutePath],
+            ].map(([name, alt, title, text, href]) => (
+              <a
+                key={title}
+                className="hf-article"
+                href={href}
+                onClick={(event) => {
+                  event.preventDefault();
+                  navigate(href as RoutePath);
+                }}
+              >
                 <img {...cardSrc(name)} sizes="96px" alt={alt} width={1600} height={1100} loading="eager" fetchPriority="low" decoding="async" />
                 <div>
                   <h2>{title}</h2>
@@ -1167,10 +1088,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
           <div>
             <span className="hf-eye">Ready to take the next step?</span>
             <h2>Let&apos;s build your financial future, together.</h2>
-            <p>Get personalised guidance from our experts. No pressure, just a conversation about your goals.</p>
+            <p>Speak with our AMFI-registered distributor team about your goals, time horizon, and investment plan.</p>
             <div className="hf-cta-row">
-              <button type="button" className="hf-btn hf-btn-gold" onClick={() => onOpenConsultation('Book a Free 15-Minute Call')}>
-                Book a Free 15-Minute Call <ArrowRight size={16} />
+              <button type="button" className="hf-btn hf-btn-gold" onClick={() => onOpenConsultation('Talk to Our Team')}>
+                Talk to Our Team <ArrowRight size={16} />
               </button>
               <button type="button" className="hf-btn hf-btn-white" onClick={() => navigate('/portfolio-review')}>Request a portfolio review</button>
               <a className="hf-btn hf-btn-white" href={whatsapp} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
