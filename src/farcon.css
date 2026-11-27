@@ -4596,20 +4596,23 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     background:
       linear-gradient(
         180deg,
-        rgba(247, 244, 236, 0.04) 0%,
+        rgba(247, 244, 236, 0.03) 0%,
         rgba(247, 244, 236, 0.02) 42%,
-        rgba(247, 244, 236, 0.80) 62%,
-        rgba(247, 244, 236, 0.96) 82%,
-        #F7F4EC 97%,
+        rgba(247, 244, 236, 0.18) 58%,
+        rgba(247, 244, 236, 0.50) 72%,
+        rgba(247, 244, 236, 0.84) 86%,
+        rgba(247, 244, 236, 0.97) 96%,
         #F7F4EC 100%
       ),
       linear-gradient(
         90deg,
         rgba(247, 244, 236, 0.99) 0%,
-        rgba(247, 244, 236, 0.95) 38%,
-        rgba(247, 244, 236, 0.62) 54%,
-        rgba(247, 244, 236, 0.08) 74%,
-        rgba(247, 244, 236, 0) 100%
+        rgba(247, 244, 236, 0.96) 36%,
+        rgba(247, 244, 236, 0.80) 46%,
+        rgba(247, 244, 236, 0.52) 56%,
+        rgba(247, 244, 236, 0.18) 66%,
+        rgba(247, 244, 236, 0.02) 74%,
+        rgba(247, 244, 236, 0) 82%
       );
   }
 
@@ -4642,11 +4645,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
   .hf-hero h1,
   .is-home .hf-hero h1 {
-    max-width: min(226px, 60%);
-    font-size: clamp(27px, 7.2vw, 34px);
-    line-height: 1.06;
+    max-width: min(270px, 74%);
+    font-size: clamp(29px, 7.8vw, 34px);
+    line-height: 1.05;
     letter-spacing: -0.035em;
-    margin: 4px 0 12px;
+    margin: 4px 0 14px;
   }
 
   .hf-hero h1 br,
@@ -4657,9 +4660,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .hf-hero .hf-lede,
   .is-home .hf-hero .hf-lede {
     max-width: 100%;
-    font-size: 13.5px;
-    line-height: 1.46;
+    font-size: 14px;
+    line-height: 1.5;
     color: #27342c;
+    margin-top: 6px;
   }
 
   .hf-hero .hf-cta-row,
