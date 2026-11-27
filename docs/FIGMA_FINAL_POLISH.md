@@ -26,11 +26,13 @@
 - Left column: Eyebrow, handwritten Caveat note, editorial headline (`54px` / `46px`), concise body copy, clear CTA hierarchy, glassmorphic trust pills.
 - Right column: Goal SIP Estimator (`376px` / `360px` wide) computing real-time monthly SIP with 6% default inflation matching the full interactive milestone planner.
 
-### Tablet & Mobile (`768x1024`, `1024x768`, `390x844`, `360x780`)
-- Refactored into one authoritative responsive ruleset in `src/farcon.css` (removing prior contradictory overrides).
-- Preserves desktop hero art direction: full-bleed `16:9` family photograph (`object-position: 50% 34%`) across the top of `.hf-hero` feathered smoothly downward via `.hf-hero-scrim` (`linear-gradient(180deg, rgba(247,244,236,0) 45%, rgba(247,244,236,0.72) 82%, #F7F4EC 100%)`) directly into `#F7F4EC`.
-- **No detached thumbnail box** placed between headline copy and calculator card.
-- Eyebrow + Caveat script aligned horizontally at the top of the copy block; readable `clamp()` type hierarchy; trust pills wrapped cleanly; calculator sits immediately below within the unified hero section.
+### Compact Desktop / Landscape Tablet (`1024×768`) & Portrait Tablet / Mobile (`768×1024`, `430×932`, `390×844`, `360×780`)
+- Refactored into one authoritative responsive hero architecture wrapping `.hf-hero-photo` + `.hf-hero-scrim` inside `.hf-hero-backdrop` (`src/components/sections/HomeView.tsx`, `src/farcon.css`), removing legacy detached-banner and duplicate rules.
+- **At `1024×768`:** Preserves full-bleed `100%` height `.hf-hero-backdrop` with 2-column layout (copy left over left cream scrim, all 6 family members centered clearly in the middle window, Goal SIP Estimator right).
+- **At `<=1023px` (`768×1024`, `430×932`, `390×844`, `360×780`):** `.hf-hero-backdrop` sits `position: absolute` behind the introductory hero copy (height `490px` on `768px`, `clamp(430px, 112vw, 480px)` on `<=767px`), fading leftward (`90deg`) for crisp dark typography and downward (`180deg`) smoothly into `#F7F4EC` before the white `Goal SIP Estimator` card.
+- **No detached thumbnail box** placed above or between headline copy and calculator.
+- On narrow phones (`<=767px`), eyebrow (`AMFI-REGISTERED MUTUAL FUND DISTRIBUTOR`) and Caveat accent (`A more secure tomorrow, together.`) stack cleanly above `h1` without horizontal cramping; forced `<br />` in `h1` is hidden for natural responsive wrapping; Goal SIP Estimator sits comfortably below on `#F7F4EC`.
+- **Ask Farcon AI (`FloatingContactActions.tsx`):** Remains hidden while the hero sits at initial viewport (`scrollY = 0`), revealing cleanly on scroll with `env(safe-area-inset-*)` spacing so it never overlaps hero copy, CTAs, trust pills, estimator sliders/results, or the AMFI disclosure bar.
 
 ---
 

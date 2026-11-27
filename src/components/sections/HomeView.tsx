@@ -250,18 +250,20 @@ export const HomeView: React.FC<HomeViewProps> = ({ navigate, onOpenConsultation
   return (
     <div className="hf">
       <section className="hf-hero" data-section="hero" ref={heroRef}>
-        <img
-          className="hf-hero-photo"
-          src="/images/home/hero-1600.webp"
-          srcSet="/images/home/hero-800.webp 800w, /images/home/hero-1024.webp 1024w, /images/home/hero-1600.webp 1600w"
-          sizes="(min-width: 1100px) 1600px, 100vw"
-          alt="An Indian family of six in a sunlit living room: grandfather, grandmother, father, mother, a girl, and a boy"
-          width={1600}
-          height={900}
-          fetchPriority="high"
-          decoding="async"
-        />
-        <div className="hf-hero-scrim" aria-hidden="true" />
+        <div className="hf-hero-backdrop">
+          <img
+            className="hf-hero-photo"
+            src="/images/home/hero-1600.webp"
+            srcSet="/images/home/hero-800.webp 800w, /images/home/hero-1024.webp 1024w, /images/home/hero-1600.webp 1600w"
+            sizes="(min-width: 1100px) 1600px, 100vw"
+            alt="An Indian family of six in a sunlit living room: grandfather, grandmother, father, mother, a girl, and a boy"
+            width={1600}
+            height={900}
+            fetchPriority="high"
+            decoding="async"
+          />
+          <div className="hf-hero-scrim" aria-hidden="true" />
+        </div>
         <div className="hf-hero-inner">
           <div className="hf-hero-copy">
             <span className="hf-eye">AMFI-Registered Mutual Fund Distributor</span>
