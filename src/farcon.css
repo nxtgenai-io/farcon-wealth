@@ -1990,11 +1990,16 @@ html, body { overflow-x: clip; }
 
 @media (max-width: 700px) {
   :root {
-    --fw-pad-section: 40px;
-    --fw-gap-grid: 14px;
+    --fw-pad-section: 44px;
+    --fw-gap-grid: 16px;
     --fw-pad-card: 16px;
-    --fw-gap-heading: 20px;
+    --fw-gap-heading: 22px;
   }
+  .is-home .hf-section { padding: var(--fw-pad-section) 0; }
+  .is-home .hf-wrap { padding-left: 18px; padding-right: 18px; }
+  .is-home .hf-split { gap: 22px; }
+  .is-home .hf-planner-head { margin-bottom: 22px; }
+  .is-home .hf-plan-studio { padding: 18px; }
   .hf-goals, .is-home .hf-goals {
     display: flex;
     gap: 12px;
@@ -4583,12 +4588,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 @media (max-width: 767px) {
   .hf-hero-backdrop,
   .is-home .hf-hero-backdrop {
-    height: clamp(440px, 114vw, 490px);
+    height: clamp(460px, 118vw, 505px);
   }
 
   .hf-hero-photo,
   .is-home .hf-hero-photo {
-    object-position: 43% 26%;
+    /* Shift the family into the right-side visual window so faces sit beside, not under, the headline. */
+    object-position: 30% 26%;
   }
 
   .hf-hero-scrim,
@@ -4596,30 +4602,32 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     background:
       linear-gradient(
         180deg,
-        rgba(247, 244, 236, 0.04) 0%,
-        rgba(247, 244, 236, 0.02) 38%,
-        rgba(247, 244, 236, 0.56) 54%,
-        rgba(247, 244, 236, 0.88) 70%,
-        rgba(247, 244, 236, 0.97) 86%,
-        #F7F4EC 98%,
+        rgba(247, 244, 236, 0.03) 0%,
+        rgba(247, 244, 236, 0.02) 40%,
+        rgba(247, 244, 236, 0.10) 50%,
+        rgba(247, 244, 236, 0.28) 60%,
+        rgba(247, 244, 236, 0.62) 74%,
+        rgba(247, 244, 236, 0.90) 88%,
+        rgba(247, 244, 236, 0.98) 97%,
         #F7F4EC 100%
       ),
       linear-gradient(
         90deg,
         rgba(247, 244, 236, 0.99) 0%,
-        rgba(247, 244, 236, 0.95) 38%,
-        rgba(247, 244, 236, 0.80) 52%,
-        rgba(247, 244, 236, 0.44) 66%,
-        rgba(247, 244, 236, 0.14) 80%,
-        rgba(247, 244, 236, 0.02) 94%,
-        rgba(247, 244, 236, 0) 100%
+        rgba(247, 244, 236, 0.97) 34%,
+        rgba(247, 244, 236, 0.90) 43%,
+        rgba(247, 244, 236, 0.66) 52%,
+        rgba(247, 244, 236, 0.34) 61%,
+        rgba(247, 244, 236, 0.10) 70%,
+        rgba(247, 244, 236, 0.02) 80%,
+        rgba(247, 244, 236, 0) 88%
       );
   }
 
   .hf-hero-inner,
   .is-home .hf-hero-inner {
-    gap: 18px;
-    padding: 18px 16px 26px;
+    gap: 24px;
+    padding: 24px 18px 32px;
   }
 
   .hf-hero-copy,
@@ -4637,7 +4645,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
   .hf-script,
   .is-home .hf-script {
-    margin: 5px 0 6px;
+    margin: 7px 0 10px;
     font-size: clamp(16px, 4.2vw, 18.5px);
     line-height: 1.08;
     max-width: 64%;
@@ -4645,11 +4653,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
   .hf-hero h1,
   .is-home .hf-hero h1 {
-    max-width: min(268px, 72%);
-    font-size: clamp(28px, 7.6vw, 34px);
-    line-height: 1.05;
+    max-width: min(246px, 68%);
+    font-size: clamp(28px, 7.6vw, 33px);
+    line-height: 1.06;
     letter-spacing: -0.035em;
-    margin: 4px 0 12px;
+    margin: 6px 0 16px;
   }
 
   .hf-hero h1 br,
@@ -4659,26 +4667,26 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
   .hf-hero .hf-lede,
   .is-home .hf-hero .hf-lede {
-    max-width: min(332px, 88%);
+    max-width: min(300px, 92%);
     font-size: 14px;
     line-height: 1.5;
     color: #202c25;
-    margin-top: 4px;
+    margin-top: 8px;
   }
 
   .hf-hero .hf-cta-row,
   .is-home .hf-hero .hf-cta-row {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
+    gap: 12px;
     width: 100%;
-    margin-top: 14px;
+    margin-top: 18px;
   }
 
   .hf-hero .hf-cta-row .hf-btn,
   .is-home .hf-hero .hf-cta-row .hf-btn {
     width: 100%;
-    min-height: 46px;
+    min-height: 50px;
     font-size: 14px;
     box-sizing: border-box;
   }
@@ -4693,8 +4701,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
   .hf-hero .hf-trust,
   .is-home .hf-hero .hf-trust {
-    margin-top: 12px;
-    gap: 8px;
+    margin-top: 18px;
+    gap: 10px;
   }
 
   .hf-hero .hf-trust span,
