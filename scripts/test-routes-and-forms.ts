@@ -302,4 +302,12 @@ for (const r of legalAndBlogRoutes) {
 }
 console.log('✓ All legal, utility, /faqs alias, and blog routes verified with valid metadata & H1');
 
+// 11. Dedicated Mobile Hero Crop & Responsive Picture Regression Check
+import { existsSync } from 'fs';
+const homeViewSrc = readFileSync('src/components/sections/HomeView.tsx', 'utf8');
+assert(existsSync('public/images/home/hero-mobile.webp'), 'Dedicated mobile hero crop public/images/home/hero-mobile.webp must exist');
+assert(existsSync('public/images/home/hero-1600.webp'), 'Desktop hero image public/images/home/hero-1600.webp must exist');
+assert(homeViewSrc.includes('<picture>') && homeViewSrc.includes('/images/home/hero-mobile.webp') && homeViewSrc.includes('/images/home/hero-1600.webp'), 'HomeView hero must use responsive <picture> with mobile crop and desktop fallback');
+console.log('✓ Responsive hero <picture> and mobile/desktop assets verified');
+
 console.log('[ALL ROUTE & FORM TESTS PASSED]');
