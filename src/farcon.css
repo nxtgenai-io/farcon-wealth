@@ -4588,40 +4588,49 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 @media (max-width: 767px) {
   .hf-hero-backdrop,
   .is-home .hf-hero-backdrop {
-    height: clamp(460px, 118vw, 505px);
+    /*
+     * Preserve the source image's full 16:9 composition on phones. The previous
+     * portrait cover crop enlarged the faces but cut off one or more family members.
+     */
+    height: clamp(235px, calc(56.25vw + 28px), 300px);
+    background: #F7F4EC;
   }
 
   .hf-hero-photo,
   .is-home .hf-hero-photo {
-    /* Shift the family into the right-side visual window so faces sit beside, not under, the headline. */
-    object-position: 30% 26%;
+    /*
+     * Don't use object-fit: cover at phone widths: it crops this landscape family
+     * photograph so tightly that the youngest generation is clipped.
+     */
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    object-fit: contain;
+    object-position: center top;
+    filter: contrast(1.04) saturate(1.06) brightness(1);
+    transform: none;
   }
 
   .hf-hero-scrim,
   .is-home .hf-hero-scrim {
-    background:
-      linear-gradient(
-        180deg,
-        rgba(247, 244, 236, 0.03) 0%,
-        rgba(247, 244, 236, 0.02) 40%,
-        rgba(247, 244, 236, 0.10) 50%,
-        rgba(247, 244, 236, 0.28) 60%,
-        rgba(247, 244, 236, 0.62) 74%,
-        rgba(247, 244, 236, 0.90) 88%,
-        rgba(247, 244, 236, 0.98) 97%,
-        #F7F4EC 100%
-      ),
-      linear-gradient(
-        90deg,
-        rgba(247, 244, 236, 0.99) 0%,
-        rgba(247, 244, 236, 0.97) 34%,
-        rgba(247, 244, 236, 0.90) 43%,
-        rgba(247, 244, 236, 0.66) 52%,
-        rgba(247, 244, 236, 0.34) 61%,
-        rgba(247, 244, 236, 0.10) 70%,
-        rgba(247, 244, 236, 0.02) 80%,
-        rgba(247, 244, 236, 0) 88%
-      );
+    /*
+     * The source image already has a cream text-safe area on the left. Only fade
+     * the lower edge here, so the photo's faces and all six family members remain visible.
+     */
+    background: linear-gradient(
+      180deg,
+      rgba(247, 244, 236, 0) 0%,
+      rgba(247, 244, 236, 0) 64%,
+      rgba(247, 244, 236, 0.10) 74%,
+      rgba(247, 244, 236, 0.34) 84%,
+      rgba(247, 244, 236, 0.72) 93%,
+      #F7F4EC 100%
+    );
   }
 
   .hf-hero-inner,
@@ -4653,11 +4662,12 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
   .hf-hero h1,
   .is-home .hf-hero h1 {
-    max-width: min(246px, 68%);
-    font-size: clamp(28px, 7.6vw, 33px);
-    line-height: 1.06;
+    /* Keep the copy in the cream side of the original desktop composition. */
+    max-width: min(224px, 59%);
+    font-size: clamp(26px, 7.3vw, 30px);
+    line-height: 1.04;
     letter-spacing: -0.035em;
-    margin: 6px 0 16px;
+    margin: 6px 0 14px;
   }
 
   .hf-hero h1 br,
@@ -4667,7 +4677,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
   .hf-hero .hf-lede,
   .is-home .hf-hero .hf-lede {
-    max-width: min(300px, 92%);
+    /* The photo ends above the full-width description, leaving this copy on cream. */
+    max-width: min(340px, 100%);
     font-size: 14px;
     line-height: 1.5;
     color: #202c25;
