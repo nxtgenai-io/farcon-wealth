@@ -650,7 +650,7 @@ export const InvestorQuizView: React.FC<InvestorQuizViewProps> = ({
               <div>
                 <strong>{COMPLIANCE_REGISTRY.quiz.distributorSeparateDisclosure}</strong>
                 <span className="text-slate-600 block mt-0.5">
-                  Operating strictly under AMFI regulatory guidelines. Mutual Fund investments are subject to market risks; read all scheme related documents carefully.
+                  Operating strictly under AMFI regulatory guidelines. Mutual Fund investments are subject to market risks, read all scheme related documents carefully.
                 </span>
               </div>
             </div>

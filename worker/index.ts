@@ -219,8 +219,20 @@ async function handleRequest(request: Request, env: Env): Promise<Response> {
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
+    const url = new URL(request.url);
+    const isWorkerPreview = env.NOINDEX === '1' || url.hostname.endsWith('.workers.dev');
+
+    if (url.pathname === '/robots.txt' && isWorkerPreview) {
+      return new Response('User-agent: *\nDisallow: /\n', {
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'X-Robots-Tag': 'noindex, nofollow',
+        },
+      });
+    }
+
     const response = await handleRequest(request, env);
-    if (!env.NOINDEX) return response;
+    if (!isWorkerPreview) return response;
     const headers = new Headers(response.headers);
     headers.set('X-Robots-Tag', 'noindex, nofollow');
     return new Response(response.body, { status: response.status, statusText: response.statusText, headers });

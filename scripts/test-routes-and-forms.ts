@@ -238,4 +238,76 @@ assert(fullPlannerReceived.requiredMonthlySIP === heroQuickCalcDefault.requiredM
 assert(fullPlannerReceived.futureInflationAdjustedGoal === heroQuickCalcDefault.futureInflationAdjustedGoal, 'Planner must produce identical future goal upon handoff');
 console.log('✓ Quick-calculator 6% inflation benchmark & planner handoff consistency verified');
 
+// 10. Compliance, Legal Routes & Fail-Closed Fund Catalog Tests
+import { readFileSync } from 'fs';
+import { defaultFundDataProvider, FUND_DATA_PROVENANCE } from '../src/data/mockFunds';
+import { COMPLIANCE_REGISTRY } from '../src/lib/compliance';
+import { metaFor, pageH1 } from '../src/content/seo/meta';
+
+assert(
+  COMPLIANCE_REGISTRY.statutoryMutualFund.standardRisk ===
+    'Mutual Fund investments are subject to market risks, read all scheme related documents carefully.',
+  'Exact SEBI standard warning wording and punctuation must be preserved'
+);
+
+(async () => {
+  const funds = await defaultFundDataProvider.getFunds();
+  assert(Array.isArray(funds) && funds.length === 0, 'Unverified scheme catalog must fail closed with empty array');
+  assert(
+    FUND_DATA_PROVENANCE.isVerifiedRegularCatalogAvailable === false,
+    'Fund data provenance must mark verified regular catalog unavailable'
+  );
+  console.log('✓ Fail-closed fund data provider verified');
+})();
+
+const fundUiFiles = [
+  'src/components/sections/home/FeaturedFundsSection.tsx',
+  'src/components/pages/SitePages.tsx',
+  'src/features/mutual-funds/MutualFundExplorerView.tsx',
+  'src/content/seo/meta.ts',
+];
+for (const file of fundUiFiles) {
+  const content = readFileSync(file, 'utf8');
+  assert(!/Direct Growth/i.test(content), `${file} must not expose Direct Growth labels`);
+}
+console.log('✓ Direct Growth prohibition verified across fund UI and SEO metadata');
+
+const legalAndBlogRoutes = [
+  '/about',
+  '/about/',
+  '/contact',
+  '/contact/',
+  '/disclosures',
+  '/disclosures/',
+  '/commission-disclosure',
+  '/grievance',
+  '/grievance/',
+  '/privacy',
+  '/privacy/',
+  '/terms',
+  '/terms/',
+  '/education',
+  '/education/',
+  '/faq',
+  '/faqs',
+  '/faqs/',
+  '/blogs/mutual-funds-101-beginners-guide',
+  '/blogs/mutual-funds-101-beginners-guide/',
+];
+for (const r of legalAndBlogRoutes) {
+  const m = metaFor(r);
+  const h1 = pageH1(r);
+  assert(!m.title.startsWith('Page not found'), `Route ${r} must not resolve to Page not found`);
+  assert(Boolean(h1 && h1.trim().length > 3), `Route ${r} must resolve non-empty H1`);
+}
+console.log('✓ All legal, utility, /faqs alias, and blog routes verified with valid metadata & H1');
+
+// 11. Dedicated Mobile Hero Crop & Responsive Picture Regression Check
+import { existsSync } from 'fs';
+const homeViewSrc = readFileSync('src/components/sections/HomeView.tsx', 'utf8');
+assert(existsSync('public/images/home/hero-mobile.webp'), 'Dedicated mobile hero crop public/images/home/hero-mobile.webp must exist');
+assert(existsSync('public/images/home/hero-1600.webp'), 'Desktop hero image public/images/home/hero-1600.webp must exist');
+assert(homeViewSrc.includes('<picture>') && homeViewSrc.includes('/images/home/hero-mobile.webp') && homeViewSrc.includes('/images/home/hero-1600.webp'), 'HomeView hero must use responsive <picture> with mobile crop and desktop fallback');
+console.log('✓ Responsive hero <picture> and mobile/desktop assets verified');
+
 console.log('[ALL ROUTE & FORM TESTS PASSED]');

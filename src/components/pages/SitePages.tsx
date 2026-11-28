@@ -45,7 +45,7 @@ const COVER_SIZE: Record<string, { width: number; height: number }> = {
 import fundBook from '@/content/funds/schemes.json';
 import { FARCON_SERVICES } from '@/content/services/servicesData';
 import { ServiceShowcase } from '@/components/sections/ServiceShowcase';
-import { RETURNS_LABEL, type LiveQuote } from '@/lib/api/liveNav';
+import { COMPLIANCE_REGISTRY } from '@/lib/compliance';
 
 function VideoFacade({ id, title }: { id: string; title: string }) {
   const [play, setPlay] = useState(false);
@@ -116,7 +116,14 @@ export const AboutPage: React.FC<PageProps> = ({ onOpenConsultation, navigate })
           <h2>Patna</h2>
           <p>{FARCON_CONFIG.registeredAddress}</p>
           <p>{FARCON_CONFIG.hours}</p>
-          <p>{FARCON_CONFIG.email}</p>
+          <p><a href={`mailto:${FARCON_CONFIG.email}`} style={{ color: 'inherit' }}>{FARCON_CONFIG.email}</a></p>
+          <div style={{ margin: '8px 0', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            {FARCON_CONFIG.phoneNumbers.map((phone) => (
+              <a key={phone} href={`tel:${phone.replace(/\s+/g, '')}`} style={{ color: '#0f3d2e', fontWeight: 600, textDecoration: 'none' }}>
+                {phone}
+              </a>
+            ))}
+          </div>
           <a className="hf-btn hf-btn-outline" href={whatsappHref} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
         </article>
         <article className="pg-card">
@@ -141,134 +148,12 @@ export const ServicesPage: React.FC<PageProps> = ({ onOpenConsultation }) => (
   </div>
 );
 
-function pct(value: number | null | undefined) {
-  return value == null ? '—' : `${value}%`;
-}
-
-function useLiveNav() {
-  const [quotes, setQuotes] = useState<Record<number, LiveQuote>>({});
-  useEffect(() => {
-    let live = true;
-    fetch('/api/nav')
-      .then((response) => response.json())
-      .then((body: { funds?: LiveQuote[] }) => {
-        if (!live) return;
-        const next: Record<number, LiveQuote> = {};
-        for (const fund of body.funds || []) next[fund.code] = fund;
-        setQuotes(next);
-      })
-      .catch(() => undefined);
-    return () => { live = false; };
-  }, []);
-  return quotes;
-}
-
-function CountUp({ value }: { value: number }) {
-  const [shown, setShown] = useState(value);
-  const ref = useRef<HTMLSpanElement>(null);
-  const shownRef = useRef(value);
-  shownRef.current = shown;
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return undefined;
-    let frame = 0;
-    let observer: IntersectionObserver | undefined;
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) {
-      setShown(value);
-      return undefined;
-    }
-    const play = (from: number) => {
-      const start = performance.now();
-      const tick = (now: number) => {
-        const t = Math.min(1, (now - start) / 520);
-        setShown(from + (value - from) * (1 - (1 - t) ** 3));
-        if (t < 1) frame = requestAnimationFrame(tick);
-      };
-      frame = requestAnimationFrame(tick);
-    };
-    const arm = () => {
-      const from = el.dataset.played === '1' ? shownRef.current : value * 0.94;
-      el.dataset.played = '1';
-      setShown(from);
-      play(from);
-    };
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight && rect.bottom > 0) arm();
-    else {
-      observer = new IntersectionObserver(([entry]) => {
-        if (!entry.isIntersecting) return;
-        observer?.disconnect();
-        arm();
-      }, { threshold: 0.4 });
-      observer.observe(el);
-    }
-    return () => {
-      cancelAnimationFrame(frame);
-      observer?.disconnect();
-    };
-  }, [value]);
-  const finalText = value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const shownText = shown.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return (
-    <span className="count-up" ref={ref}>
-      <span className="count-up-sizer" aria-hidden="true">{finalText}</span>
-      <span>{shownText}</span>
-    </span>
-  );
-}
-
-function Spark({ values }: { values: number[] }) {
-  if (values.length < 2) return null;
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const width = 108;
-  const height = 28;
-  const d = values.map((point, index) => {
-    const x = (index / (values.length - 1)) * width;
-    const y = max === min ? height / 2 : height - ((point - min) / (max - min)) * (height - 4) - 2;
-    return `${index ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(' ');
-  const up = values[values.length - 1] >= values[0];
-  return (
-    <svg className="nav-spark" viewBox={`0 0 ${width} ${height}`} width={width} height={height} aria-hidden="true">
-      <path d={d} fill="none" stroke={up ? '#1f9d55' : '#8a5a2a'} strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; categorySlug?: string; schemeSlug?: string }> = ({ navigate, categorySlug, schemeSlug }) => {
-  const [query, setQuery] = useState('');
-  const [amc, setAmc] = useState('All');
-  const [risen, setRisen] = useState(false);
-  const quotes = useLiveNav();
   const category = fundBook.categories.find((item) => item.slug === categorySlug);
   const scheme = category?.schemes.find((item) => item.slug === schemeSlug);
-  useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const node = document.querySelector('.nav-grid');
-    if (!node || reduce) {
-      setRisen(true);
-      return undefined;
-    }
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      setRisen(true);
-      observer.disconnect();
-    }, { threshold: 0.12 });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [categorySlug, schemeSlug, query, amc]);
   if (categorySlug && !category) return null;
   if (schemeSlug && category && !scheme) return null;
-  const live = (fund: { code?: number }) => {
-    const quote = fund.code ? quotes[fund.code] : undefined;
-    return quote && quote.date && Number.isFinite(Number(quote.nav)) ? quote : undefined;
-  };
-  const listed = category ? category.schemes : fundBook.categories.flatMap((item) => item.schemes.map((fund) => ({ ...fund, categoryName: item.name, categorySlug: item.slug })));
-  const amcs = ['All', ...Array.from(new Set(listed.map((fund) => fund.amc)))];
-  const needle = query.trim().toLowerCase();
-  const shown = listed.filter((fund) => (amc === 'All' || fund.amc === amc) && (!needle || `${fund.name} ${fund.amc} ${fund.subCategory}`.toLowerCase().includes(needle)));
+
   if (scheme && category) {
     return (
       <div className="pg">
@@ -280,107 +165,98 @@ export const FundsPage: React.FC<{ navigate: (path: RoutePath) => void; category
             <span aria-hidden="true">/</span>
             <span>{scheme.name}</span>
           </div>
-          <span className="hf-eye">{live(scheme) ? 'Live NAV' : 'Scheme'}</span>
+          <span className="hf-eye">Regular Plan Scope · ARN {FARCON_CONFIG.arn}</span>
           <h1>{scheme.name}</h1>
-          <p className="lede">{scheme.amc}. {scheme.plan}. Educational only. Not a recommendation.</p>
-          <article className={`pg-card nav-card nav-grid${risen ? ' is-in' : ''}`} style={{ marginTop: 16 }}>
-            <div className="hf-amc">
-              <img className="hf-logo" src={scheme.logo} alt={`${scheme.amc} mark`} width={28} height={28} />
+          <p className="lede">{scheme.amc} · {scheme.subCategory}. Educational category overview only.</p>
+          <article className="pg-card" style={{ marginTop: 16 }}>
+            <div className="hf-amc" style={{ marginBottom: 12 }}>
+              <img className="hf-logo" src={scheme.logo} alt={`${scheme.amc} mark`} width={36} height={36} />
               <div>
-                <h2>{scheme.subCategory}</h2>
-                <div className="hf-sub">Riskometer label: {scheme.risk}</div>
+                <h2>Scheme Data Pending Regular Plan Verification</h2>
+                <div className="hf-sub">Category: {scheme.subCategory} · Horizon: {scheme.horizon}</div>
               </div>
             </div>
-            <div className="nav-figure">
-              <span>{live(scheme) ? 'NAV · AMFI' : 'NAV'}</span>
-              <strong>₹<CountUp value={Number(live(scheme)?.nav ?? scheme.nav)} /></strong>
-              <Spark values={live(scheme)?.spark || []} />
-            </div>
-            <p className="hf-note">{live(scheme)?.date ? `as of ${live(scheme)!.date}` : `Last updated ${fundBook.asOf}`}</p>
-            {live(scheme)?.returns ? (
-              <div className="hf-metrics">
-                <span>1Y<b>{pct(live(scheme)!.returns['1Y'])}</b></span>
-                <span>3Y<b>{pct(live(scheme)!.returns['3Y'])}</b></span>
-                <span>5Y<b>{pct(live(scheme)!.returns['5Y'])}</b></span>
-              </div>
-            ) : null}
-            <p className="hf-note">{live(scheme) ? RETURNS_LABEL : fundBook.source}</p>
-            <p className="hf-note">{fundBook.disclaimer}</p>
+            <p>
+              Farcon Wealth distributes Regular Plans only under AMFI ARN {FARCON_CONFIG.arn}. Scheme-level NAVs, returns, current riskometer grades, verified Regular Plan AMFI codes, official SID/SAI/KIM document links, and AMC commission schedules are temporarily withheld here until verified against official AMFI and AMC records.
+            </p>
+            <p className="hf-note" style={{ marginTop: 10 }}>
+              {COMPLIANCE_REGISTRY.scheme.disclaimer}
+            </p>
+            <p className="hf-note" style={{ marginTop: 8 }}>
+              <strong>{COMPLIANCE_REGISTRY.statutoryMutualFund.standardRisk}</strong>
+            </p>
           </article>
           <div className="hf-cta-row" style={{ marginTop: 16 }}>
-            <button type="button" className="hf-btn hf-btn-green" onClick={() => navigate('/start-investing')}>Enquire about this scheme</button>
+            <button type="button" className="hf-btn hf-btn-green" onClick={() => navigate('/disclosures#commission' as RoutePath)}>Commission &amp; Regulatory Disclosures</button>
+            <a className="hf-btn hf-btn-outline" href="https://www.amfiindia.com/" target="_blank" rel="noreferrer">Official AMFI Portal</a>
+            <a className="hf-btn hf-btn-outline" href="https://www.sebi.gov.in/filings/mutual-funds.html" target="_blank" rel="noreferrer">SEBI SID / SAI / KIM Filings</a>
             <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/calculators/sip')}>SIP calculator</button>
-            <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/calculators/lumpsum')}>Lumpsum calculator</button>
-            <a className="hf-btn hf-btn-outline" href="https://www.sebi.gov.in/filings/mutual-funds.html" target="_blank" rel="noreferrer">Scheme documents</a>
           </div>
         </div>
       </div>
     );
   }
+
   return (
     <div className="pg">
       <div className="pg-wrap">
-        <span className="hf-eye">Mutual Funds</span>
-        <h1>{category ? category.name : 'Explore mutual funds'}</h1>
-        <p className="lede">{category ? category.summary : 'Open a scheme for the latest AMFI NAV and point-to-point returns.'}</p>
-        <span className="horizon">NAV where shown live is the latest published scheme NAV. Not a recommendation.</span>
+        <span className="hf-eye">Mutual Funds · Regular Plans Only (ARN {FARCON_CONFIG.arn})</span>
+        <h1>{category ? `${category.name} Category` : 'Mutual fund categories and disclosures'}</h1>
+        <p className="lede">
+          {category
+            ? category.summary
+            : 'Understand mutual fund categories by horizon and risk characteristics. Scheme-level NAVs, performance figures, and transaction cards are withheld pending verified Regular Plan AMFI codes, current riskometer data, SID/SAI/KIM links, and commission schedules.'}
+        </p>
+
         <div className="hf-pills" style={{ margin: '18px 0' }}>
-          <button type="button" className={!category ? 'is-on' : ''} onClick={() => navigate('/mutual-funds')}>All</button>
+          <button type="button" className={!category ? 'is-on' : ''} onClick={() => navigate('/mutual-funds')}>All Categories</button>
           {fundBook.categories.map((item) => (
             <button key={item.slug} type="button" className={category?.slug === item.slug ? 'is-on' : ''} onClick={() => navigate(`/mutual-funds/${item.slug}` as RoutePath)}>{item.name}</button>
           ))}
         </div>
-        <label className="field">Search schemes
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Scheme, AMC, or category" />
-        </label>
-        <div className="hf-pills" style={{ margin: '0 0 18px' }}>
-          {amcs.map((item) => (
-            <button key={item} type="button" className={amc === item ? 'is-on' : ''} onClick={() => setAmc(item)}>{item.replace(' Mutual Fund', '')}</button>
+
+        <article className="pg-card" style={{ marginBottom: 18, background: '#fffdf8', borderColor: '#dfd6c2' }}>
+          <span className="hf-eye">Status Notice · Non-Transactional</span>
+          <h2>Scheme Catalog Temporarily Withheld for Regulatory Verification</h2>
+          <p>
+            Under AMFI guidelines, an AMFI-registered Mutual Fund Distributor cannot offer Direct Plans for distributed client relationships and must provide verified Regular Plan identifiers alongside prominent commission-rate links and official Scheme Information Document (SID), Statement of Additional Information (SAI), and Key Information Memorandum (KIM) links. Until each scheme mapping, riskometer feed, and approved AMC commission schedule is finalized by Farcon Wealth, scheme-level cards and historical NAV/CAGR figures are intentionally omitted.
+          </p>
+          <div className="hf-cta-row" style={{ marginTop: 12 }}>
+            <button type="button" className="hf-btn hf-btn-green" onClick={() => navigate('/disclosures#commission' as RoutePath)}>View Commission Disclosure Policy</button>
+            <a className="hf-btn hf-btn-outline" href="https://www.amfiindia.com/" target="_blank" rel="noreferrer">Official AMFI NAV &amp; Scheme Data</a>
+            <a className="hf-btn hf-btn-outline" href="https://www.sebi.gov.in/filings/mutual-funds.html" target="_blank" rel="noreferrer">SEBI Mutual Fund Filings</a>
+          </div>
+        </article>
+
+        <div className="pg-grid cards">
+          {(category ? [category] : fundBook.categories).map((cat) => (
+            <article key={cat.slug} className="pg-card">
+              <span className="hf-eye">Category</span>
+              <h2>{cat.name}</h2>
+              <p>{cat.summary}</p>
+              <p className="hf-note" style={{ marginTop: 8 }}>
+                Distribution scope: Regular Plans via AMCs empanelled with ARN {FARCON_CONFIG.arn}. Investors may also consider alternatives not offered by Farcon Wealth.
+              </p>
+              <div className="hf-cta-row" style={{ marginTop: 12 }}>
+                {!category && (
+                  <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate(`/mutual-funds/${cat.slug}` as RoutePath)}>
+                    Category details
+                  </button>
+                )}
+                <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/start-investing')}>
+                  Regular Plan enquiry
+                </button>
+              </div>
+            </article>
           ))}
         </div>
-        <div className={`hf-fund-row nav-grid${risen ? ' is-in' : ''}`}>
-          {shown.length === 0 && (
-            <article className="pg-card">
-              <h2>No scheme in this filter</h2>
-              <p>Try another AMC, or clear the search.</p>
-            </article>
-          )}
-          {shown.map((fund) => {
-            const catSlug = 'categorySlug' in fund ? fund.categorySlug : category?.slug;
-            const quote = live(fund);
-            return (
-              <button key={fund.slug} type="button" className="hf-fund nav-card" onClick={() => navigate(`/mutual-funds/${catSlug}/${fund.slug}` as RoutePath)}>
-                <div className="hf-amc">
-                  <img className="hf-logo" src={fund.logo} alt={`${fund.amc} mark`} width={28} height={28} />
-                  <div>
-                    <h2>{fund.name}</h2>
-                    <div className="hf-sub">{fund.plan}</div>
-                  </div>
-                </div>
-                <div className="hf-tags"><span>{fund.subCategory}</span><span>{fund.risk}</span></div>
-                <div className="nav-figure">
-                  <span>{quote ? 'NAV · AMFI' : 'NAV'}</span>
-                  <strong>₹<CountUp value={Number(quote?.nav ?? fund.nav)} /></strong>
-                  <Spark values={quote?.spark || []} />
-                </div>
-                <span className="hf-note">{quote ? `as of ${quote.date}` : `Last updated ${fundBook.asOf}`}</span>
-                {quote?.returns ? (
-                  <div className="hf-metrics">
-                    <span>1Y<b>{pct(quote.returns['1Y'])}</b></span>
-                    <span>3Y<b>{pct(quote.returns['3Y'])}</b></span>
-                    <span>5Y<b>{pct(quote.returns['5Y'])}</b></span>
-                  </div>
-                ) : null}
-              </button>
-            );
-          })}
-        </div>
-        <p className="hf-note" style={{ marginTop: 16 }}>{shown.some((fund) => live(fund)) ? RETURNS_LABEL : `Last updated ${fundBook.asOf}. ${fundBook.source}`}</p>
-        <p className="hf-note">{fundBook.disclaimer}</p>
+
+        <p className="hf-note" style={{ marginTop: 18 }}>{COMPLIANCE_REGISTRY.scheme.disclaimer}</p>
+        <p className="hf-note"><strong>{COMPLIANCE_REGISTRY.statutoryMutualFund.standardRisk}</strong></p>
         <div className="hf-cta-row" style={{ marginTop: 12 }}>
           <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/calculators/sip')}>SIP calculator</button>
           <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/calculators/lumpsum')}>Lumpsum calculator</button>
-          <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/start-investing')}>Start investing</button>
+          <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate('/disclosures#commission' as RoutePath)}>Commission disclosures</button>
         </div>
       </div>
     </div>
@@ -408,7 +284,7 @@ export const ArticlePage: React.FC<PageProps & { slug: string }> = ({ navigate, 
         <div className="article-prose">
           {post.content.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
         </div>
-        <p className="hf-note">Educational note from a mutual fund distributor. Not investment advice and not a scheme recommendation.</p>
+        <p className="hf-note">Educational note from an AMFI-registered mutual fund distributor (ARN {FARCON_CONFIG.arn}). Not investment advice and not a scheme recommendation. {COMPLIANCE_REGISTRY.statutoryMutualFund.standardRisk}</p>
         <h2>Related</h2>
         <div className="related-notes">
           {more.map((item) => (
@@ -434,10 +310,10 @@ export const StartInvestingPage: React.FC = () => (
   <div className="pg">
     <div className="pg-wrap split">
       <div>
-        <span className="hf-eye">Start investing</span>
+        <span className="hf-eye">Regular Plan Distribution Enquiry</span>
         <h1>Tell us the goal, then the amount.</h1>
-        <p className="lede">This is a mutual fund distribution enquiry. It is separate from a general consultation. Farcon Wealth does not place an order from this form.</p>
-        <p className="hf-note">AMFI-registered Mutual Fund Distributor · ARN {FARCON_CONFIG.arn}. You can also <a href={whatsappHref}>message us on WhatsApp</a>.</p>
+        <p className="lede">This is a Regular Plan mutual fund distribution enquiry under AMFI ARN {FARCON_CONFIG.arn}. It is separate from a general consultation and does not place any order online.</p>
+        <p className="hf-note">Investments are held in your own name with the respective AMC/registrar. You can also <a href={whatsappHref} target="_blank" rel="noreferrer">message us on WhatsApp</a> or review our <a href="/disclosures#commission">commission disclosures</a>.</p>
       </div>
       <LeadForm form="Start Investing" submitLabel="Send the investing enquiry" showPreferences requireGoal />
     </div>
@@ -478,14 +354,15 @@ export const PortfolioPage: React.FC = () => (
 export const LoginPage: React.FC<PageProps> = ({ onOpenConsultation }) => (
   <div className="pg">
     <div className="pg-wrap" style={{ maxWidth: 760 }}>
-      <span className="hf-eye">Investor access</span>
-      <h1>Online portfolio access is coming soon.</h1>
+      <span className="hf-eye">Investor access &amp; folio records</span>
+      <h1>Investor access and folio records.</h1>
       <p className="lede">
-        Farcon Wealth does not keep a password for your folios. Holdings stay with the mutual fund, the exchange or the registrar, in your name. Until portfolio access is available here, message us or ask for a statement.
+        Farcon Wealth does not store account passwords or hold custody of your mutual fund holdings. Folios remain in your own name with the respective AMC and official registrars (CAMS, KFintech, or MFCentral). Until a dedicated investor portal link is configured, use official registrar portals or ask our team for assistance with your statement.
       </p>
-        <div className="hf-cta-row">
-        <a className="hf-btn hf-btn-green" href={whatsappHref} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
-        <button type="button" className="hf-btn hf-btn-outline" onClick={() => onOpenConsultation('Portfolio statement')}>Request a portfolio statement</button>
+      <div className="hf-cta-row">
+        <a className="hf-btn hf-btn-green" href="https://www.mfcentral.com/" target="_blank" rel="noreferrer">Open MFCentral</a>
+        <a className="hf-btn hf-btn-outline" href={whatsappHref} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
+        <button type="button" className="hf-btn hf-btn-outline" onClick={() => onOpenConsultation('Portfolio statement')}>Request statement guidance</button>
         {FARCON_CONFIG.investorLoginUrl ? (
           <a className="hf-btn hf-btn-outline" href={FARCON_CONFIG.investorLoginUrl} target="_blank" rel="noreferrer">Open the investor platform</a>
         ) : null}
@@ -675,44 +552,84 @@ export const ContactPage: React.FC = () => {
 };
 
 const LEGAL: Record<'privacy' | 'terms' | 'grievance' | 'disclosures', { eye: string; title: string }> = {
-  privacy: { eye: 'Privacy', title: 'Privacy Policy' },
+  privacy: { eye: 'Privacy & Data Protection', title: 'Privacy Policy' },
   terms: { eye: 'Terms', title: 'Terms of Use' },
   grievance: { eye: 'Grievance', title: 'Grievance Redressal' },
   disclosures: { eye: 'Disclosures', title: 'Regulatory Disclosures' },
 };
 
-export const DisclosuresPage: React.FC<{ section?: 'privacy' | 'terms' | 'grievance' | 'disclosures' }> = ({ section = 'disclosures' }) => {
+export const DisclosuresPage: React.FC<{ section?: 'privacy' | 'terms' | 'grievance' | 'disclosures'; navigate?: (path: RoutePath) => void }> = ({ section = 'disclosures', navigate }) => {
   const heading = LEGAL[section];
   const cards = [
     {
       id: 'registration',
-      title: 'Registration',
+      title: 'Registration & Identity',
       show: section === 'disclosures',
-      body: `${FARCON_CONFIG.legalName} is an AMFI-registered mutual fund distributor. ARN: ${FARCON_CONFIG.arn}. Registered office: ${FARCON_CONFIG.registeredAddress}. Email ${FARCON_CONFIG.email}. Farcon Wealth does not bill an upfront fee. On regular plans, the asset management company may pay Farcon Wealth a distributor commission from the scheme expense ratio. That commission is disclosed before you invest. Message us on WhatsApp from the button on this page.`,
+      body: [
+        `${FARCON_CONFIG.legalName} operates as an AMFI-registered Mutual Fund Distributor under ARN: ${FARCON_CONFIG.arn} and is not a SEBI-registered Investment Adviser.`,
+        `Current office / correspondence address published by the business: ${FARCON_CONFIG.registeredAddress}. Email: ${FARCON_CONFIG.email}. Telephone: ${FARCON_CONFIG.phoneNumbers.join(', ')}. Documentary verification separating registered office vs operating address records and official ARN certificate attachment is tracked prior to final production release.`,
+        'Investments are made through official AMC/exchange/RTA channels strictly in the investor’s own name; Farcon Wealth never holds custody of investor funds or securities.',
+      ],
+    },
+    {
+      id: 'commission',
+      title: 'Commission Disclosure & Scheme Documents',
+      show: section === 'disclosures',
+      body: [
+        `Farcon Wealth distributes Regular Plans only for mutual fund clients under ARN: ${FARCON_CONFIG.arn} and receives distributor trail commission from Asset Management Companies (AMCs) out of the Regular Plan scheme expense ratio. Farcon Wealth does not charge separate advisory fees.`,
+        'Notice on Commission Schedule Status: Under the AMFI Master Circular for Mutual Fund Distributors (January 2026), digital platforms displaying investment facilities must prominently publish the applicable commission-rate schedule alongside links to each scheme’s SID, SAI, and KIM. Verified scheme-by-scheme AMC commission schedules and approved Regular Plan scheme mappings are currently pending owner upload/verification. Consequently, scheme-level cards and transactional facilities are intentionally disabled online.',
+        'Official Scheme Documents & Market Data Sources: Investors can inspect all Scheme Information Documents (SID), Statements of Additional Information (SAI), Key Information Memoranda (KIM), and AMFI scheme disclosures directly at https://www.amfiindia.com/ and https://www.sebi.gov.in/filings/mutual-funds.html.',
+      ],
+    },
+    {
+      id: 'affiliation',
+      title: 'AMC Affiliations & Scope of Products',
+      show: section === 'disclosures',
+      body: [
+        'Under the AMFI Code of Conduct for Mutual Fund Distributors, information on this website is limited to mutual fund categories and schemes of AMCs with which Farcon Wealth is empanelled; investors are free to consider mutual fund schemes or alternatives not distributed by Farcon Wealth.',
+        'AMC marks displayed on the website belong to their respective Asset Management Companies. Active empanelment confirmation for every displayed AMC logo is pending final owner verification.',
+      ],
     },
     {
       id: 'risk',
-      title: 'Risk disclosure',
+      title: 'Risk Disclosure & Illustrative Calculators',
       show: section === 'disclosures',
-      body: 'Mutual fund investments are subject to market risks. Read all scheme related documents carefully. Past performance is not indicative of future returns. Figures on this website that are marked illustrative are not live NAVs. Index levels on the home page come from Yahoo Finance and may be delayed.',
+      body: [
+        COMPLIANCE_REGISTRY.statutoryMutualFund.standardRisk,
+        'Past performance may or may not be sustained in future and is not indicative of any future return. Calculators, SIP estimators, and milestone models on this website produce purely mathematical, assumption-driven illustrations (using user-selected return rates and inflation inputs) and are not scheme-specific forecasts or guarantees.',
+        'Where live market or scheme data feeds are not connected with proper licensing or verification, the website displays an unavailable state and official exchange/AMFI links rather than stale fallback figures.',
+      ],
     },
     {
       id: 'grievance',
-      title: 'Grievance redressal',
+      title: 'Grievance Redressal',
       show: section === 'disclosures' || section === 'grievance',
-      body: `Write to ${FARCON_CONFIG.email} with your name, folio or PAN reference, and what went wrong. If you are not satisfied, you can approach AMFI or the SCORES portal of SEBI. Farcon Wealth will acknowledge a written complaint and share the next step.`,
+      body: [
+        `Level 1 — Internal Desk: Share your name, folio reference (if applicable), and details of your concern via email at ${FARCON_CONFIG.email}, telephone (${FARCON_CONFIG.phoneNumbers.join(' / ')}), or post at ${FARCON_CONFIG.registeredAddress}. Named Grievance Officer designation and committed response SLAs are pending owner confirmation prior to final production sign-off.`,
+        'Level 2 — AMC & Registrar: For unit allotment, KYC, bank mandate, dividend, or redemption processing issues, investors may contact the respective Asset Management Company or Registrar & Transfer Agent (CAMS / KFintech / MFCentral).',
+        'Level 3 — Regulatory Escalation: Unresolved complaints falling under SEBI jurisdiction may be escalated via AMFI or the SEBI SCORES portal (https://scores.sebi.gov.in/) and SMART ODR where applicable.',
+      ],
     },
     {
       id: 'privacy',
-      title: 'Privacy policy and DPDP',
+      title: 'Privacy Policy & Data Protection (DPDP)',
       show: section === 'disclosures' || section === 'privacy',
-      body: `Enquiry forms collect your name, contact details, city and the goal you describe so we can reply. We do not ask this website to store account passwords. Leads may be appended to a Google Sheet controlled by Farcon Wealth when a webhook is configured. You can ask us to correct or delete an enquiry by emailing ${FARCON_CONFIG.email}.`,
+      body: [
+        'Data Collected: Enquiry and consultation forms collect only the fields you submit — name, email address, 10-digit Indian mobile number, city, stated goal, optional investment type/amount/horizon/risk comfort, enquiry message, contact preference, source pathname, and explicit opt-in consent with timestamp. Optional UTM attribution tags are held transiently in browser sessionStorage. We never request folio passwords or CAS uploads via web forms.',
+        'Purpose & Legal Basis: Collected details are used solely to respond to your requested goal-planning or mutual fund distribution enquiry via your preferred contact channel. All consent checkboxes start unchecked by default; Farcon Wealth does not bundle marketing consent with service-request consent.',
+        'Actual Service Providers & Processors: Form submissions traverse Cloudflare Workers (hosting and optional Turnstile verification), may be recorded in a Farcon-controlled Google Sheet via Google Apps Script when webhook credentials are configured, or initiated externally via WhatsApp (wa.me) when clicked by you. Embedded educational videos load via YouTube privacy-enhanced mode (youtube-nocookie.com) only when you click play. No unauthorized third-party advertising trackers are active.',
+        `Retention, Security & Rights: Submissions are transmitted over HTTPS with input sanitisation and server-side validation. Confirmed retention durations and privacy-officer details are pending owner/legal schedule approval. You may request access, correction, withdrawal of consent, or deletion of any enquiry record at any time by emailing ${FARCON_CONFIG.email}. Under the Digital Personal Data Protection Rules, 2025, statutory obligations take effect across phased commencement dates; this notice will be updated following legal review prior to full commencement.`,
+      ],
     },
     {
       id: 'terms',
-      title: 'Terms of use',
+      title: 'Terms of Use',
       show: section === 'disclosures' || section === 'terms',
-      body: 'This website is information from a mutual fund distributor. It is not a research report, not an offer, and not a promise of returns. Calculators are estimates from stated assumptions. Using the site does not create an advisory mandate.',
+      body: [
+        'Informational & Distributor Scope: Content on this website is published by an AMFI-registered Mutual Fund Distributor (ARN: 329006) for general education and mutual fund distribution facilitation. Nothing on this website constitutes investment advice under SEBI (Investment Advisers) Regulations, a research report, an offer, or a solicitation to buy or sell any security.',
+        'Calculators & Assumptions: SIP, lump-sum, goal, and retirement calculators apply standard mathematical compounding formulas to user-chosen assumptions. Projected values are illustrative only and carry no assurance of return.',
+        'External Links: Links to AMFI, SEBI, NSE, BSE, MFCentral, WhatsApp, or educational videos are provided for convenience; Farcon Wealth is not responsible for the availability or content of third-party websites.',
+      ],
     },
   ].filter((card) => card.show);
   const ordered = [...cards].sort((a, b) => (a.id === section ? -1 : b.id === section ? 1 : 0));
@@ -725,21 +642,27 @@ export const DisclosuresPage: React.FC<{ section?: 'privacy' | 'terms' | 'grieva
             {ordered.map((card) => (
               <a key={card.id} href={`#${card.id}`}>{card.title}</a>
             ))}
+            <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate?.('/contact')}>Contact Us</button>
             <a className="hf-btn hf-btn-outline" href={whatsappHref} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
           </nav>
         )}
         <div className="legal-read">
           <span className="hf-eye">{heading.eye}</span>
           <h1>{heading.title}</h1>
-          <p className="lede">Last updated October 2026. ARN {FARCON_CONFIG.arn}.</p>
+          <p className="lede">Updated November 2026 · AMFI-Registered Mutual Fund Distributor · ARN {FARCON_CONFIG.arn}.</p>
           {ordered.map((card) => (
-            <article key={card.id} className="pg-card" id={card.id}>
+            <article key={card.id} className="pg-card" id={card.id} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {ordered.length > 1 && <h2>{card.title}</h2>}
-              <p>{card.body}</p>
+              {card.body.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
             </article>
           ))}
           {ordered.length === 1 && (
-            <a className="hf-btn hf-btn-outline" href={whatsappHref} target="_blank" rel="noreferrer" style={{ marginTop: 16 }}>Chat on WhatsApp</a>
+            <div className="hf-cta-row" style={{ marginTop: 16 }}>
+              <button type="button" className="hf-btn hf-btn-outline" onClick={() => navigate?.('/disclosures')}>All Regulatory Disclosures</button>
+              <a className="hf-btn hf-btn-outline" href={whatsappHref} target="_blank" rel="noreferrer">Chat on WhatsApp</a>
+            </div>
           )}
         </div>
       </div>

@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, useEffect, useLayoutEffect, useState } from 'react';
 import { RoutePath } from '@/types';
+import { parseAndNormalizeUrl } from '@/lib/routing/normalizeRoute';
 import { BLOG_POSTS } from '@/content/blogs/blogData';
 import fundBook from '@/content/funds/schemes.json';
 import { metaFor, ogImagePath } from '@/content/seo/meta';
@@ -50,8 +51,11 @@ function captureUtm() {
 export function App() {
   const [currentPath, setCurrentPath] = useState<RoutePath>(() => {
     if (typeof window !== 'undefined') {
-      const p = window.location.pathname as RoutePath;
-      return p || '/';
+      const parsed = parseAndNormalizeUrl(window.location.pathname + window.location.search + window.location.hash);
+      if (window.location.pathname !== parsed.pathname) {
+        window.history.replaceState({}, '', parsed.fullPath);
+      }
+      return parsed.pathname as RoutePath;
     }
     return '/';
   });
@@ -66,7 +70,11 @@ export function App() {
     captureUtm();
     const handlePopState = () => {
       captureUtm();
-      setCurrentPath((window.location.pathname as RoutePath) || '/');
+      const parsed = parseAndNormalizeUrl(window.location.pathname + window.location.search + window.location.hash);
+      if (window.location.pathname !== parsed.pathname) {
+        window.history.replaceState({}, '', parsed.fullPath);
+      }
+      setCurrentPath(parsed.pathname as RoutePath);
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -132,17 +140,24 @@ export function App() {
     return () => document.removeEventListener('click', onClick);
   }, []);
 
-  const navigate = (path: RoutePath) => {
+  const navigate = (path: RoutePath | string) => {
     const raw = String(path);
-    const pathname = (raw.split('?')[0] || '/') as RoutePath;
+    const parsed = parseAndNormalizeUrl(raw);
     if (typeof window !== 'undefined') {
-      if (`${window.location.pathname}${window.location.search}` !== raw) {
-        window.history.pushState({}, '', raw);
+      const currentFull = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+      if (currentFull !== parsed.fullPath) {
+        window.history.pushState({}, '', parsed.fullPath);
       }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (!parsed.hash) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        window.setTimeout(() => {
+          document.querySelector(parsed.hash)?.scrollIntoView({ behavior: 'smooth' });
+        }, 60);
+      }
       captureUtm();
     }
-    setCurrentPath(pathname);
+    setCurrentPath(parsed.pathname as RoutePath);
   };
 
   useEffect(() => {
@@ -298,10 +313,12 @@ export function App() {
       return <ContactPage />;
     }
 
-    if (currentPath === '/disclosures') return <DisclosuresPage section="disclosures" />;
-    if (currentPath === '/grievance') return <DisclosuresPage section="grievance" />;
-    if (currentPath === '/privacy') return <DisclosuresPage section="privacy" />;
-    if (currentPath === '/terms') return <DisclosuresPage section="terms" />;
+    if (currentPath === '/disclosures' || currentPath === '/commission-disclosure') {
+      return <DisclosuresPage section="disclosures" navigate={navigate} />;
+    }
+    if (currentPath === '/grievance') return <DisclosuresPage section="grievance" navigate={navigate} />;
+    if (currentPath === '/privacy') return <DisclosuresPage section="privacy" navigate={navigate} />;
+    if (currentPath === '/terms') return <DisclosuresPage section="terms" navigate={navigate} />;
 
     return <NotFound navigate={navigate} />;
   };
@@ -321,7 +338,7 @@ export function App() {
         <Suspense fallback={<div className="pg"><div className="pg-wrap"><p className="lede">Loading…</p></div></div>}>
           {renderView()}
           {currentPath !== '/' && !metaFor(currentPath).title.startsWith('Page not found') && (
-            <PageCta onBook={() => handleOpenConsultation('Book a Free 15-Minute Call')} />
+            <PageCta onBook={() => handleOpenConsultation('Consultation Request')} />
           )}
         </Suspense>
       </main>

@@ -1,7 +1,7 @@
 /**
  * Farcon Wealth Compliance Content Registry
  * Centralized compliance text, statutory notices, distributor registration,
- * and educational disclaimers. ARN and phone come from FARCON_CONFIG.
+ * and educational disclaimers.
  */
 
 import { FARCON_CONFIG } from '@/content/site/config';
@@ -11,6 +11,7 @@ export const COMPLIANCE_REGISTRY = {
     entityName: 'Farcon Wealth Private Limited',
     arn: FARCON_CONFIG.arn,
     phoneNumber: FARCON_CONFIG.phoneNumber,
+    phoneNumbers: FARCON_CONFIG.phoneNumbers,
     amfiRegistration: `Farcon Wealth is an AMFI-registered Mutual Fund Distributor · ARN: ${FARCON_CONFIG.arn}`,
     amfiShortBadge: `AMFI-registered MFD · ARN: ${FARCON_CONFIG.arn}`,
     registeredOffice: `Farcon Wealth Private Limited, ${FARCON_CONFIG.registeredAddress}`,
@@ -19,16 +20,17 @@ export const COMPLIANCE_REGISTRY = {
   },
 
   statutoryMutualFund: {
+    /** Exact SEBI (Mutual Funds) Regulations, 2026 Advertisement Code standard warning */
     standardRisk:
-      'Mutual fund investments are subject to market risks; read all scheme related documents carefully before investing.',
+      'Mutual Fund investments are subject to market risks, read all scheme related documents carefully.',
     pastPerformance:
-      'Past performance is not an indicator of future returns.',
+      'Past performance may or may not be sustained in future and is not a guarantee of any future returns.',
   },
 
   calculator: {
     title: 'Illustrative Mathematical Projection',
     disclaimer:
-      'This calculation is an educational, illustrative mathematical projection based on compound growth formulas and user inputs. It does not constitute personalised investment advice or guarantee any specific portfolio outcome. Actual returns vary across market cycles, scheme selections, and tax treatments.',
+      'This calculation is an illustrative mathematical projection based on user-selected assumptions and monthly compounding formulas. It is not a scheme-specific return estimate, advice, or assurance of any outcome.',
     note: 'Illustrative assumption for calculation purposes.',
   },
 
@@ -41,9 +43,9 @@ export const COMPLIANCE_REGISTRY = {
   },
 
   scheme: {
-    title: 'Educational Fund Exploration',
+    title: 'Mutual Fund Category & Distribution Scope',
     disclaimer:
-      'Scheme details and historical performance metrics are provided for illustrative educational comparison only. Farcon Wealth does not offer unsolicited scheme recommendations online. Suitability must be assessed independently prior to any transaction.',
+      'Farcon Wealth acts strictly as an AMFI-registered Mutual Fund Distributor dealing in Regular Plans. Information is limited to mutual fund categories and distributed schemes; investors may also consider alternatives not offered by Farcon Wealth.',
   },
 
   journey: {

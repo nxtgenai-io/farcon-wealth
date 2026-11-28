@@ -4,6 +4,7 @@ import { FARCON_GOALS } from '@/content/goals/goalsData';
 import { FAQ_ITEMS } from '@/content/faq/faqData';
 import fundBook from '@/content/funds/schemes.json';
 import { SITE_URL, FARCON_CONFIG } from '@/content/site/config';
+import { normalizePathname } from '@/lib/routing/normalizeRoute';
 
 const SITE = SITE_URL;
 
@@ -94,11 +95,15 @@ export const PAGE_META: Record<string, { title: string; description: string }> =
   },
   '/disclosures': {
     title: 'Disclosures | Farcon Wealth',
-    description: 'AMFI registration, ARN 329006 and mutual fund risk disclosures.',
+    description: 'AMFI registration, ARN 329006, commission disclosure policy, and Mutual Fund risk disclosures.',
+  },
+  '/commission-disclosure': {
+    title: 'Commission Disclosure | Farcon Wealth',
+    description: 'Distributor commission framework and Regular Plan disclosures for Farcon Wealth (ARN 329006).',
   },
   '/grievance': {
     title: 'Grievance Redressal | Farcon Wealth',
-    description: 'How to raise a concern with Farcon Wealth.',
+    description: 'How to raise a concern or investor grievance with Farcon Wealth.',
   },
 };
 
@@ -107,7 +112,8 @@ const NOT_FOUND_META = {
   description: 'This page is not on the Farcon Wealth site.',
 };
 
-export function metaFor(path: string) {
+export function metaFor(rawPath: string) {
+  const path = normalizePathname(rawPath);
   if (PAGE_META[path]) return PAGE_META[path];
   if (path.startsWith('/goals/')) {
     const goal = FARCON_GOALS.find((item) => item.slug === path.slice('/goals/'.length));
@@ -134,14 +140,15 @@ export function metaFor(path: string) {
     return {
       title: `${scheme ? scheme.name : category.name} | Farcon Wealth`,
       description: scheme
-        ? `${scheme.name}, ${scheme.plan}. Educational scheme card from Farcon Wealth. Not a recommendation.`
+        ? `${scheme.name}. Educational category and Regular Plan distribution disclosure from Farcon Wealth (ARN 329006).`
         : category.summary,
     };
   }
   return NOT_FOUND_META;
 }
 
-export function pageH1(path: string): string {
+export function pageH1(rawPath: string): string {
+  const path = normalizePathname(rawPath);
   const fixed: Record<string, string> = {
     '/': 'Investing, without the noise.',
     '/about': 'A distributor with a planning desk.',
@@ -154,9 +161,9 @@ export function pageH1(path: string): string {
     '/calculators/retirement': 'Retirement calculator',
     '/investor-quiz': 'Investor Fit Assessment',
     '/wealth-planner': 'See the monthly amount.',
-    '/mutual-funds': 'Explore mutual funds',
+    '/mutual-funds': 'Mutual fund categories and disclosures',
     '/portfolio-review': 'Tell us the goal before the scheme.',
-    '/investor-login': 'Online portfolio access is coming soon.',
+    '/investor-login': 'Investor access and folio records.',
     '/education': 'Learn, plan, and grow.',
     '/blogs': 'Notes on staying invested.',
     '/faq': 'Common questions.',
@@ -165,6 +172,7 @@ export function pageH1(path: string): string {
     '/privacy': 'Privacy Policy',
     '/terms': 'Terms of Use',
     '/disclosures': 'Regulatory Disclosures',
+    '/commission-disclosure': 'Regulatory & Commission Disclosures',
     '/grievance': 'Grievance Redressal',
   };
   if (fixed[path]) return fixed[path];
@@ -277,7 +285,6 @@ export function seoEntries() {
   BLOG_POSTS.forEach((item) => paths.add(`/blogs/${item.slug}`));
   fundBook.categories.forEach((category) => {
     paths.add(`/mutual-funds/${category.slug}`);
-    category.schemes.forEach((scheme) => paths.add(`/mutual-funds/${category.slug}/${scheme.slug}`));
   });
   return [...paths].map((path) => {
     const meta = metaFor(path);
