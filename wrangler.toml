@@ -8,6 +8,7 @@ compatibility_date = "2026-10-14"
 directory = "./dist"
 binding = "ASSETS"
 not_found_handling = "single-page-application"
+html_handling = "drop-trailing-slash"
 
 # Secrets (do not commit the values):
 #   npx wrangler secret put LEADS_WEBHOOK_URL

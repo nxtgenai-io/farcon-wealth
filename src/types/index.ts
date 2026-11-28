@@ -36,6 +36,7 @@ export type RoutePath =
   | '/privacy'
   | '/terms'
   | '/disclosures'
+  | '/commission-disclosure'
   | '/grievance';
 
 export interface ServiceDetail {

@@ -10,10 +10,13 @@ export const FloatingContactActions: React.FC<{ onOpenAI?: () => void }> = ({ on
 
   useEffect(() => {
     const onScroll = () => {
-      const pastHero = window.scrollY > 480;
+      const hero = document.querySelector('[data-section="hero"]');
+      const pastHero = hero
+        ? window.scrollY > Math.max(240, hero.getBoundingClientRect().height * 0.42)
+        : window.scrollY > 240;
       const footer = document.querySelector('.fw-footer');
       const footerTop = footer?.getBoundingClientRect().top ?? Number.POSITIVE_INFINITY;
-      const footerClear = footerTop > window.innerHeight - 8;
+      const footerClear = footerTop > window.innerHeight - 16;
       setShow(pastHero && footerClear);
     };
     onScroll();
@@ -26,8 +29,14 @@ export const FloatingContactActions: React.FC<{ onOpenAI?: () => void }> = ({ on
   }, []);
 
   return (
-    <div className={`fw-float${show ? ' has-wa' : ''}`}>
-      <button type="button" className="fw-ai-launch" onClick={onOpenAI}>
+    <div className={`fw-float${show ? ' is-on has-wa' : ''}`}>
+      <button
+        type="button"
+        className="fw-ai-launch"
+        onClick={onOpenAI}
+        tabIndex={show ? 0 : -1}
+        aria-hidden={show ? undefined : true}
+      >
         <Sparkles size={16} aria-hidden="true" />
         <span>Ask Farcon AI</span>
       </button>

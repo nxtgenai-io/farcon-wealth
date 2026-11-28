@@ -438,7 +438,7 @@ export const WealthPlannerView: React.FC<WealthPlannerViewProps> = ({
         <strong><AnimatedNumber value={goalCalculation.requiredMonthlySIP} durationMs={480} /></strong>
         <p>{plannerData.goal}</p>
         <p>{plannerData.horizonYears} years · future target {formatINR(goalCalculation.futureInflationAdjustedGoal)}</p>
-        <p className="hf-note">Estimate only. Mutual fund investments are subject to market risks.</p>
+        <p className="hf-note">Illustrative estimate based on {plannerData.assumedReturn}% p.a. return and {plannerData.assumedInflation}% p.a. inflation. Mutual Fund investments are subject to market risks, read all scheme related documents carefully.</p>
       </aside>
       </div>
       </div>

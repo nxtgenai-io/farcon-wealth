@@ -1,6 +1,7 @@
 import React from 'react';
 import { RoutePath } from '@/types';
 import { FARCON_CONFIG } from '@/content/site/config';
+import { COMPLIANCE_REGISTRY } from '@/lib/compliance';
 import { BrandLockup } from '@/components/layout/BrandLockup';
 
 interface FooterProps {
@@ -36,12 +37,13 @@ const columns: { title: string; links: { label: string; href: RoutePath }[] }[] 
     ],
   },
   {
-    title: 'Legal',
+    title: 'Legal & Disclosures',
     links: [
-      { label: 'Privacy Policy', href: '/privacy' },
-      { label: 'Terms of Use', href: '/terms' },
-      { label: 'DPDP Policy', href: '/privacy' },
+      { label: 'Regulatory Disclosures', href: '/disclosures' },
+      { label: 'Commission Disclosures', href: '/disclosures#commission' as RoutePath },
       { label: 'Grievance Redressal', href: '/grievance' },
+      { label: 'Privacy Policy & DPDP', href: '/privacy' },
+      { label: 'Terms of Use', href: '/terms' },
     ],
   },
 ];
@@ -96,7 +98,7 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
       </div>
       <div className="fw-legal">
         <p>
-          Mutual fund investments are subject to market risks. Read all scheme related documents carefully. | AMFI-registered Mutual Fund Distributor | ARN: {FARCON_CONFIG.arn}
+          {COMPLIANCE_REGISTRY.statutoryMutualFund.standardRisk} | {FARCON_CONFIG.legalName} — AMFI-registered Mutual Fund Distributor (ARN: {FARCON_CONFIG.arn})
         </p>
         <p>© {new Date().getFullYear()} Farcon Wealth. All rights reserved.</p>
       </div>
